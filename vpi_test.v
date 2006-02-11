@@ -1,5 +1,6 @@
-=begin
+/*
 	Copyright 2006 Suraj Kurapati
+	Copyright 1999 Kazuhiro HIWADA
 
 	This file is part of Ruby-VPI.
 
@@ -16,12 +17,18 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA	 02110-1301	 USA
-=end
+*/
 
-require 'mkmf'
-
-dir_config 'verilog'
-have_header 'vpi_user.h'
-
-have_library 'pthread', 'pthread_create'
-create_makefile 'ruby-vpi'
+// The whole VPI code is bootstrapped from this file. So, the intent is that a verilog testbench invokes the Ruby VPI extension, which in turn performs some extra things for us.
+module test;
+	reg a;
+	initial begin
+		$ruby_init();
+		#0 $display($time); $ruby_callback();
+		#10 $display($time); $ruby_callback();
+		#10 $display($time); $ruby_callback();
+		#10 $display($time); $ruby_callback();
+		#10 $display($time); $ruby_callback();
+		#10 $display($time); $ruby_callback();
+	end
+endmodule

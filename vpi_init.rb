@@ -1,5 +1,6 @@
 =begin
 	Copyright 2006 Suraj Kurapati
+	Copyright 1999 Kazuhiro HIWADA
 
 	This file is part of Ruby-VPI.
 
@@ -18,10 +19,20 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA	 02110-1301	 USA
 =end
 
-require 'mkmf'
+p "ruby:check 0, $ruby_init();"
+VPI::relay_verilog
 
-dir_config 'verilog'
-have_header 'vpi_user.h'
+p "ruby:check 1, $ruby_callback();"
+VPI::relay_verilog
 
-have_library 'pthread', 'pthread_create'
-create_makefile 'ruby-vpi'
+p "ruby:check 2, $ruby_callback();"
+VPI::relay_verilog
+
+p "ruby:check 3, $ruby_callback();"
+VPI::relay_verilog
+
+p "ruby:check 4, $ruby_callback();"
+VPI::relay_verilog
+
+p "ruby:check 5, $ruby_callback();"
+VPI::relay_verilog

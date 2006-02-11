@@ -1,0 +1,83 @@
+Welcome to Ruby-VPI
+-------------------
+Ruby-VPI lets you write complex Verilog test benches, simulations, and
+other applications easily and wholly in Ruby. The goal is to have
+complete access to the VPI procedural language interface from within
+Ruby, without having to write any C code.
+
+Visit us at rubyforge for more information:
+<http://rubyforge.org/projects/ruby-vpi/>
+
+
+
+License information (see the file named "COPYING" for details)
+--------------------------------------------------------------
+Ruby-VPI is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+Ruby-VPI is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+
+
+Requirements for compilation
+----------------------------
+In addition to the standard Verilog VPI header file, vpi_user.h,
+the pthreads library is required to compile and run Ruby-VPI.
+
+
+
+Compiling Ruby-VPI
+------------------
+ruby extconf.rb --with-verilog-include=/place/where/vpi_user.h/is/found
+make
+
+
+
+Installing Ruby-VPI
+-------------------
+# First, compile Ruby-VPI (see above).
+# Next, run the following commands.
+
+make install
+
+
+
+Using Ruby-VPI with Icarus Verilog
+----------------------------------
+# First, compile Ruby-VPI (see above).
+# Next, run the following commands.
+
+mv ruby-vpi.so ruby-vpi.vpi
+iverilog -y. -mruby-vpi vpi_test.v
+vvp -M. a.out
+
+
+
+Using Ruby-VPI with Synopsys VCS
+--------------------------------
+# First, compile Ruby-VPI (see above).
+# Next, run the following commands.
+
+# TODO: check if VCS works with ruby-vpi
+vcs +vpi -CFLAGS "`ruby -rmkmf -e puts\ \$CFLAGS` -DVCS -O2 -I$VCS_HOME/`vcs -platform`/lib" -LDFLAGS "`ruby -rmkmf -e puts\ \$LDFLAGS`" -P vpi_test.tab vpi_test.v rbvpi.c
+./simv
+
+
+
+Using Ruby-VPI with Mentor ModelSim
+-----------------------------------
+# First, compile Ruby-VPI (see above).
+# Next, run the following commands.
+
+vlib work
+vlog vpi_test.v
+vsim -pli vpi.so -do 'run -all'
