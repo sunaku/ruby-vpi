@@ -185,23 +185,23 @@
 		ruby_init_loadpath();
 
 
-		// transform the arguments passed to this function by Verilog into arguments for ruby interpeter
-		vpiHandle myCall = vpi_handle(vpiSysTfCall, NULL);
+		// transform the arguments passed to this function (from Verilog) into command-line arguments for ruby interpeter
+		vpiHandle vCall = vpi_handle(vpiSysTfCall, NULL);
 
-		if(myCall) {
+		if(vCall) {
 			// push all call-arguments into a ruby array, so that I don't have to perform any explicit memory management
-			VALUE argAry = rb_ary_new();
+			VALUE rCallArgs = rb_ary_new();
 
-			vpiHandle callArgs = vpi_iterate(vpiArgument, myCall);
+			vpiHandle vCallArgs = vpi_iterate(vpiArgument, vCall);
 
-			if(callArgs) {
-				vpiHandle arg;
+			if(vCallArgs) {
+				vpiHandle vArg;
 
-				while((arg = vpi_scan(callArgs)) != NULL) {
+				while((vArg = vpi_scan(vCallArgs)) != NULL) {
 					s_vpi_value argVal;
 					argVal.format = vpiObjTypeVal;
 
-					vpi_get_value(arg, &argVal);
+					vpi_get_value(vArg, &argVal);
 
 					/**(Page 717 in IEEE Std 1364-2001 Version C.)
 						When the format ﬁeld is vpiObjTypeVal, the routine shall ﬁll in the value and change the format ﬁeld based on the object type, as follows:
@@ -231,7 +231,7 @@
 						case vpiStringVal:
 							vpi_printf("ruby-vpi: in $ruby_init(), got vpiStringVal: %s\n", argVal.value.str);
 
-							rb_ary_push(argAry, rb_str_new2(argVal.value.str));
+							rb_ary_push(rCallArgs, rb_str_new2(argVal.value.str));
 						break;
 					}
 				}
@@ -239,19 +239,20 @@
 
 
 			// convert the ruby array into an array of C strings
-			long argCnt = RARRAY(argAry)->len;
-			VALUE* argSrc = RARRAY(argAry)->ptr;
-			PLI_BYTE8** argDst = ALLOC_N(PLI_BYTE8*, argCnt);
+			long argc = RARRAY(rCallArgs)->len;
+			VALUE* rArgs = RARRAY(rCallArgs)->ptr;
+			PLI_BYTE8** argv = ALLOC_N(PLI_BYTE8*, argc);
 
 			long i;
-			for(i = 0; i < argCnt; i++) {
-				argDst[i] = (PLI_BYTE8*)StringValueCStr(argSrc[i]);
+			for(i = 0; i < argc; i++) {
+				argv[i] = (PLI_BYTE8*)StringValueCStr(rArgs[i]);
 			}
 
-			ruby_options(argCnt, argDst);
+				// give the array of C strings as command-line options to Ruby interpreter
+				ruby_options(argc, argv);
 
 			// TODO: check if there is any memory leak here
-			free(argDst);
+			free(argv);
 		}
 
 
@@ -300,6 +301,4 @@
 		vpi_register_cb(&cb);*/
 	}
 
-#ifndef VCS
 	void (*vlog_startup_routines[])() = { rbvpi_startup, 0 };
-#endif
