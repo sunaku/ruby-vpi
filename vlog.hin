@@ -42,14 +42,22 @@
 
 
 	/**
-		Enables Verilog code to transfer control to Ruby code.
+		Callback for the $ruby_callback VPI task. Transfers control from Verilog to Ruby code.
 	*/
 	static int vlog_ruby_callback(PLI_BYTE8* dummy);
 
 	/**
-		Initializes and starts the Ruby interpreter.
+		Callback for the $ruby_init VPI task. Initializes and starts the Ruby interpreter with the same arguments as those given to the VPI task-call.
+
+		For example, to start the Ruby interpreter with the "-w" option and with the "hello_world.rb" script, the Verilog code would have a statement like this:
+			- <tt>$ruby_init("-w", "hello_world.rb");</tt>
 	*/
 	static int vlog_ruby_init(PLI_BYTE8* dummy);
+
+	/**
+		Task-call processor for all tasks registered using VPI::register_systf from within Ruby.
+	*/
+	static int vlog_proc_systf(PLI_BYTE8* dummy);
 
 	/**
 		Transforms all arguments, which have been passed (from Verilog) in a vpiSysTfCall to the given task, into a Ruby Array.
@@ -58,6 +66,8 @@
 				- <tt>VALUE rCallArgs = vlog_task_args(NULL);</tt>
 
 		@param	vTask	The VPI task which has been called by Verilog and whose call-arguments you want to fetch. If this variable is NULL, the call-arguments of the most recent VPI task-call will be fetched.
+
+		@TODO	this only stores Strings into the returned array. add support for all kinds of VPI objects
 	*/
 	static VALUE vlog_task_args(vpiHandle vTask);
 

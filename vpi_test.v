@@ -30,5 +30,7 @@ module test;
 		#10 $display($time); $ruby_callback();
 		#10 $display($time); $ruby_callback();
 		#10 $display($time); $ruby_callback();
+
+		// #20 $hello_world(); // TODO: find solution to this.. Icarus Verilog is unable to find the systf definition for the C function associated with this call at compile time (when Ruby has not even been run, to bind a systf for this call, yet!)
 	end
 endmodule

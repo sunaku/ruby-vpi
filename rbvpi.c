@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
+#include <assert.h>
 #include "rbvpi.h"
 
 #include "relay.cin"
@@ -31,9 +32,46 @@
 void Init_vpi() {
 	VALUE mVPI = rb_define_module("VPI");
 	rb_define_singleton_method(mVPI, "relay_verilog", rbvpi_relay_verilog, 0);
+	rb_define_singleton_method(mVPI, "register_systf", rbvpi_register_systf, 1);
 }
 
 static VALUE rbvpi_relay_verilog(VALUE rSelf) {
 	relay_verilog();
 	return Qnil;
+}
+
+static VALUE rbvpi_register_systf(VALUE rSelf, VALUE rTaskName) {
+	// create registry if necessary
+	if(g_rTaskRegistry == Qnil) {
+		g_rTaskRegistry = rb_hash_new();
+	}
+
+
+	VALUE rName = rb_str_to_str(rTaskName);
+	PLI_BYTE8* name = (PLI_BYTE8*)StringValueCStr(rName);
+
+
+	// raise if no block given
+	if(!rb_block_given_p()) {
+		rb_raise(rb_eArgError, "block, containing code to execute when the %s task is called from Verilog, was not given", name);
+	}
+
+
+	// raise if task name already registered
+	if(rb_hash_aref(g_rTaskRegistry, rName) != Qnil) {
+		rb_raise(rb_eArgError, "task %s has already been registered", name);
+	}
+
+
+	// register the task
+	VALUE rTask = rb_block_proc();	// convert the given block into a proc, which we can later call
+	rb_hash_aset(g_rTaskRegistry, rName, rTask);
+	assert(rb_hash_aref(g_rTaskRegistry, rName) == rTask);
+
+	vlog_bind_task(name, vlog_proc_systf);
+
+	vpi_printf("rbvpi: in rbvpi_register_systf(), registered task %s\n", name);
+
+
+	return rSelf;
 }

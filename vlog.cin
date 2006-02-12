@@ -22,6 +22,8 @@
 #ifndef VLOG_CIN
 #define VLOG_CIN
 
+	#include "rbvpi.h"
+
 	static int vlog_ruby_callback(PLI_BYTE8* dummy) {
 /*		vpiHandle
 			operandy_handle = vpi_handle_by_name("my_div32.operandy", NULL)
@@ -153,6 +155,31 @@
 		return 0;
 	}
 
+	static int vlog_proc_systf(PLI_BYTE8* dummy) {
+		vpiHandle vCall = vpi_handle(vpiSysTfCall, NULL);
+
+		if(vCall) {
+			// determine the name of the task which was called
+			PLI_BYTE8* name = vpi_get_str(vpiName, vCall);
+			VALUE rName = rb_str_new2(name);
+
+
+			// invoke the proc associated with the called task
+			VALUE rTask = rb_hash_aref(g_rTaskRegistry, rName);
+
+			if(rTask != Qnil) {
+				VALUE rCallArgs = vlog_task_args(NULL);
+
+				rb_funcall(rTask, rb_intern("call"), RARRAY(rCallArgs)->len, RARRAY(rCallArgs)->ptr);
+			}
+			else {
+				vpi_printf("rbvpi: bug? task %s has not been registered from Ruby", name);
+			}
+		}
+
+		return 0;
+	}
+
 	static VALUE vlog_task_args(vpiHandle vTask) {
 		VALUE rCallArgs = rb_ary_new();
 
@@ -182,6 +209,7 @@
 							- For a vector, vpiVectorVal
 					*/
 					switch(argVal.format) {
+						// TODO: add support for all kinds of VPI call arguments
 						/*case vpiIntVal:
 							break;
 

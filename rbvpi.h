@@ -31,7 +31,13 @@
 
 
 	/**
-		Defines the VPI module, used by Ruby code.
+		A hash of task names and their associated procs.
+		@see	rbvpi_register_systf
+	*/
+	static VALUE g_rTaskRegistry = Qnil;
+
+	/**
+		Creates and registers the VPI module with Ruby, so that Ruby code can use it.
 	*/
 	void Init_vpi();
 
@@ -47,7 +53,12 @@
 		For example, to register a VPI task named "$hello_world" to a Ruby block which prints the text "hello world", you can do:
 			<tt>VPI::register_systf("$hello_world") { puts "hello world" }</tt>
 
+		@param	rTaskName	The name of the VPI task you wish to register. For example, "$hello_world".
+
+		@arg	A block must also be given. This block will be invoked whenever the given task name is called by Verilog code.
+
+		@throw	An ArgumentError if a block is not given.
 	*/
-	// static VALUE rbvpi_register_systf(VALUE rSelf, VALUE rTaskName, VALUE rTaskLogic);
+	static VALUE rbvpi_register_systf(VALUE rSelf, VALUE rTaskName);
 
 #endif

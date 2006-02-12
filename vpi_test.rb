@@ -20,6 +20,8 @@
 =end
 
 p "ruby:check 0, $ruby_init();"
+VPI::register_systf("$hello_world") { puts "hello world" }
+
 VPI::relay_verilog
 
 p "ruby:check 1, $ruby_callback();"
