@@ -54,7 +54,13 @@
 
 
 
+
 	/* VPI tasks & callbacks, used by C and Verilog code */
+		/**
+			Transforms all arguments, which have been passed to the given task by Verilog, into a Ruby Array.
+		*/
+		static VALUE rbvpi_task_args(vpiHandle vTask);
+
 		/**
 			Binds a C function to a VPI task, so that Verilog code can invoke the C function via the VPI task.
 

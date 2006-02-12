@@ -177,6 +177,7 @@
 		Initializes and starts the Ruby interpreter.
 	*/
 	static int rbvpi_init(PLI_BYTE8* dummy) {
+		// initialize control-transfer mechanism between Ruby and Verilog
 		relay_init();
 
 
@@ -185,13 +186,46 @@
 		ruby_init_loadpath();
 
 
-		// transform the arguments passed to this function (from Verilog) into command-line arguments for ruby interpeter
-		vpiHandle vCall = vpi_handle(vpiSysTfCall, NULL);
+		// transform the arguments passed to this function (from Verilog) into command-line arguments for Ruby interpeter
+			// temporarily store the arguments passed to this function in an array
+			VALUE rCallArgs = rbvpi_task_args(NULL);
+
+			long argc = RARRAY(rCallArgs)->len;
+			VALUE* rArgs = RARRAY(rCallArgs)->ptr;
+			PLI_BYTE8** argv = ALLOC_N(PLI_BYTE8*, argc);
+
+			long i;
+			for(i = 0; i < argc; i++) {
+				argv[i] = (PLI_BYTE8*)StringValueCStr(rArgs[i]);
+			}
+
+				// give the temporary array as command-line options to Ruby interpreter
+				ruby_options(argc, argv);
+
+			free(argv);	// TODO: check if there is any memory leak here
+
+
+		// create VPI infrastructure so that Ruby code can use it
+		Init_vpi();
+		// TODO: add full VPI support
+
+
+		// start Ruby interpreter
+		pthread_create(&ruby_tid, 0, ruby_run_handshake, 0);
+
+		// the Ruby code will now bind any additional callbacks via the VPI infrastructure, and relay back to the verilog so that the simulation can begin
+
+
+		return 0;
+	}
+
+	static VALUE rbvpi_task_args(vpiHandle vTask) {
+		VALUE rCallArgs = rb_ary_new();
+
+		// transform the arguments passed to this function (from Verilog) into command-line arguments for Ruby interpeter
+		vpiHandle vCall = vpi_handle(vpiSysTfCall, vTask);
 
 		if(vCall) {
-			// push all call-arguments into a ruby array, so that I don't have to perform any explicit memory management
-			VALUE rCallArgs = rb_ary_new();
-
 			vpiHandle vCallArgs = vpi_iterate(vpiArgument, vCall);
 
 			if(vCallArgs) {
@@ -229,44 +263,16 @@
 							break;*/
 
 						case vpiStringVal:
-							vpi_printf("ruby-vpi: in $ruby_init(), got vpiStringVal: %s\n", argVal.value.str);
+							vpi_printf("ruby-vpi: in rbvpi_task_args(), got vpiStringVal: %s\n", argVal.value.str);
 
 							rb_ary_push(rCallArgs, rb_str_new2(argVal.value.str));
 						break;
 					}
 				}
 			}
-
-
-			// convert the ruby array into an array of C strings
-			long argc = RARRAY(rCallArgs)->len;
-			VALUE* rArgs = RARRAY(rCallArgs)->ptr;
-			PLI_BYTE8** argv = ALLOC_N(PLI_BYTE8*, argc);
-
-			long i;
-			for(i = 0; i < argc; i++) {
-				argv[i] = (PLI_BYTE8*)StringValueCStr(rArgs[i]);
-			}
-
-				// give the array of C strings as command-line options to Ruby interpreter
-				ruby_options(argc, argv);
-
-			// TODO: check if there is any memory leak here
-			free(argv);
 		}
 
-
-		// create VPI infrastructure for Ruby code
-		Init_vpi();
-		// TODO: add full VPI support
-
-
-		// start Ruby interpreter
-		// the Ruby code will now bind any additional callbacks via the VPI infrastructure, and relay back to the verilog so that the simulation can begin
-		pthread_create(&ruby_tid, 0, ruby_run_handshake, 0);
-
-
-		return 0;
+		return rCallArgs;
 	}
 
 	static void rbvpi_bind_task(PLI_BYTE8* name, int (*func)(PLI_BYTE8*)) {
