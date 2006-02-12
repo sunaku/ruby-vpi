@@ -248,7 +248,7 @@
 				argDst[i] = (PLI_BYTE8*)StringValueCStr(argSrc[i]);
 			}
 
-				ruby_options(argCnt, argDst);
+			ruby_options(argCnt, argDst);
 
 			// TODO: check if there is any memory leak here
 			free(argDst);

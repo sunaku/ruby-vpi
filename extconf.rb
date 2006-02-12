@@ -20,8 +20,8 @@
 
 require 'mkmf'
 
-dir_config 'verilog'
-have_header 'vpi_user.h'
+dir_config('verilog')
+have_header('vpi_user.h')
 
-have_library 'pthread', 'pthread_create'
-create_makefile 'ruby-vpi'
+have_library('pthread', 'pthread_create')
+create_makefile('ruby-vpi')

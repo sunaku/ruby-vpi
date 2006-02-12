@@ -22,37 +22,51 @@
 #ifndef RBVPI_H
 #define RBVPI_H
 
-#include <vpi_user.h>
-#include <ruby.h>
+	#include <ruby.h>
+
+
+	/* Ensure that PLI_* storage types comply with IEEE Std 1364-2001 Version C (vpi_user.h), regardless of the Verilog simulator used. */
+	#ifndef PLI_TYPES
+		#define PLI_TYPES
+
+		#define PLI_INT32 int
+		#define PLI_UINT32 unsigned int
+		#define PLI_INT16 short
+		#define PLI_UINT16 unsigned short
+		#define PLI_BYTE8 char
+		#define PLI_UBYTE8 unsigned char
+	#endif
+
+	#include <vpi_user.h>
 
 
 
-/* VPI module, used by Ruby code */
-	/**
-		Defines the VPI module, used by Ruby code.
-	*/
-	void Init_vpi();
+	/* VPI module, used by Ruby code */
+		/**
+			Defines the VPI module, used by Ruby code.
+		*/
+		void Init_vpi();
 
-	/**
-		Transfers control from Ruby code to Verilog code.
-	*/
-	static VALUE rbvpi_relay_verilog(VALUE self);
+		/**
+			Transfers control from Ruby code to Verilog code.
+		*/
+		static VALUE rbvpi_relay_verilog(VALUE self);
 
 
 
-/* VPI tasks & callbacks, used by C and Verilog code */
-	/**
-		Binds a C function to a VPI task, so that Verilog code can invoke the C function via the VPI task.
+	/* VPI tasks & callbacks, used by C and Verilog code */
+		/**
+			Binds a C function to a VPI task, so that Verilog code can invoke the C function via the VPI task.
 
-		For example, if we bound a VPI task named "$hello_world" to the C function ruby_world(), then the ruby_world() function would be invoked whenever Verilog code called the "$hello_world" VPI task.
+			For example, if we bound a VPI task named "$hello_world" to the C function ruby_world(), then the ruby_world() function would be invoked whenever Verilog code called the "$hello_world" VPI task.
 
-		@param	name	Name of the VPI task. For example, "$hello_world".
+			@param	name	Name of the VPI task. For example, "$hello_world".
 
-		@param	func	The C function which you want to associate with the given VPI task. For example, ruby_world().
-	*/
-	static void rbvpi_bind_task(PLI_BYTE8* name, int (*func)(PLI_BYTE8*));
+			@param	func	The C function which you want to associate with the given VPI task. For example, ruby_world().
+		*/
+		static void rbvpi_bind_task(PLI_BYTE8* name, int (*func)(PLI_BYTE8*));
 
-	// TODO
-	// static void rbvpi_bind_callback();
+		// TODO
+		// static void rbvpi_bind_callback();
 
 #endif
