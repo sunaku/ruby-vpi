@@ -23,7 +23,7 @@
 module test;
 	reg a;
 	initial begin
-		$ruby_init();
+		$ruby_init("-w", "vpi_test.rb");
 		#0 $display($time); $ruby_callback();
 		#10 $display($time); $ruby_callback();
 		#10 $display($time); $ruby_callback();

@@ -20,13 +20,9 @@
 */
 
 #include <stdlib.h>
-#include <ruby.h>
+#include <string.h>
 #include <pthread.h>
-#include <vpi_user.h>
 #include "rbvpi.h"
-
-// TODO: allow this to be customized from $ruby_init()
-#define STARTUP_SCRIPT "vpi_init.rb"
 
 
 
@@ -86,15 +82,6 @@
 
 
 /* VPI callbacks, used by C and Verilog code */
-	static VALUE
-		g_operandy
-		, g_operand1
-		, g_operand2
-		, g_signed_op
-		, g_status
-		, g_result
-		;
-
 	/**
 		Enables Verilog code to transfer control to Ruby code.
 	*/
@@ -198,18 +185,74 @@
 		ruby_init_loadpath();
 
 
-/*		// CE126: create global variables
-		rb_define_variable("$operandy", &g_operandy);
-		rb_define_variable("$operand1", &g_operand1);
-		rb_define_variable("$operand2", &g_operand2);
-		rb_define_variable("$signed_op", &g_signed_op);
-		rb_define_variable("$status", &g_status);
-		rb_define_variable("$result", &g_result);
-*/
+		// transform the arguments passed to this function by Verilog into arguments for ruby interpeter
+		vpiHandle myCall = vpi_handle(vpiSysTfCall, NULL);
 
-		// TODO: assemble argv from arguments passed to this function by Verilog. read how to do memory allocation in ruby book again
-		PLI_BYTE8* argv[] = {"ruby", "-w", STARTUP_SCRIPT};
-		ruby_options(sizeof(argv)/sizeof(PLI_BYTE8*), argv);
+		if(myCall) {
+			// push all call-arguments into a ruby array, so that I don't have to perform any explicit memory management
+			VALUE argAry = rb_ary_new();
+
+			vpiHandle callArgs = vpi_iterate(vpiArgument, myCall);
+
+			if(callArgs) {
+				vpiHandle arg;
+
+				while((arg = vpi_scan(callArgs)) != NULL) {
+					s_vpi_value argVal;
+					argVal.format = vpiObjTypeVal;
+
+					vpi_get_value(arg, &argVal);
+
+					/**(Page 717 in IEEE Std 1364-2001 Version C.)
+						When the format ﬁeld is vpiObjTypeVal, the routine shall ﬁll in the value and change the format ﬁeld based on the object type, as follows:
+							— For an integer, vpiIntVal
+							— For a real, vpiRealVal
+							— For a scalar, either vpiScalar or vpiStrength
+							— For a time variable, vpiTimeVal with vpiSimTime
+							— For a vector, vpiVectorVal
+					*/
+					switch(argVal.format) {
+						/*case vpiIntVal:
+							break;
+
+						case vpiRealVal:
+							break;
+
+						case vpiScalar:
+						case vpiStrength:
+							break;
+
+						case vpiTimeVal:
+							break;
+
+						case vpiVectorVal:
+							break;*/
+
+						case vpiStringVal:
+							vpi_printf("ruby-vpi: in $ruby_init(), got vpiStringVal: %s\n", argVal.value.str);
+
+							rb_ary_push(argAry, rb_str_new2(argVal.value.str));
+						break;
+					}
+				}
+			}
+
+
+			// convert the ruby array into an array of C strings
+			long argCnt = RARRAY(argAry)->len;
+			VALUE* argSrc = RARRAY(argAry)->ptr;
+			PLI_BYTE8** argDst = ALLOC_N(PLI_BYTE8*, argCnt);
+
+			long i;
+			for(i = 0; i < argCnt; i++) {
+				argDst[i] = (PLI_BYTE8*)StringValueCStr(argSrc[i]);
+			}
+
+				ruby_options(argCnt, argDst);
+
+			// TODO: check if there is any memory leak here
+			free(argDst);
+		}
 
 
 		// create VPI infrastructure for Ruby code
@@ -220,13 +263,12 @@
 		// start Ruby interpreter
 		// the Ruby code will now bind any additional callbacks via the VPI infrastructure, and relay back to the verilog so that the simulation can begin
 		pthread_create(&ruby_tid, 0, ruby_run_handshake, 0);
-		// relay_ruby(); // wait for relay_verilog();
 
 
 		return 0;
 	}
 
-	static void rbvpi_bind_task(char* name, int (*func)(char*)) {
+	static void rbvpi_bind_task(PLI_BYTE8* name, int (*func)(PLI_BYTE8*)) {
 		s_vpi_systf_data tf;
 
 		tf.type = vpiSysTask;
@@ -240,7 +282,6 @@
 		vpi_register_systf(&tf);
 	}
 
-#ifndef VCS
 	static void rbvpi_startup() {
 		rbvpi_bind_task("$ruby_init", rbvpi_init);
 		rbvpi_bind_task("$ruby_callback", rbvpi_callback);
@@ -259,5 +300,6 @@
 		vpi_register_cb(&cb);*/
 	}
 
+#ifndef VCS
 	void (*vlog_startup_routines[])() = { rbvpi_startup, 0 };
 #endif

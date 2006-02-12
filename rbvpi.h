@@ -22,6 +22,7 @@
 #ifndef RBVPI_H
 #define RBVPI_H
 
+#include <vpi_user.h>
 #include <ruby.h>
 
 
@@ -49,7 +50,7 @@
 
 		@param	func	The C function which you want to associate with the given VPI task. For example, ruby_world().
 	*/
-	static void rbvpi_bind_task(char* name, int (*func)(char*));
+	static void rbvpi_bind_task(PLI_BYTE8* name, int (*func)(PLI_BYTE8*));
 
 	// TODO
 	// static void rbvpi_bind_callback();

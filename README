@@ -80,4 +80,4 @@ Using Ruby-VPI with Mentor ModelSim
 
 vlib work
 vlog vpi_test.v
-vsim -pli vpi.so -do 'run -all'
+vsim -pli ruby-vpi.so -do 'run -all'
