@@ -75,6 +75,9 @@
 	// TODO
 	// static void rbvpi_bind_callback();
 
+	/**
+		Binds the default (provided by Ruby-VPI) VPI tasks before the Verilog simulator begins to simulate.
+	*/
 	static void vlog_startup();
 
 #endif

@@ -29,13 +29,19 @@ icarus-verilog: ruby-vpi
 	iverilog -y. -mruby-vpi vpi_test.v
 	vvp -M. a.out
 
+ivl: icarus-verilog
+
 synopsys-vcs: ruby-vpi
 	echo to do
+
+vcs: synopsys-vcs
 
 mentor-modelsim: ruby-vpi
 	vlib work
 	vlog vpi_test.v
 	vsim -pli ruby-vpi.so -do 'run -all'
+
+vsim: mentor-modelsim
 
 docs:
 	doxygen
@@ -44,6 +50,7 @@ clean:
 	make -f Makefile clean
 	rm -f Makefile mkmf.log	# for extconf.rb
 
-
 	rm -f ruby-vpi.vpi a.out	# for icarus-verilog
+
+distclean: clean
 	rm -rf html	# for doxygen

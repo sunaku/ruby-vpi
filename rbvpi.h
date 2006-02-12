@@ -26,6 +26,9 @@
 #define RBVPI_H
 
 	#include <ruby.h>
+	#include "relay.hin"
+	#include "vlog.hin"
+
 
 	/**
 		Defines the VPI module, used by Ruby code.

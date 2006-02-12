@@ -22,8 +22,6 @@
 #ifndef RELAY_CIN
 #define RELAY_CIN
 
-	#include "relay.hin"
-
 	static pthread_t ruby_tid;
 	static pthread_mutex_t ruby_lock;
 	static pthread_mutex_t veri_lock;
@@ -49,6 +47,10 @@
 		pthread_mutex_lock(&ruby_lock); /* block */
 		ruby_run();
 		return NULL;
+	}
+
+	static inline void relay_ruby_run() {
+		pthread_create(&ruby_tid, 0, ruby_run_handshake, 0);
 	}
 
 #endif

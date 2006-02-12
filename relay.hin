@@ -43,6 +43,6 @@
 	/**
 		Starts the Ruby interpreter.
 	*/
-	static void* ruby_run_handshake(void* dummy);
+	static inline void relay_ruby_run();
 
 #endif

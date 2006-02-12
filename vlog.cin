@@ -22,8 +22,6 @@
 #ifndef VLOG_CIN
 #define VLOG_CIN
 
-	#include "vlog.hin"
-
 	static int vlog_ruby_callback(PLI_BYTE8* dummy) {
 /*		vpiHandle
 			operandy_handle = vpi_handle_by_name("my_div32.operandy", NULL)
@@ -147,7 +145,7 @@
 
 
 		// start Ruby interpreter
-		pthread_create(&ruby_tid, 0, ruby_run_handshake, 0);
+		relay_ruby_run();
 
 		// the Ruby code will now bind any additional callbacks via the VPI infrastructure, and relay back to the verilog so that the simulation can begin
 
