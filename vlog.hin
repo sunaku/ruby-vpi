@@ -1,0 +1,80 @@
+/*
+	Copyright 2006 Suraj Kurapati
+	Copyright 1999 Kazuhiro HIWADA
+
+	This file is part of Ruby-VPI.
+
+	Ruby-VPI is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
+
+	Ruby-VPI is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA	 02110-1301	 USA
+*/
+/**\file
+	Utility interface between C and Verilog code.
+*/
+
+#ifndef VLOG_HIN
+#define VLOG_HIN
+
+	/* Ensure that PLI_* storage types comply with IEEE Std 1364-2001 Version C (vpi_user.h), regardless of the Verilog simulator used. */
+	#ifndef PLI_TYPES
+		#define PLI_TYPES
+
+		#define PLI_INT32 int
+		#define PLI_UINT32 unsigned int
+		#define PLI_INT16 short
+		#define PLI_UINT16 unsigned short
+		#define PLI_BYTE8 char
+		#define PLI_UBYTE8 unsigned char
+	#endif
+
+	#include <vpi_user.h>
+
+
+
+	/**
+		Enables Verilog code to transfer control to Ruby code.
+	*/
+	static int vlog_ruby_callback(PLI_BYTE8* dummy);
+
+	/**
+		Initializes and starts the Ruby interpreter.
+	*/
+	static int vlog_ruby_init(PLI_BYTE8* dummy);
+
+	/**
+		Transforms all arguments, which have been passed (from Verilog) in a vpiSysTfCall to the given task, into a Ruby Array.
+
+		For example, if Verilog code called a VPI task named "$hello_world" and that task was associated with a C function named hello_world(), then you can get the arguments passed to the "$hello_world" VPI task from within hello_world(), like so:
+				- <tt>VALUE rCallArgs = vlog_task_args(NULL);</tt>
+
+		@param	vTask	The VPI task which has been called by Verilog and whose call-arguments you want to fetch. If this variable is NULL, the call-arguments of the most recent VPI task-call will be fetched.
+	*/
+	static VALUE vlog_task_args(vpiHandle vTask);
+
+	/**
+		Binds a C function to a VPI task, so that Verilog code can invoke the C function by calling the VPI task.
+
+		For example, if we bound a VPI task named "$hello_world" to the C function hello_world(), then the hello_world() function would be invoked whenever Verilog code called the "$hello_world" VPI task.
+
+		@param	name	Name of the VPI task. For example, "$hello_world".
+
+		@param	func	The C function which you want to associate with the given VPI task. For example, hello_world().
+	*/
+	static void vlog_bind_task(PLI_BYTE8* name, int (*func)(PLI_BYTE8*));
+
+	// TODO
+	// static void rbvpi_bind_callback();
+
+	static void vlog_startup();
+
+#endif

@@ -1,0 +1,250 @@
+/*
+	Copyright 2006 Suraj Kurapati
+	Copyright 1999 Kazuhiro HIWADA
+
+	This file is part of Ruby-VPI.
+
+	Ruby-VPI is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
+
+	Ruby-VPI is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA	 02110-1301	 USA
+*/
+
+#ifndef VLOG_CIN
+#define VLOG_CIN
+
+	#include "vlog.hin"
+
+	static int vlog_ruby_callback(PLI_BYTE8* dummy) {
+/*		vpiHandle
+			operandy_handle = vpi_handle_by_name("my_div32.operandy", NULL)
+			, operand1_handle = vpi_handle_by_name("my_div32.operand1", NULL)
+			, operand2_handle = vpi_handle_by_name("my_div32.operand2", NULL)
+			, signed_op_handle = vpi_handle_by_name("my_div32.signed_op", NULL)
+			, status_handle = vpi_handle_by_name("my_div32.status", NULL)
+			, result_handle = vpi_handle_by_name("my_div32.result", NULL)
+			;
+
+		s_vpi_value val;
+
+
+		vpi_printf("@@@rbvpi: object my_div32.operandy is named %s\n", vpi_get_str(vpiName, operandy_handle));
+
+
+		// set the outputs from Verilog as Ruby globals
+		val.format = vpiIntVal;
+
+		vpi_get_value(operandy_handle, &val);
+		g_operandy = INT2NUM(val.value.integer);
+
+		vpi_get_value(operand1_handle, &val);
+		g_operand1 = INT2NUM(val.value.integer);
+
+		vpi_get_value(operand2_handle, &val);
+		g_operand2 = INT2NUM(val.value.integer);
+
+		vpi_get_value(signed_op_handle, &val);
+		g_signed_op = val.value.integer ? Qtrue : Qfalse;
+
+		vpi_get_value(status_handle, &val);
+		g_status = INT2NUM(val.value.integer);
+
+		vpi_get_value(result_handle, &val);
+		g_result = INT2NUM(val.value.integer);
+
+		// NOTE: lesson learned: wires in the module's interface are vpiIntVal objects in VPI!
+		// NOTE: do *NOT* use vpi_get() to get the value of a wire.. it does NOT work. Instead, use vpi_get_value(), with format = vpiIntVal
+
+		vpi_printf("@@@rbvpi: format of operandy's value: %d\n", val.format);
+		vpi_printf("@@@rbvpi: value of operandy's value: %d\n", val.value);
+		vpi_printf("@@@rbvpi: value of operandy's value, as integer: %d\n", val.value.integer);
+		// vpi_printf("@@@rbvpi: vpi_get(vpiVectorVal) of operandy's value: %d\n", vpi_get(vpiVectorVal, operandy_handle));
+		// vpi_printf("@@@rbvpi: vpi_get(vpiIntVal) of operandy's value: %d\n", vpi_get(vpiIntVal, operandy_handle));
+
+
+		// g_operandy = INT2NUM(vpi_get(vpiIntVal, operandy_handle));
+		// g_operand1 = INT2NUM(vpi_get(vpiIntVal, operand1_handle));
+		// g_operand2 = INT2NUM(vpi_get(vpiIntVal, operand2_handle));
+		// g_signed_op = INT2NUM(vpi_get(vpiIntVal, signed_op_handle));
+		// g_status = INT2NUM(vpi_get(vpiIntVal, status_handle));
+		// g_result = INT2NUM(vpi_get(vpiIntVal, result_handle));
+
+
+
+		// invoke Ruby code
+		puts("-> ruby");
+		relay_ruby(); // wait for relay_verilog();
+
+
+		// set the inputs to Verilog from Ruby globals
+		val.format = vpiIntVal;
+
+		val.value.integer = NUM2LONG(g_operandy);
+		// vpi_printf("@@@rbvpi: operandy = %d, $operandy = long %ld : int %d\n", val.value.integer, NUM2LONG(g_operandy), NUM2INT(g_operandy));
+		vpi_put_value(operandy_handle, &val, NULL, vpiNoDelay);
+
+		val.value.integer = NUM2LONG(g_operand1);
+		vpi_put_value(operand1_handle, &val, NULL, vpiNoDelay);
+
+		val.value.integer = NUM2LONG(g_operand2);
+		vpi_put_value(operand2_handle, &val, NULL, vpiNoDelay);
+
+		val.value.integer = RTEST(g_signed_op);
+		vpi_put_value(signed_op_handle, &val, NULL, vpiNoDelay);
+*/
+
+		// invoke Ruby code
+		puts("-> ruby");
+		relay_ruby(); // wait for relay_verilog();
+
+
+		// transfer control to verilog
+		puts("-> verilog");
+		return 0;
+	}
+
+	static int vlog_ruby_init(PLI_BYTE8* dummy) {
+		// initialize control-transfer mechanism between Ruby and Verilog
+		relay_init();
+
+
+		// initialize Ruby interpreter
+		ruby_init();
+		ruby_init_loadpath();
+
+
+		// transform the arguments passed to this function (from Verilog) into command-line arguments for Ruby interpeter
+			// temporarily store the arguments passed to this function in an array
+			VALUE rCallArgs = vlog_task_args(NULL);
+
+			long argc = RARRAY(rCallArgs)->len;
+			VALUE* rArgs = RARRAY(rCallArgs)->ptr;
+			PLI_BYTE8** argv = ALLOC_N(PLI_BYTE8*, argc);
+
+			long i;
+			for(i = 0; i < argc; i++) {
+				argv[i] = (PLI_BYTE8*)StringValueCStr(rArgs[i]);
+			}
+
+				// give the temporary array as command-line options to Ruby interpreter
+				ruby_options(argc, argv);
+
+			free(argv);	// TODO: check if there is any memory leak here
+
+
+		// create VPI infrastructure so that Ruby code can use it
+		Init_vpi();
+		// TODO: add full VPI support
+
+
+		// start Ruby interpreter
+		pthread_create(&ruby_tid, 0, ruby_run_handshake, 0);
+
+		// the Ruby code will now bind any additional callbacks via the VPI infrastructure, and relay back to the verilog so that the simulation can begin
+
+
+		return 0;
+	}
+
+	static VALUE vlog_task_args(vpiHandle vTask) {
+		VALUE rCallArgs = rb_ary_new();
+
+		// transform the arguments passed to this function (from Verilog) into command-line arguments for Ruby interpeter
+		vpiHandle vCall = vpi_handle(vpiSysTfCall, vTask);
+
+		if(vCall) {
+			vpiHandle vCallArgs = vpi_iterate(vpiArgument, vCall);
+
+			if(vCallArgs) {
+				vpiHandle vArg;
+
+				while((vArg = vpi_scan(vCallArgs)) != NULL) {
+					s_vpi_value argVal;
+					argVal.format = vpiObjTypeVal;
+
+					vpi_get_value(vArg, &argVal);
+
+					/**
+						Page 717 in IEEE Std 1364-2001 Version C:
+
+						When the format field is vpiObjTypeVal, the routine shall fill in the value and change the format field based on the object type, as follows:
+							- For an integer, vpiIntVal
+							- For a real, vpiRealVal
+							- For a scalar, either vpiScalar or vpiStrength
+							- For a time variable, vpiTimeVal with vpiSimTime
+							- For a vector, vpiVectorVal
+					*/
+					switch(argVal.format) {
+						/*case vpiIntVal:
+							break;
+
+						case vpiRealVal:
+							break;
+
+						case vpiScalar:
+						case vpiStrength:
+							break;
+
+						case vpiTimeVal:
+							break;
+
+						case vpiVectorVal:
+							break;*/
+
+						case vpiStringVal:
+							vpi_printf("ruby-vpi: in vlog_task_args(), got vpiStringVal: %s\n", argVal.value.str);
+
+							rb_ary_push(rCallArgs, rb_str_new2(argVal.value.str));
+						break;
+					}
+				}
+			}
+		}
+
+		return rCallArgs;
+	}
+
+	static void vlog_bind_task(PLI_BYTE8* name, int (*func)(PLI_BYTE8*)) {
+		s_vpi_systf_data tf;
+
+		tf.type = vpiSysTask;
+		tf.sysfunctype = 0;
+		tf.tfname = name;
+		tf.calltf = func;
+		tf.compiletf = NULL;
+		tf.sizetf = NULL;
+		tf.user_data = NULL;
+
+		vpi_register_systf(&tf);
+	}
+
+	static void vlog_startup() {
+		vlog_bind_task("$ruby_init", vlog_ruby_init);
+		vlog_bind_task("$ruby_callback", vlog_ruby_callback);
+
+
+		/*s_cb_data cb;
+
+		cb.reason = cbValueChange;
+		cb.cb_rtn = ;
+		cb.obj = vpi_handle("my_div32.start", NULL);
+		cb.time = vpiSuppressTime;
+		cb.value = ;
+		cb.index = ;
+		cb.user_data = ;
+
+		vpi_register_cb(&cb);*/
+	}
+
+	void (*vlog_startup_routines[])() = { vlog_startup, 0 };
+
+#endif

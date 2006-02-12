@@ -19,21 +19,36 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA	 02110-1301	 USA
 */
 
-#include <stdlib.h>
-#include <string.h>
-#include <pthread.h>
-#include "rbvpi.h"
+#ifndef RELAY_CIN
+#define RELAY_CIN
 
-#include "relay.cin"
-#include "vlog.cin"
+	#include "relay.hin"
 
+	static pthread_t ruby_tid;
+	static pthread_mutex_t ruby_lock;
+	static pthread_mutex_t veri_lock;
 
-void Init_vpi() {
-	VALUE mVPI = rb_define_module("VPI");
-	rb_define_singleton_method(mVPI, "relay_verilog", rbvpi_relay_verilog, 0);
-}
+	static void relay_init() {
+		pthread_mutex_init(&ruby_lock, NULL);
+		pthread_mutex_lock(&ruby_lock);
+		pthread_mutex_init(&veri_lock, NULL);
+		pthread_mutex_lock(&veri_lock);
+	}
 
-static VALUE rbvpi_relay_verilog(VALUE rSelf) {
-	relay_verilog();
-	return Qnil;
-}
+	static void relay_ruby() {
+		pthread_mutex_unlock(&ruby_lock);
+		pthread_mutex_lock(&veri_lock);
+	}
+
+	static void relay_verilog() {
+		pthread_mutex_unlock(&veri_lock);
+		pthread_mutex_lock(&ruby_lock);
+	}
+
+	static void* ruby_run_handshake(void* dummy) {
+		pthread_mutex_lock(&ruby_lock); /* block */
+		ruby_run();
+		return NULL;
+	}
+
+#endif

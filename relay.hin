@@ -18,22 +18,31 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA	 02110-1301	 USA
 */
+/**\file
+	Relay logic, used to transfer control between Ruby and Verilog.
+*/
 
-#include <stdlib.h>
-#include <string.h>
-#include <pthread.h>
-#include "rbvpi.h"
+#ifndef RELAY_HIN
+#define RELAY_HIN
 
-#include "relay.cin"
-#include "vlog.cin"
+	/**
+		Initialize the relay mechanism, which enables Verilog code to transfer control to Ruby code and vice versa.
+	*/
+	static void relay_init();
 
+	/**
+		Transfers control to Ruby code.
+	*/
+	static void relay_ruby();
 
-void Init_vpi() {
-	VALUE mVPI = rb_define_module("VPI");
-	rb_define_singleton_method(mVPI, "relay_verilog", rbvpi_relay_verilog, 0);
-}
+	/**
+		Transfers control to Verilog code.
+	*/
+	static void relay_verilog();
 
-static VALUE rbvpi_relay_verilog(VALUE rSelf) {
-	relay_verilog();
-	return Qnil;
-}
+	/**
+		Starts the Ruby interpreter.
+	*/
+	static void* ruby_run_handshake(void* dummy);
+
+#endif
