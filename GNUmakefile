@@ -17,7 +17,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
-all: ruby-vpi docs test
+all: ruby-vpi
 
 ruby-vpi:
 	ruby extconf.rb

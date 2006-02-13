@@ -22,7 +22,13 @@
 #ifndef VLOG_CIN
 #define VLOG_CIN
 
-	#include "rbvpi.h"
+	#include <assert.h>
+	#include "common.h"
+	#include "verilog.h"
+	#include "relay.hin"
+	#include "VPI.hin"
+	#include "vlog.hin"
+
 
 	static int vlog_ruby_relay(PLI_BYTE8* dummy) {
 /*		vpiHandle
@@ -143,7 +149,7 @@
 
 
 		// create VPI infrastructure so that Ruby code can use it
-		Init_vpi();
+		Init_VPI();
 		// TODO: add full VPI support
 
 
@@ -176,12 +182,12 @@
 				}
 				else {
 					PLI_BYTE8* name = StringValueCStr(rName);
-					rbvpi_printf("error: task not registered: %s", name); // TODO: make a big fuss about the error
+					common_printf("error: task not registered: %s", name); // TODO: make a big fuss about the error
 				}
 			}
 			else {
 				PLI_BYTE8* name = vpi_get_str(vpiName, vCall);
-				rbvpi_printf("error: not enough arguments for systf: %s", name); // TODO: make a big fuss about the error
+				common_printf("error: not enough arguments for systf: %s", name); // TODO: make a big fuss about the error
 			}
 		}
 
@@ -235,7 +241,7 @@
 							break;*/
 
 						case vpiStringVal:
-							rbvpi_debug("in vlog_task_args(), got vpiStringVal: %s", argVal.value.str);
+							common_debug("got vpiStringVal: %s", argVal.value.str);
 
 							rb_ary_push(rCallArgs, rb_str_new2(argVal.value.str));
 						break;

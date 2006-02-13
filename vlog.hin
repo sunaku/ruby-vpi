@@ -19,26 +19,14 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 /**\file
-	Utility interface between C and Verilog code.
+	Interface between C and Verilog code.
 */
 
 #ifndef VLOG_HIN
 #define VLOG_HIN
 
-	/* Ensure that PLI_* storage types comply with IEEE Std 1364-2001 Version C (vpi_user.h), regardless of the Verilog simulator used. */
-	#ifndef PLI_TYPES
-		#define PLI_TYPES
-
-		#define PLI_INT32 int
-		#define PLI_UINT32 unsigned int
-		#define PLI_INT16 short
-		#define PLI_UINT16 unsigned short
-		#define PLI_BYTE8 char
-		#define PLI_UBYTE8 unsigned char
-	#endif
-
-	#include <vpi_user.h>
-
+	#include <ruby.h>
+	#include "verilog.h"
 
 
 	/**
@@ -55,7 +43,7 @@
 	static int vlog_ruby_init(PLI_BYTE8* dummy);
 
 	/**
-		Task-call processor for all tasks registered using VPI::register_systf from within Ruby.
+		Callback for the $ruby_task VPI task. This is the entry point for all tasks registered using VPI::register_task from within Ruby.
 
 		For example, to invoke a Ruby task named "hello_world" from Verilog, you would write the following in the Verilog code:
 			- <tt>$ruby_task("hello_world");</tt>
@@ -95,7 +83,7 @@
 	/// @todo static void rbvpi_bind_callback();
 
 	/**
-		Binds the default (provided by Ruby-VPI) VPI tasks before the Verilog simulator begins to simulate.
+		Binds the default VPI tasks (provided by Ruby-VPI) before the Verilog simulator begins to simulate.
 	*/
 	static void vlog_startup();
 

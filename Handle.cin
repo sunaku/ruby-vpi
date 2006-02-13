@@ -21,24 +21,41 @@
 #ifndef HANDLE_CIN
 #define HANDLE_CIN
 
-	/**
-		C wrapper for the vpiHandle VPI object.
-	*/
-	typedef struct {
-		vpiHandle obj;
-	} tHandle;
+	#include <ruby.h>
+	#include "common.h"
+	#include "Handle.hin"
 
+
+	#define freeHandle free
+
+	static inline int isHandle(VALUE rHandle) {
+		return TYPE(rHandle) == T_DATA && RDATA(rHandle)->dfree == (RUBY_DATA_FUNC)freeHandle;
+	}
+
+	static vpiHandle Handle_unwrap(VALUE rHandle) {
+		// raise if wrong type
+		if(!isHandle(rHandle)) {
+			rb_raise(rb_eTypeError, "wrong argument type");
+		}
+
+
+		// unwrap the wrapper
+		tHandle *handle;
+		Data_Get_Struct(rHandle, tHandle, handle);
+
+
+		return handle->obj;
+	}
 
 	void Init_Handle() {
 		cHandle = rb_define_class_under(mVPI, "Handle", rb_cObject);
 		rb_define_alloc_func(cHandle, Handle_alloc);
 		rb_define_method(cHandle, "initialize", Handle_init, 0);
-		rb_define_method(cHandle, "initialize_copy", Handle_init_copy, 1);
 	}
 
 	static VALUE Handle_alloc(VALUE rKlass) {
 		tHandle* handle = ALLOC(tHandle);
-		VALUE rHandle = Data_Wrap_Struct(rKlass, NULL, free, handle);
+		VALUE rHandle = Data_Wrap_Struct(rKlass, NULL, freeHandle, handle);
 
 		return rHandle;
 	}
@@ -48,30 +65,6 @@
 		Data_Get_Struct(rSelf, tHandle, handle);
 
 		return rSelf;
-	}
-
-	static VALUE Handle_init_copy(VALUE rCopy, VALUE rOrig) {
-		if(rCopy == rOrig)
-			return rCopy;
-
-
-		// raise if original has wrong type
-		if(TYPE(rOrig) != T_DATA || RDATA(rOrig)->dfree != (RUBY_DATA_FUNC)free) {
-			rb_raise(rb_eTypeError, "wrong argument type");
-		}
-
-
-		// copy all data from original to the copy
-		tHandle* copy;
-		Data_Get_Struct(rCopy, tHandle, copy);
-
-		tHandle* orig;
-		Data_Get_Struct(rOrig, tHandle, orig);
-
-		MEMCPY(copy, orig, tHandle, 1);
-
-
-		return rCopy;
 	}
 
 #endif

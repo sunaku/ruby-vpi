@@ -22,6 +22,10 @@
 #ifndef RELAY_CIN
 #define RELAY_CIN
 
+	#include <pthread.h>
+	#include <ruby.h>
+	#include "relay.hin"
+
 	static pthread_t g_rubyThread;
 	static pthread_mutex_t g_rubyLock;
 	static pthread_mutex_t g_verilogLock;

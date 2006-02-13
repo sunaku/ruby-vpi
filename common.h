@@ -1,6 +1,5 @@
-=begin
+/*
 	Copyright 2006 Suraj Kurapati
-	Copyright 1999 Kazuhiro HIWADA
 
 	This file is part of Ruby-VPI.
 
@@ -17,30 +16,27 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-=end
+*/
+/**\file
+	Things common to our code.
+*/
 
-puts "ruby:check 0, $ruby_init();"
+#ifndef COMMON_H
+#define	COMMON_H
 
-h = VPI::Handle.new
-h2 = h.dup
-puts "Handle.new is #{h.inspect}"
-puts "Handle.new.dup is #{h2.inspect}"
-h == h2	# TODO: add equals checking (unwrapped should be same for them to be equal, no?)
+	#include "verilog.h"
 
-VPI::register_task("hello") { |*a| puts "hello #{ a.join(', ') }" }
-VPI::relay_verilog
 
-puts "ruby:check 1, $ruby_relay();"
-VPI::relay_verilog
+	/**
+		A wrapper for vpi_printf() which marks the given message as being emitted from Ruby-VPI and ends the message with a new line.
 
-puts "ruby:check 2, $ruby_relay();"
-VPI::relay_verilog
+		@param	...	Arguments to vpi_printf()
+	*/
+	#define common_printf(...)	vpi_printf("Ruby-VPI: "); vpi_printf(__VA_ARGS__); vpi_printf("\n");
 
-puts "ruby:check 3, $ruby_relay();"
-VPI::relay_verilog
+	/**
+		A wrapper for common_printf() which marks the given message as being debugging output.
+	*/
+	#define common_debug(...) vpi_printf("(%s:%d) ", __FILE__, __LINE__); common_printf(__VA_ARGS__);
 
-puts "ruby:check 4, $ruby_relay();"
-VPI::relay_verilog
-
-puts "ruby:check 5, $ruby_relay();"
-VPI::relay_verilog
+#endif

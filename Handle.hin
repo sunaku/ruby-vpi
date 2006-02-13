@@ -24,6 +24,16 @@
 #ifndef HANDLE_HIN
 #define HANDLE_HIN
 
+	#include <ruby.h>
+	#include "verilog.h"
+
+	/**
+		C wrapper for the vpiHandle VPI object.
+	*/
+	typedef struct {
+		vpiHandle obj;
+	} tHandle;
+
 	/**
 		Identifier for this class.
 	*/
@@ -46,8 +56,8 @@
 	static VALUE Handle_init(VALUE rSelf);
 
 	/**
-		Copies the state of the original object onto its copy.
+		Returns the VPI object inside the given Ruby object.
 	*/
-	static VALUE Handle_init_copy(VALUE rCopy, VALUE rOrig);
+	static vpiHandle Handle_unwrap(VALUE rHandle);
 
 #endif

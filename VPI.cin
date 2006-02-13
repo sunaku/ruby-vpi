@@ -19,34 +19,29 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#include <stdlib.h>
-#include <string.h>
-#include <pthread.h>
-#include <assert.h>
-#include "rbvpi.h"
-
-#include "relay.cin"
-#include "Handle.cin"
-#include "vlog.cin"
+#include <ruby.h>
+#include "verilog.h"
+#include "Handle.hin"
+#include "VPI.hin"
 
 
-void Init_vpi() {
+void Init_VPI() {
 	// register the VPI module
 	mVPI = rb_define_module("VPI");
-	rb_define_module_function(mVPI, "relay_verilog", rbvpi_relay_verilog, 0);
-	rb_define_module_function(mVPI, "register_task", rbvpi_register_task, 1);
+	rb_define_module_function(mVPI, "relay_verilog", VPI_relay_verilog, 0);
+	rb_define_module_function(mVPI, "register_task", VPI_register_task, 1);
 
 
 	// register classes beneath the VPI module
 	Init_Handle();
 }
 
-static VALUE rbvpi_relay_verilog(VALUE rSelf) {
+static VALUE VPI_relay_verilog(VALUE rSelf) {
 	relay_verilog();
 	return Qnil;
 }
 
-static VALUE rbvpi_register_task(VALUE rSelf, VALUE rTaskName) {
+static VALUE VPI_register_task(VALUE rSelf, VALUE rTaskName) {
 	// create registry if necessary
 	if(g_rTaskRegistry == Qnil) {
 		g_rTaskRegistry = rb_hash_new();
@@ -74,7 +69,7 @@ static VALUE rbvpi_register_task(VALUE rSelf, VALUE rTaskName) {
 	rb_hash_aset(g_rTaskRegistry, rName, rTask);
 	assert(rb_hash_aref(g_rTaskRegistry, rName) == rTask);
 
-	rbvpi_debug("in rbvpi_register_task(), registered task: %s", name);
+	common_debug("registered task: %s", name);
 
 
 	return rSelf;

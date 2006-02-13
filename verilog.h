@@ -1,6 +1,5 @@
-=begin
+/*
 	Copyright 2006 Suraj Kurapati
-	Copyright 1999 Kazuhiro HIWADA
 
 	This file is part of Ruby-VPI.
 
@@ -17,30 +16,26 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-=end
+*/
+/**\file
+	Proxy for all Verilog headers of interest to us.
+*/
 
-puts "ruby:check 0, $ruby_init();"
+#ifndef VERILOG_H
+#define	VERILOG_H
 
-h = VPI::Handle.new
-h2 = h.dup
-puts "Handle.new is #{h.inspect}"
-puts "Handle.new.dup is #{h2.inspect}"
-h == h2	# TODO: add equals checking (unwrapped should be same for them to be equal, no?)
+	/* Ensure that PLI_* storage types comply with IEEE Std 1364-2001 Version C (vpi_user.h), regardless of the Verilog simulator used. */
+	#ifndef PLI_TYPES
+		#define PLI_TYPES
 
-VPI::register_task("hello") { |*a| puts "hello #{ a.join(', ') }" }
-VPI::relay_verilog
+		#define PLI_INT32 int
+		#define PLI_UINT32 unsigned int
+		#define PLI_INT16 short
+		#define PLI_UINT16 unsigned short
+		#define PLI_BYTE8 char
+		#define PLI_UBYTE8 unsigned char
+	#endif
 
-puts "ruby:check 1, $ruby_relay();"
-VPI::relay_verilog
+	#include <vpi_user.h>
 
-puts "ruby:check 2, $ruby_relay();"
-VPI::relay_verilog
-
-puts "ruby:check 3, $ruby_relay();"
-VPI::relay_verilog
-
-puts "ruby:check 4, $ruby_relay();"
-VPI::relay_verilog
-
-puts "ruby:check 5, $ruby_relay();"
-VPI::relay_verilog
+#endif
