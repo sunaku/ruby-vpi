@@ -9,12 +9,13 @@
 
 # Ruby-VPI is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA	 02110-1301	 USA
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
 
 all: ruby-vpi docs test
 
@@ -22,26 +23,23 @@ ruby-vpi:
 	ruby extconf.rb
 	make -f Makefile
 
-test: icarus-verilog synopsys-vcs mentor-modelsim
+test: ivl vcs vsim
 
-icarus-verilog: ruby-vpi
+# Icarus Verilog
+ivl: ruby-vpi
 	cp ruby-vpi.so ruby-vpi.vpi
 	iverilog -y. -mruby-vpi test.v
 	vvp -M. a.out
 
-ivl: icarus-verilog
-
-synopsys-vcs: ruby-vpi
+# Synopsys VCS
+vcs: ruby-vpi
 	echo to do
 
-vcs: synopsys-vcs
-
-mentor-modelsim: ruby-vpi
+# Mentor ModelSim
+vsim: ruby-vpi
 	vlib work
 	vlog test.v
 	vsim -pli ruby-vpi.so -do 'run -all'
-
-vsim: mentor-modelsim
 
 docs:
 	doxygen
