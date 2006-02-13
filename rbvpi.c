@@ -26,13 +26,19 @@
 #include "rbvpi.h"
 
 #include "relay.cin"
+#include "Handle.cin"
 #include "vlog.cin"
 
 
 void Init_vpi() {
-	VALUE mVPI = rb_define_module("VPI");
-	rb_define_singleton_method(mVPI, "relay_verilog", rbvpi_relay_verilog, 0);
-	rb_define_singleton_method(mVPI, "register_task", rbvpi_register_task, 1);
+	// register the VPI module
+	mVPI = rb_define_module("VPI");
+	rb_define_module_function(mVPI, "relay_verilog", rbvpi_relay_verilog, 0);
+	rb_define_module_function(mVPI, "register_task", rbvpi_register_task, 1);
+
+
+	// register classes beneath the VPI module
+	Init_Handle();
 }
 
 static VALUE rbvpi_relay_verilog(VALUE rSelf) {

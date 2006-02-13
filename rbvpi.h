@@ -27,6 +27,7 @@
 
 	#include <ruby.h>
 	#include "relay.hin"
+	#include "Handle.hin"
 	#include "vlog.hin"
 
 
@@ -36,6 +37,11 @@
 	// 	#define rbvpi_debug(...)
 	// #endif
 
+
+	/**
+		Identifier for this module.
+	*/
+	static VALUE mVPI;
 
 	/**
 		A wrapper for vpi_printf() which prefixes the given message "Ruby-VPI" and ends the message with a new line.
@@ -60,7 +66,6 @@
 	*/
 	static VALUE rbvpi_relay_verilog(VALUE rSelf);
 
-
 	/**
 		Registers a VPI task with the given name and associates it with the given Ruby block.
 
@@ -71,7 +76,7 @@
 
 		@arg	A block must also be given. This block will be invoked whenever the given task name is called by Verilog code.
 
-		@throw	An ArgumentError if a block is not given.
+		@throw	ArgumentError if a block is not given.
 	*/
 	static VALUE rbvpi_register_task(VALUE rSelf, VALUE rTaskName);
 

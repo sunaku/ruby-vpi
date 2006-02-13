@@ -1,6 +1,5 @@
-=begin
+/*
 	Copyright 2006 Suraj Kurapati
-	Copyright 1999 Kazuhiro HIWADA
 
 	This file is part of Ruby-VPI.
 
@@ -17,28 +16,38 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-=end
+*/
+/**\file
+	Ruby class for the vpiHandle VPI object.
+*/
 
-p "ruby:check 0, $ruby_init();"
+#ifndef HANDLE_HIN
+#define HANDLE_HIN
 
-h = VPI::Handle.new
-h2 = h.dup
-puts "VPI::Handle is #{h.inspect}"
+	/**
+		Identifier for this class.
+	*/
+	static VALUE cHandle;
 
-VPI::register_task("hello") { |*a| puts "hello #{ a.join(', ') }" }
-VPI::relay_verilog
+	/**
+		Defines and registers this class with Ruby.
+		@note	cHandle is invalid before this function is called.
+	*/
+	void Init_Handle();
 
-p "ruby:check 1, $ruby_relay();"
-VPI::relay_verilog
+	/**
+		Allocates memory for an instance of this class.
+	*/
+	static VALUE Handle_alloc(VALUE rKlass);
 
-p "ruby:check 2, $ruby_relay();"
-VPI::relay_verilog
+	/**
+		Initializes a newly instantiated object of this class.
+	*/
+	static VALUE Handle_init(VALUE rSelf);
 
-p "ruby:check 3, $ruby_relay();"
-VPI::relay_verilog
+	/**
+		Copies the state of the original object onto its copy.
+	*/
+	static VALUE Handle_init_copy(VALUE rCopy, VALUE rOrig);
 
-p "ruby:check 4, $ruby_relay();"
-VPI::relay_verilog
-
-p "ruby:check 5, $ruby_relay();"
-VPI::relay_verilog
+#endif
