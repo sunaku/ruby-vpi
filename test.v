@@ -23,7 +23,7 @@
 module test;
 	reg a;
 	initial begin
-		$ruby_init("-w", "vpi_test.rb");
+		$ruby_init("-w", "test.rb");
 
 		#0 $display($time); $ruby_relay();
 		#10 $display($time); $ruby_relay();
@@ -32,10 +32,11 @@ module test;
 		#10 $display($time); $ruby_relay();
 		#10 $display($time); $ruby_relay();
 
-		#20 $ruby_task("hello");
-		#20 $ruby_task("hello", "world");
-		#20 $ruby_task("hello", 3, "foo", "baz", 5, "moz");
-		#20 $ruby_task("bogus task");
-		#20 $ruby_task();
+		#10 $display($time);
+			$ruby_task("hello");
+			$ruby_task("hello", "world");
+			$ruby_task("hello", 3, "foo", "baz", 5, "moz");
+			$ruby_task("bogus task");
+			$ruby_task();
 	end
 endmodule

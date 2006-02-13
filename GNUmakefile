@@ -26,7 +26,7 @@ test: icarus-verilog synopsys-vcs mentor-modelsim
 
 icarus-verilog: ruby-vpi
 	cp ruby-vpi.so ruby-vpi.vpi
-	iverilog -y. -mruby-vpi vpi_test.v
+	iverilog -y. -mruby-vpi test.v
 	vvp -M. a.out
 
 ivl: icarus-verilog
@@ -38,7 +38,7 @@ vcs: synopsys-vcs
 
 mentor-modelsim: ruby-vpi
 	vlib work
-	vlog vpi_test.v
+	vlog test.v
 	vsim -pli ruby-vpi.so -do 'run -all'
 
 vsim: mentor-modelsim
