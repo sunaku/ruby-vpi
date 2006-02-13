@@ -16,20 +16,35 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+all: deps
 
-all: ruby-vpi
+clean: deps-clean ivl-clean
 
-clean: ruby-vpi-clean
+deps:
+	cd .. && make
 
-distclean: clean
-	cd samp && make clean
-	cd doc && make clean
+deps-clean:
+	cd .. && make clean
 
-ruby-vpi:
-	ruby src/extconf.rb
-	make -f Makefile
 
-ruby-vpi-clean:
-	make -f Makefile clean || true
-	rm -f Makefile mkmf.log
+# Icarus Verilog
+ivl: deps
+	cp ../ruby-vpi.so ruby-vpi.vpi
+	iverilog -y. -mruby-vpi test.v
+	vvp -M. a.out
+
+ivl-clean:
+	rm -f ruby-vpi.vpi a.out
+
+
+# Synopsys VCS
+vcs: deps
+	echo to do
+
+
+# Mentor ModelSim
+vsim: deps
+	vlib work
+	vlog test.v
+	vsim -pli ruby-vpi.so -do 'run -all'
 

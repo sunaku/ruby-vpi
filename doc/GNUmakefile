@@ -17,19 +17,12 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
-all: ruby-vpi
+all: doxygen
 
-clean: ruby-vpi-clean
+clean: doxygen-clean
 
-distclean: clean
-	cd samp && make clean
-	cd doc && make clean
+doxygen:
+	$@
 
-ruby-vpi:
-	ruby src/extconf.rb
-	make -f Makefile
-
-ruby-vpi-clean:
-	make -f Makefile clean || true
-	rm -f Makefile mkmf.log
-
+doxygen-clean:
+	rm -rf html
