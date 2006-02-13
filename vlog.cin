@@ -24,7 +24,7 @@
 
 	#include "rbvpi.h"
 
-	static int vlog_ruby_callback(PLI_BYTE8* dummy) {
+	static int vlog_ruby_relay(PLI_BYTE8* dummy) {
 /*		vpiHandle
 			operandy_handle = vpi_handle_by_name("my_div32.operandy", NULL)
 			, operand1_handle = vpi_handle_by_name("my_div32.operand1", NULL)
@@ -125,6 +125,7 @@
 		// transform the arguments passed to this function (from Verilog) into command-line arguments for Ruby interpeter
 			// temporarily store the arguments passed to this function in an array
 			VALUE rCallArgs = vlog_task_args(NULL);
+			assert(RTEST(rb_check_array_type(rCallArgs)));
 
 			long argc = RARRAY(rCallArgs)->len;
 			VALUE* rArgs = RARRAY(rCallArgs)->ptr;
@@ -155,25 +156,32 @@
 		return 0;
 	}
 
-	static int vlog_proc_systf(PLI_BYTE8* dummy) {
+	static int vlog_task_handler(PLI_BYTE8* dummy) {
 		vpiHandle vCall = vpi_handle(vpiSysTfCall, NULL);
 
 		if(vCall) {
-			// determine the name of the task which was called
-			PLI_BYTE8* name = vpi_get_str(vpiName, vCall);
-			VALUE rName = rb_str_new2(name);
+			VALUE rCallArgs = vlog_task_args(NULL);
+			assert(RTEST(rb_check_array_type(rCallArgs)));
+
+			if(RARRAY(rCallArgs)->len > 0) {
+				// determine the name of the task which was called
+				VALUE rName = rb_ary_shift(rCallArgs);
 
 
-			// invoke the proc associated with the called task
-			VALUE rTask = rb_hash_aref(g_rTaskRegistry, rName);
+				// invoke the proc associated with the called task
+				VALUE rTask = rb_hash_aref(g_rTaskRegistry, rName);
 
-			if(rTask != Qnil) {
-				VALUE rCallArgs = vlog_task_args(NULL);
-
-				rb_funcall(rTask, rb_intern("call"), RARRAY(rCallArgs)->len, RARRAY(rCallArgs)->ptr);
+				if(rTask != Qnil) {
+					rb_funcall2(rTask, rb_intern("call"), RARRAY(rCallArgs)->len, RARRAY(rCallArgs)->ptr);
+				}
+				else {
+					PLI_BYTE8* name = StringValueCStr(rName);
+					rbvpi_printf("error: task not registered: %s", name); // TODO: make a big fuss about the error
+				}
 			}
 			else {
-				vpi_printf("rbvpi: bug? task %s has not been registered from Ruby", name);
+				PLI_BYTE8* name = vpi_get_str(vpiName, vCall);
+				rbvpi_printf("error: not enough arguments for systf: %s", name); // TODO: make a big fuss about the error
 			}
 		}
 
@@ -227,7 +235,7 @@
 							break;*/
 
 						case vpiStringVal:
-							vpi_printf("ruby-vpi: in vlog_task_args(), got vpiStringVal: %s\n", argVal.value.str);
+							rbvpi_debug("in vlog_task_args(), got vpiStringVal: %s", argVal.value.str);
 
 							rb_ary_push(rCallArgs, rb_str_new2(argVal.value.str));
 						break;
@@ -255,7 +263,8 @@
 
 	static void vlog_startup() {
 		vlog_bind_task("$ruby_init", vlog_ruby_init);
-		vlog_bind_task("$ruby_callback", vlog_ruby_callback);
+		vlog_bind_task("$ruby_relay", vlog_ruby_relay);
+		vlog_bind_task("$ruby_task", vlog_task_handler);
 
 
 		/*s_cb_data cb;

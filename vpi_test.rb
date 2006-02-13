@@ -20,21 +20,20 @@
 =end
 
 p "ruby:check 0, $ruby_init();"
-VPI::register_systf("$hello_world") { puts "hello world" }
-
+VPI::register_task("hello") { |*a| puts "hello #{ a.join(', ') }" }
 VPI::relay_verilog
 
-p "ruby:check 1, $ruby_callback();"
+p "ruby:check 1, $ruby_relay();"
 VPI::relay_verilog
 
-p "ruby:check 2, $ruby_callback();"
+p "ruby:check 2, $ruby_relay();"
 VPI::relay_verilog
 
-p "ruby:check 3, $ruby_callback();"
+p "ruby:check 3, $ruby_relay();"
 VPI::relay_verilog
 
-p "ruby:check 4, $ruby_callback();"
+p "ruby:check 4, $ruby_relay();"
 VPI::relay_verilog
 
-p "ruby:check 5, $ruby_callback();"
+p "ruby:check 5, $ruby_relay();"
 VPI::relay_verilog

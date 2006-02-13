@@ -24,13 +24,18 @@ module test;
 	reg a;
 	initial begin
 		$ruby_init("-w", "vpi_test.rb");
-		#0 $display($time); $ruby_callback();
-		#10 $display($time); $ruby_callback();
-		#10 $display($time); $ruby_callback();
-		#10 $display($time); $ruby_callback();
-		#10 $display($time); $ruby_callback();
-		#10 $display($time); $ruby_callback();
 
-		// #20 $hello_world(); // TODO: find solution to this.. Icarus Verilog is unable to find the systf definition for the C function associated with this call at compile time (when Ruby has not even been run, to bind a systf for this call, yet!)
+		#0 $display($time); $ruby_relay();
+		#10 $display($time); $ruby_relay();
+		#10 $display($time); $ruby_relay();
+		#10 $display($time); $ruby_relay();
+		#10 $display($time); $ruby_relay();
+		#10 $display($time); $ruby_relay();
+
+		#20 $ruby_task("hello");
+		#20 $ruby_task("hello", "world");
+		#20 $ruby_task("hello", 3, "foo", "baz", 5, "moz");
+		#20 $ruby_task("bogus task");
+		#20 $ruby_task();
 	end
 endmodule

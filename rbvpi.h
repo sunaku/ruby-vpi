@@ -30,9 +30,23 @@
 	#include "vlog.hin"
 
 
+	// #ifdef DEBUG
+		#define rbvpi_debug(...) vpi_printf("(DEBUG) "); rbvpi_printf(__VA_ARGS__);
+	// #else
+	// 	#define rbvpi_debug(...)
+	// #endif
+
+
+	/**
+		A wrapper for vpi_printf() which prefixes the given message "Ruby-VPI" and ends the message with a new line.
+
+		@param	...	Arguments to vpi_printf()
+	*/
+	#define rbvpi_printf(...)	vpi_printf("Ruby-VPI: "); vpi_printf(__VA_ARGS__); vpi_printf("\n");
+
 	/**
 		A hash of task names and their associated procs.
-		@see	rbvpi_register_systf
+		@see	rbvpi_register_task
 	*/
 	static VALUE g_rTaskRegistry = Qnil;
 
@@ -59,6 +73,6 @@
 
 		@throw	An ArgumentError if a block is not given.
 	*/
-	static VALUE rbvpi_register_systf(VALUE rSelf, VALUE rTaskName);
+	static VALUE rbvpi_register_task(VALUE rSelf, VALUE rTaskName);
 
 #endif

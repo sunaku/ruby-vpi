@@ -47,7 +47,7 @@ docs:
 	doxygen
 
 clean:
-	make -f Makefile clean
+	make -f Makefile clean || true
 	rm -f Makefile mkmf.log	# for extconf.rb
 
 	rm -f ruby-vpi.vpi a.out	# for icarus-verilog
