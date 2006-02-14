@@ -46,5 +46,7 @@ vcs: deps
 vsim: deps
 	vlib work
 	vlog test.v
-	vsim -pli ruby-vpi.so -do 'run -all'
+	vsim -c test -pli ../ruby-vpi.so -do 'run -all'
 
+vsim-clean:
+	rm -rf work

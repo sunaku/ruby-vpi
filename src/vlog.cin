@@ -222,29 +222,86 @@
 							- For a time variable, vpiTimeVal with vpiSimTime
 							- For a vector, vpiVectorVal
 					*/
+					// /* generic value */
+					// typedef struct t_vpi_value
+					// {
+						// PLI_INT32 format; /* vpi[[Bin,Oct,Dec,Hex]Str,Scalar,Int,Real,String,
+																		 // Vector,Strength,Suppress,Time,ObjType]Val */
+						// union
+							// {
+								// PLI_BYTE8                *str;       /* string value */
+								// PLI_INT32                 scalar;    /* vpi[0,1,X,Z] */
+								// PLI_INT32                 integer;   /* integer value */
+								// double                    real;      /* real value */
+								// struct t_vpi_time        *time;      /* time value */
+								// struct t_vpi_vecval      *vector;    /* vector value */
+								// struct t_vpi_strengthval *strength;  /* strength value */
+								// void	               *p_agg_value_handle; /* agg valHandle */
+							// } value;
+					// } s_vpi_value, *p_vpi_value;
 					switch(argVal.format) {
 						// TODO: add support for all kinds of VPI call arguments
-						/*case vpiIntVal:
-							break;
+						case vpiBinStrVal:
+						case vpiOctStrVal:
+						case vpiDecStrVal:
+						case vpiHexStrVal:
+							// TODO: process these "number" strings into maybe an array of numbers.. or wrap them in a container that knows their base (2, 8, 10, 16)
+							common_debug("TODO: got a vpi{Bin,Oct,Dec,Hex}StrVal: %s", argVal.value.str);
+
+						case vpiScalarVal:
+							common_debug("got vpiScalarVal: %d", argVal.value.integer);
+							// TODO: wrap vpiScalarVal
+							rb_ary_push(rCallArgs, INT2NUM(argVal.value.scalar));
+						break;
+
+						case vpiIntVal:
+							common_debug("got vpiIntVal: %d", argVal.value.integer);
+							rb_ary_push(rCallArgs, INT2NUM(argVal.value.integer));
+						break;
 
 						case vpiRealVal:
-							break;
-
-						case vpiScalar:
-						case vpiStrength:
-							break;
-
-						case vpiTimeVal:
-							break;
-
-						case vpiVectorVal:
-							break;*/
+							common_debug("got vpiRealVal: %g", argVal.value.real);
+							rb_ary_push(rCallArgs, rb_dbl2big(argVal.value.real));
+						break;
 
 						case vpiStringVal:
 							common_debug("got vpiStringVal: %s", argVal.value.str);
-
 							rb_ary_push(rCallArgs, rb_str_new2(argVal.value.str));
 						break;
+
+						case vpiVectorVal:
+							common_debug("ignoring vpiVectorVal");
+							// TODO: wrap t_vpi_vecval
+						break;
+
+						case vpiStrengthVal:
+							common_debug("ignoring vpiStrengthVal");
+							// TODO: wrap t_vpi_strengthval
+						break;
+
+						case vpiTimeVal:
+							common_debug("ignoring vpiTimeVal");
+							// TODO: wrap t_vpi_time
+						break;
+
+						case vpiObjTypeVal:
+							common_debug("ignoring vpiObjTypeVal");
+							// TODO: what to do with vpiObjTypeVal???
+						break;
+
+						case vpiSuppressVal:
+							common_debug("ignoring vpiSuppressVal");
+						break;
+
+						#ifdef HAVE_VPIAGGREGATEVAL
+						case vpiAggregateVal:	// system verilog only
+							// TODO: wrap (void*) p_agg_value_handle
+						break;
+						#endif
+
+						default:
+							common_printf("error: got unknown value format: %d", argVal.format);
+							// TODO: make a big fuss about this error
 					}
 				}
 			}

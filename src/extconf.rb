@@ -26,4 +26,7 @@ exit(1) unless
 	have_header('vpi_user.h') &&
 	have_library('pthread', 'pthread_create')
 
+have_macro('vpiAggregateVal', 'vpi_user.h')
+have_macro('vpiIntVal', 'vpi_user.h')
+
 create_makefile('ruby-vpi')

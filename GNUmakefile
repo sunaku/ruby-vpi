@@ -17,6 +17,10 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
+CFLAGS = `ruby -rmkmf -e 'puts $$configure_args["--cflags"]'`	# default Ruby CFLAGS on your system
+CFLAGS += -g -DDEBUG
+
+
 all: ruby-vpi
 
 clean: ruby-vpi-clean
@@ -26,7 +30,7 @@ distclean: clean
 	cd doc && make clean
 
 ruby-vpi:
-	ruby src/extconf.rb
+	ruby src/extconf.rb --with-cflags="$(CFLAGS)"
 	make -f Makefile
 
 ruby-vpi-clean:

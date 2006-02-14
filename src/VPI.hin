@@ -62,4 +62,11 @@
 	*/
 	static VALUE VPI_register_task(VALUE rSelf, VALUE rTaskName);
 
+	/**
+		Returns a Ruby Handle to the VPI object, which has the given name and is located relative to the given pivot Handle.
+
+		@see vpi_handle_by_name
+	*/
+	static VALUE VPI_handle_by_name(VALUE rSelf, VALUE rName, VALUE rPivot);
+
 #endif

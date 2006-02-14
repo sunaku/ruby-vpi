@@ -30,6 +30,7 @@ void Init_VPI() {
 	mVPI = rb_define_module("VPI");
 	rb_define_module_function(mVPI, "relay_verilog", VPI_relay_verilog, 0);
 	rb_define_module_function(mVPI, "register_task", VPI_register_task, 1);
+	// rb_define_module_function(mVPI, "handle_by_name", VPI_handle_by_name, 2); // FIXME: causes "stack level too deep (SystemStackError)"
 
 
 	// register classes beneath the VPI module
@@ -73,4 +74,21 @@ static VALUE VPI_register_task(VALUE rSelf, VALUE rTaskName) {
 
 
 	return rSelf;
+}
+
+static VALUE VPI_handle_by_name(VALUE rSelf, VALUE rName, VALUE rPivot) {
+	// skip if pivot is not a Handle
+	Handle_check(rPivot);
+
+
+	rName = rb_str_to_str(rName);
+	PLI_BYTE8* name = StringValueCStr(rName);
+
+	vpiHandle vPivot = Handle_unwrap(rPivot);
+
+
+	VALUE rHandle = rb_class_new_instance(0, NULL, cHandle);
+	Handle_wrapper(rHandle)->obj = vpi_handle_by_name(name, vPivot);
+
+	return rHandle;
 }

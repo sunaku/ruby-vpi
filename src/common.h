@@ -37,6 +37,10 @@
 	/**
 		A wrapper for common_printf() which marks the given message as being debugging output.
 	*/
-	#define common_debug(...) vpi_printf("(%s:%d) ", __FILE__, __LINE__); common_printf(__VA_ARGS__);
+	#ifdef DEBUG
+		#define common_debug(...) vpi_printf("(%s:%d) ", __FILE__, __LINE__); common_printf(__VA_ARGS__);
+	#else
+		#define common_debug(...)
+	#endif
 
 #endif

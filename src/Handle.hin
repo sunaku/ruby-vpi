@@ -56,8 +56,28 @@
 	static VALUE Handle_init(VALUE rSelf);
 
 	/**
+		Wraps the given vpiHandle inside the given Ruby Handle.
+	*/
+	static void Handle_wrap(VALUE rHandle, vpiHandle vHandle);
+
+	/**
 		Returns the VPI object inside the given Ruby object.
 	*/
 	static vpiHandle Handle_unwrap(VALUE rHandle);
+
+	/**
+		Returns the wrapper inside the given Ruby object.
+	*/
+	static tHandle* Handle_wrapper(VALUE rHandle);
+
+	/**
+		Returns a non-zero value if the given Ruby object is a Handle.
+	*/
+	static inline int Handle_test(VALUE rHandle);
+
+	/**
+		Raises a TypeError ifthe given Ruby object is not a Handle.
+	*/
+	static void Handle_check(VALUE rHandle);
 
 #endif

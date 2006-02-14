@@ -28,15 +28,27 @@
 
 	#define freeHandle free
 
-	static inline int isHandle(VALUE rHandle) {
+	static inline int Handle_test(VALUE rHandle) {
 		return TYPE(rHandle) == T_DATA && RDATA(rHandle)->dfree == (RUBY_DATA_FUNC)freeHandle;
 	}
 
-	static vpiHandle Handle_unwrap(VALUE rHandle) {
-		// raise if wrong type
-		if(!isHandle(rHandle)) {
+	static void Handle_check(VALUE rHandle) {
+		if(!Handle_test(rHandle)) {
 			rb_raise(rb_eTypeError, "wrong argument type");
 		}
+	}
+
+	static void Handle_wrap(VALUE rHandle, vpiHandle vHandle) {
+		Handle_wrapper(rHandle)->obj = vHandle;
+	}
+
+	static vpiHandle Handle_unwrap(VALUE rHandle) {
+		return Handle_wrapper(rHandle)->obj;
+	}
+
+	static tHandle* Handle_wrapper(VALUE rHandle) {
+		// raise if wrong type
+		Handle_check(rHandle);
 
 
 		// unwrap the wrapper
@@ -44,7 +56,7 @@
 		Data_Get_Struct(rHandle, tHandle, handle);
 
 
-		return handle->obj;
+		return handle;
 	}
 
 	void Init_Handle() {
