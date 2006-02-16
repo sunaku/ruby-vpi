@@ -1,13 +1,9 @@
 Welcome to Ruby-VPI
 -------------------
 
-Ruby-VPI lets you write complex Verilog test benches, simulations, and other
-applications easily and wholly in Ruby. The goal is to have complete access
-to the VPI procedural language interface from within Ruby, without having
-to write any C code.
+Ruby-VPI lets you write complex Verilog test benches, simulations, and other applications easily and wholly in Ruby. The goal is to have complete access to the VPI procedural language interface from within Ruby, without having to write any C code.
 
-Visit us at rubyforge for more information:
-<http://rubyforge.org/projects/ruby-vpi/>
+Visit us at rubyforge for more information, giving feedback, and getting help: <http://rubyforge.org/projects/ruby-vpi/>
 
 
 
@@ -16,42 +12,26 @@ License information (see the file named "COPYING" for details)
 
 This file is part of Ruby-VPI.
 
-Ruby-VPI is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+Ruby-VPI is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 
-Ruby-VPI is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+Ruby-VPI is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
 
 
 How does Ruby-VPI work?
 -----------------------
 
-1. A Verilog simulator, such as Icarus Verilog, simulates a Verilog file
-containing behavioral Verilog code. Such a file is often called a "test bench".
+1. A Verilog simulator, such as Icarus Verilog, simulates a Verilog file containing behavioral Verilog code. Such a file is often called a "test bench".
 
-2. The test bench file invokes Ruby-VPI, along with command-line arguments for
-the Ruby interpreter, using the $ruby_init(...args...) system task/function.
+2. The test bench file invokes Ruby-VPI, along with command-line arguments for the Ruby interpreter, using the $ruby_init(...args...) system task/function.
 
-3. Ruby-VPI initializes the Ruby interpreter with the command-line arguments
-that were passed to the $ruby_init() system task/function by the Verilog
-test bench.
+3. Ruby-VPI initializes the Ruby interpreter with the command-line arguments that were passed to the $ruby_init() system task/function by the Verilog test bench.
 
-4. If the command-line arguments contained the location of a Ruby script,
-the Ruby interpreter would run that helper script. The helper script runs
-until it invokes the VPI::relay_verilog method, which transfers control back
-to the Verilog test bench.
+4. If the command-line arguments contained the location of a Ruby script, the Ruby interpreter would run that helper script. The helper script runs until it invokes the VPI::relay_verilog method, which transfers control back to the Verilog test bench.
 
-Normally, the helper script would register tasks with Ruby-VPI via
-VPI::register_task and perform other initializiation before transferring
-control back to the Verilog test bench.
+Normally, the helper script would register tasks with Ruby-VPI via VPI::register_task and perform other initializiation before transferring control back to the Verilog test bench.
 
 5. The Verilog simulator resumes simulating the Verilog test bench.
 
@@ -60,8 +40,7 @@ control back to the Verilog test bench.
 Requirements for compilation
 ----------------------------
 
-1. Standard Verilog header files, including "vpi_user.h". These files are
-normally provided by your Verilog simulator.
+1. Standard Verilog header files, including "vpi_user.h". These files are normally provided by your Verilog simulator.
 
 2. Header files for the "pthreads" library.
 
@@ -72,31 +51,22 @@ Compiling Ruby-VPI
 
 Run the command "make" and see if everything complies smoothly.
 
-  1. If the compilation failed because the "vpi_user.h" file was not found,
-  then determine where the "vpi_user.h" file is located on your system.
+  1. If the compilation failed because the "vpi_user.h" file was not found, then determine where the "vpi_user.h" file is located on your system.
 
-  For example, if you use the Icarus Verilog simulator, then the header
-  file might be located in a place shown in the output of the command
-  "iverilog-vpi --cflags".
+  For example, if you use the Icarus Verilog simulator, then the header file might be located in a place shown in the output of the command "iverilog-vpi --cflags".
 
-  For example, if you use the Synopsys VCS simulator, then the header file
-  might be located in a place defined by the VCS_HOME environment variable.
+  For example, if you use the Synopsys VCS simulator, then the header file might be located in a place defined by the VCS_HOME environment variable.
 
-  For example, if you use the Mentor ModelSim simulator, then the header file
-  might be located in a place defined by the MODELTECH environment variable.
+  For example, if you use the Mentor ModelSim simulator, then the header file might be located in a place defined by the MODELTECH environment variable.
 
-  Once you have determined the correct location (denoted by the word
-  "CORRECT_LOCATION" below), edit the "ruby-vpi" section of the file named
-  "GNUmakefile" like so:
+  Once you have determined the correct location (denoted by the word "CORRECT_LOCATION" below), edit the "ruby-vpi" section of the file named "GNUmakefile" like so:
 
     ruby extconf.rb --with-verilog-include=CORRECT_LOCATION
 
-  Now, try the compilation again. If it fails yet again, seek assistance
-  from your local C expert or ask for help on the Ruby-VPI website.
+  Now, try the compilation again. If it fails yet again, seek assistance from your local C expert or ask for help on the Ruby-VPI website.
 
 
-  2. If the compilation failed because of missing libraries, then install
-  those libraries and try the compilation again.
+  2. If the compilation failed because of missing libraries, then install those libraries and try the compilation again.
 
 
 
@@ -112,8 +82,7 @@ Installing Ruby-VPI
 Using Ruby-VPI with Icarus Verilog
 ----------------------------------
 
-1. Run the command "make ivl" to compile and run the sample test bench with
-Icarus Verilog.
+1. Run the command "make ivl" to compile and run the sample test bench with Icarus Verilog.
 
 2. See the "ivl" section of the file named "GNUmakefile" for details.
 
@@ -122,8 +91,7 @@ Icarus Verilog.
 Using Ruby-VPI with Synopsys VCS
 --------------------------------
 
-1. Run the command "make vcs" to compile and run the sample test bench with
-Synopsys VCS.
+1. Run the command "make vcs" to compile and run the sample test bench with Synopsys VCS.
 
 2. See the "vcs" section of the file named "GNUmakefile" for details.
 
@@ -132,8 +100,7 @@ Synopsys VCS.
 Using Ruby-VPI with Mentor ModelSim
 -----------------------------------
 
-1. Run the command "make vsim" to compile and run the sample test bench with
-Mentor ModelSim.
+1. Run the command "make vsim" to compile and run the sample test bench with Mentor ModelSim.
 
 2. See the "vsim" section of the file named "GNUmakefile" for details.
 
