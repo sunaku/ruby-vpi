@@ -1,0 +1,119 @@
+Object Naming Convention
+------------------------
+
+RFooBar
+	Ruby class or module named "FooBar".
+
+RFooBar_rb_do_stuff
+	A Ruby function named "do_stuff" that is callable from Ruby like this: "FooBar.new.do_stuff" or "FooBar::do_stuff" or ...
+
+RFooBar_doStuff
+	A service function named "doStuff" which serves C other code only.
+
+RFooBar__someStuff
+	Something named "someStuff", which is neither a Ruby function nor service function, that belongs to "FooBar". Think of the two underscores "__" as being two colons "::" in Ruby.
+
+
+Variable Naming Convention
+--------------------------
+
+fooBar
+	An ordinary variable named "fooBar".
+
+a?p?(r|v)?FooBar
+	A variable named "FooBar" which has additional properties denoted by the optional prefixes.
+
+aFooBar
+	A function argument named named "FooBar". For example: "int divide(int aDividend, aDivisor);".
+
+pFooBar
+	A pointer named "FooBar".
+
+rFooBar
+	A Ruby object (instance of a Ruby class) named "FooBar".
+
+vFooBar
+	A Verilog object named "FooBar".
+
+
+Code Formatting Convention
+--------------------------
+
+Indenting
+	Use a single tab character to indent by one level. If you feel that tab characters occupy too much space or indent too deeply, then configure your text editor to *visually* display tab characters using less space (vim: set ts=2).
+
+	level 1
+		level 2
+			level 3
+				... and so on ...
+		level 2
+	level 1
+
+Line breaking
+	Do not break a long line into multiple lines. Let it run and be as long as it needs to and configure your text editor to *visually* wrap long lines and indent them so they are easy to read. If you cannot do this, consider another text editor such as jEdit <http://jedit.org> (see "soft" line wrapping). For example:
+
+	/**
+		Foo is a fantastic bar which can be seen from atop the majestic peaks of baz. However, let us not forget the beauty of sparkling rubies beneath its rugged, earthy exterior. Yes, this line is very long, and that is the point.
+	*/
+
+Vertical spacing
+	Use 1 line comment before the start of a group of related statements if necessary.
+
+	Use 1 line within a group of related statements.
+
+	Use 2 lines to mark the boundary between groups of related statements.
+
+	Use 3 lines to mark the boundary of a completely disjoint block of code, which has its own groups of related statements.
+
+Braces alignment
+	Put an open brace on same line as the start of the block statement. For example:
+
+	if(foo) {
+		doFoo();
+
+		if(bar) {
+			doBar();
+		}
+	}
+	else {
+		doRuby();
+	}
+
+Delimiting operators
+	When there are many operators in a single statement, indent the first element beneath the block-starter and put the operator at the start of subsequent elements. For example:
+
+	static unsigned long int
+		foo
+		, bar
+		, baz
+	;
+
+	doStuff(
+		foo
+		, bar
+		, baz
+	);
+
+	if(
+		foo
+		&& bar
+		|| baz
+	) {
+		doStuff();
+	}
+
+
+Code Documenting Convention
+---------------------------
+
+Doxygen
+	Use Javadoc-style (use an at symbol "@" instead of backslash "\" to start a documenting command) commenting for Doxygen to document source code. All public functions, variables, etc. must have such comments. For example:
+
+	/**
+		Writes out a foo and returns a bar.
+
+		@param	aFoo	The foo to write out.
+		@return	A bar.
+	*/
+	bar doStuff(foo aFoo);
+

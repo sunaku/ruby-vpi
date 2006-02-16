@@ -26,6 +26,6 @@
 #include "vlog.cin"
 #include "relay.cin"
 
-#include "VPI.cin"
-#include "Handle.cin"
+#include "RVPI.cin"
+#include "RHandle.cin"
 

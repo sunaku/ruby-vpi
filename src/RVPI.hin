@@ -30,23 +30,23 @@
 	/**
 		Identifier for this module.
 	*/
-	static VALUE mVPI;
+	static VALUE RVPI__rModuleDef;
 
 	/**
 		A hash of task names and their associated procs.
-		@see	VPI_register_task
+		@see	RVPI_rb_register_task
 	*/
-	static VALUE g_rTaskRegistry = Qnil;
+	static VALUE RVPI__rTaskRegistry = Qnil;
 
 	/**
 		Creates and registers the VPI module with Ruby, so that Ruby code can use it.
 	*/
-	void Init_VPI();
+	void Init_RVPI();
 
 	/**
 		Transfers control from Ruby code to Verilog code.
 	*/
-	static VALUE VPI_relay_verilog(VALUE rSelf);
+	static VALUE RVPI_rb_relay_verilog(VALUE arSelf);
 
 	/**
 		Registers a VPI task with the given name and associates it with the given Ruby block.
@@ -54,19 +54,19 @@
 		For example, to register a VPI task named "$hello_world" to a Ruby block which prints the text "hello world", you can do:
 			<tt>VPI::register_systf("$hello_world") { puts "hello world" }</tt>
 
-		@param	rTaskName	The name of the VPI task you wish to register. For example, "$hello_world".
+		@param	arTaskName	The name of the VPI task you wish to register. For example, "$hello_world".
 
 		@arg	A block must also be given. This block will be invoked whenever the given task name is called by Verilog code.
 
 		@throw	ArgumentError if a block is not given.
 	*/
-	static VALUE VPI_register_task(VALUE rSelf, VALUE rTaskName);
+	static VALUE RVPI_rb_register_task(VALUE arSelf, VALUE arTaskName);
 
 	/**
 		Returns a Ruby Handle to the VPI object, which has the given name and is located relative to the given pivot Handle.
 
 		@see vpi_handle_by_name
 	*/
-	static VALUE VPI_handle_by_name(VALUE rSelf, VALUE rName, VALUE rPivot);
+	static VALUE RVPI_rb_handle_by_name(VALUE arSelf, VALUE arName, VALUE arPivot);
 
 #endif

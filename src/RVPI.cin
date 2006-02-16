@@ -21,35 +21,35 @@
 
 #include <ruby.h>
 #include "verilog.h"
-#include "Handle.hin"
-#include "VPI.hin"
+#include "RHandle.hin"
+#include "RVPI.hin"
 
 
-void Init_VPI() {
+void Init_RVPI() {
 	// register the VPI module
-	mVPI = rb_define_module("VPI");
-	rb_define_module_function(mVPI, "relay_verilog", VPI_relay_verilog, 0);
-	rb_define_module_function(mVPI, "register_task", VPI_register_task, 1);
-	// rb_define_module_function(mVPI, "handle_by_name", VPI_handle_by_name, 2); // FIXME: causes "stack level too deep (SystemStackError)"
+	RVPI__rModuleDef = rb_define_module("VPI");
+	rb_define_module_function(RVPI__rModuleDef, "relay_verilog", RVPI_rb_relay_verilog, 0);
+	rb_define_module_function(RVPI__rModuleDef, "register_task", RVPI_rb_register_task, 1);
+	// rb_define_module_function(RVPI__rModuleDef, "handle_by_name", RVPI_rb_handle_by_name, 2); // FIXME: causes "stack level too deep (SystemStackError)"
 
 
 	// register classes beneath the VPI module
-	Init_Handle();
+	Init_RHandle();
 }
 
-static VALUE VPI_relay_verilog(VALUE rSelf) {
+static VALUE RVPI_rb_relay_verilog(VALUE arSelf) {
 	relay_verilog();
-	return Qnil;
+	return arSelf;
 }
 
-static VALUE VPI_register_task(VALUE rSelf, VALUE rTaskName) {
+static VALUE RVPI_rb_register_task(VALUE arSelf, VALUE arTaskName) {
 	// create registry if necessary
-	if(g_rTaskRegistry == Qnil) {
-		g_rTaskRegistry = rb_hash_new();
+	if(RVPI__rTaskRegistry == Qnil) {
+		RVPI__rTaskRegistry = rb_hash_new();
 	}
 
 
-	VALUE rName = rb_str_to_str(rTaskName);
+	VALUE rName = rb_str_to_str(arTaskName);
 	PLI_BYTE8* name = (PLI_BYTE8*)StringValueCStr(rName);
 
 
@@ -60,35 +60,36 @@ static VALUE VPI_register_task(VALUE rSelf, VALUE rTaskName) {
 
 
 	// raise if task name already registered
-	if(rb_hash_aref(g_rTaskRegistry, rName) != Qnil) {
+	if(rb_hash_aref(RVPI__rTaskRegistry, rName) != Qnil) {
 		rb_raise(rb_eArgError, "task has already been registered: %s", name);
 	}
 
 
 	// register the task
 	VALUE rTask = rb_block_proc();	// convert the given block into a proc, which we can later call
-	rb_hash_aset(g_rTaskRegistry, rName, rTask);
-	assert(rb_hash_aref(g_rTaskRegistry, rName) == rTask);
+	rb_hash_aset(RVPI__rTaskRegistry, rName, rTask);
+	assert(rb_hash_aref(RVPI__rTaskRegistry, rName) == rTask);
 
 	common_debug("registered task: %s", name);
 
 
-	return rSelf;
+	return arSelf;
 }
 
-static VALUE VPI_handle_by_name(VALUE rSelf, VALUE rName, VALUE rPivot) {
-	// skip if pivot is not a Handle
-	Handle_check(rPivot);
+static VALUE RVPI_rb_handle_by_name(VALUE arSelf, VALUE arName, VALUE arParent) {
+	// raise if parent is not a Handle
+	RHandle_ensureType(arParent);
 
 
-	rName = rb_str_to_str(rName);
+	// prepare args for vpi_handle_by_name
+	VALUE rName = rb_str_to_str(arName);
 	PLI_BYTE8* name = StringValueCStr(rName);
 
-	vpiHandle vPivot = Handle_unwrap(rPivot);
+	vpiHandle vParent = *RHandle_get(arParent);
 
 
-	VALUE rHandle = rb_class_new_instance(0, NULL, cHandle);
-	Handle_wrapper(rHandle)->obj = vpi_handle_by_name(name, vPivot);
+	VALUE rHandle = rb_class_new_instance(0, NULL, RHandle__rClassDef);
+	RHandle_set(rHandle, vpi_handle_by_name(name, vParent));
 
 	return rHandle;
 }

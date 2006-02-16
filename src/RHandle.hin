@@ -27,57 +27,46 @@
 	#include <ruby.h>
 	#include "verilog.h"
 
-	/**
-		C wrapper for the vpiHandle VPI object.
-	*/
-	typedef struct {
-		vpiHandle obj;
-	} tHandle;
 
 	/**
-		Identifier for this class.
+		Ruby definition for this class.
 	*/
-	static VALUE cHandle;
+	static VALUE RHandle__rClassDef;
 
 	/**
 		Defines and registers this class with Ruby.
-		@note	cHandle is invalid before this function is called.
+		@note	RHandle__rClassDef is invalid before this function is called.
 	*/
-	void Init_Handle();
+	void Init_RHandle();
 
 	/**
 		Allocates memory for an instance of this class.
 	*/
-	static VALUE Handle_alloc(VALUE rKlass);
+	static VALUE RHandle_rb_alloc(VALUE arKlass);
 
 	/**
 		Initializes a newly instantiated object of this class.
 	*/
-	static VALUE Handle_init(VALUE rSelf);
+	static VALUE RHandle_rb_init(VALUE arSelf);
 
 	/**
-		Wraps the given vpiHandle inside the given Ruby Handle.
+		Returns a pointer to this class' VPI object.
 	*/
-	static void Handle_wrap(VALUE rHandle, vpiHandle vHandle);
+	static vpiHandle* RHandle_get(VALUE arHandle);
 
 	/**
-		Returns the VPI object inside the given Ruby object.
+		Sets this class' VPI object.
 	*/
-	static vpiHandle Handle_unwrap(VALUE rHandle);
-
-	/**
-		Returns the wrapper inside the given Ruby object.
-	*/
-	static tHandle* Handle_wrapper(VALUE rHandle);
+	static inline void RHandle_set(VALUE arHandle, vpiHandle avHandle);
 
 	/**
 		Returns a non-zero value if the given Ruby object is a Handle.
 	*/
-	static inline int Handle_test(VALUE rHandle);
+	static inline int RHandle_testType(VALUE arHandle);
 
 	/**
 		Raises a TypeError ifthe given Ruby object is not a Handle.
 	*/
-	static void Handle_check(VALUE rHandle);
+	static void RHandle_ensureType(VALUE arHandle);
 
 #endif

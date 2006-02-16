@@ -18,7 +18,7 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 /**\file
-	Things common to our code.
+	Things common to all Ruby-VPI code.
 */
 
 #ifndef COMMON_H
@@ -42,5 +42,10 @@
 	#else
 		#define common_debug(...)
 	#endif
+
+	/**
+		A boolean variable with two possible values: true and false. Pass aroung this value instead of zero and non-zero integers.
+	*/
+	typedef enum { false = 0, true = 1 } bool;
 
 #endif

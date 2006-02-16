@@ -26,7 +26,7 @@
 	#include "common.h"
 	#include "verilog.h"
 	#include "relay.hin"
-	#include "VPI.hin"
+	#include "RVPI.hin"
 	#include "vlog.hin"
 
 
@@ -149,7 +149,7 @@
 
 
 		// create VPI infrastructure so that Ruby code can use it
-		Init_VPI();
+		Init_RVPI();
 		// TODO: add full VPI support
 
 
@@ -162,7 +162,7 @@
 		return 0;
 	}
 
-	static int vlog_task_handler(PLI_BYTE8* dummy) {
+	static int vlog_task_handler(PLI_BYTE8* aDummy) {
 		vpiHandle vCall = vpi_handle(vpiSysTfCall, NULL);
 
 		if(vCall) {
@@ -175,7 +175,7 @@
 
 
 				// invoke the proc associated with the called task
-				VALUE rTask = rb_hash_aref(g_rTaskRegistry, rName);
+				VALUE rTask = rb_hash_aref(RVPI__rTaskRegistry, rName);
 
 				if(rTask != Qnil) {
 					rb_funcall2(rTask, rb_intern("call"), RARRAY(rCallArgs)->len, RARRAY(rCallArgs)->ptr);
