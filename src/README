@@ -1,46 +1,49 @@
-Object Naming Convention
-------------------------
+Class|Module Naming Convention
+------------------------------
+
+FooBar
+	C module named "FooBar".
 
 RFooBar
 	Ruby class or module named "FooBar".
 
 RFooBar_rb_do_stuff
-	A Ruby function named "do_stuff" that is callable from Ruby like this: "FooBar.new.do_stuff" or "FooBar::do_stuff" or ...
+	Ruby function named "do_stuff" which is callable from Ruby like this: "FooBar.new.do_stuff" or "FooBar::do_stuff" or ...
 
 RFooBar_doStuff
-	A service function named "doStuff" which serves C other code only.
+	Service function named "doStuff" which is callable from C only.
 
 RFooBar__someStuff
-	Something named "someStuff", which is neither a Ruby function nor service function, that belongs to "FooBar". Think of the two underscores "__" as being two colons "::" in Ruby.
+	Something named "someStuff", which is neither a Ruby function nor a service function, that belongs to "FooBar". Think of the two underscores "__" as being two colons "::" in Ruby.
 
 
 Variable Naming Convention
 --------------------------
 
 fooBar
-	An ordinary variable named "fooBar".
+	Ordinary variable named "fooBar".
 
 a?p?(r|v)?FooBar
-	A variable named "FooBar" which has additional properties denoted by the optional prefixes.
+	Variable named "FooBar" which has additional properties denoted by the optional prefixes.
 
 aFooBar
-	A function argument named named "FooBar". For example: "int divide(int aDividend, aDivisor);".
+	Function argument named named "FooBar". For example: "int divide(int aDividend, aDivisor);".
 
 pFooBar
-	A pointer named "FooBar".
+	Pointer named "FooBar".
 
 rFooBar
-	A Ruby object (instance of a Ruby class) named "FooBar".
+	Ruby object (instance of a Ruby class) named "FooBar".
 
 vFooBar
-	A Verilog object named "FooBar".
+	Verilog object named "FooBar".
 
 
 Code Formatting Convention
 --------------------------
 
 Indenting
-	Use a single tab character to indent by one level. If you feel that tab characters occupy too much space or indent too deeply, then configure your text editor to *visually* display tab characters using less space (vim: set ts=2).
+	Use a single tab character to indent by one level. If you feel that tab characters occupy too much space or indent too deeply, then configure your text editor to *visually* display tab characters using less space. This is similar to the output produced by the filter "expand -t 2" in UNIX.
 
 	level 1
 		level 2
@@ -50,7 +53,9 @@ Indenting
 	level 1
 
 Line breaking
-	Do not break a long line into multiple lines. Let it run and be as long as it needs to and configure your text editor to *visually* wrap long lines and indent them so they are easy to read. If you cannot do this, consider another text editor such as jEdit <http://jedit.org> (see "soft" line wrapping). For example:
+	Do not break a long line into multiple lines. Let it be as long as it wants and configure your text editor to *visually* wrap long lines and indent them so they are easy to read. This is similar to the output produced by the filter "fmt -cs" in UNIX.
+
+	For example:
 
 	/**
 		Foo is a fantastic bar which can be seen from atop the majestic peaks of baz. However, let us not forget the beauty of sparkling rubies beneath its rugged, earthy exterior. Yes, this line is very long, and that is the point.
@@ -107,7 +112,7 @@ Code Documenting Convention
 ---------------------------
 
 Doxygen
-	Use Javadoc-style (use an at symbol "@" instead of backslash "\" to start a documenting command) commenting for Doxygen to document source code. All public functions, variables, etc. must have such comments. For example:
+	Use Javadoc style (at "@" to start a documenting command) instead of LaTeX style (backslash "\" to start a documenting command) whenever possible. All public functions, variables, etc. must have such comments. For example:
 
 	/**
 		Writes out a foo and returns a bar.
