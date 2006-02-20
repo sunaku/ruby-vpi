@@ -18,35 +18,35 @@
 	#include <ruby.h>
 	#include "relay.hin"
 
-	static pthread_t g_rubyThread;
-	static pthread_mutex_t g_rubyLock;
-	static pthread_mutex_t g_verilogLock;
+	static pthread_t relay__rubyThread;
+	static pthread_mutex_t relay__rubyLock;
+	static pthread_mutex_t relay__verilogLock;
 
 	static void relay_init() {
-		pthread_mutex_init(&g_rubyLock, NULL);
-		pthread_mutex_lock(&g_rubyLock);
-		pthread_mutex_init(&g_verilogLock, NULL);
-		pthread_mutex_lock(&g_verilogLock);
+		pthread_mutex_init(&relay__rubyLock, NULL);
+		pthread_mutex_lock(&relay__rubyLock);
+		pthread_mutex_init(&relay__verilogLock, NULL);
+		pthread_mutex_lock(&relay__verilogLock);
 	}
 
 	static void relay_ruby() {
-		pthread_mutex_unlock(&g_rubyLock);
-		pthread_mutex_lock(&g_verilogLock);
+		pthread_mutex_unlock(&relay__rubyLock);
+		pthread_mutex_lock(&relay__verilogLock);
 	}
 
 	static void relay_verilog() {
-		pthread_mutex_unlock(&g_verilogLock);
-		pthread_mutex_lock(&g_rubyLock);
+		pthread_mutex_unlock(&relay__verilogLock);
+		pthread_mutex_lock(&relay__rubyLock);
 	}
 
 	static void* ruby_run_handshake(void* dummy) {
-		pthread_mutex_lock(&g_rubyLock); /* block */
+		pthread_mutex_lock(&relay__rubyLock); /* block */
 		ruby_run();
 		return NULL;
 	}
 
 	static inline void relay_ruby_run() {
-		pthread_create(&g_rubyThread, 0, ruby_run_handshake, 0);
+		pthread_create(&relay__rubyThread, 0, ruby_run_handshake, 0);
 	}
 
 #endif
