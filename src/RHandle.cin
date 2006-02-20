@@ -37,16 +37,14 @@
 	}
 
 	static VALUE RHandle_rb_equal2(VALUE arSelf, VALUE arOther) {
-		vpiHandle* pSelf = RHandle_get(arSelf);
-		vpiHandle* pOther = RHandle_get(arSelf);
+		vpiHandle* pvSelf = RHandle_get(arSelf);
+		vpiHandle* pvOther = RHandle_get(arSelf);
 
-		return (*pSelf == *pOther) ? Qtrue : Qfalse;
+		return (*pvSelf == *pvOther) ? Qtrue : Qfalse;
 	}
 
 	static vpiHandle* RHandle_get(VALUE arHandle) {
-		// raise if wrong type
 		RHandle_ensureType(arHandle);
-
 
 		vpiHandle* pvHandle;
 		Data_Get_Struct(arHandle, vpiHandle, pvHandle);
@@ -59,7 +57,10 @@
 	}
 
 	static inline int RHandle_testType(VALUE arHandle) {
-		return TYPE(arHandle) == T_DATA && RDATA(arHandle)->dfree == (RUBY_DATA_FUNC)free;
+		return (
+			TYPE(arHandle) == T_DATA
+			&& RDATA(arHandle)->dfree == (RUBY_DATA_FUNC)free
+		);
 	}
 
 	static void RHandle_ensureType(VALUE arHandle) {
