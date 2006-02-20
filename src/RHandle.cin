@@ -23,6 +23,7 @@
 		RHandle__rClassDef = rb_define_class_under(RVPI__rModuleDef, "Handle", rb_cObject);
 		rb_define_alloc_func(RHandle__rClassDef, RHandle_rb_alloc);
 		rb_define_method(RHandle__rClassDef, "initialize", RHandle_rb_init, 0);
+		rb_define_method(RHandle__rClassDef, "==", RHandle_rb_equal2, 1);
 	}
 
 	static VALUE RHandle_rb_alloc(VALUE arKlass) {
@@ -33,6 +34,13 @@
 	static VALUE RHandle_rb_init(VALUE arSelf) {
 		RHandle_set(arSelf, NULL);
 		return arSelf;
+	}
+
+	static VALUE RHandle_rb_equal2(VALUE arSelf, VALUE arOther) {
+		vpiHandle* pSelf = RHandle_get(arSelf);
+		vpiHandle* pOther = RHandle_get(arSelf);
+
+		return (*pSelf == *pOther) ? Qtrue : Qfalse;
 	}
 
 	static vpiHandle* RHandle_get(VALUE arHandle) {
@@ -56,7 +64,7 @@
 
 	static void RHandle_ensureType(VALUE arHandle) {
 		if(!RHandle_testType(arHandle)) {
-			rb_raise(rb_eTypeError, "wrong argument type");
+			rb_raise(rb_eTypeError, "object is not a Handle");
 		}
 	}
 

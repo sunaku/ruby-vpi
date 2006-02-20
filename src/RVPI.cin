@@ -69,17 +69,21 @@ static VALUE RVPI_rb_register_task(VALUE arSelf, VALUE arTaskName) {
 }
 
 static VALUE RVPI_rb_handle_by_name(VALUE arSelf, VALUE arName, VALUE arParent) {
-	// raise if parent is not a Handle
-	RHandle_ensureType(arParent);
+	// raise unless parent is a Handle
+	vpiHandle vParent = NULL;
+
+	if(arParent != Qnil) {
+		RHandle_ensureType(arParent);
+		vParent = *RHandle_get(arParent);
+	}
 
 
 	// prepare args for vpi_handle_by_name
 	VALUE rName = rb_str_to_str(arName);
 	PLI_BYTE8* name = StringValueCStr(rName);
 
-	vpiHandle vParent = *RHandle_get(arParent);
 
-
+	// return result of vpi_handle_by_name
 	VALUE rHandle = rb_class_new_instance(0, NULL, RHandle__rClassDef);
 	RHandle_set(rHandle, vpi_handle_by_name(name, vParent));
 

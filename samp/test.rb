@@ -19,25 +19,43 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 =end
 
+
+# test VPI::handle
+begin
+	h1 = VPI::Handle.new
+	h2 = h1.dup
+	raise unless h1 == h2
+end
+
+
+# test VPI::handle_by_name
+begin
+	VPI::handle_by_name("", 0)
+rescue TypeError
+else
+	raise "parent must be a Handle"
+end
+
+
+
 puts "ruby:check 0, $ruby_init();"
-
-h = VPI::Handle.new
-h2 = h.dup
-puts "Handle.new is #{h.inspect}"
-puts "Handle.new.dup is #{h2.inspect}"
-h == h2	# TODO: add equals checking (unwrapped should be same for them to be equal, no?)
-
-VPI::register_task("hello") { |*a| puts "hello #{ a.join(', ') }" }
+	VPI::register_task("hello") { |*a| puts "hello #{ a.join(', ') }" }
 VPI::relay_verilog
+
 
 puts "ruby:check 1, $ruby_relay();"
+	a = VPI::handle_by_name("test.a", nil)
+	p a
 VPI::relay_verilog
+
 
 puts "ruby:check 2, $ruby_relay();"
 VPI::relay_verilog
 
+
 puts "ruby:check 3, $ruby_relay();"
 VPI::relay_verilog
+
 
 puts "ruby:check 4, $ruby_relay();"
 VPI::relay_verilog

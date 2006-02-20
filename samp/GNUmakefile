@@ -31,7 +31,7 @@ deps-clean:
 ivl: deps
 	cp ../ruby-vpi.so ruby-vpi.vpi
 	iverilog -y. -mruby-vpi test.v
-	vvp -M. a.out
+	vvp -v -M. a.out
 
 ivl-clean:
 	rm -f ruby-vpi.vpi a.out

@@ -42,6 +42,11 @@
 	static VALUE RHandle_rb_init(VALUE arSelf);
 
 	/**
+		Double equals (==) test for equality.
+	*/
+	static VALUE RHandle_rb_equal2(VALUE arSelf, VALUE arOther);
+
+	/**
 		Returns a pointer to this class' VPI object.
 	*/
 	static vpiHandle* RHandle_get(VALUE arHandle);
