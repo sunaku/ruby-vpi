@@ -22,7 +22,7 @@ void Init_RVPI() {
 	RVPI__rModuleDef = rb_define_module("VPI");
 	rb_define_module_function(RVPI__rModuleDef, "relay_verilog", RVPI_rb_relay_verilog, 0);
 	rb_define_module_function(RVPI__rModuleDef, "register_task", RVPI_rb_register_task, 1);
-	// rb_define_module_function(RVPI__rModuleDef, "handle_by_name", RVPI_rb_handle_by_name, 2); // FIXME: causes "stack level too deep (SystemStackError)"
+	rb_define_module_function(RVPI__rModuleDef, "handle_by_name", RVPI_rb_handle_by_name, 2);
 
 
 	// register classes beneath the VPI module
