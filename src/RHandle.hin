@@ -47,6 +47,20 @@
 	static VALUE RHandle_rb_equal2(VALUE arSelf, VALUE arOther);
 
 	/**
+		Returns the value associated with this Handle.
+		@note	Only vpiIntVal is implemented as the moment.
+		@see	vpi_get_value
+	*/
+	static VALUE RHandle_rb_get_value(VALUE arSelf);
+
+	/**
+		Sets the value associated with this Handle.
+		@note	Only vpiIntVal is implemented as the moment.
+		@see	vpi_put_value
+	*/
+	static VALUE RHandle_rb_put_value(VALUE arSelf, VALUE arValue);
+
+	/**
 		Returns a pointer to this class' VPI object.
 	*/
 	static vpiHandle* RHandle_get(VALUE arHandle);

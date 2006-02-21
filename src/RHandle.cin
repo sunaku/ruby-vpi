@@ -24,6 +24,8 @@
 		rb_define_alloc_func(RHandle__rClassDef, RHandle_rb_alloc);
 		rb_define_method(RHandle__rClassDef, "initialize", RHandle_rb_init, 0);
 		rb_define_method(RHandle__rClassDef, "==", RHandle_rb_equal2, 1);
+		rb_define_method(RHandle__rClassDef, "get_value", RHandle_rb_get_value, 0);
+		rb_define_method(RHandle__rClassDef, "put_value", RHandle_rb_put_value, 1);
 	}
 
 	static VALUE RHandle_rb_alloc(VALUE arKlass) {
@@ -41,6 +43,40 @@
 		vpiHandle* pvOther = RHandle_get(arSelf);
 
 		return (*pvSelf == *pvOther) ? Qtrue : Qfalse;
+	}
+
+	static VALUE RHandle_rb_get_value(VALUE arSelf) {
+		vpiHandle* pvSelf = RHandle_get(arSelf);
+
+		if(*pvSelf == NULL) {
+			return Qnil;
+		}
+		else {
+			s_vpi_value val;
+			val.format = vpiIntVal;
+			vpi_get_value(*pvSelf, &val);
+
+			common_debug("vpi_get_value() => %d", val.value.integer);
+
+			return LONG2NUM(val.value.integer);
+		}
+	}
+
+	static VALUE RHandle_rb_put_value(VALUE arSelf, VALUE arValue) {
+		vpiHandle* pvSelf = RHandle_get(arSelf);
+
+		if(*pvSelf == NULL) {
+			rb_raise(rb_eRuntimeError, "Handle is nil");
+		}
+		else {
+			s_vpi_value val;
+			val.format = vpiIntVal;
+			val.value.integer = NUM2LONG(arValue);
+
+			vpi_put_value(*pvSelf, &val, NULL, vpiNoDelay);
+		}
+
+		return arSelf;
 	}
 
 	static vpiHandle* RHandle_get(VALUE arHandle) {

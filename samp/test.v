@@ -19,10 +19,15 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-// The whole VPI code is bootstrapped from this file. So, the intent is that a verilog testbench invokes the Ruby VPI extension, which in turn performs some extra things for us.
+// The whole Ruby-VPI code is bootstrapped from this file. So, the intent is that a verilog testbench invokes the Ruby VPI extension, which in turn performs some extra things for us.
 module test;
-	reg a;
+
+	reg clk_reg;
+	wire [4:0] count;
+
 	initial begin
+		clk_reg = 0;
+
 		$ruby_init("-w", "test.rb");
 
 		#0 $display($time); $ruby_relay();
@@ -38,5 +43,22 @@ module test;
 			$ruby_task("hello", 3, "foo", "baz", 5, "moz");
 			$ruby_task("bogus task");
 			$ruby_task();
+
+			$ruby_init("-w", "test.rb");
+		// #50 $ruby_task("hello", c1, c1.clk, c1.count);
+		$finish;
 	end
+
+	always begin
+		#5 clk_reg = !clk_reg;
+		$display("clk_reg = %d", clk_reg);
+		$display("c1.clk = %d", c1.clk);
+		$display("test.c1.clk = %d", test.c1.clk);
+		$display("c1.count = %d", c1.count);
+		$display("test.c1.count = %d", test.c1.count);
+	end
+
+	counter c1(.clk(clk_reg), .count(count));
 endmodule
+
+

@@ -85,7 +85,9 @@ static VALUE RVPI_rb_handle_by_name(VALUE arSelf, VALUE arName, VALUE arParent) 
 
 	// return result of vpi_handle_by_name
 	VALUE rHandle = rb_class_new_instance(0, NULL, RHandle__rClassDef);
-	RHandle_set(rHandle, vpi_handle_by_name(name, vParent));
+	vpiHandle vHandle = vpi_handle_by_name(name, vParent);
+	common_debug("vpi_handle_by_name(%s) => %p", name, vHandle);
+	RHandle_set(rHandle, vHandle);
 
 	return rHandle;
 }

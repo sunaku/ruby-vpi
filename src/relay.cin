@@ -41,7 +41,7 @@
 
 	static void* ruby_run_handshake(void* dummy) {
 		pthread_mutex_lock(&relay__rubyLock); /* block */
-		ruby_run();
+		ruby_run();	// FIXME: terminates the main process when used with vsim
 		return NULL;
 	}
 
