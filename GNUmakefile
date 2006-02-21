@@ -2,28 +2,21 @@
 
 # This file is part of Ruby-VPI.
 
-# Ruby-VPI is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+# Ruby-VPI is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 
-# Ruby-VPI is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# Ruby-VPI is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+# You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
-CFLAGS = `ruby -rmkmf -e 'puts $$configure_args["--cflags"]'`	# default Ruby CFLAGS on your system
+CFLAGS = `ruby -r mkmf -e 'puts $$configure_args["--cflags"]'`	# default Ruby CFLAGS on your system
 CFLAGS += -g -DDEBUG
 
 
 all: ruby-vpi
 
 clean: ruby-vpi-clean
+
 
 dist: all
 	cd doc && make
@@ -33,11 +26,13 @@ distclean: clean
 	cd doc && make clean
 	cd samp && make clean
 
-ruby-vpi:
-	ruby src/extconf.rb --with-cflags="$(CFLAGS)"
+
+ruby-vpi: Makefile
 	make -f Makefile
+
+Makefile:
+	ruby src/extconf.rb --with-cflags="$(CFLAGS)" --with-verilog-include="$(VERILOG)"
 
 ruby-vpi-clean:
 	make -f Makefile clean || true
 	rm -f Makefile mkmf.log
-

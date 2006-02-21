@@ -20,7 +20,7 @@ This simulator doesn't play nicely with an embedded Ruby interpreter. When the r
 Ruby
 ----
 
-If a SystemStackError occurs when running the simulation, then increase the system-resource limit for stack-size by running the 'ulimit' command before starting the simulation:
+If a "stack level too deep (SystemStackError)" during the simulation, then increase the system-resource limit for stack-size by running the 'ulimit' command before starting the simulation:
 
 	$ ulimit -s unlimited
 	$ ..your simulation..
