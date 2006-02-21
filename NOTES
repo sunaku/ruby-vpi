@@ -18,3 +18,16 @@ Mentor ModelSim
 Tue Feb 21 14:46:56 PST 2006 @990 /Internet Time/
 
 This simulator doesn't play nicely with an embedded Ruby interpreter. When the ruby_run() (which starts the Ruby interpreter) function is invoked, the entire simulator process terminates with an exit status of 0. Whereas with Icarus Verilog, the ruby_run() function works just fine.
+
+
+
+Ruby
+----
+
+Tue Feb 21 14:48:50 PST 2006 @992 /Internet Time/
+
+If a SystemStackError occurs when running the simulation, then increase the system-resource limit for stack-size by running the 'ulimit' command before starting the simulation:
+
+	$ ulimit -s unlimited
+	$ ..your simulation..
+
