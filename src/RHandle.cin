@@ -73,6 +73,8 @@
 			val.format = vpiIntVal;
 			val.value.integer = NUM2LONG(arValue);
 
+			common_debug("vpi_put_value(%d)", val.value.integer);
+
 			vpi_put_value(*pvSelf, &val, NULL, vpiNoDelay);
 		}
 

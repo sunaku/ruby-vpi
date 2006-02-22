@@ -53,17 +53,17 @@ Run the command "make" and see if everything complies smoothly.
 
   1. If the compilation failed because the "vpi_user.h" file was not found, then determine where the "vpi_user.h" file is located on your system.
 
-  For example, if you use the Icarus Verilog simulator, then the header file might be located in a place shown in the output of the command "iverilog-vpi --cflags".
+		For example, if you use the Icarus Verilog simulator, then the header file might be located in a place shown in the output of the command "iverilog-vpi --cflags".
 
-  For example, if you use the Synopsys VCS simulator, then the header file might be located in a place defined by the VCS_HOME environment variable.
+		For example, if you use the Synopsys VCS simulator, then the header file might be located in a place defined by the VCS_HOME environment variable.
 
-  For example, if you use the Mentor ModelSim simulator, then the header file might be located in a place defined by the MODELTECH environment variable.
+		For example, if you use the Mentor ModelSim simulator, then the header file might be located in a place defined by the MODELTECH environment variable.
 
-  Once you have determined the correct location (denoted by the word "THE_CORRECT_LOCATION" below), run the following command:
+	Once you have determined the correct location (denoted by the word "__THE_CORRECT_LOCATION__" below), try the compilation again like this:
 
-    make VERILOG=THE_CORRECT_LOCATION
+		make VERILOG=__THE_CORRECT_LOCATION__
 
-  Now, try the compilation again. If it fails yet again, seek assistance from your local C expert or ask for help on the Ruby-VPI website.
+	If the compilation fails yet again, seek assistance from your local C expert or ask for help on the Ruby-VPI website.
 
 
   2. If the compilation failed because of missing libraries, then install those libraries and try the compilation again.

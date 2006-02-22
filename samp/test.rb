@@ -47,7 +47,7 @@ puts "ruby:check 1, $ruby_relay();"
 	a = VPI::handle_by_name("test.c1.clk", nil)
 	puts a.get_value
 	gets
-	a.put_value(1)	# TODO: this not working yet
+	a.put_value(0)
 	puts a.get_value
 	gets
 VPI::relay_verilog
