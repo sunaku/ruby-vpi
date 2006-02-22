@@ -23,10 +23,12 @@
 module test;
 
 	reg clk_reg;
+	reg rst_reg;
 	wire [4:0] count;
 
 	initial begin
-		clk_reg = 0;
+		#0 clk_reg = 0; rst_reg = 1;
+		#1 rst_reg = 0;
 
 		$ruby_init("-w", "test.rb");
 
@@ -50,15 +52,13 @@ module test;
 	end
 
 	always begin
-		#5 clk_reg = !clk_reg;
+		#1 clk_reg = !clk_reg;
 		$display("clk_reg = %d", clk_reg);
-		$display("c1.clk = %d", c1.clk);
-		$display("test.c1.clk = %d", test.c1.clk);
-		$display("c1.count = %d", c1.count);
+		$display("test.c1.clk = %d", test.c1.clock);
 		$display("test.c1.count = %d", test.c1.count);
 	end
 
-	counter c1(.clk(clk_reg), .count(count));
+	counter c1(.clock(clk_reg), .reset(rst_reg), .count(count));
 endmodule
 
 

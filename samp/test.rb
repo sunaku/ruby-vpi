@@ -44,12 +44,15 @@ VPI::relay_verilog
 
 
 puts "ruby:check 1, $ruby_relay();"
-	a = VPI::handle_by_name("test.c1.clk", nil)
-	puts a.get_value
-	gets
-	a.put_value(0)
-	puts a.get_value
-	gets
+	c1_clock = VPI::handle_by_name("test.c1.clock", nil)
+	puts c1_clock.value
+	c1_clock.value = 0
+	puts c1_clock.value
+
+	clk_reg = VPI::handle_by_name("test.clk_reg", nil)
+	p clk_reg.value
+
+	raise unless clk_reg == c1_clock
 VPI::relay_verilog
 
 
@@ -65,4 +68,9 @@ puts "ruby:check 4, $ruby_relay();"
 VPI::relay_verilog
 
 puts "ruby:check 5, $ruby_relay();"
+	count = VPI::handle_by_name("test.c1.count", nil)
+	p count.value
+
+	count.value = 5
+	p count.value
 VPI::relay_verilog

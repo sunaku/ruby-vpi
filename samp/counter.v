@@ -18,12 +18,24 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+/**
+	A 5-bit counter with asynchronous reset.
+*/
 module counter(
-	input clk
+	input clock
+	, input reset
 	, output reg [4:0] count
 );
 
-	always @(posedge clk) begin
-		count <= count + 1;
+	reg [4:0] value;
+
+	always @(*) begin
+		if(reset)
+			value <= 0;
+	end
+
+	always @(posedge clock) begin
+		value <= value + 1;
+		count <= value;
 	end
 endmodule

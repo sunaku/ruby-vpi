@@ -76,7 +76,7 @@
 	static inline int RHandle_testType(VALUE arHandle);
 
 	/**
-		Raises a TypeError ifthe given Ruby object is not a Handle.
+		Raises a TypeError if the given Ruby object is not a Handle.
 	*/
 	static void RHandle_ensureType(VALUE arHandle);
 
