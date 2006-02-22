@@ -40,6 +40,13 @@ end
 
 puts "ruby:check 0, $ruby_init();"
 	VPI::register_task("hello") { |*a| puts "hello #{ a.join(', ') }" }
+
+=begin
+	if !defined? x
+		VPI::reset
+		x = 0
+	end
+=end
 VPI::relay_verilog
 
 

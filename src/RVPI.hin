@@ -70,4 +70,33 @@
 	*/
 	// static VALUE RVPI_rb_control(VALUE arSelf);
 
+	/**
+		Stops the simulation; same as $stop in Verilog.
+
+		@param	diagnostic_value	(Optional) Same as the parameter for $stop.
+
+		@see vpi_control
+	*/
+	static VALUE RVPI_rb_stop(int aNumArgs, VALUE* aprArgs, VALUE arSelf);
+
+	/**
+		Finishes the simulation; same as $finish in Verilog.
+
+		@param	diagnostic_value	(Optional) Same as the parameter for $finish.
+
+		@see vpi_control
+	*/
+	static VALUE RVPI_rb_finish(int aNumArgs, VALUE* aprArgs, VALUE arSelf);
+
+	/**
+		Resets the simulation; same as $reset in Verilog.
+
+		@param	stop_value	(Optional) Same as the parameter for $reset.
+		@param	reset_value	(Optional) Same as the parameter for $reset.
+		@param	diagnostic_value	(Optional) Same as the parameter for $reset.
+
+		@see vpi_control
+	*/
+	static VALUE RVPI_rb_reset(int aNumArgs, VALUE* aprArgs, VALUE arSelf);
+
 #endif

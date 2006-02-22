@@ -40,4 +40,9 @@
 	*/
 	typedef enum { false = 0, true = 1 } bool;
 
+	/**
+		Returns the string "true" if the given boolean expression is true. Otherwise returns the string "false".
+	*/
+	#define common_boolToStr(aBoolExpr)	( (aBoolExpr) ? "true" : "false" )
+
 #endif

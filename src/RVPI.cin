@@ -24,6 +24,11 @@ void Init_RVPI() {
 	rb_define_module_function(RVPI__rModuleDef, "register_task", RVPI_rb_register_task, 1);
 	rb_define_module_function(RVPI__rModuleDef, "handle_by_name", RVPI_rb_handle_by_name, -1);
 
+	// rb_define_module_function(RVPI__rModuleDef, "control", RVPI_rb_control, -1);
+	rb_define_module_function(RVPI__rModuleDef, "stop", RVPI_rb_stop, -1);
+	rb_define_module_function(RVPI__rModuleDef, "finish", RVPI_rb_finish, -1);
+	rb_define_module_function(RVPI__rModuleDef, "reset", RVPI_rb_reset, -1);
+
 
 	// register classes beneath the VPI module
 	Init_RHandle();
@@ -96,4 +101,67 @@ static VALUE RVPI_rb_handle_by_name(int aNumArgs, VALUE* aprArgs, VALUE arSelf) 
 	RHandle_set(rHandle, vHandle);
 
 	return rHandle;
+}
+
+/**
+	Helper function for 'stop' and 'finish' methods.
+
+	@param	avOperation	The first argument to vpi_control.
+*/
+static VALUE RVPI_stop_finish_helper(int aNumArgs, VALUE* aprArgs, VALUE arSelf, int avOperation) {
+	// parse arguments
+	VALUE rDiagVal;
+	rb_scan_args(aNumArgs, aprArgs, "01", &rDiagVal);
+	common_debug("rDiagVal => %p", (void*)rDiagVal);
+	common_debug("rDiagVal is nil? %s", common_boolToStr(rDiagVal == Qnil));
+
+
+	if(rDiagVal != Qnil)
+		vpi_control(avOperation, NUM2INT(rDiagVal));
+	else
+		vpi_control(avOperation);
+
+	return arSelf;
+}
+
+static VALUE RVPI_rb_stop(int aNumArgs, VALUE* aprArgs, VALUE arSelf) {
+	return RVPI_stop_finish_helper(aNumArgs, aprArgs, arSelf, vpiStop);
+}
+
+static VALUE RVPI_rb_finish(int aNumArgs, VALUE* aprArgs, VALUE arSelf) {
+	return RVPI_stop_finish_helper(aNumArgs, aprArgs, arSelf, vpiFinish);
+}
+
+static VALUE RVPI_rb_reset(int aNumArgs, VALUE* aprArgs, VALUE arSelf) {
+	// parse arguments
+	VALUE rStopVal, rResetVal, rDiagVal;
+	rb_scan_args(aNumArgs, aprArgs, "03", &rStopVal, &rResetVal, &rDiagVal);
+
+
+	// prepare args for vpi_control
+	PLI_INT32 stopVal = 0
+		, resetVal = 0
+		, diagVal = 0
+	;
+
+	if(rStopVal != Qnil) {
+		// NOTE: see IEEE Std. 1364-2001, appendix C.7 for details
+		if(rStopVal == Qtrue)
+			stopVal = 0;
+		else if (rStopVal == Qfalse)
+			stopVal = 1;
+		else
+			stopVal = NUM2INT(rStopVal);
+	}
+
+	if(rResetVal != Qnil)
+		resetVal = NUM2INT(rResetVal);
+
+	if(rDiagVal != Qnil)
+		diagVal = NUM2INT(rDiagVal);
+
+
+	vpi_control(vpiReset, stopVal, resetVal, diagVal);
+
+	return arSelf;
 }
