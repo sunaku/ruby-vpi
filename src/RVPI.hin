@@ -55,10 +55,19 @@
 	static VALUE RVPI_rb_register_task(VALUE arSelf, VALUE arTaskName);
 
 	/**
-		Returns a Ruby Handle to the VPI object, which has the given name and is located relative to the given pivot Handle.
+		Returns the handle associated with the given hierarchical name.
+
+		@param	name	The hierarchical name of the VPI object whose handle you wish to obtain.
+
+		@param	parent	The parent handle to which the given hierarchical name is relative.
 
 		@see vpi_handle_by_name
 	*/
-	static VALUE RVPI_rb_handle_by_name(VALUE arSelf, VALUE arName, VALUE arPivot);
+	static VALUE RVPI_rb_handle_by_name(int aNumArgs, VALUE* aprArgs, VALUE arSelf);
+
+	/**
+		@see vpi_control
+	*/
+	// static VALUE RVPI_rb_control(VALUE arSelf);
 
 #endif

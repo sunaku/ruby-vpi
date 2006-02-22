@@ -24,7 +24,12 @@
 		rb_define_alloc_func(RHandle__rClassDef, RHandle_rb_alloc);
 		rb_define_method(RHandle__rClassDef, "initialize", RHandle_rb_init, 0);
 		rb_define_method(RHandle__rClassDef, "==", RHandle_rb_equal2, 1);
+
+		rb_define_method(RHandle__rClassDef, "get_value", RHandle_rb_get_value, 0);
 		rb_define_method(RHandle__rClassDef, "value", RHandle_rb_get_value, 0);
+
+
+		rb_define_method(RHandle__rClassDef, "put_value", RHandle_rb_put_value, 1);
 		rb_define_method(RHandle__rClassDef, "value=", RHandle_rb_put_value, 1);
 	}
 
@@ -75,7 +80,7 @@
 
 			common_debug("vpi_put_value(%p) <= %d", *pvSelf, val.value.integer);
 
-			vpi_put_value(*pvSelf, &val, NULL, vpiNoDelay);
+			vpi_put_value(*pvSelf, &val, NULL, vpiNoDelay);	// TODO: add support for specifying the last 2 args; maybe like this: foo.value = 1, nil, VPI::NoDelay       (the RHS becomes an array)
 		}
 
 		return arSelf;
