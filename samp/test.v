@@ -21,44 +21,48 @@
 
 // The whole Ruby-VPI code is bootstrapped from this file. So, the intent is that a verilog testbench invokes the Ruby VPI extension, which in turn performs some extra things for us.
 module test;
-
 	reg clk_reg;
 	reg rst_reg;
 	wire [4:0] count;
 
+
 	initial begin
-		#0 clk_reg = 0; rst_reg = 1;
+		// initialize Ruby-VPI
+		#0 $ruby_init("-w", "test.rb");
+
+
+		// initialize the counter
+		#0 clk_reg = 0;
+			rst_reg = 1;
+
 		#1 rst_reg = 0;
 
-		$ruby_init("-w", "test.rb");
 
-		#0 $display($time); $ruby_relay();
-		#10 $display($time); $ruby_relay();
-		#10 $display($time); $ruby_relay();
-		#10 $display($time); $ruby_relay();
-		#10 $display($time); $ruby_relay();
-		#10 $display($time); $ruby_relay();
-
-		#10 $display($time);
-			$ruby_task("hello");
-			$ruby_task("hello", "world");
-			$ruby_task("hello", 3, "foo", "baz", 5, "moz");
-			$ruby_task("bogus task");
-			$ruby_task();
-
-			$ruby_init("-w", "test.rb");
-		// #50 $ruby_task("hello", c1, c1.clk, c1.count);
-		$finish;
+		// test some Ruby-VPI tasks
+		#10 $ruby_task("hello");
+		$ruby_task("hello", "world");
+		$ruby_task("hello", 3, "foo", "baz", 5, "moz");
+		$ruby_task("bogus task");
+		$ruby_task();
 	end
 
+
+	// transfer control to Ruby code upon each new clock cycle
+	always @(posedge clk_reg) begin
+		$ruby_relay();
+	end
+
+
+	// generate a clock signal with 50% duty cycle
 	always begin
-		#1 clk_reg = !clk_reg;
-		$display("clk_reg = %d", clk_reg);
-		$display("test.c1.clk = %d", test.c1.clock);
-		$display("test.c1.count = %d", test.c1.count);
+		#5 clk_reg = !clk_reg;
+			$display("clk_reg = %d", clk_reg);
+			$display("test.c1.clk = %d", test.c1.clock);
+			$display("test.c1.count = %d", test.c1.count);
 	end
 
+
+	// instantiate the counter
 	counter c1(.clock(clk_reg), .reset(rst_reg), .count(count));
 endmodule
-
 

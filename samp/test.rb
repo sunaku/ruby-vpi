@@ -19,65 +19,72 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 =end
 
-
-# test VPI::handle
-begin
-	h1 = VPI::Handle.new
-	h2 = h1.dup
-	raise unless h1 == h2
-end
-
-
-# test VPI::handle_by_name
-begin
-	VPI::handle_by_name("", 0)
-rescue TypeError
-else
-	raise "parent must be a Handle"
-end
+puts "start of #{__FILE__}"
 
 
 
-puts "ruby:check 0, $ruby_init();"
+# handle the $ruby_init() task
+puts "inside $ruby_init"
+
+	# register some tasks
 	VPI::register_task("hello") { |*a| puts "hello #{ a.join(', ') }" }
 
-=begin
-	if !defined? x
-		VPI::reset
-		x = 0
+
+	# test VPI::handle
+	begin
+		h1 = VPI::Handle.new
+		h2 = h1.dup
+		raise unless h1 == h2
 	end
-=end
+
+
+	# test VPI::handle_by_name
+	begin
+		VPI::handle_by_name("", 0)
+	rescue TypeError
+	else
+		raise "parent must be a Handle"
+	end
+
 VPI::relay_verilog
 
 
-puts "ruby:check 1, $ruby_relay();"
-	c1_clock = VPI::handle_by_name("test.c1.clock", nil)
-	puts c1_clock.value
-	c1_clock.value = 0
-	puts c1_clock.value
 
-	clk_reg = VPI::handle_by_name("test.clk_reg", nil)
-	p clk_reg.value
+# handle the $ruby_relay() task
+100.times do |i|
+	puts "#{i}: inside $relay_ruby"
 
-	raise unless clk_reg == c1_clock
-VPI::relay_verilog
+		# test getting and setting of 1-bit register or wire
+		if i == 5
+			c1_clock = VPI::handle_by_name("test.c1.clock", nil)
+			puts c1_clock.value
+
+			c1_clock.value = 0
+			puts c1_clock.value
+
+			clk_reg = VPI::handle_by_name("test.clk_reg", nil)
+			p clk_reg.value
+
+			raise unless clk_reg == c1_clock
+		end
 
 
-puts "ruby:check 2, $ruby_relay();"
-VPI::relay_verilog
+		# test resetting of counter
+		if i == 10
+			reset = VPI::handle_by_name("test.c1.reset", nil)
+
+			puts "resetting counter"
+			reset.value = 1
+		end
 
 
-puts "ruby:check 3, $ruby_relay();"
-VPI::relay_verilog
+		# test simulator control functions
+		VPI::stop if i == 15
+		VPI::finish if i == 20
+
+	# transfer control back to Verilog code
+	VPI::relay_verilog
+end
 
 
-puts "ruby:check 4, $ruby_relay();"
-VPI::relay_verilog
-
-puts "ruby:check 5, $ruby_relay();"
-	count = VPI::handle_by_name("test.c1.count", nil)
-	p count.value
-
-	count.value = 5
-	p count.value
-VPI::relay_verilog
+puts "end of #{__FILE__}"
