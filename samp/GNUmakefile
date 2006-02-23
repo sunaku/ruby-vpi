@@ -33,7 +33,7 @@ ivl-clean:
 # Synopsys VCS
 vcs: deps
 	# TODO: check if this works
-	vcs +v2k +vpi -LDFLAGS "../ruby-vpi.so" -P test.tab test.v counter.v
+	vcs +v2k +vpi -LDFLAGS "../../ruby-vpi.so" -P test.tab test.v counter.v
 	./simv
 
 vcs-clean:

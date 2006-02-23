@@ -40,9 +40,9 @@ Normally, the helper script would register tasks with Ruby-VPI via VPI::register
 Requirements for compilation
 ----------------------------
 
-1. Standard Verilog header files, including "vpi_user.h". These files are normally provided by your Verilog simulator.
+1. Header files (especially "vpi_user.h") and linkable object files for IEEE Std. 1364-2001 Verilog. These are usually provided with your Verilog simulator.
 
-2. Header files for the "pthreads" library.
+2. Header files and linkable object files for the "pthreads" library.
 
 
 
@@ -61,9 +61,9 @@ Run the command "make" and see if everything complies smoothly.
 
 	Once you have determined the correct location (denoted by the word "__THE_CORRECT_LOCATION__" below), try the compilation again like this:
 
-		make VERILOG=__THE_CORRECT_LOCATION__
+		make VERILOG=__THE_CORRECT_LOCATION__/..
 
-	If the compilation fails yet again, seek assistance from your local C expert or ask for help on the Ruby-VPI website.
+	If the compilation fails yet again, you can edit the file "GNUmakefile" or "src/extconf.rb" to play with the "--with-verilog-dir" flag (see <http://www.phrogz.net/ProgrammingRuby/ext_ruby.html#creatingamakefilewithextconfrb> for details), or you can ask for help on the Ruby-VPI website.
 
 
   2. If the compilation failed because of missing libraries, then install those libraries and try the compilation again.
@@ -84,7 +84,7 @@ Using Ruby-VPI with Icarus Verilog
 
 1. Go inside the samp/ directory.
 
-2. Run the command "make ivl" to compile and run the sample test bench with Icarus Verilog.
+2. Run the command "make ivl" to compile and run the sample test bench.
 
 3. See the "ivl" section of the file named "GNUmakefile" for details.
 
@@ -95,7 +95,7 @@ Using Ruby-VPI with Synopsys VCS
 
 1. Go inside the samp/ directory.
 
-2. Run the command "make vcs" to compile and run the sample test bench with Synopsys VCS.
+2. Run the command "make vcs" to compile and run the sample test bench.
 
 3. See the "vcs" section of the file named "GNUmakefile" for details.
 
@@ -106,7 +106,7 @@ Using Ruby-VPI with Mentor ModelSim
 
 1. Go inside the samp/ directory.
 
-2. Run the command "make vsim" to compile and run the sample test bench with Mentor ModelSim.
+2. Run the command "make vsim" to compile and run the sample test bench.
 
 3. See the "vsim" section of the file named "GNUmakefile" for details.
 

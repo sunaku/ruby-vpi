@@ -9,7 +9,7 @@
 # You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
-CFLAGS = `ruby -r mkmf -e 'puts $$configure_args["--cflags"]'`	# default Ruby CFLAGS on your system
+CFLAGS = `ruby -r mkmf -e 'cflags = $$configure_args["--cflags"]; puts cflags unless cflags.nil?'`	# default Ruby CFLAGS on your system
 CFLAGS += -g -DDEBUG
 
 
@@ -31,7 +31,7 @@ ruby-vpi: Makefile
 	make -f Makefile
 
 Makefile:
-	ruby src/extconf.rb --with-cflags="$(CFLAGS)" --with-verilog-include="$(VERILOG)"
+	ruby src/extconf.rb --with-cflags="$(CFLAGS)" --with-verilog-dir="$(VERILOG)"
 
 ruby-vpi-clean:
 	make -f Makefile clean || true
