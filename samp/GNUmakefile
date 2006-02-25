@@ -31,13 +31,12 @@ ivl-clean:
 
 
 # Synopsys VCS
-vcs: deps
-	# TODO: check if this works
-	vcs +v2k +vpi -LDFLAGS "../../ruby-vpi.so" -P test.tab test.v counter.v
-	./simv
+vcs:
+	make deps OPTIONS="-DSYNOPSYS_VCS"
+	vcs -R +v2k +vpi -LDFLAGS "../../ruby-vpi.o -lruby -lpthread" -P test.tab test.v counter.v -cc gcc32 -ld gcc32
 
 vcs-clean:
-	rm -f simv
+	rm -rf csrc simv
 
 
 # Mentor ModelSim

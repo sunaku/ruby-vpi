@@ -15,9 +15,16 @@
 	The Ruby-VPI extension, in a nutshell.
 */
 
-#include "vlog.cin"
-#include "relay.cin"
+#ifdef __cplusplus
+	extern "C" {
+#endif
 
-#include "RVPI.cin"
-#include "RHandle.cin"
+	#include "vlog.cin"
+	#include "relay.cin"
 
+	#include "RVPI.cin"
+	#include "RHandle.cin"
+
+#ifdef __cplusplus
+	}
+#endif

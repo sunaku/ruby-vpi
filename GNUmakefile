@@ -12,7 +12,6 @@
 CFLAGS = `ruby -r mkmf -e 'cflags = $$configure_args["--cflags"]; puts cflags unless cflags.nil?'`	# default Ruby CFLAGS on your system
 CFLAGS += -g -DDEBUG
 
-
 all: ruby-vpi
 
 clean: ruby-vpi-clean
@@ -31,7 +30,7 @@ ruby-vpi: Makefile
 	make -f Makefile
 
 Makefile:
-	ruby src/extconf.rb --with-cflags="$(CFLAGS)" --with-verilog-dir="$(VERILOG)"
+	ruby src/extconf.rb --with-cflags="$(CFLAGS) $(OPTIONS)" --with-verilog-dir="$(VERILOG)"
 
 ruby-vpi-clean:
 	make -f Makefile clean || true

@@ -20,13 +20,19 @@
 
 require 'mkmf'
 
+
+# Verilog and POSIX threads
 dir_config('verilog')
 
 exit(1) unless
 	have_header('vpi_user.h') &&
 	have_library('pthread', 'pthread_create')
 
-have_macro('vpiAggregateVal', 'vpi_user.h')
-have_macro('vpiIntVal', 'vpi_user.h')
+
+# SystemVerilog
+if have_macro('vpiAggregateVal', 'vpi_user.h')
+	$defs << "-DHAVE_VPIAGGREGATEVAL"
+end
+
 
 create_makefile('ruby-vpi')

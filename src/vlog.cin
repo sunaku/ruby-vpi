@@ -22,7 +22,7 @@
 	#include "vlog.hin"
 
 
-	static int vlog_ruby_relay(PLI_BYTE8* dummy) {
+	verilog_tf_funcSig(vlog_ruby_relay) {
 /*		vpiHandle
 			operandy_handle = vpi_handle_by_name("my_div32.operandy", NULL)
 			, operand1_handle = vpi_handle_by_name("my_div32.operand1", NULL)
@@ -107,10 +107,10 @@
 
 		// transfer control to verilog
 		puts("-> verilog");
-		return 0;
+		verilog_tf_funcReturn(0);
 	}
 
-	static int vlog_ruby_init(PLI_BYTE8* dummy) {
+	verilog_tf_funcSig(vlog_ruby_init) {
 		// initialize control-transfer mechanism between Ruby and Verilog
 		relay_init();
 
@@ -149,12 +149,10 @@
 		relay_ruby_run();
 
 		// the Ruby code will now bind any additional callbacks via the VPI infrastructure, and relay back to the verilog so that the simulation can begin
-
-
-		return 0;
+		verilog_tf_funcReturn(0);
 	}
 
-	static int vlog_task_handler(PLI_BYTE8* aDummy) {
+	verilog_tf_funcSig(vlog_task_handler) {
 		vpiHandle vCall = vpi_handle(vpiSysTfCall, NULL);
 
 		if(vCall) {
@@ -183,14 +181,14 @@
 			}
 		}
 
-		return 0;
+		verilog_tf_funcReturn(0);
 	}
 
-	static VALUE vlog_task_args(vpiHandle vTask) {
+	static VALUE vlog_task_args(vpiHandle avTask) {
 		VALUE rCallArgs = rb_ary_new();
 
 		// transform the arguments passed to this function (from Verilog) into command-line arguments for Ruby interpeter
-		vpiHandle vCall = vpi_handle(vpiSysTfCall, vTask);
+		vpiHandle vCall = vpi_handle(vpiSysTfCall, avTask);
 
 		if(vCall) {
 			vpiHandle vCallArgs = vpi_iterate(vpiArgument, vCall);
@@ -302,39 +300,31 @@
 		return rCallArgs;
 	}
 
-	static void vlog_bind_task(PLI_BYTE8* name, int (*func)(PLI_BYTE8*)) {
-		s_vpi_systf_data tf;
+	#ifndef SYNOPSYS_VCS
+		static void vlog_bind_task(PLI_BYTE8* aTaskName, verilog_tf_funcPtr(aTaskDef)) {
+			s_vpi_systf_data tf;
 
-		tf.type = vpiSysTask;
-		tf.sysfunctype = 0;
-		tf.tfname = name;
-		tf.calltf = func;
-		tf.compiletf = NULL;
-		tf.sizetf = NULL;
-		tf.user_data = NULL;
+			tf.type = vpiSysTask;
+			tf.sysfunctype = 0;
+			tf.tfname = aTaskName;
+			tf.calltf = (verilog_tf_funcPtr_strict())aTaskDef;
+			tf.compiletf = NULL;
+			tf.sizetf = NULL;
+			tf.user_data = NULL;
 
-		vpi_register_systf(&tf);
-	}
+			vpi_register_systf(&tf);
+		}
 
-	static void vlog_startup() {
-		vlog_bind_task("$ruby_init", vlog_ruby_init);
-		vlog_bind_task("$ruby_relay", vlog_ruby_relay);
-		vlog_bind_task("$ruby_task", vlog_task_handler);
+		/**
+			Binds the default VPI tasks (provided by Ruby-VPI) before the Verilog simulator begins to simulate.
+		*/
+		static void vlog_startup() {
+			vlog_bind_task("$ruby_init", vlog_ruby_init);
+			vlog_bind_task("$ruby_relay", vlog_ruby_relay);
+			vlog_bind_task("$ruby_task", vlog_task_handler);
+		}
 
-
-		/*s_cb_data cb;
-
-		cb.reason = cbValueChange;
-		cb.cb_rtn = ;
-		cb.obj = vpi_handle("my_div32.start", NULL);
-		cb.time = vpiSuppressTime;
-		cb.value = ;
-		cb.index = ;
-		cb.user_data = ;
-
-		vpi_register_cb(&cb);*/
-	}
-
-	void (*vlog_startup_routines[])() = { vlog_startup, 0 };
+		void (*vlog_startup_routines[])() = { vlog_startup, 0 };
+	#endif
 
 #endif

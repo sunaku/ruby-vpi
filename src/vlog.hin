@@ -24,7 +24,7 @@
 	/**
 		Callback for the $ruby_relay VPI task. Transfers control from Verilog to Ruby code.
 	*/
-	static int vlog_ruby_relay(PLI_BYTE8* dummy);
+	verilog_tf_funcSig(vlog_ruby_relay);
 
 	/**
 		Callback for the $ruby_init VPI task. Initializes and starts the Ruby interpreter with the same arguments as those given to the VPI task-call.
@@ -32,7 +32,7 @@
 		For example, to start the Ruby interpreter with the "-w" option and with the "hello_world.rb" script, the Verilog code would have a statement like this:
 			- <tt>$ruby_init("-w", "hello_world.rb");</tt>
 	*/
-	static int vlog_ruby_init(PLI_BYTE8* dummy);
+	verilog_tf_funcSig(vlog_ruby_init);
 
 	/**
 		Callback for the $ruby_task VPI task. This is the entry point for all tasks registered using VPI::register_task from within Ruby.
@@ -41,11 +41,11 @@
 			- <tt>$ruby_task("hello_world");</tt>
 			- <tt>$ruby_task("hello_world", arg1, arg2, ...);</tt>
 
-		@arg	taskName	The name of the Ruby task you wish to invoke.
+		@param	taskName	The name of the Ruby task you wish to invoke.
 
-		@arg	...	Additional arguments for the Ruby task you wish to invoke.
+		@param	...	Additional arguments for the Ruby task you wish to invoke.
 	*/
-	static int vlog_task_handler(PLI_BYTE8* dummy);
+	verilog_tf_funcSig(vlog_task_handler);
 
 	/**
 		Transforms all arguments, which have been passed (from Verilog) in a vpiSysTfCall to the given task, into a Ruby Array.
@@ -55,28 +55,25 @@
 
 		@param	vTask	The VPI task which has been called by Verilog and whose call-arguments you want to fetch. If this variable is NULL, the call-arguments of the most recent VPI task-call will be fetched.
 
-		@todo	this only stores Strings into the returned array. add support for all kinds of VPI objects
+		TODO:	this only stores Strings into the returned array. add support for all kinds of VPI objects
 
 		@return	A ruby Array.
 	*/
-	static VALUE vlog_task_args(vpiHandle vTask);
+	static VALUE vlog_task_args(vpiHandle avTask);
 
-	/**
-		Binds a C function to a VPI task, so that Verilog code can invoke the C function by calling the VPI task.
+	#ifndef SYNOPSYS_VCS
+		/**
+			Binds a C function to a VPI task, so that Verilog code can invoke the C function by calling the VPI task.
 
-		For example, if we bound a VPI task named "$hello_world" to the C function hello_world(), then the hello_world() function would be invoked whenever Verilog code called the "$hello_world" VPI task.
+			For example, if we bound a VPI task named "$hello_world" to the C function hello_world(), then the hello_world() function would be invoked whenever Verilog code called the "$hello_world" VPI task.
 
-		@param	name	Name of the VPI task. For example, "$hello_world".
+			@param	aTaskName	Name of the VPI task. For example, "$hello_world".
 
-		@param	func	The C function which you want to associate with the given VPI task. For example, hello_world().
-	*/
-	static void vlog_bind_task(PLI_BYTE8* name, int (*func)(PLI_BYTE8*));
+			@param	aTaskDef	The C function which you want to associate with the given VPI task. For example, hello_world().
+		*/
+		static void vlog_bind_task(PLI_BYTE8* aTaskName, verilog_tf_funcPtr(aTaskDef));
+	#endif
 
-	/// @todo static void rbvpi_bind_callback();
-
-	/**
-		Binds the default VPI tasks (provided by Ruby-VPI) before the Verilog simulator begins to simulate.
-	*/
-	static void vlog_startup();
+	// TODO: static void rbvpi_bind_callback();
 
 #endif
