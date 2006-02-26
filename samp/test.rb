@@ -56,13 +56,13 @@ VPI::relay_verilog
 
 		# test getting and setting of 1-bit register or wire
 		if i == 5
-			c1_clock = VPI::handle_by_name("test.c1.clock", nil)
+			c1_clock = VPI::handle_by_name("test.c1.clock")
 			puts c1_clock.value
 
 			c1_clock.value = 0
 			puts c1_clock.value
 
-			clk_reg = VPI::handle_by_name("test.clk_reg", nil)
+			clk_reg = VPI::handle_by_name("test.clk_reg")
 			p clk_reg.value
 
 			raise unless clk_reg == c1_clock
@@ -71,7 +71,7 @@ VPI::relay_verilog
 
 		# test resetting of counter
 		if i == 10
-			reset = VPI::handle_by_name("test.c1.reset", nil)
+			reset = VPI::handle_by_name("test.c1.reset")
 
 			puts "resetting counter"
 			reset.value = 1
