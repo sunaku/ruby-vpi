@@ -9,7 +9,7 @@
 # You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
-cflags = `ruby -r mkmf -e 'cflags = $$configure_args["--cflags"]; puts cflags unless cflags.nil?'`	# cflags with which Ruby was compiled on your system
+cflags = `ruby -r mkmf -e 'cflags = $$configure_args["--cflags"]; puts cflags if cflags'` # the cflags with which Ruby was compiled on your system
 cflags += -g -DDEBUG $(CFLAGS)
 
 
