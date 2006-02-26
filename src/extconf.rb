@@ -21,7 +21,7 @@
 require 'mkmf'
 
 
-# Verilog and POSIX threads
+# Verilog VPI and POSIX threads
 dir_config('verilog')
 
 exit(1) unless

@@ -8,22 +8,29 @@
 
 # You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+
+make_deps = cd .. && make
+
+src_files = test.v counter.v
+vcs_table = test.tab
+
+
 all: deps
 
 clean: deps-clean ivl-clean vcs-clean vsim-clean
 
 
 deps:
-	cd .. && make
+	$(make_deps)
 
 deps-clean:
-	cd .. && make clean
+	$(make_deps) clean
 
 
 # Icarus Verilog
 ivl: deps
 	cp ../ruby-vpi.so ruby-vpi.vpi
-	iverilog -y. -mruby-vpi test.v counter.v
+	iverilog -y. -mruby-vpi $(src_files)
 	vvp -M. a.out
 
 ivl-clean:
@@ -32,18 +39,18 @@ ivl-clean:
 
 # Synopsys VCS
 vcs:
-	make deps OPTIONS="-DSYNOPSYS_VCS"
-	vcs -R +v2k +vpi -LDFLAGS "../../ruby-vpi.o -lruby -lpthread" -P test.tab test.v counter.v -cc gcc32 -ld gcc32
+	$(make_deps) CFLAGS="-DSYNOPSYS_VCS"
+	vcs -R +v2k +vpi -LDFLAGS "../../ruby-vpi.o -lruby -lpthread" $(VCS_FLAGS) -P $(vcs_table) $(src_files)
 
 vcs-clean:
-	rm -rf csrc simv
+	rm -rf csrc simv*
 
 
 # Mentor ModelSim
 vsim: deps
 	vlib work
-	vlog test.v counter.v
-	vsim -c test -pli ../ruby-vpi.so -do 'run -all'
+	vlog $(src_files)
+	vsim -c test -pli ../ruby-vpi.so -do "run -all"
 
 vsim-clean:
 	rm -rf work
