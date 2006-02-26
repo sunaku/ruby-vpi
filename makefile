@@ -18,15 +18,6 @@ all: ruby-vpi
 clean: ruby-vpi-clean
 
 
-dist: all
-	cd doc && make
-	cd samp && make
-
-distclean: clean
-	cd doc && make clean
-	cd samp && make clean
-
-
 ruby-vpi: Makefile
 	make -f Makefile
 
