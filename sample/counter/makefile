@@ -8,11 +8,11 @@
 
 # You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-
-make_deps = cd .. && make
+top = ../..
+make_deps = cd $(top) && make
 
 src_files = test.v counter.v
-vcs_table = test.tab
+vcs_table = ../synopsys_vcs.tab
 
 
 all: deps
@@ -22,7 +22,7 @@ clean: deps-clean ivl-clean vcs-clean vsim-clean
 
 deps:
 	$(make_deps)
-	cp ../src/VPI.rb .
+	cp $(top)/src/VPI.rb .
 
 deps-clean:
 	$(make_deps) clean
@@ -31,7 +31,7 @@ deps-clean:
 
 # Icarus Verilog
 ivl: deps
-	cp ../ruby-vpi.so ruby-vpi.vpi
+	cp $(top)/ruby-vpi.so ruby-vpi.vpi
 	iverilog -y. -mruby-vpi $(src_files)
 	vvp -M. a.out
 
@@ -42,7 +42,7 @@ ivl-clean:
 # Synopsys VCS
 vcs:
 	$(make_deps) CFLAGS="-DSYNOPSYS_VCS"
-	vcs -R +v2k +vpi -LDFLAGS "../../ruby-vpi.o -lruby -lpthread" $(VCS_FLAGS) -P $(vcs_table) $(src_files)
+	vcs -R +v2k +vpi -LDFLAGS "$(top)/../ruby-vpi.o -lruby -lpthread" $(VCS_FLAGS) -P $(vcs_table) $(src_files)
 
 vcs-clean:
 	rm -rf csrc simv*
@@ -52,7 +52,7 @@ vcs-clean:
 vsim: deps
 	vlib work
 	vlog $(src_files)
-	vsim -c test -pli ../ruby-vpi.so -do "run -all"
+	vsim -c test -pli $(top)/ruby-vpi.so -do "run -all"
 
 vsim-clean:
 	rm -rf work
