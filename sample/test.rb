@@ -21,7 +21,7 @@
 
 puts "start of #{__FILE__}"
 
-
+require 'VPI'
 
 # handle the $ruby_init() task
 puts "inside $ruby_init"
