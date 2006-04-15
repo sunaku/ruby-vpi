@@ -32,7 +32,7 @@ module hw5_unit(
 		reg [`DATABITS-1:0]				in_databits_phase0;
 		reg [1:0]									in_op_phase0;
 
-		always @(posedge clk) begin
+		always @(*) begin
 			in_databits_phase0	<= in_databits;
 			in_op_phase0				<= in_op;
 		end
