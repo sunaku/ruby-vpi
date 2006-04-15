@@ -1,0 +1,127 @@
+PIPELINED ALU
+
+	This example is my solution to a homework assignment for an Advanced Logic Design class I had taken during the Winter of 2006 at University of California, Santa Cruz. Relevant portions of the problem have been revised and reproduced here with permission from the instructor: professor José Renau.
+
+
+
+PROBLEM
+
+	Implement the functionality for hw5 unit, a pipelined ALU:
+
+	`define  WIDTH      32
+	`define  DATABITS   7
+	`define  OP_NOP     0
+	`define  OP_ADD     1
+	`define  OP_SUB     2
+	`define  OP_MULT    3
+
+	module hw5_unit(
+			input                           clk
+			,input                          reset
+
+			// inputs
+			,input     [`DATABITS-1:0]      in_databits
+			,input     [`WIDTH-1:0]         a
+			,input     [`WIDTH-1:0]         b
+			,input     [1:0]                in_op
+
+			// outputs
+			,output reg [`WIDTH-1:0]        res
+			,output reg [`DATABITS-1:0]     out_databits
+			,output reg [1:0]               out_op
+	);
+
+
+	MAJOR POINTS
+
+	1. in_op selects the operation to perform (OP_NOP means no operation).
+
+	2. A new operation may be started every cycle.
+
+	3. OP_ADD must have 1 cycle latency.
+
+	4. OP_SUB must have 2 cycles latency.
+
+	5. OP_MULT must have 3 cycles latency.
+
+	6. There is only one result (res). Since three operations can finish every cycle, you need to buffer the other two. Note that since at most one operation starts per cycle, a 3-entry buffer should be enough.
+
+	7. Each operation has an associated tag (in_databits) which you must pass back with the result (out_databits). For example, if a OP_MULT operation is started with parameters a=2, b=4, in_databits=3; then after the multiplication finishes three cycles later, the outputs should be res=8, out_databits=3, out_op=OP_MULT.
+
+	8. The testbench used to verify this module must:
+
+		a. Test random combinations of positive, zero, one, prime numbers, power-of-two values from powers 1 to 32, and random numbers.
+
+		b. Execute random combinations of add, subtract, and multiply operations.
+
+		c. Perform tests for 4000 ALU operations.
+
+
+
+DESIGN
+
+	From the start, my approach was to use a single queue to solve the resource conflict (only one ALU can give an output per cycle). After drawing some sketches and understanding the problem, I wrote the following algorithm to solve the resource conflict:
+
+		def queue_results(a, b, c)
+			output a
+			enqueue b, c
+		end
+
+
+	We cannot perform all the operations in the queue_results method using only one cycle. However, if the queue_results method is not implemented as shown, then the design will not work---it will be chaotic and produce incoherent results.
+
+	The trick is to satisfy the post-conditions of the queue_results method (one result is outputted and the other two have been queued) using multiple clock cycles:
+
+		1. enqueue b
+		(remember a and c)
+
+		2. enqueue c
+		(remember a)
+
+		3. output a
+
+		or
+
+		1. enqueue b
+		(remember a and c)
+
+		2. enqueue c; output a
+		(nothing to remember)
+
+	Note that we cannot output the 'a' result during the first cycle because that would violate the post-conditions.
+
+
+	After gaining this understanding, I realized that a separate queue was wholly unnecessary. Instead, I could simply use pipeline registers to remember values until they were needed (i.e. the 'a' result is output only in the last cycle).
+
+	This approach uses exactly the same number of pipeline registers (three in this case) as the size of the queue suggested by the Professor. Also, this approach uses less storage than the three-queues (one for each ALU output; therefore 9 registers) approach suggested by the Professor.
+
+
+	Finally, I wrote a behavioral model (see MODEL section) of the RTL using Ruby and verified both my initial approach (magical single-cycle queueing of multiple items) and its later improvement (the pipeline-register approach).
+
+
+
+MODEL
+
+	$ cd tests
+	$ ruby -w TestHw5UnitModel.rb		# use the "-d" option for details
+
+
+	The model is written in Ruby and comes with a unit test which is similar to the Ruby-VPI test bench I wrote for the RTL implementation.
+
+
+
+TEST BENCH
+
+	$ ulimit -s unlimited
+	$ make VERILOG=$VCS_HOME VCS_FLAGS="-cc gcc32 -ld gcc32" vcs
+
+	... lots of output here ...
+
+	hw5_unit_tb.rb passed successfully!
+	CPU time: .120 seconds to compile + .268 seconds to link +
+	30.042 seconds in simulation
+
+
+
+	The test bench structure was ported from my unit test for the behavioral model of hw5_unit.
+
