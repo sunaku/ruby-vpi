@@ -83,9 +83,6 @@
 
 
 		// start Ruby interpreter
-		common_debug("gonna aquire ruby lock");
-		pthread_mutex_lock(&relay__rubyLock); /* block */
-		common_debug("aquired ruby lock");
 		ruby_run();	// FIXME: terminates the main process when used with vsim
 		return NULL;
 	}

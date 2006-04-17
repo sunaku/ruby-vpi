@@ -23,246 +23,26 @@
 
 
 	verilog_tf_funcSig(vlog_ruby_relay) {
-/*		vpiHandle
-			operandy_handle = vpi_handle_by_name("my_div32.operandy", NULL)
-			, operand1_handle = vpi_handle_by_name("my_div32.operand1", NULL)
-			, operand2_handle = vpi_handle_by_name("my_div32.operand2", NULL)
-			, signed_op_handle = vpi_handle_by_name("my_div32.signed_op", NULL)
-			, status_handle = vpi_handle_by_name("my_div32.status", NULL)
-			, result_handle = vpi_handle_by_name("my_div32.result", NULL)
-			;
-
-		s_vpi_value val;
-
-
-		vpi_printf("@@@rbvpi: object my_div32.operandy is named %s\n", vpi_get_str(vpiName, operandy_handle));
-
-
-		// set the outputs from Verilog as Ruby globals
-		val.format = vpiIntVal;
-
-		vpi_get_value(operandy_handle, &val);
-		g_operandy = INT2NUM(val.value.integer);
-
-		vpi_get_value(operand1_handle, &val);
-		g_operand1 = INT2NUM(val.value.integer);
-
-		vpi_get_value(operand2_handle, &val);
-		g_operand2 = INT2NUM(val.value.integer);
-
-		vpi_get_value(signed_op_handle, &val);
-		g_signed_op = val.value.integer ? Qtrue : Qfalse;
-
-		vpi_get_value(status_handle, &val);
-		g_status = INT2NUM(val.value.integer);
-
-		vpi_get_value(result_handle, &val);
-		g_result = INT2NUM(val.value.integer);
-
-		// NOTE: lesson learned: wires in the module's interface are vpiIntVal objects in VPI!
-		// NOTE: do *NOT* use vpi_get() to get the value of a wire.. it does NOT work. Instead, use vpi_get_value(), with format = vpiIntVal
-
-		vpi_printf("@@@rbvpi: format of operandy's value: %d\n", val.format);
-		vpi_printf("@@@rbvpi: value of operandy's value: %d\n", val.value);
-		vpi_printf("@@@rbvpi: value of operandy's value, as integer: %d\n", val.value.integer);
-		// vpi_printf("@@@rbvpi: vpi_get(vpiVectorVal) of operandy's value: %d\n", vpi_get(vpiVectorVal, operandy_handle));
-		// vpi_printf("@@@rbvpi: vpi_get(vpiIntVal) of operandy's value: %d\n", vpi_get(vpiIntVal, operandy_handle));
-
-
-		// g_operandy = INT2NUM(vpi_get(vpiIntVal, operandy_handle));
-		// g_operand1 = INT2NUM(vpi_get(vpiIntVal, operand1_handle));
-		// g_operand2 = INT2NUM(vpi_get(vpiIntVal, operand2_handle));
-		// g_signed_op = INT2NUM(vpi_get(vpiIntVal, signed_op_handle));
-		// g_status = INT2NUM(vpi_get(vpiIntVal, status_handle));
-		// g_result = INT2NUM(vpi_get(vpiIntVal, result_handle));
-
-
-
-		// invoke Ruby code
-		puts("-> ruby");
-		relay_ruby(); // wait for relay_verilog();
-
-
-		// set the inputs to Verilog from Ruby globals
-		val.format = vpiIntVal;
-
-		val.value.integer = NUM2LONG(g_operandy);
-		// vpi_printf("@@@rbvpi: operandy = %d, $operandy = long %ld : int %d\n", val.value.integer, NUM2LONG(g_operandy), NUM2INT(g_operandy));
-		vpi_put_value(operandy_handle, &val, NULL, vpiNoDelay);
-
-		val.value.integer = NUM2LONG(g_operand1);
-		vpi_put_value(operand1_handle, &val, NULL, vpiNoDelay);
-
-		val.value.integer = NUM2LONG(g_operand2);
-		vpi_put_value(operand2_handle, &val, NULL, vpiNoDelay);
-
-		val.value.integer = RTEST(g_signed_op);
-		vpi_put_value(signed_op_handle, &val, NULL, vpiNoDelay);
-*/
-
-		// invoke Ruby code
-		puts("-> ruby");
-		relay_ruby(); // wait for relay_verilog();
+		// transfer control to ruby
+		common_printf("verilog -> ruby");
+		relay_ruby();
 
 
 		// transfer control to verilog
-		puts("-> verilog");
+		common_printf("ruby -> verilog");
 		verilog_tf_funcReturn(0);
 	}
 
 	verilog_tf_funcSig(vlog_ruby_init) {
+		// setup control transfer mechanism
 		relay_init();
+
+
+		// start ruby interpreter
 		relay_ruby_run();
-		// the Ruby code will now bind any additional callbacks via the VPI infrastructure, and relay back to the verilog so that the simulation can begin
-		verilog_tf_funcReturn(0);
-	}
 
-	verilog_tf_funcSig(vlog_task_handler) {
-		vpiHandle vCall = vpi_handle(vpiSysTfCall, NULL);
-
-		if(vCall) {
-			VALUE rCallArgs = vlog_task_args(NULL);
-			assert(RTEST(rb_check_array_type(rCallArgs)));
-
-			if(RARRAY(rCallArgs)->len > 0) {
-				// determine the name of the task which was called
-				VALUE rName = rb_ary_shift(rCallArgs);
-
-
-				// invoke the proc associated with the called task
-				VALUE rTask = rb_hash_aref(RVPI__rTaskRegistry, rName);
-
-				if(rTask != Qnil) {
-					rb_funcall2(rTask, rb_intern("call"), RARRAY(rCallArgs)->len, RARRAY(rCallArgs)->ptr);
-				}
-				else {
-					PLI_BYTE8* name = StringValueCStr(rName);
-					common_printf("error: task not registered: %s", name); // TODO: make a big fuss about the error
-				}
-			}
-			else {
-				PLI_BYTE8* name = vpi_get_str(vpiName, vCall);
-				common_printf("error: not enough arguments for systf: %s", name); // TODO: make a big fuss about the error
-			}
-		}
 
 		verilog_tf_funcReturn(0);
-	}
-
-	static VALUE vlog_task_args(vpiHandle avTask) {
-		VALUE rCallArgs = rb_ary_new();
-
-		// transform the arguments passed to this function (from Verilog) into command-line arguments for Ruby interpeter
-		vpiHandle vCall = vpi_handle(vpiSysTfCall, avTask);
-
-		if(vCall) {
-			vpiHandle vCallArgs = vpi_iterate(vpiArgument, vCall);
-
-			if(vCallArgs) {
-				vpiHandle vArg;
-
-				while((vArg = vpi_scan(vCallArgs)) != NULL) {
-					s_vpi_value argVal;
-					argVal.format = vpiObjTypeVal;
-
-					vpi_get_value(vArg, &argVal);
-
-					/**
-						Page 717 in IEEE Std 1364-2001 Version C:
-
-						When the format field is vpiObjTypeVal, the routine shall fill in the value and change the format field based on the object type, as follows:
-							- For an integer, vpiIntVal
-							- For a real, vpiRealVal
-							- For a scalar, either vpiScalar or vpiStrength
-							- For a time variable, vpiTimeVal with vpiSimTime
-							- For a vector, vpiVectorVal
-					*/
-					// /* generic value */
-					// typedef struct t_vpi_value
-					// {
-						// PLI_INT32 format; /* vpi[[Bin,Oct,Dec,Hex]Str,Scalar,Int,Real,String,
-																		 // Vector,Strength,Suppress,Time,ObjType]Val */
-						// union
-							// {
-								// PLI_BYTE8                *str;       /* string value */
-								// PLI_INT32                 scalar;    /* vpi[0,1,X,Z] */
-								// PLI_INT32                 integer;   /* integer value */
-								// double                    real;      /* real value */
-								// struct t_vpi_time        *time;      /* time value */
-								// struct t_vpi_vecval      *vector;    /* vector value */
-								// struct t_vpi_strengthval *strength;  /* strength value */
-								// void	               *p_agg_value_handle; /* agg valHandle */
-							// } value;
-					// } s_vpi_value, *p_vpi_value;
-					switch(argVal.format) {
-						// TODO: add support for all kinds of VPI call arguments
-						case vpiBinStrVal:
-						case vpiOctStrVal:
-						case vpiDecStrVal:
-						case vpiHexStrVal:
-							// TODO: process these "number" strings into maybe an array of numbers.. or wrap them in a container that knows their base (2, 8, 10, 16)
-							common_debug("TODO: got a vpi{Bin,Oct,Dec,Hex}StrVal: %s", argVal.value.str);
-
-						case vpiScalarVal:
-							common_debug("got vpiScalarVal: %d", argVal.value.integer);
-							// TODO: wrap vpiScalarVal
-							rb_ary_push(rCallArgs, INT2NUM(argVal.value.scalar));
-						break;
-
-						case vpiIntVal:
-							common_debug("got vpiIntVal: %d", argVal.value.integer);
-							rb_ary_push(rCallArgs, INT2NUM(argVal.value.integer));
-						break;
-
-						case vpiRealVal:
-							common_debug("got vpiRealVal: %g", argVal.value.real);
-							rb_ary_push(rCallArgs, rb_dbl2big(argVal.value.real));
-						break;
-
-						case vpiStringVal:
-							common_debug("got vpiStringVal: %s", argVal.value.str);
-							rb_ary_push(rCallArgs, rb_str_new2(argVal.value.str));
-						break;
-
-						case vpiVectorVal:
-							common_debug("ignoring vpiVectorVal");
-							// TODO: wrap t_vpi_vecval
-						break;
-
-						case vpiStrengthVal:
-							common_debug("ignoring vpiStrengthVal");
-							// TODO: wrap t_vpi_strengthval
-						break;
-
-						case vpiTimeVal:
-							common_debug("ignoring vpiTimeVal");
-							// TODO: wrap t_vpi_time
-						break;
-
-						case vpiObjTypeVal:
-							common_debug("ignoring vpiObjTypeVal");
-							// TODO: what to do with vpiObjTypeVal???
-						break;
-
-						case vpiSuppressVal:
-							common_debug("ignoring vpiSuppressVal");
-						break;
-
-						#ifdef HAVE_VPIAGGREGATEVAL
-						case vpiAggregateVal:	// system verilog only
-							// TODO: wrap (void*) p_agg_value_handle
-						break;
-						#endif
-
-						default:
-							common_printf("error: got unknown value format: %d", argVal.format);
-							// TODO: make a big fuss about this error
-					}
-				}
-			}
-		}
-
-		return rCallArgs;
 	}
 
 	#ifndef SYNOPSYS_VCS
@@ -286,7 +66,6 @@
 		static void vlog_startup() {
 			vlog_bind_task("$ruby_init", vlog_ruby_init);
 			vlog_bind_task("$ruby_relay", vlog_ruby_relay);
-			// vlog_bind_task("$ruby_task", vlog_task_handler);
 		}
 
 		void (*vlog_startup_routines[])() = { vlog_startup, 0 };

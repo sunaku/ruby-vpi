@@ -26,10 +26,6 @@ require 'VPI'
 # handle the $ruby_init() task
 puts "inside $ruby_init"
 
-	# register some tasks
-	VPI::register_task("hello") { |*a| puts "hello #{ a.join(', ') }" }
-
-
 	# test VPI::handle
 	begin
 		h1 = VPI::Handle.new

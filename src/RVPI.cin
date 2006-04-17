@@ -21,7 +21,6 @@ void Init_RVPI() {
 	// register the VPI module
 	RVPI__rModuleDef = rb_define_module("VPI");
 	rb_define_module_function(RVPI__rModuleDef, "relay_verilog", RVPI_rb_relay_verilog, 0);
-	rb_define_module_function(RVPI__rModuleDef, "register_task", RVPI_rb_register_task, 1);
 	rb_define_module_function(RVPI__rModuleDef, "handle_by_name", RVPI_rb_handle_by_name, -1);
 
 	// rb_define_module_function(RVPI__rModuleDef, "control", RVPI_rb_control, -1);
@@ -36,40 +35,6 @@ void Init_RVPI() {
 
 static VALUE RVPI_rb_relay_verilog(VALUE arSelf) {
 	relay_verilog();
-	return arSelf;
-}
-
-static VALUE RVPI_rb_register_task(VALUE arSelf, VALUE arTaskName) {
-	// create registry if necessary
-	if(RVPI__rTaskRegistry == Qnil) {
-		RVPI__rTaskRegistry = rb_hash_new();
-	}
-
-
-	VALUE rName = rb_str_to_str(arTaskName);
-	PLI_BYTE8* name = (PLI_BYTE8*)StringValueCStr(rName);
-
-
-	// raise if no block given
-	if(!rb_block_given_p()) {
-		rb_raise(rb_eArgError, "no block given for task: %s", name);
-	}
-
-
-	// raise if task name already registered
-	if(rb_hash_aref(RVPI__rTaskRegistry, rName) != Qnil) {
-		rb_raise(rb_eArgError, "task has already been registered: %s", name);
-	}
-
-
-	// register the task
-	VALUE rTask = rb_block_proc();	// convert the given block into a proc, which we can later call
-	rb_hash_aset(RVPI__rTaskRegistry, rName, rTask);
-	assert(rb_hash_aref(RVPI__rTaskRegistry, rName) == rTask);
-
-	common_debug("registered task: %s", name);
-
-
 	return arSelf;
 }
 
