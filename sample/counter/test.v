@@ -39,11 +39,11 @@ module test;
 
 
 		// test some Ruby-VPI tasks
-		#10 $ruby_task("hello");
-		$ruby_task("hello", "world");
-		$ruby_task("hello", 3, "foo", "baz", 5, "moz");
-		$ruby_task("bogus task");
-		$ruby_task();
+		// #10 $ruby_task("hello");
+		// $ruby_task("hello", "world");
+		// $ruby_task("hello", 3, "foo", "baz", 5, "moz");
+		// $ruby_task("bogus task");
+		// $ruby_task();
 	end
 
 

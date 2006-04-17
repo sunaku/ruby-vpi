@@ -14,6 +14,7 @@
 #ifndef RELAY_CIN
 #define RELAY_CIN
 
+	#include <stdlib.h>
 	#include <pthread.h>
 	#include <ruby.h>
 	#include "relay.hin"
@@ -39,14 +40,98 @@
 		pthread_mutex_lock(&relay__rubyLock);
 	}
 
-	static void* ruby_run_handshake(void* dummy) {
+	typedef struct {
+		PLI_BYTE8** args;
+		uint count;
+	} relay__RubyOptions__def;
+
+	/**
+		@param	apRubyOptions	relay__RubyOptions__def structure which contains command-line options passsed to the Ruby interpreter.
+		@note	The structure will be freed *deeply* after use.
+	*/
+	static void* ruby_run_handshake(void* apRubyOptions) {
+		// initialize Ruby interpreter
+		ruby_init();
+		ruby_init_loadpath();
+
+		relay__RubyOptions__def* pRubyOptions = (relay__RubyOptions__def*) apRubyOptions;
+
+		PLI_BYTE8** argv = pRubyOptions->args;
+		uint argc = pRubyOptions->count;
+
+		common_debug("got %d options => %p", argc, argv);
+
+		uint i;
+		for (i = 0; i < argc; i++) {
+			common_debug("passing option %d to ruby: %s", i, argv[i]);
+		}
+
+		ruby_options(argc, argv);
+
+		// free the memory used by command-line options
+		for (i = 0; i < argc; i++) {
+			common_debug("freeing option %d => %s", i, argv[i]);
+			free(argv[i]);
+		}
+
+		free(argv);
+		free(pRubyOptions);
+
+
+		// create VPI infrastructure so that Ruby code can use it
+		Init_RVPI(); // TODO: add full VPI support
+
+
+		// start Ruby interpreter
+		common_debug("gonna aquire ruby lock");
 		pthread_mutex_lock(&relay__rubyLock); /* block */
+		common_debug("aquired ruby lock");
 		ruby_run();	// FIXME: terminates the main process when used with vsim
 		return NULL;
 	}
 
-	static inline void relay_ruby_run() {
-		pthread_create(&relay__rubyThread, 0, ruby_run_handshake, 0);
+	static void relay_ruby_run() {
+		relay__RubyOptions__def* pRubyOptions = malloc(sizeof(relay__RubyOptions__def));
+
+		if (pRubyOptions) {
+			pRubyOptions->args = NULL;
+			pRubyOptions->count = 0;
+
+			// transform the arguments passed to this function by Verilog into command-line arguments for Ruby interpeter
+			vpiHandle vCall = vpi_handle(vpiSysTfCall, NULL);
+
+			if (vCall) {
+				vpiHandle vCallArgs = vpi_iterate(vpiArgument, vCall);
+
+				if (vCallArgs) {
+					vpiHandle vArg;
+					s_vpi_value argVal;
+					argVal.format = vpiStringVal;
+
+					while ((vArg = vpi_scan(vCallArgs)) != NULL) {
+						vpi_get_value(vArg, &argVal);
+						common_debug("created option %d => %s", pRubyOptions->count, argVal.value.str);
+
+						pRubyOptions->count++;
+
+
+						if (pRubyOptions->args == NULL)
+							pRubyOptions->args = malloc(sizeof(PLI_BYTE8*) * pRubyOptions->count);
+						else
+							pRubyOptions->args = realloc(pRubyOptions->args, sizeof(PLI_BYTE8*) * pRubyOptions->count);
+
+						pRubyOptions->args[pRubyOptions->count-1] = strdup(argVal.value.str);
+					}
+				}
+			}
+
+
+			common_debug("passed %d options => %p", pRubyOptions->count, pRubyOptions->args);
+			pthread_create(&relay__rubyThread, 0, ruby_run_handshake, pRubyOptions);
+		}
+		else {
+			common_printf("error: unable to allocate memory for Ruby's command-line options.");
+		}
 	}
 
 #endif
