@@ -4,10 +4,13 @@
 
 require 'InputGenerator'
 require 'Hw5UnitModel'
+require 'test/unit'
 # require 'pp'
 
 
 class TestHw5Unit
+	include Test::Unit::Assertions
+
 	NUM_VECTORS = 4000
 
 	VPI_INTEGER_MASK = (2 ** 32) - 1
@@ -35,11 +38,6 @@ class TestHw5Unit
 		@dut_out_result = VPI::handle_by_name("hw5_unit_tb.out_result")
 		@dut_out_tag = VPI::handle_by_name("hw5_unit_tb.out_tag")
 		@dut_out_type = VPI::handle_by_name("hw5_unit_tb.out_type")
-	end
-
-
-	def assert_equal(expected, given, message = "")
-		raise "#{message}\n expected: <#{expected}> given: <#{given}>" unless expected == given
 	end
 
 
