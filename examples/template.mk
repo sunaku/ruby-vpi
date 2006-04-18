@@ -9,7 +9,7 @@ LIB_PTHREAD = -lpthread
 
 all: deps
 
-clean: deps-clean ivl-clean vcs-clean vsim-clean
+clean: deps-clean ivl-clean vcs-clean msim-clean
 
 
 deps:
@@ -41,10 +41,10 @@ vcs-clean:
 
 
 # Mentor ModelSim
-vsim: deps
+msim: deps
 	vlib work
 	vlog $(src_files)
 	vsim -c $(src_module) -pli $(top_dir)/ruby-vpi.so -do "run -all"
 
-vsim-clean:
+msim-clean:
 	rm -rf work
