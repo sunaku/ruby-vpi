@@ -1,7 +1,7 @@
 # A template to simplify makefiles for examples.
 
 make_deps = cd $(top_dir) && make
-vcs_table = $(top_dir)/sample/synopsys_vcs.tab
+vcs_table = $(top_dir)/examples/synopsys_vcs.tab
 
 
 all: deps
