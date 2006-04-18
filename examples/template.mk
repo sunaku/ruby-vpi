@@ -3,6 +3,9 @@
 make_deps = cd $(top_dir) && make
 vcs_table = $(top_dir)/examples/synopsys_vcs.tab
 
+LIB_RUBY = -lruby
+LIB_PTHREAD = -lpthread
+
 
 all: deps
 
@@ -31,7 +34,7 @@ ivl-clean:
 # Synopsys VCS
 vcs:
 	make deps CFLAGS="-DSYNOPSYS_VCS"
-	vcs -R +v2k +vpi -LDFLAGS "$(top_dir)/../ruby-vpi.o -lruby -lpthread" $(VCS_FLAGS) -P $(vcs_table) $(src_files)
+	vcs -R +v2k +vpi -LDFLAGS "$(top_dir)/../ruby-vpi.o $(LIB_RUBY) $(LIB_PTHREAD)" $(VCS_FLAGS) -P $(vcs_table) $(src_files)
 
 vcs-clean:
 	rm -rf csrc simv*
