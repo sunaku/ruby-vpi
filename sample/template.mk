@@ -1,3 +1,5 @@
+# A template to simplify makefiles for examples.
+
 make_deps = cd $(top_dir) && make
 vcs_table = $(top_dir)/sample/synopsys_vcs.tab
 
@@ -7,18 +9,13 @@ all: deps
 clean: deps-clean ivl-clean vcs-clean vsim-clean
 
 
-deps: base-deps
+deps:
+	$(make_deps)
 	cp $(top_dir)/src/VPI.rb .
 
-deps-clean: base-deps-clean
-	rm -f VPI.rb
-
-
-base-deps:
-	$(make_deps)
-
-base-deps-clean:
+deps-clean:
 	$(make_deps) clean
+	rm -f VPI.rb
 
 
 # Icarus Verilog
@@ -33,9 +30,7 @@ ivl-clean:
 
 # Synopsys VCS
 vcs:
-	$(make_deps) CFLAGS="-DSYNOPSYS_VCS"
-	make base-deps
-
+	make deps CFLAGS="-DSYNOPSYS_VCS"
 	vcs -R +v2k +vpi -LDFLAGS "$(top_dir)/../ruby-vpi.o -lruby -lpthread" $(VCS_FLAGS) -P $(vcs_table) $(src_files)
 
 vcs-clean:
