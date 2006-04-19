@@ -17,7 +17,13 @@
 	#include <stdlib.h>
 	#include <pthread.h>
 	#include <ruby.h>
+
+	#include "verilog.h"
+	#include "common.h"
+
 	#include "relay.hin"
+	#include "swig.hin"
+
 
 	static pthread_t relay__rubyThread;
 	static pthread_mutex_t relay__rubyLock;
@@ -77,9 +83,8 @@
 		free(argv);
 		free(pRubyOptions);
 
-
-		// create VPI infrastructure so that Ruby code can use it
-		Init_RVPI(); // TODO: add full VPI support
+		// Init_RVPI();
+		swig_init();
 
 
 		// start Ruby interpreter

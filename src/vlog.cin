@@ -16,9 +16,7 @@
 
 	#include <assert.h>
 	#include "common.h"
-	#include "verilog.h"
 	#include "relay.hin"
-	#include "RVPI.hin"
 	#include "vlog.hin"
 
 

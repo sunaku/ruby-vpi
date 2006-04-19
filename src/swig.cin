@@ -11,18 +11,20 @@
 	You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-/**\file
-	The Ruby-VPI extension, in a nutshell.
-*/
+#include "swig.hin"
+#include "relay.hin"
+#include "common.h"
 
-#ifdef __cplusplus
-	extern "C" {
-#endif
 
-	#include "swig.cin"
-	#include "vlog.cin"
-	#include "relay.cin"
+#include "swig_wrap.cin"
 
-#ifdef __cplusplus
-	}
-#endif
+
+static void swig_init() {
+	Init_vpi();
+	rb_define_module_function(mVpi, "relay_verilog", swig_rb_relay_verilog, 0);
+}
+
+static VALUE swig_rb_relay_verilog(VALUE arSelf) {
+	relay_verilog();
+	return arSelf;
+}

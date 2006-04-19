@@ -17,7 +17,6 @@
 #ifndef VLOG_HIN
 #define VLOG_HIN
 
-	#include <ruby.h>
 	#include "verilog.h"
 
 

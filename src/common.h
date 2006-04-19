@@ -17,7 +17,6 @@
 #define	COMMON_H
 
 	#include "verilog.h"
-	#include <stdint.h>
 
 
 	/**
