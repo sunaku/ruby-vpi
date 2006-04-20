@@ -16,8 +16,15 @@ clean: swig-clean ruby-vpi-clean
 ruby-vpi: Makefile
 	make -f Makefile
 
-Makefile: $(src_dir)/vpi_user.h
+ruby-vpi-clean:
+	-make -f Makefile distclean
+
+
+Makefile: swig
 	ruby $(src_dir)/extconf.rb --with-cflags="$(cflags)" --with-verilog-dir="$(VERILOG)" $(OPTIONS)
+
+
+swig: $(src_dir)/vpi_user.h
 
 $(src_dir)/vpi_user.h:
 	cp $(VERILOG)/vpi_user.h $(src_dir)
@@ -26,6 +33,3 @@ $(src_dir)/vpi_user.h:
 swig-clean:
 	rm -f $(src_dir)/vpi_user.h $(src_dir)/swig_wrap.cin
 
-ruby-vpi-clean:
-	-make -f Makefile clean
-	rm -f Makefile mkmf.log
