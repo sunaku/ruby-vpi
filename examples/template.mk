@@ -14,11 +14,11 @@ clean: deps-clean ivl-clean vcs-clean msim-clean
 
 deps:
 	$(make_deps)
-	cp $(top_dir)/src/VPI.rb .
+	cp $(top_dir)/src/vpi.rb .
 
 deps-clean:
 	$(make_deps) clean
-	rm -f VPI.rb
+	rm -f vpi.rb
 
 
 # Icarus Verilog

@@ -19,68 +19,56 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 =end
 
-puts "start of #{__FILE__}"
-
-require 'VPI'
+require 'vpi'
 
 # handle the $ruby_init() task
 puts "inside $ruby_init"
-
-	# test VPI::handle
-	begin
-		h1 = VPI::Handle.new
-		h2 = h1.dup
-		raise unless h1 == h2
-	end
-
-
-	# test VPI::handle_by_name
-	begin
-		VPI::handle_by_name("", 0)
-	rescue TypeError
-	else
-		raise "parent must be a Handle"
-	end
-
-VPI::relay_verilog
-
+Vpi::relay_verilog
 
 
 # handle the $ruby_relay() task
-100.times do |i|
-	puts "#{i}: inside $relay_ruby"
+class TestCounter
+	include Vpi
 
-		# test getting and setting of 1-bit register or wire
-		if i == 5
-			c1_clock = VPI::handle_by_name("test.c1.clock")
-			puts c1_clock.value
+	def run
+		100.times do |i|
+			puts "#{i}: inside $relay_ruby"
 
-			c1_clock.value = 0
-			puts c1_clock.value
+				# test getting and setting of 1-bit register or wire
+				if i == 5
+					c1_clock = vpi_handle_by_name("test.c1.clock", nil)
+					puts c1_clock.value(VpiIntVal)
 
-			clk_reg = VPI::handle_by_name("test.clk_reg")
-			p clk_reg.value
+					c1_clock.put_value 0, VpiIntVal
+					puts c1_clock.value(VpiIntVal)
 
-			raise unless clk_reg == c1_clock
+					clk_reg = vpi_handle_by_name("test.clk_reg", nil)
+					puts clk_reg.value(VpiIntVal)
+				end
+
+
+				# test resetting of counter
+				if i == 10
+					reset = vpi_handle_by_name("test.c1.reset", nil)
+
+					puts "resetting counter"
+					reset.put_value 1, VpiIntVal
+				end
+
+
+				# test simulator control functions
+				if i == 15
+					if Time.now.sec > 30
+						vpi_control(VpiStop)
+					else
+						vpi_control(VpiFinish)
+					end
+				end
+
+			# transfer control back to Verilog code
+			relay_verilog
 		end
-
-
-		# test resetting of counter
-		if i == 10
-			reset = VPI::handle_by_name("test.c1.reset")
-
-			puts "resetting counter"
-			reset.value = 1
-		end
-
-
-		# test simulator control functions
-		VPI::stop if i == 15
-		VPI::finish if i == 20
-
-	# transfer control back to Verilog code
-	VPI::relay_verilog
+	end
 end
 
-
-puts "end of #{__FILE__}"
+TestCounter.new.run
