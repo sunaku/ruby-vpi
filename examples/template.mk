@@ -21,8 +21,17 @@ deps-clean:
 	rm -f vpi.rb
 
 
+# Pragmatic C - Cver
+cver:
+	make deps CFLAGS="-DPRAGMATIC_CVER -fPIC" LDFLAGS="-export-dynamic"
+	cver +loadvpi=$(top_dir)/ruby-vpi.so:vlog_startup_routines_bootstrap $(src_files)
+
+cver-clean:
+
+
 # Icarus Verilog
 ivl: deps
+	make deps CFLAGS="-DICARUS_VERILOG"
 	cp $(top_dir)/ruby-vpi.so ruby-vpi.vpi
 	iverilog -y. -mruby-vpi $(src_files)
 	vvp -M. a.out
@@ -41,7 +50,8 @@ vcs-clean:
 
 
 # Mentor ModelSim
-msim: deps
+msim:
+	make deps CFLAGS="-DMENTOR_MODELSIM"
 	vlib work
 	vlog $(src_files)
 	vsim -c $(src_module) -pli $(top_dir)/ruby-vpi.so -do "run -all"

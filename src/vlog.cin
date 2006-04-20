@@ -44,13 +44,13 @@
 	}
 
 	#ifndef SYNOPSYS_VCS
-		static void vlog_bind_task(PLI_BYTE8* aTaskName, verilog_tf_funcPtr(aTaskDef)) {
+		static void vlog_bind_task(PLI_BYTE8* apTaskName, verilog_tf_funcPtr(apTaskDef)) {
 			s_vpi_systf_data tf;
 
 			tf.type = vpiSysTask;
 			tf.sysfunctype = 0;
-			tf.tfname = aTaskName;
-			tf.calltf = (verilog_tf_funcPtr_strict())aTaskDef;
+			tf.tfname = apTaskName;
+			tf.calltf = (verilog_tf_funcPtr_strict())apTaskDef;
 			tf.compiletf = NULL;
 			tf.sizetf = NULL;
 			tf.user_data = NULL;
@@ -67,6 +67,19 @@
 		}
 
 		void (*vlog_startup_routines[])() = { vlog_startup, 0 };
+
+		#ifdef PRAGMATIC_CVER
+			/**
+				Invokes each routine specified in the vlog_startup_routines array.
+
+				This code was originally taken from GPL Cver 2.11a: Copyright (c) 1991-2005 Pragmatic C Software Corp.
+			*/
+			static void vlog_startup_routines_bootstrap() {
+				uint i;
+				for (i = 0; vlog_startup_routines[i] != NULL; i++)
+					vlog_startup_routines[i]();
+			}
+		#endif
 	#endif
 
 #endif

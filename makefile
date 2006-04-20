@@ -5,6 +5,11 @@ VERILOG = /usr/include
 cflags = `ruby -r mkmf -e 'cflags = $$configure_args["--cflags"]; puts cflags if cflags'`
 cflags += -g -DDEBUG $(CFLAGS)
 
+ldflags = `ruby -r mkmf -e 'ldflags = $$configure_args["--ldflags"]; puts ldflags if ldflags'`
+ldflags += $(LDFLAGS)
+
+
+# path to Ruby-VPI source code directory
 src_dir = src
 
 
@@ -21,7 +26,7 @@ ruby-vpi-clean:
 
 
 Makefile: swig
-	ruby $(src_dir)/extconf.rb --with-cflags="$(cflags)" --with-verilog-dir="$(VERILOG)" $(OPTIONS)
+	ruby $(src_dir)/extconf.rb --with-cflags="$(cflags)" --with-ldflags="$(ldflags)" --with-verilog-include="$(VERILOG)" $(OPTIONS)
 
 
 swig: $(src_dir)/vpi_user.h
