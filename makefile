@@ -32,7 +32,7 @@ Makefile: swig
 swig: $(src_dir)/vpi_user.h
 
 $(src_dir)/vpi_user.h:
-	cp $(VERILOG)/vpi_user.h $(src_dir)
+	sed 's/va_list/int/g' $(VERILOG)/vpi_user.h > $(src_dir)/vpi_user.h
 	swig -ruby -o $(src_dir)/swig_wrap.cin $(src_dir)/vpi_user.i
 
 swig-clean:
