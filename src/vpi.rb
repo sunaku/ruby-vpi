@@ -12,12 +12,9 @@
 	You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 =end
 
-module Vpi
-end
-
 module SWIG
 	# A wrapper for the +vpiHandle+ object.
-	class TYPE_p___vpiHandle
+	class TYPE_p_unsigned_int
 		include Vpi
 
 		def get_value(aFormat = VpiObjTypeVal)
@@ -25,6 +22,8 @@ module SWIG
 			val.format = aFormat
 
 			vpi_get_value self, val
+
+			puts "sent format: #{aFormat}, got format: #{val.format}"
 			val
 		end
 
@@ -32,8 +31,20 @@ module SWIG
 			val = get_value(*args)
 
 			case val.format
-				when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal, VpiStringVal
-					val.value.str
+				when VpiBinStrVal
+					newVal.value.str.to_i(2)
+
+				when VpiOctStrVal
+					newVal.value.str.to_i(8)
+
+				when VpiDecStrVal
+					newVal.value.str.to_i(10)
+
+				when VpiHexStrVal
+					newVal.value.str.to_i(16)
+
+				when VpiStringVal
+					newVal.value.str.dup
 
 				when VpiScalarVal
 					val.value.scalar
@@ -54,7 +65,7 @@ module SWIG
 					val.value.strength
 
 				else
-					raise
+					raise "unknown S_vpi_value.format: #{val.format}"
 			end
 		end
 
@@ -63,8 +74,20 @@ module SWIG
 			newVal.format = aFormat || self.get_value.format
 
 			case newVal.format
-				when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal, VpiStringVal
-					newVal.value.str = aValue
+				when VpiBinStrVal
+					newVal.value.str = aValue.to_s(2)
+
+				when VpiOctStrVal
+					newVal.value.str = aValue.to_s(8)
+
+				when VpiDecStrVal
+					newVal.value.str = aValue.to_s(10)
+
+				when VpiHexStrVal
+					newVal.value.str = aValue.to_s(16)
+
+				when VpiStringVal
+					newVal.value.str = aValue.dup
 
 				when VpiScalarVal
 					newVal.value.scalar = aValue
@@ -85,7 +108,7 @@ module SWIG
 					newVal.value.strength = aValue
 
 				else
-					raise
+					raise "unknown S_vpi_value.format: #{newVal.format}"
 			end
 
 			vpi_put_value self, newVal, aTime, aDelay

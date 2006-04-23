@@ -10,34 +10,22 @@
 	You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 /**\file
-	Proxy for all Verilog headers of interest to us.
+	A proxy for all Verilog headers of interest to us.
 */
 
 #ifndef VERILOG_H
 #define	VERILOG_H
 
-	/* Verilog simulator specific stuff. */
+	// Use our verbatim copy of the official IEEE Std. 1364-2005 header file, which was obtained from this URL: <http://www.boydtechinc.com/ptf/archive/ptf_2005/0737.html>
+	#include "vpi_user.h"
+
+
+	// Adjust for the peculiarities of the Verilog simulator being used.
 	#ifdef SYNOPSYS_VCS
 		#define VERILOG_LENIENT
 	#endif
 
-
-	/* Ensure that PLI_* storage types comply with IEEE Std 1364-2001 Version C (vpi_user.h), regardless of the Verilog simulator used. */
-	#ifndef PLI_TYPES
-		#define PLI_TYPES
-
-		#define PLI_INT32 int
-		#define PLI_UINT32 unsigned int
-		#define PLI_INT16 short
-		#define PLI_UINT16 unsigned short
-		#define PLI_BYTE8 char
-		#define PLI_UBYTE8 unsigned char
-	#endif
-
-	#include <vpi_user.h>
-
-
-	/* Do we want to enforce strict compliance with IEEE Std. 1364-2001? If so, Ruby-VPI might not work with Synopsys VCS, but that's not our fault. ;-) */
+	// Do we want to enforce strict compliance with IEEE Std. 1364-2001? If so, Ruby-VPI might not work with Synopsys VCS, but that's not our fault. ;-)
 	#define verilog_tf_funcPtr_strict(aPtrName)	\
 		PLI_INT32 (*aPtrName)(PLI_BYTE8*)
 

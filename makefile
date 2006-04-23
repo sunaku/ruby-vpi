@@ -29,12 +29,12 @@ Makefile: swig
 	ruby $(src_dir)/extconf.rb --with-cflags="$(cflags)" --with-ldflags="$(ldflags)" --with-verilog-include="$(VERILOG)" $(OPTIONS)
 
 
-swig: $(src_dir)/vpi_user.h
+swig: $(src_dir)/swig_wrap.cin
 
-$(src_dir)/vpi_user.h:
-	sed 's/va_list/int/g' $(VERILOG)/vpi_user.h > $(src_dir)/vpi_user.h
-	swig -ruby -o $(src_dir)/swig_wrap.cin $(src_dir)/vpi_user.i
+$(src_dir)/swig_wrap.cin:
+	sed 's/va_list/int/g' $(src_dir)/vpi_user.h > $(src_dir)/vpi.h
+	swig -ruby -o $(src_dir)/swig_wrap.cin $(src_dir)/vpi.i
 
 swig-clean:
-	rm -f $(src_dir)/vpi_user.h $(src_dir)/swig_wrap.cin
+	rm -f $(src_dir)/vpi.h $(src_dir)/swig_wrap.cin
 
