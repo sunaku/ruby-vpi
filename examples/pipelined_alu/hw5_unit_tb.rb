@@ -20,7 +20,7 @@
 
 # Note: DUT means "design under test"
 
-require 'vpi'
+require 'vpi_util'
 require 'InputGenerator'
 require 'Hw5UnitModel'
 require 'test/unit'

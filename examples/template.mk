@@ -4,6 +4,7 @@ make_deps = cd $(top_dir) && make
 vcs_table = $(top_dir)/examples/synopsys_vcs.tab
 
 LIB_RUBY = -lruby
+#`ruby -r rbconfig -e 'include Config; puts "-L#{CONFIG["libdir"]} #{CONFIG["LIBRUBYARG"]}"'`
 LIB_PTHREAD = -lpthread
 
 
@@ -14,11 +15,11 @@ clean: deps-clean ivl-clean vcs-clean msim-clean
 
 deps:
 	$(make_deps)
-	cp $(top_dir)/src/vpi.rb .
+	cp $(top_dir)/src/vpi_util.rb .
 
 deps-clean:
 	$(make_deps) clean
-	rm -f vpi.rb
+	rm -f vpi_util.rb
 
 
 # Pragmatic C - Cver
