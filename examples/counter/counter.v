@@ -27,15 +27,10 @@ module counter(
 	, output reg [4:0] count
 );
 
-	reg [4:0] value;
-
-	always @(*) begin
-		if(reset)
-			value <= 0;
-	end
-
 	always @(posedge clock) begin
-		value <= value + 1;
-		count <= value;
+		if (reset)
+			count <= 0;
+		else
+			count <= count + 1;
 	end
 endmodule

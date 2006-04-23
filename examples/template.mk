@@ -43,7 +43,7 @@ ivl-clean:
 # Synopsys VCS
 vcs:
 	make -e deps CFLAGS="-DSYNOPSYS_VCS"
-	vcs -R +v2k +vpi -LDFLAGS "$(top_dir)/../ruby-vpi.o $(LIB_RUBY) $(LIB_PTHREAD)" $(VCS_FLAGS) -P $(vcs_table) $(src_files)
+	vcs -R +v2k +vpi -LDFLAGS "../$(top_dir)/ruby-vpi.o $(LIB_RUBY) $(LIB_PTHREAD)" $(VCS_FLAGS) -P $(vcs_table) $(src_files)
 
 vcs-clean:
 	rm -rf csrc simv*

@@ -19,50 +19,40 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+// Note: DUT means "design under test"
+
 // The whole Ruby-VPI code is bootstrapped from this file. So, the intent is that a verilog testbench invokes the Ruby VPI extension, which in turn performs some extra things for us.
-module test;
-	reg clk_reg;
-	reg rst_reg;
+module counter_tb;
+
+	reg clk;
+	reg reset;
 	wire [4:0] count;
 
 
 	initial begin
-		// initialize Ruby-VPI
-		#0 $ruby_init("-w", "test.rb");
-
-
-		// initialize the counter
-		#0 clk_reg = 0;
-			rst_reg = 1;
-
-		#1 rst_reg = 0;
-
-
-		// test some Ruby-VPI tasks
-		// #10 $ruby_task("hello");
-		// $ruby_task("hello", "world");
-		// $ruby_task("hello", 3, "foo", "baz", 5, "moz");
-		// $ruby_task("bogus task");
-		// $ruby_task();
+		#0 $ruby_init("-w", "counter_tb.rb");
+		#1 clk = 0; reset = 0;
 	end
 
 
-	// transfer control to Ruby code upon each new clock cycle
-	always @(posedge clk_reg) begin
+	// generate a 50% duty-cycle clock for the DUT
+	always begin
+		#5 clk = ~clk;
+	end
+
+
+	// transfer control to Ruby-VPI every clock cycle
+	always @(posedge clk) begin
 		$ruby_relay();
 	end
 
 
-	// generate a clock signal with 50% duty cycle
-	always begin
-		#5 clk_reg = !clk_reg;
-			$display("clk_reg = %d", clk_reg);
-			$display("test.c1.clk = %d", test.c1.clock);
-			$display("test.c1.count = %d", test.c1.count);
-	end
+	// instantiate the DUT
+	counter dut(
+		.clock(clk)
+		, .reset(reset)
 
+		, .count(count)
+	);
 
-	// instantiate the counter
-	counter c1(.clock(clk_reg), .reset(rst_reg), .count(count));
 endmodule
-
