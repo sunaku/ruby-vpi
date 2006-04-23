@@ -32,7 +32,7 @@ Makefile: swig
 swig: $(src_dir)/swig_wrap.cin
 
 $(src_dir)/swig_wrap.cin:
-	sed 's/va_list/int/g' $(src_dir)/vpi_user.h > $(src_dir)/vpi.h	# avoid problems with SWIG-generated wrapper for VPI vprintf functions which use va_list
+	ruby -pe '$$_.gsub! /va_list/, "int"' $(src_dir)/vpi_user.h > $(src_dir)/vpi.h	# avoid problems with SWIG-generated wrapper for VPI vprintf functions which use va_list
 	swig -ruby -o $(src_dir)/swig_wrap.cin $(src_dir)/vpi.i
 
 swig-clean:
