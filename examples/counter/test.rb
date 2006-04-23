@@ -37,13 +37,13 @@ class TestCounter
 				# test getting and setting of 1-bit register or wire
 				if i == 5
 					c1_clock = vpi_handle_by_name("test.c1.clock", nil)
-					puts c1_clock.value(VpiIntVal)
+					puts c1_clock.value
 
-					c1_clock.put_value 0, VpiIntVal
-					puts c1_clock.value(VpiIntVal)
+					c1_clock.value = 0
+					puts c1_clock.value
 
 					clk_reg = vpi_handle_by_name("test.clk_reg", nil)
-					puts clk_reg.value(VpiIntVal)
+					puts clk_reg.value
 				end
 
 
@@ -52,7 +52,7 @@ class TestCounter
 					reset = vpi_handle_by_name("test.c1.reset", nil)
 
 					puts "resetting counter"
-					reset.put_value 1, VpiIntVal
+					reset.value = 1
 				end
 
 

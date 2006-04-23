@@ -57,4 +57,4 @@ msim:
 	vsim -c $(src_module) -pli $(top_dir)/ruby-vpi.so -do "run -all"
 
 msim-clean:
-	rm -rf work
+	rm -rf work transcript

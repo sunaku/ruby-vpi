@@ -1,4 +1,4 @@
-# Wrappers which transform the VPI interface into one that is more suitable for Ruby.
+# Utility wrappers which transform the VPI interface into one that is more suitable for Ruby.
 
 =begin
 	Copyright 2006 Suraj Kurapati
@@ -17,13 +17,13 @@ module SWIG
 	class TYPE_p_unsigned_int
 		include Vpi
 
-		def get_value(aFormat = VpiObjTypeVal)
+		def get_value(aFormat = VpiIntVal)
 			val = S_vpi_value.new
 			val.format = aFormat
 
 			vpi_get_value self, val
 
-			puts "sent format: #{aFormat}, got format: #{val.format}"
+			puts "sent format: #{aFormat}, got format: #{val.format}" if $DEBUG
 			val
 		end
 
@@ -61,7 +61,7 @@ module SWIG
 				when VpiVectorVal
 					val.value.vector
 
-				when VpiStringVal
+				when VpiStrengthVal
 					val.value.strength
 
 				else
@@ -104,7 +104,7 @@ module SWIG
 				when VpiVectorVal
 					newVal.value.vector = aValue
 
-				when VpiStringVal
+				when VpiStrengthVal
 					newVal.value.strength = aValue
 
 				else
