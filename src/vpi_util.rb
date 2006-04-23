@@ -115,5 +115,19 @@ module SWIG
 		end
 
 		alias_method :'value=', :put_value
+
+		# Iterates over all handles which are (1) of the given type and (2) associated with this handle. See +vpi_iterate+ for details.
+		def each(aType)	# :yields: VpiHandle
+			itr = vpi_iterate(aType, self)
+
+			begin
+				while obj = vpi_scan(itr)
+					yield obj
+				end
+
+			ensure
+				vpi_free_object itr
+			end
+		end
 	end
 end
