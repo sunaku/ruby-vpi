@@ -1,6 +1,9 @@
 // Suraj Kurapati
 // CMPE-126, Homework 5
 
+// Note: DUT means "design under test"
+
+
 `define	 WIDTH			32
 `define	 DATABITS		7
 `define	 OP_NOP			0
@@ -8,60 +11,51 @@
 `define	 OP_SUB			2
 `define	 OP_MULT		3
 
-module hw5_unit_tb(
-	input														clk
-	,input													reset
 
-	,output [`WIDTH-1:0]						out_result
-	,output [`DATABITS-1:0]					out_tag
-	,output [1:0]										out_type
-);
+module hw5_unit_tb();
 
+	reg													clk;
+	reg													reset;
+	reg [`DATABITS-1:0]					in_tag;
+	reg [`WIDTH-1:0]						in_arg1;
+	reg [`WIDTH-1:0]						in_arg2;
+	reg [1:0]										in_type;
 
-	reg															clock_reg;
-	reg															reset_reg;
-
-	reg [`DATABITS-1:0]							in_tag_reg;
-	reg [`WIDTH-1:0]								in_arg1_reg;
-	reg [`WIDTH-1:0]								in_arg2_reg;
-	reg [1:0]												in_type_reg;
-
+	wire [`WIDTH-1:0]						out_result;
+	wire [`DATABITS-1:0]				out_tag;
+	wire [1:0]									out_type;
 
 
 	initial begin
 		// initialize Ruby-VPI
 		#0 $ruby_init("-w", "hw5_unit_tb.rb");
 
-		// reset the system
-		#1 clock_reg = 0; reset_reg = 0;
+		// initialize the system
+		#1 clk = 0; reset = 0;
 	end
 
 
-	// generate the clock
+	// generate a 50% duty-cycle clock for the DUT
 	always begin
-		#5 clock_reg = !clock_reg;
+		#5 clk = ~clk;
 	end
 
 
-	// transfer control to Ruby code upon each new clock cycle
-	always @(posedge clock_reg) begin
-		$monitor("%d: in_tag_reg = %d, in_type_reg = %d, in_arg1_reg = %d, in_arg2_reg = %d, out_result = %d, out_tag = %d, out_type = %d", $time, in_tag_reg, in_type_reg, in_arg1_reg, in_arg2_reg, out_result, out_tag, out_type);
-
+	// transfer control to Ruby-VPI every clock cycle
+	always @(posedge clk) begin
 		$ruby_relay();
-
-		$monitor("%d: in_tag_reg = %d, in_type_reg = %d, in_arg1_reg = %d, in_arg2_reg = %d, out_result = %d, out_tag = %d, out_type = %d", $time, in_tag_reg, in_type_reg, in_arg1_reg, in_arg2_reg, out_result, out_tag, out_type);
 	end
 
 
-	// instantiate the design under test
+	// instantiate the DUT
 	hw5_unit dut(
-		.clk										(clock_reg)
-		,.reset									(reset_reg)
+		.clk										(clk)
+		,.reset									(reset)
 
-		,.in_databits						(in_tag_reg)
-		,.a											(in_arg1_reg)
-		,.b											(in_arg2_reg)
-		,.in_op									(in_type_reg)
+		,.in_databits						(in_tag)
+		,.a											(in_arg1)
+		,.b											(in_arg2)
+		,.in_op									(in_type)
 
 		,.res										(out_result)
 		,.out_databits					(out_tag)

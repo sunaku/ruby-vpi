@@ -1,20 +1,26 @@
 # Suraj Kurapati
 # CMPE-126, Homework 5
-# Ruby-VPI test bench for hw5_unit module.
+# Note: DUT means "design under test"
 
+require 'vpi'
 require 'InputGenerator'
 require 'Hw5UnitModel'
 require 'test/unit'
-# require 'pp'
 
 
-class TestHw5Unit
-	include Test::Unit::Assertions
+class TestHw5Unit < Test::Unit::TestCase
+	include Vpi
 
-	NUM_VECTORS = 4000
+	# Number of input sequences to test.
+	NUM_TESTS = 4000
 
-	VPI_INTEGER_MASK = (2 ** 32) - 1
+	# Ruby's native int is 31 bits
+	RUBY_INTEGER_BITS = 31
 
+	# Used to convert VPI integer into Ruby integer
+	VPI_INTEGER_MASK = (2 ** RUBY_INTEGER_BITS.succ) - 1
+
+	# Maximum allowed value of an operation's tag.
 	OPERATION_TAG_MAX = (2 ** 7) - 1
 
 	OPERATION_ENCODINGS = {
@@ -24,38 +30,49 @@ class TestHw5Unit
 		:mul => 3,
 	}
 
+	# Number of cycles needed to reset the DUT
+	DUT_RESET_DELAY = 50
 
-	def initialize
-		@ig32 = InputGenerator.new(31)	# ruby's native int is 31 bits
+
+	def setup
+		@ig = InputGenerator.new(RUBY_INTEGER_BITS)
 
 
 		# get handles to simulation objects
-		@dut_in_tag = VPI::handle_by_name("hw5_unit_tb.in_tag_reg")
-		@dut_in_arg1 = VPI::handle_by_name("hw5_unit_tb.in_arg1_reg")
-		@dut_in_arg2 = VPI::handle_by_name("hw5_unit_tb.in_arg2_reg")
-		@dut_in_type = VPI::handle_by_name("hw5_unit_tb.in_type_reg")
+		@dut_reset = vpi_handle_by_name("hw5_unit_tb.reset", nil)
+		@dut_in_tag = vpi_handle_by_name("hw5_unit_tb.in_tag", nil)
+		@dut_in_arg1 = vpi_handle_by_name("hw5_unit_tb.in_arg1", nil)
+		@dut_in_arg2 = vpi_handle_by_name("hw5_unit_tb.in_arg2", nil)
+		@dut_in_type = vpi_handle_by_name("hw5_unit_tb.in_type", nil)
 
-		@dut_out_result = VPI::handle_by_name("hw5_unit_tb.out_result")
-		@dut_out_tag = VPI::handle_by_name("hw5_unit_tb.out_tag")
-		@dut_out_type = VPI::handle_by_name("hw5_unit_tb.out_type")
+		@dut_out_result = vpi_handle_by_name("hw5_unit_tb.out_result", nil)
+		@dut_out_tag = vpi_handle_by_name("hw5_unit_tb.out_tag", nil)
+		@dut_out_type = vpi_handle_by_name("hw5_unit_tb.out_type", nil)
+
+
+		# reset the DUT
+		@dut_reset = 1
+		DUT_RESET_DELAY.times {relay_verilog}
+
+		@dut_reset_N = 0
+		relay_verilog
 	end
 
-
-	def run
+	def test_pipeline
 		operationQueue = []
 		numOperations = 0
 
 		begin
 			# start a new operation
-			if numOperations < NUM_VECTORS
+			if numOperations < NUM_TESTS
 				op = Hw5UnitModel::Operation.new(
 					Hw5UnitModel::OPERATIONS[rand(Hw5UnitModel::OPERATIONS.size)],
 
-					# NOTE: use +1 because a don't care (x) value becomes a zero when accessed with VPI::Handle.value
+					# NOTE: use +1 because a don't care (x) value becomes a zero when accessed as VpiIntVal
 					(numOperations % OPERATION_TAG_MAX) + 1,
 
-					@ig32.gen.abs,
-					@ig32.gen.abs
+					@ig.gen.abs,
+					@ig.gen.abs
 				)
 
 
@@ -71,7 +88,7 @@ class TestHw5Unit
 
 
 			# simulate a clock cycle
-			VPI::relay_verilog
+			relay_verilog
 
 
 			# obtain the output
@@ -95,16 +112,12 @@ class TestHw5Unit
 			end
 		end until operationQueue.empty?
 	end
-
 end
 
 
-
 # $ruby_init():
-VPI::relay_verilog
+Vpi::relay_verilog
 
 
 # $ruby_relay():
-TestHw5Unit.new.run
-
-puts "#{__FILE__} passed successfully!"
+# do nothing here, because test/unit will automatically run the unit test above
