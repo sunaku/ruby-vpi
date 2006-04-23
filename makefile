@@ -1,6 +1,3 @@
-# path to the directory which contains vpi_user.h
-VERILOG = /usr/include
-
 # flags used when Ruby was compiled on your system
 cflags = `ruby -r mkmf -e 'cflags = $$configure_args["--cflags"]; puts cflags if cflags'`
 cflags += -g -DDEBUG $(CFLAGS)
@@ -26,7 +23,7 @@ ruby-vpi-clean:
 
 
 Makefile: swig
-	ruby $(src_dir)/extconf.rb --with-cflags="$(cflags)" --with-ldflags="$(ldflags)" --with-verilog-include="$(VERILOG)" $(OPTIONS)
+	ruby $(src_dir)/extconf.rb --with-cflags="$(cflags)" --with-ldflags="$(ldflags)" $(OPTIONS)
 
 
 swig: $(src_dir)/swig_wrap.cin
