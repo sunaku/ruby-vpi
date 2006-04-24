@@ -67,13 +67,15 @@ class TestHw5Unit < Test::Unit::TestCase
 		@dut_out_tag = vpi_handle_by_name("hw5_unit_tb.out_tag", nil)
 		@dut_out_type = vpi_handle_by_name("hw5_unit_tb.out_type", nil)
 
+		reset
+	end
 
-		# reset the DUT
-		@dut_reset = 1
+	def reset
+		@dut_reset.value = 1
 		DUT_RESET_DELAY.times {relay_verilog}
 
-		@dut_reset_N = 0
-		DUT_RESET_DELAY.times {relay_verilog}#relay_verilog
+		@dut_reset.value = 0
+		relay_verilog
 
 		puts "DUT has been reset"
 	end
