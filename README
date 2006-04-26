@@ -11,41 +11,6 @@
 
 Ruby-VPI is a Ruby interface to Verilog VPI. With it, you can create complex Verilog test benches easily and wholly in Ruby.
 
-Page 404 of the IEEE Std. 1364-2005 describes possible applications for the VPI interface as follows.
-
-<blockquote>
-Through VPI, an application can perform the following:
-
-* Specify a user-defined system task/function name that can be included in Verilog HDL source descriptions; the user-defined system task/function name shall begin with a dollar sign ($), such as <tt>$get_vector</tt>.
-
-* Provide one or more PLI C applications to be called by a software product (such as a logic simulator).
-
-* Define which PLI C applications are to be called--and when the applications should be called--when the user-defined system task/function name is encountered in the Verilog HDL source description.
-
-* Define whether the PLI applications should be treated as functions (which return a value) or tasks (analogous to subroutines in other programming languages).
-
-* Define a data argument to be passed to the PLI applications each time they are called.
-</blockquote>
-
-== Related projects
-
-RHDL[http://www.aracnet.com/~ptkwt/ruby_stuff/RHDL/]:: Ruby abstraction of VHDL and Verilog
-MyHDL[http://myhdl.jandecaluwe.com]:: Python abstraction of Verilog
-
-== Alternative projects
-
-JOVE[http://jove.sourceforge.net]:: Java interface to VPI
-{APVM/Oroboro}[http://sourceforge.net/projects/apvm]:: Python interface to VPI
-ScriptEDA[http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/]:: Perl, Python, and Tcl interface to VPI
-
-=== Ye olde PLI
-
-These projects utilize the archaic +tf+ and +acc+ PLI interfaces which have been officially deprecated by IEEE Std. 1364-2005.
-
-ScriptSim[http://www.nelsim.com]:: Perl, Python, and Tcl/Tk interface to PLI
-{Verilog::Pli}[http://www.veripool.com/verilog-pli.html]:: Perl interface to PLI
-JPLI[http://www.time-rover.com/jpli/]:: Java interface to PLI. Beware, this is a closed source, proprietary project.
-
 = How is it licensed?
 
 Ruby-VPI is {free software}[http://en.wikipedia.org/wiki/Free_software]; you can redistribute it and/or modify it under the terms of the {GNU General Public License}[http://www.gnu.org/copyleft/gpl.html] as published by the {Free Software Foundation}[http://www.fsf.org]; either version 2 of the License, or (at your option) any later version.
@@ -58,12 +23,27 @@ Ruby-VPI is {free software}[http://en.wikipedia.org/wiki/Free_software]; you can
 1. The Ruby script file is executed until it calls the <tt>Vpi::relay_verilog</tt> method. This method transfers control to the Verilog test bench.
 1. The Verilog simulator resumes simulation of the Verilog test bench.
 
-= How to compile it?
+= What are the alternatives?
 
+RHDL[http://www.aracnet.com/~ptkwt/ruby_stuff/RHDL/]:: Ruby abstraction of VHDL and Verilog
+MyHDL[http://myhdl.jandecaluwe.com]:: Python abstraction of Verilog
+JOVE[http://jove.sourceforge.net]:: Java interface to VPI
+{APVM/Oroboro}[http://sourceforge.net/projects/apvm]:: Python interface to VPI
+ScriptEDA[http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/]:: Perl, Python, and Tcl interface to VPI
+
+== Ye olde PLI
+
+The following projects utilize the archaic +tf+ and +acc+ PLI interfaces, which have been officially deprecated in IEEE Std. 1364-2005.
+
+ScriptSim[http://www.nelsim.com]:: Perl, Python, and Tcl/Tk interface to PLI
+{Verilog::Pli}[http://www.veripool.com/verilog-pli.html]:: Perl interface to PLI
+JPLI[http://www.time-rover.com/jpli/]:: Java interface to PLI
+
+= How to compile it?
 
 == Requirements
 
-* Build program, such as {GNU make}[http://www.gnu.org/software/make/].
+* +make+ program, such as {GNU make}[http://www.gnu.org/software/make/].
 * C compiler, such as GCC[http://www.gnu.org/software/gcc/].
 * Ruby[http://www.ruby-lang.org] version 1.8 or newer, including header and linkable object files for building extensions.
 * SWIG[http://www.swig.org] version 1.3 or newer.
@@ -71,16 +51,14 @@ Ruby-VPI is {free software}[http://en.wikipedia.org/wiki/Free_software]; you can
 
 == Instructions
 
-* Run the following command
+* Run the following command:
  make
 * If the compilation failed because of missing libraries, then install those libraries and try the compilation again.
 * Otherwise, you can try editing the <tt>makefile</tt> file or ask for help on the online forums.
 
-
 = How to use it?
 
 Ruby-VPI is not invoked directly by a Ruby script or by a user. Instead, it is invoked by a Verilog test bench which is simulated by a Verilog simulator, such as those listed below.
-
 
 == Icarus Verilog
 
@@ -88,13 +66,11 @@ Ruby-VPI is not invoked directly by a Ruby script or by a user. Instead, it is i
 1. Run the following command to compile and run the sample test bench. See the "ivl" section of the file named <tt>makefile</tt> for details.
  make clean ivl
 
-
 == Synopsys VCS
 
 1. Go inside the <tt>sample/counter</tt> directory.
 1. Run the following command to compile and run the sample test bench. See the "vcs" section of the file named <tt>makefile</tt> for details.
  make clean vcs
-
 
 == Mentor Modelsim
 
@@ -144,7 +120,6 @@ If a "stack level too deep (SystemStackError)" error occurs during the simulatio
 
  $ ulimit -s unlimited
  $ ..your simulation..
-
 
 === test/unit
 
