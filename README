@@ -1,0 +1,219 @@
+= Welcome to Ruby-VPI
+
+* Visit the {project portal}[http://rubyforge.org/projects/ruby-vpi] hosted generously by RubyForge[http://rubyforge.org]
+* Ask for help or discuss in the {online forums}[http://rubyforge.org/forum/?group_id=1339]
+* Report bugs or contribute patches in the {project tracker}[http://rubyforge.org/tracker/?group_id=1339]
+* Get the newest source from the {code repository}[http://rubyforge.org/scm/?group_id=1339]
+* Get the newest release from the {download area}[http://rubyforge.org/scm/?group_id=1339]
+* See what has changed in the release history
+
+= What is it?
+
+Ruby-VPI is a Ruby interface to Verilog VPI. With it, you can create complex Verilog test benches easily and wholly in Ruby.
+
+Page 404 of the IEEE Std. 1364-2005 describes possible applications for the VPI interface as follows.
+
+<blockquote>
+Through VPI, an application can perform the following:
+
+* Specify a user-defined system task/function name that can be included in Verilog HDL source descriptions; the user-defined system task/function name shall begin with a dollar sign ($), such as <tt>$get_vector</tt>.
+
+* Provide one or more PLI C applications to be called by a software product (such as a logic simulator).
+
+* Define which PLI C applications are to be called--and when the applications should be called--when the user-defined system task/function name is encountered in the Verilog HDL source description.
+
+* Define whether the PLI applications should be treated as functions (which return a value) or tasks (analogous to subroutines in other programming languages).
+
+* Define a data argument to be passed to the PLI applications each time they are called.
+</blockquote>
+
+== Related projects
+
+RHDL[http://www.aracnet.com/~ptkwt/ruby_stuff/RHDL/]:: Ruby abstraction of VHDL and Verilog
+MyHDL[http://myhdl.jandecaluwe.com]:: Python abstraction of Verilog
+
+== Alternative projects
+
+JOVE[http://jove.sourceforge.net]:: Java interface to VPI
+{APVM/Oroboro}[http://sourceforge.net/projects/apvm]:: Python interface to VPI
+ScriptEDA[http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/]:: Perl, Python, and Tcl interface to VPI
+
+=== Ye olde PLI
+
+These projects utilize the archaic +tf+ and +acc+ PLI interfaces which have been officially deprecated by IEEE Std. 1364-2005.
+
+ScriptSim[http://www.nelsim.com]:: Perl, Python, and Tcl/Tk interface to PLI
+{Verilog::Pli}[http://www.veripool.com/verilog-pli.html]:: Perl interface to PLI
+JPLI[http://www.time-rover.com/jpli/]:: Java interface to PLI. Beware, this is a closed source, proprietary project.
+
+= How is it licensed?
+
+Ruby-VPI is {free software}[http://en.wikipedia.org/wiki/Free_software]; you can redistribute it and/or modify it under the terms of the {GNU General Public License}[http://www.gnu.org/copyleft/gpl.html] as published by the {Free Software Foundation}[http://www.fsf.org]; either version 2 of the License, or (at your option) any later version.
+
+= How does it work?
+
+1. A Verilog simulator simulates a Verilog test bench containing behavioral Verilog code.
+1. The Verilog test bench invokes the <tt>$ruby_init(<i>command-line arguments</i>)</tt> task with command-line arguments for the Ruby interpreter. This task transfers control to the Ruby interpreter.
+1. The Ruby interpreter scans its command-line arguments. Upon finding a Ruby script file within those arguments, the interpreter executes it.
+1. The Ruby script file is executed until it calls the <tt>Vpi::relay_verilog</tt> method. This method transfers control to the Verilog test bench.
+1. The Verilog simulator resumes simulation of the Verilog test bench.
+
+= How to compile it?
+
+
+== Requirements
+
+* Build program, such as {GNU make}[http://www.gnu.org/software/make/].
+* C compiler, such as GCC[http://www.gnu.org/software/gcc/].
+* Ruby[http://www.ruby-lang.org] version 1.8 or newer, including header and linkable object files for building extensions.
+* SWIG[http://www.swig.org] version 1.3 or newer.
+* pthreads[http://en.wikipedia.org/wiki/Pthreads] library, including header and linkable object files.
+
+== Instructions
+
+* Run the following command
+ make
+* If the compilation failed because of missing libraries, then install those libraries and try the compilation again.
+* Otherwise, you can try editing the <tt>makefile</tt> file or ask for help on the online forums.
+
+
+= How to use it?
+
+Ruby-VPI is not invoked directly by a Ruby script or by a user. Instead, it is invoked by a Verilog test bench which is simulated by a Verilog simulator, such as those listed below.
+
+
+== Icarus Verilog
+
+1. Go inside the <tt>sample/counter</tt> directory.
+1. Run the following command to compile and run the sample test bench. See the "ivl" section of the file named <tt>makefile</tt> for details.
+ make clean ivl
+
+
+== Synopsys VCS
+
+1. Go inside the <tt>sample/counter</tt> directory.
+1. Run the following command to compile and run the sample test bench. See the "vcs" section of the file named <tt>makefile</tt> for details.
+ make clean vcs
+
+
+== Mentor Modelsim
+
+1. Go inside the <tt>sample/counter</tt> directory.
+1. Run the following command to compile and run the sample test bench. See the "msim" section of the file named <tt>makefile</tt> for details.
+ make clean msim
+
+= What about documentation?
+
+== C
+There is API documentation inside the <tt>src/html</tt> directory. It is generated by the wonderful Doxygen program.
+
+== Ruby & VPI
+The entire IEEE Std. 1364-2005 VPI interface is available inside Ruby with minor changes:
+* The first letter of all functions, types, structures, and constants is capitalized. For example, the structure <tt>s_vpi_value</tt> in C becomes the <tt><tt>S</tt>_vpi_value</tt> class in Ruby.
+* The functions <tt>vpi_vprintf</tt> and <tt>vpi_mcd_vprintf</tt> are disabled because some C compilers have problems with pointers to the <tt>va_list</tt> type:
+ void foo(va_list ap) {
+  /* causes "type mismatch" error on some compilers */
+  va_list *p = &ap;
+ }
+
+See the file <tt>src/vpi_user.h</tt> for details about all functionality offered by the standard VPI interface.
+
+=== VPI utility layer
+
+On top of this standard VPI interface, the <tt>src/vpi_util.rb</tt> file acts as a utility layer which attempts to make the standard VPI interface more Ruby-like. For example, it is more Ruby-like to use the notation
+ handle.each(VpiNet) {|net| ...}
+than the standard VPI notation
+ itr = vpi_iterate(VpiNet, handle)
+ while net = vpi_scan(itr)
+  ...
+ end
+
+There is additional API documentation inside the <tt>src/doc</tt> directory. It is generated by the RDoc program.
+
+= Why doesn't it work?!
+
+Known problems and possible solutions are presented in this section.
+
+== Ruby
+
+=== SystemStackError
+
+*NOTE*: This problem was fixed in release 0.2. If it still occurs, then please report it.
+
+If a "stack level too deep (SystemStackError)" error occurs during the simulation, then increase the system-resource limit for stack-size by running the <tt>ulimit</tt> command before starting the simulation:
+
+ $ ulimit -s unlimited
+ $ ..your simulation..
+
+
+=== test/unit
+
+*NOTE*: This problem was fixed in release 0.2. If it still occurs, then please report it.
+
+If you try to write a unit test inside the Ruby script file (which is invoked by a Verilog test bench), then you will get an error like this:
+ /usr/lib/ruby/1.8/test/unit/ui/testrunnerutilities.rb:39: [BUG] cross-thread violation on rb_gc()
+
+== Icarus Verilog 0.8
+
+=== vpi_handle_by_name
+
+==== Give full paths to Verilog objects
+
+<tt>vpi_handle_by_name()</tt> requires the <i>full</i> path (including the test-bench which instantiates a module) to a Verilog object.
+
+For example, for the Verilog file below, you need to specify "TestFoo.my_foo.clk" instead of "my_foo.clk" in order to access the "clk" input of the "my_foo" module instance. Also, you can access the "clk_reg" register via "TestFoo.clk_reg".
+
+ module TestFoo;
+  reg clk_reg;
+  Foo my_foo(.clk(clk_reg));
+ endmodule;
+
+==== Connect registers to something
+
+If you want to access a register in a module, then it must be connected to something (either assigned to a wire or passed as a parameter to a module instantiation). Otherwise, Icarus will give you a <tt>nil</tt> value as the result of <tt>vpi_handle_by_name</tt>.
+
+For example, suppose you wanted to access the "clk_reg" register in the <tt>TestFoo.rb</tt> test bench below.
+
+===== TestFoo.rb
+
+When used with the <tt>TestFoo_bad.v</tt> test bench shown below, the call to <tt>vpi_handle_by_name</tt> will return <tt>nil</tt>. However, when used with either the <tt>TestFoo_fix1.v</tt> or the <tt>TestFoo_fix2.v</tt> test bench shown below, the call to <tt>vpi_handle_by_name</tt> behaves as expected.
+ clk_reg = vpi_handle_by_name("TestFoo.clk_reg", nil)
+
+===== TestFoo_bad.v
+
+Here the "clk_reg" register is not connected to anything.
+ module TestFoo;
+  reg clk_reg;
+ endmodule;
+
+===== TestFoo_fix1.v
+
+Here we connect the "clk_reg" register to a wire.
+ module TestFoo;
+  reg clk_reg;
+  wire clk_wire;
+  assign clk_wire = clk_reg;
+ endmodule;
+
+===== TestFoo_fix2.v
+
+Here we connect the "clk_reg" register to an instantiated module.
+ module TestFoo;
+  reg clk_reg;
+  Foo my_foo(.clk(clk_reg));
+ endmodule;
+
+==== VPI::reset
+
+*NOTE*: This method was removed in release 0.3; use <tt>Vpi::vpi_control(VpiReset)</tt> instead.
+
+With version 0.8 of Icarus Verilog, the <tt>vpi_control(vpiReset)</tt> VPI function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.
+
+== Mentor Modelsim
+
+=== ruby_run();
+
+*NOTE*: This problem was fixed in release 0.2. If it still occurs, then please report it.
+
+Version 6.1b of Modelsim doesn't play nicely with either an embedded Ruby interpreter or POSIX threads in a PLI application. When Ruby-VPI invokes the <tt>ruby_run()</tt> function (which starts the Ruby interpreter), the simulator terminates immediately with an exit status of 0.
+
