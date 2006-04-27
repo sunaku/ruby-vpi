@@ -33,3 +33,13 @@ $(src_dir)/swig_wrap.cin:
 swig-clean:
 	rm -f $(src_dir)/swig_vpi.h $(src_dir)/swig_wrap.cin
 
+
+doc: $(src_dir)/html
+	rdoc1.8 README HISTORY $(src_dir)/vpi_util.rb
+
+$(src_dir)/html:
+	cd $(src_dir) && doxygen
+
+doc-clean:
+	rm -rf doc $(src_dir)/html
+
