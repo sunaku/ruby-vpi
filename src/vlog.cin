@@ -22,12 +22,10 @@
 
 	verilog_tf_funcSig(vlog_ruby_relay) {
 		// transfer control to ruby
-		common_printf("verilog -> ruby");
 		relay_ruby();
 
 
 		// transfer control to verilog
-		common_printf("ruby -> verilog");
 		verilog_tf_funcReturn(0);
 	}
 
@@ -36,10 +34,11 @@
 		relay_init();
 
 
-		// start ruby interpreter
+		// start ruby interpreter and transfer control to it
 		relay_ruby_run();
 
 
+		// transfer control to verilog
 		verilog_tf_funcReturn(0);
 	}
 

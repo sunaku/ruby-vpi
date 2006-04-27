@@ -17,6 +17,7 @@
 	#include <stdlib.h>
 	#include <pthread.h>
 	#include <ruby.h>
+	#include <assert.h>
 
 	#include "verilog.h"
 	#include "common.h"
@@ -60,35 +61,39 @@
 		ruby_init();
 		ruby_init_loadpath();
 
-		relay__RubyOptions__def* pRubyOptions = (relay__RubyOptions__def*) apRubyOptions;
-
-		PLI_BYTE8** argv = pRubyOptions->args;
-		uint argc = pRubyOptions->count;
-
-		common_debug("got %d options => %p", argc, argv);
-
-		uint i;
-		for (i = 0; i < argc; i++) {
-			common_debug("passing option %d to ruby: %s", i, argv[i]);
-		}
-
-		ruby_options(argc, argv);
-
-		// free the memory used by command-line options
-		for (i = 0; i < argc; i++) {
-			common_debug("freeing option %d => %s", i, argv[i]);
-			free(argv[i]);
-		}
-
-		free(argv);
-		free(pRubyOptions);
-
-		// Init_RVPI();
 		swig_init();
+
+			// pass command-line arguments to the interpreter
+			relay__RubyOptions__def* pRubyOptions = (relay__RubyOptions__def*) apRubyOptions;
+
+			PLI_BYTE8** argv = pRubyOptions->args;
+			uint argc = pRubyOptions->count;
+
+			common_debug("got %d options => %p", argc, argv);
+
+			uint i;
+			for (i = 0; i < argc; i++) {
+				common_debug("passing option %d to ruby: %s", i, argv[i]);
+			}
+
+			ruby_options(argc, argv);
+
+			// free the memory used by command-line options
+			for (i = 0; i < argc; i++) {
+				common_debug("freeing option %d => %s", i, argv[i]);
+				free(argv[i]);
+			}
+
+			free(argv);
+			free(pRubyOptions);
 
 
 		// start Ruby interpreter
-		ruby_run();	// FIXME: terminates the main process when used with vsim
+		ruby_run();
+
+
+		// stop Ruby interpreter
+		ruby_finalize();
 		return NULL;
 	}
 
@@ -122,18 +127,21 @@
 						else
 							pRubyOptions->args = realloc(pRubyOptions->args, sizeof(PLI_BYTE8*) * pRubyOptions->count);
 
+						assert(pRubyOptions->args != NULL);
+
+
 						pRubyOptions->args[pRubyOptions->count-1] = strdup(argVal.value.str);
 					}
 				}
 			}
 
-
 			common_debug("passed %d options => %p", pRubyOptions->count, pRubyOptions->args);
 			pthread_create(&relay__rubyThread, 0, ruby_run_handshake, pRubyOptions);
+			return;
 		}
-		else {
-			common_printf("error: unable to allocate memory for Ruby's command-line options.");
-		}
+
+		common_printf("error: unable to allocate memory for Ruby's command-line arguments.");
+		exit(EXIT_FAILURE);
 	}
 
 #endif
