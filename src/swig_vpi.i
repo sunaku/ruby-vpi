@@ -1,8 +1,8 @@
 %module vpi
 %{
 /* Includes the header in the wrapper code */
-#include "vpi.h"
+#include "swig_vpi.h"
 %}
 
 /* Parse the header file to generate wrappers */
-%include "vpi.h"
+%include "swig_vpi.h"

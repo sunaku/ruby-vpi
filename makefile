@@ -1,9 +1,7 @@
 # flags used when Ruby was compiled on your system
-cflags = `ruby -r mkmf -e 'cflags = $$configure_args["--cflags"]; puts cflags if cflags'`
-cflags += -g -DDEBUG $(CFLAGS)
+cflags = `ruby -r rbconfig -e 'puts Config::CONFIG["CFLAGS"] || ""'` -g -DDEBUG $(CFLAGS)
 
-ldflags = `ruby -r mkmf -e 'ldflags = $$configure_args["--ldflags"]; puts ldflags if ldflags'`
-ldflags += $(LDFLAGS)
+ldflags = `ruby -r rbconfig -e 'puts Config::CONFIG["LDFLAGS"] || ""'`
 
 
 # path to Ruby-VPI source code directory
@@ -29,9 +27,9 @@ Makefile: swig
 swig: $(src_dir)/swig_wrap.cin
 
 $(src_dir)/swig_wrap.cin:
-	ruby -pe '$$_.gsub! /va_list/, "int"' $(src_dir)/vpi_user.h > $(src_dir)/vpi.h	# avoid problems with SWIG-generated wrapper for VPI vprintf functions which use va_list
-	swig -ruby -o $(src_dir)/swig_wrap.cin $(src_dir)/vpi.i
+	ruby -pe '$$_.gsub! /va_list/, "int"' $(src_dir)/vpi_user.h > $(src_dir)/swig_vpi.h	# avoid problems with SWIG-generated wrapper for VPI vprintf functions which use va_list
+	swig -ruby -o $(src_dir)/swig_wrap.cin $(src_dir)/swig_vpi.i
 
 swig-clean:
-	rm -f $(src_dir)/vpi.h $(src_dir)/swig_wrap.cin
+	rm -f $(src_dir)/swig_vpi.h $(src_dir)/swig_wrap.cin
 

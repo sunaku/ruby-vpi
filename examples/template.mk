@@ -3,14 +3,13 @@
 make_deps = cd $(top_dir) && make
 vcs_table = $(top_dir)/examples/synopsys_vcs.tab
 
-LIB_RUBY = -lruby
-#`ruby -r rbconfig -e 'include Config; puts "-L#{CONFIG["libdir"]} #{CONFIG["LIBRUBYARG"]}"'`
+LIB_RUBY =  `ruby -r rbconfig -e 'puts %{-L#{Config::CONFIG["libdir"]} #{Config::CONFIG["LIBRUBYARG"]}}'`
 LIB_PTHREAD = -lpthread
 
 
 all: deps
 
-clean: deps-clean ivl-clean vcs-clean msim-clean
+clean: deps-clean ivl-clean vcs-clean vsim-clean
 
 
 deps:
@@ -51,11 +50,11 @@ vcs-clean:
 
 
 # Mentor ModelSim
-msim:
+vsim:
 	make -e deps CFLAGS="-DMENTOR_MODELSIM"
 	vlib work
 	vlog $(src_files)
 	vsim -c $(src_module) -pli $(top_dir)/ruby-vpi.so -do "run -all"
 
-msim-clean:
+vsim-clean:
 	rm -rf work transcript
