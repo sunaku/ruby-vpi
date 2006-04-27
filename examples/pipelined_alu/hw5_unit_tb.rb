@@ -38,7 +38,7 @@ class TestHw5Unit < Test::Unit::TestCase
 	# Used to convert VPI integer into Ruby integer
 	VPI_INTEGER_MASK = (2 ** RUBY_INTEGER_BITS.succ) - 1
 
-	# Maximum allowed value of an operation's tag.
+	# Maximum allowed.intVal of an operation's tag.
 	OPERATION_TAG_MAX = (2 ** 7) - 1
 
 	OPERATION_ENCODINGS = {
@@ -71,10 +71,10 @@ class TestHw5Unit < Test::Unit::TestCase
 	end
 
 	def reset
-		@dut_reset.value = 1
+		@dut_reset.intVal = 1
 		DUT_RESET_DELAY.times {relay_verilog}
 
-		@dut_reset.value = 0
+		@dut_reset.intVal = 0
 		relay_verilog
 
 		puts "DUT has been reset"
@@ -98,10 +98,10 @@ class TestHw5Unit < Test::Unit::TestCase
 				)
 
 
-				@dut_in_arg1.value = op.arg1
-				@dut_in_arg2.value = op.arg2
-				@dut_in_type.value = OPERATION_ENCODINGS[op.type]
-				@dut_in_tag.value = op.tag
+				@dut_in_arg1.intVal = op.arg1
+				@dut_in_arg2.intVal = op.arg2
+				@dut_in_type.intVal = OPERATION_ENCODINGS[op.type]
+				@dut_in_tag.intVal = op.tag
 
 
 				operationQueue << op
@@ -115,10 +115,10 @@ class TestHw5Unit < Test::Unit::TestCase
 
 			# obtain the output
 			finishedOp = Hw5UnitModel::Operation.new(
-				OPERATION_ENCODINGS.index(@dut_out_type.value),
-				@dut_out_tag.value
+				OPERATION_ENCODINGS.index(@dut_out_type.intVal),
+				@dut_out_tag.intVal
 			)
-			finishedOp.result = @dut_out_result.value & VPI_INTEGER_MASK
+			finishedOp.result = @dut_out_result.intVal & VPI_INTEGER_MASK
 
 
 			# verify the output

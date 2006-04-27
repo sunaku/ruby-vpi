@@ -37,29 +37,30 @@ class TestCounter < Test::Unit::TestCase
 
 
 	def setup
-		# get handles to simulation objects
-		@dut_clock = vpi_handle_by_name("counter_tb.clock", nil)
+		@dut = vpi_handle_by_name("counter_tb", nil)
 		@dut_reset = vpi_handle_by_name("counter_tb.reset", nil)
 		@dut_count = vpi_handle_by_name("counter_tb.count", nil)
 
+		reset
+	end
 
-		# reset the DUT
-		@dut_reset.value = 1
+	# Resets the DUT.
+	def reset
+		@dut_reset.intVal = 1
 		DUT_RESET_DELAY.times {relay_verilog}
 
-		@dut_reset.value = 0
-		puts "DUT has been reset"
+		@dut_reset.intVal = 0
 	end
 
 	def test_count
 		COUNTER_LIMIT.times do |i|
-			assert_equal i, @dut_count.value
+			assert_equal i, @dut_count.intVal
 
 			# increment the counter
 			relay_verilog
 		end
 
-		assert_equal 0, @dut_count.value, "counter should overflow"
+		assert_equal 0, @dut_count.intVal, "counter should overflow"
 	end
 end
 

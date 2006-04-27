@@ -13,38 +13,62 @@
 =end
 
 module SWIG
-	# A wrapper for the +vpiHandle+ object.
+	# A wrapper for the +VpiHandle+ object.
 	class TYPE_p_unsigned_int
 		include Vpi
 
-		def get_value(aFormat = VpiIntVal)
+		# Names of VPI value formats. See <tt>S_vpi_value.format</tt> for details.
+		VALUE_FORMAT_NAMES = [:VpiBinStrVal, :VpiOctStrVal, :VpiDecStrVal, :VpiHexStrVal, :VpiStringVal, :VpiScalarVal, :VpiIntVal, :VpiRealVal, :VpiTimeVal, :VpiVectorVal, :VpiStrengthVal].freeze
+
+		# Create methods for reading and writing every VPI value type. These methods wrap the +value+ and +value=+ methods.
+		VALUE_FORMAT_NAMES.each do |var|
+			varName = var.to_s
+
+			methName = varName.sub(%r{^Vpi}, '')
+			methName[0] = methName[0].chr.downcase
+
+			eval %{
+				def #{methName}
+					self.value #{varName}
+				end
+
+				def #{methName}= aArgs
+					aArgs = ensureArray(aArgs)
+					aArgs[1] = #{varName}
+
+					self.value = aArgs
+				end
+			}
+		end
+
+		# Reads the value using the given format and returns a S_vpi_value object.
+		def get_value aFormat = VpiObjTypeVal
 			val = S_vpi_value.new
 			val.format = aFormat
 
 			vpi_get_value self, val
-
-			puts "sent format: #{aFormat}, got format: #{val.format}" if $DEBUG
 			val
 		end
 
-		def value(*args)
-			val = get_value(*args)
+		# Reads the value using the given format and returns it.
+		def value *aArgs
+			val = get_value(*aArgs)
 
 			case val.format
 				when VpiBinStrVal
-					newVal.value.str.to_i(2)
+					val.value.str.to_i(2)
 
 				when VpiOctStrVal
-					newVal.value.str.to_i(8)
+					val.value.str.to_i(8)
 
 				when VpiDecStrVal
-					newVal.value.str.to_i(10)
+					val.value.str.to_i(10)
 
 				when VpiHexStrVal
-					newVal.value.str.to_i(16)
+					val.value.str.to_i(16)
 
 				when VpiStringVal
-					newVal.value.str.dup
+					val.value.str.dup
 
 				when VpiScalarVal
 					val.value.scalar
@@ -69,7 +93,8 @@ module SWIG
 			end
 		end
 
-		def put_value(aValue, aFormat = nil, aTime = nil, aDelay = VpiNoDelay)
+		# Writes the given value using the given format, time, and delay. If a format is not given, then the format of the present value will be used.
+		def put_value aValue, aFormat = nil, aTime = nil, aDelay = VpiNoDelay
 			newVal = S_vpi_value.new
 			newVal.format = aFormat || self.get_value.format
 
@@ -114,20 +139,39 @@ module SWIG
 			vpi_put_value self, newVal, aTime, aDelay
 		end
 
-		alias_method :'value=', :put_value
+		# A shortcut to +put_value+.
+		# aArgs:: array of arguments for +put_value+
+		def value= aArgs
+			put_value *ensureArray(aArgs)
+		end
 
-		# Iterates over all handles which are (1) of the given type and (2) associated with this handle. See +vpi_iterate+ for details.
-		def each(aType)	# :yields: VpiHandle
-			itr = vpi_iterate(aType, self)
+		# Returns an array of handles of the given type.
+		def [] aType
+			handles = []
 
-			begin
-				while obj = vpi_scan(itr)
-					yield obj
+			if itr = vpi_iterate(aType, self)
+				while h = vpi_scan(itr)
+					handles << h
+				end
+			end
+
+			handles
+		end
+
+		# Iterates over all handles of the given type.
+		def each aType, &aBlock
+			self[aType].each(&aBlock)
+		end
+
+		private
+			def ensureArray aArr
+				unless aArr.respond_to? :to_ary
+					aArr = [aArr]
+				else
+					aArr = aArr.to_ary
 				end
 
-			ensure
-				vpi_free_object itr
+				aArr
 			end
-		end
 	end
 end
