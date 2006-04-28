@@ -38,8 +38,8 @@ class TestHw5Unit < Test::Unit::TestCase
 	# Used to convert VPI integer into Ruby integer
 	VPI_INTEGER_MASK = (2 ** RUBY_INTEGER_BITS.succ) - 1
 
-	# Maximum allowed.intVal of an operation's tag.
-	OPERATION_TAG_MAX = (2 ** 7) - 1
+	# Upper limit of values allowed for an operation's tag.
+	OPERATION_TAG_LIMIT = 2 ** 7
 
 	OPERATION_ENCODINGS = {
 		:nop => 0,
@@ -76,8 +76,6 @@ class TestHw5Unit < Test::Unit::TestCase
 
 		@dut_reset.intVal = 0
 		relay_verilog
-
-		puts "DUT has been reset"
 	end
 
 	def test_pipeline
@@ -89,10 +87,7 @@ class TestHw5Unit < Test::Unit::TestCase
 			if numOperations < NUM_TESTS
 				op = Hw5UnitModel::Operation.new(
 					Hw5UnitModel::OPERATIONS[rand(Hw5UnitModel::OPERATIONS.size)],
-
-					# NOTE: use +1 because a don't care (x) value becomes a zero when accessed as VpiIntVal
-					(numOperations % OPERATION_TAG_MAX) + 1,
-
+					numOperations % OPERATION_TAG_LIMIT,
 					@ig.gen.abs,
 					@ig.gen.abs
 				)
@@ -113,21 +108,22 @@ class TestHw5Unit < Test::Unit::TestCase
 			relay_verilog
 
 
-			# obtain the output
-			finishedOp = Hw5UnitModel::Operation.new(
-				OPERATION_ENCODINGS.index(@dut_out_type.intVal),
-				@dut_out_tag.intVal
-			)
-			finishedOp.result = @dut_out_result.intVal & VPI_INTEGER_MASK
+			# verify the output when present
+			unless @dut_out_tag.hexStrVal =~ /x/
+				finishedOp = Hw5UnitModel::Operation.new(
+					OPERATION_ENCODINGS.index(@dut_out_type.intVal),
+					@dut_out_tag.intVal
+				)
+				finishedOp.result = @dut_out_result.intVal & VPI_INTEGER_MASK
 
-
-			# verify the output
-			unless finishedOp.tag == 0	# ignore dont-care (X)'s
 				expectedOp = operationQueue.shift
+
 
 				assert_equal expectedOp.type, finishedOp.type, "incorrect operation"
 				assert_equal expectedOp.tag, finishedOp.tag, "incorrect tag"
 
+
+				# ignore the result of a NOP operation
 				unless finishedOp.type == :nop
 					assert_equal expectedOp.compute & VPI_INTEGER_MASK, finishedOp.result, "incorrect result"
 				end
