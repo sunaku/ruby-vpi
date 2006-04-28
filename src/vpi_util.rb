@@ -1,4 +1,4 @@
-# Utility wrappers which transform the VPI interface into one that is more suitable for Ruby.
+# A utility layer which transforms the VPI interface into one that is more suitable for Ruby.
 
 =begin
 	Copyright 2006 Suraj Kurapati
