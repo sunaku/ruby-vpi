@@ -13,7 +13,7 @@
 =end
 
 module SWIG
-	# A VPI handle object (see +vpiHandle+ in IEEE Std. 1364-2005) which can represent any part of the simulation environment.
+	# Represents an object, known as a "handle", in the Verilog simulation environment. See +vpiHandle+ in IEEE Std. 1364-2005 for details.
 	#
 	# = Reading and writing values
 	# There are several ways to read and write a handle's value, depending on its representation.
@@ -197,8 +197,8 @@ module SWIG
 			handles
 		end
 
-		# Iterates over all handles of the given type.
-		def each aType, &aBlock
+		# Iterates over all handles of the given type and executes the given block once for each handle.
+		def each aType, &aBlock	# :yields: handle
 			self[aType].each(&aBlock)
 		end
 	end

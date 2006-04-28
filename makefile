@@ -43,3 +43,5 @@ $(src_dir)/html:
 doc-clean:
 	rm -rf doc $(src_dir)/html
 
+doc-dist: doc
+	scp -r doc/* snk@rubyforge.org:/var/www/gforge-projects/ruby-vpi/
