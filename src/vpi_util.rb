@@ -13,14 +13,54 @@
 =end
 
 module SWIG
-	# A wrapper for the +VpiHandle+ object.
+	# A VPI handle object (see +vpiHandle+ in IEEE Std. 1364-2005) which can represent any part of the simulation environment.
+	#
+	# = Reading and writing values
+	# There are several ways to read and write a handle's value, depending on its representation.
+	#
+	# == Using +S_vpi_value+ objects
+	# You can read and write values using +S_vpi_value+ objects through the following methods.
+	# * #get_value_wrapper
+	# * Vpi::vpi_get_value
+	# * Vpi::vpi_put_value
+	#
+	# == Using values and formats
+	# You can read and write values, while specifying their format, through the following methods.
+	# * value = handle.#get_value(format)
+	# * handle.#put_value(value, format)
+	#
+	# Another way to express the code shown above is:
+	# * value = handle.#value(format)
+	# * handle.#value = [value, format]
+	#
+	# == Using values directly
+	# You can read and write values directly, while implicitly specifying their format, through several shortcut methods. The names of these methods can be determined by (1) taking the name of a VPI value format (see the #VALUE_FORMAT_NAMES array), (2) removing the "Vpi" prefix, and (3) converting the first character into lower-case.
+	#
+	# For example, the shortcut methods for reading and writing values using the <tt><b>Vpi</b><em>I</em>ntVal</tt> format are:
+	# * intVal
+	# * intVal=
+	#
+	# The methods shown above can be used like so:
+	# * value = handle.#intVal
+	# * handle.#intVal = value
+	#
+	# == Examples of all approaches
+	# To read a handle's value as an integer:
+	# * handle.#get_value(VpiIntVal)
+	# * handle.#value(VpiIntVal)
+	# * handle.intVal
+	#
+	# To write a handle's value as an integer:
+	# * handle.#put_value(15, VpiIntVal)
+	# * handle.#value = [15, VpiIntVal]
+	# * handle.intVal = 15
 	class TYPE_p_unsigned_int
 		include Vpi
 
 		# Names of VPI value formats. See <tt>S_vpi_value.format</tt> for details.
 		VALUE_FORMAT_NAMES = [:VpiBinStrVal, :VpiOctStrVal, :VpiDecStrVal, :VpiHexStrVal, :VpiStringVal, :VpiScalarVal, :VpiIntVal, :VpiRealVal, :VpiTimeVal, :VpiVectorVal, :VpiStrengthVal].freeze
 
-		# Create methods for reading and writing every VPI value type. These methods wrap the +value+ and +value=+ methods.
+		# Create methods for reading and writing every VPI value format. These methods wrap the +value+ and +value=+ methods.
 		VALUE_FORMAT_NAMES.each do |var|
 			varName = var.to_s
 
@@ -32,17 +72,15 @@ module SWIG
 					self.value #{varName}
 				end
 
-				def #{methName}= aArgs
-					aArgs = ensureArray(aArgs)
-					aArgs[1] = #{varName}
-
-					self.value = aArgs
+				def #{methName}= *aArgs
+					aArgs[1, 0] = #{varName}
+					self.put_value *aArgs.flatten
 				end
 			}
 		end
 
-		# Reads the value using the given format and returns a S_vpi_value object.
-		def get_value aFormat = VpiObjTypeVal
+		# Reads the value using the given format and returns a +S_vpi_value+ object.
+		def get_value_wrapper aFormat
 			val = S_vpi_value.new
 			val.format = aFormat
 
@@ -50,9 +88,9 @@ module SWIG
 			val
 		end
 
-		# Reads the value using the given format and returns it.
-		def value *aArgs
-			val = get_value(*aArgs)
+		# Reads the value using the given format and returns it. If a format is not given, then the Verilog simulator will attempt to determine the correct format.
+		def get_value aFormat = VpiObjTypeVal
+			val = get_value_wrapper aFormat
 
 			case val.format
 				when VpiBinStrVal
@@ -93,10 +131,12 @@ module SWIG
 			end
 		end
 
-		# Writes the given value using the given format, time, and delay. If a format is not given, then the format of the present value will be used.
+		alias_method :value, :get_value
+
+		# Writes the given value using the given format, time, and delay. If a format is not given, then the Verilog simulator will attempt to determine the correct format.
 		def put_value aValue, aFormat = nil, aTime = nil, aDelay = VpiNoDelay
 			newVal = S_vpi_value.new
-			newVal.format = aFormat || self.get_value.format
+			newVal.format = aFormat || get_value_wrapper(VpiObjTypeVal).format
 
 			case newVal.format
 				when VpiBinStrVal
@@ -139,10 +179,9 @@ module SWIG
 			vpi_put_value self, newVal, aTime, aDelay
 		end
 
-		# A shortcut to +put_value+.
-		# aArgs:: array of arguments for +put_value+
-		def value= aArgs
-			put_value *ensureArray(aArgs)
+		# Invokes #put_value by passing the contents of the given array as arguments.
+		def value= *aArray
+			put_value *aArray.flatten
 		end
 
 		# Returns an array of handles of the given type.
@@ -162,16 +201,5 @@ module SWIG
 		def each aType, &aBlock
 			self[aType].each(&aBlock)
 		end
-
-		private
-			def ensureArray aArr
-				unless aArr.respond_to? :to_ary
-					aArr = [aArr]
-				else
-					aArr = aArr.to_ary
-				end
-
-				aArr
-			end
 	end
 end
