@@ -91,7 +91,7 @@ You should be able to use Ruby-VPI with any Verilog simulator. However, only the
 
 == Examples of usage
 
-The +examples+ directory contains several example test benches that utilize Ruby-VPI. Each example has an associated +makefile+ to simplify the process of running it. Thus, simply navigate into an example directory and run the command <b><tt>make _simulator_</tt></b> where _simulator_ is the abbreviated name of your Verilog simulator shown in the table below.
+The +examples+ directory contains several example test benches that utilize Ruby-VPI. Each example has an associated +makefile+ to simplify the process of running it. Thus, simply navigate into an example directory and run the command <b><tt>make _abbreviation_</tt></b> where _abbreviation_ is the abbreviated name of your Verilog simulator shown in the table below.
 
 <b>Simulator</b>:: <b>Abbreviation</b>
 Icarus Verilog:: ivl
@@ -122,7 +122,7 @@ The entire IEEE Std. 1364-2005 VPI interface (see <tt>src/vpi_user.h</tt>) is av
   va_list *p = &ap;
  }
 
-FinallyAtop this interface sits the VPI utility layer (see <tt>src/vpi_util.rb</tt>) which attempts to transform the interface into something more Ruby-like. For example, it is more Ruby-like to write
+Atop this interface sits the VPI utility layer (see <tt>src/vpi_util.rb</tt>) whose goal is to transform the VPI interface into something more Ruby-like. For example, it is more Ruby-like to write
  handle.each(VpiNet) {|net| . . .}
 than
  if itr = vpi_iterate(VpiNet, handle)
