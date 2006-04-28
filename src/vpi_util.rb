@@ -93,20 +93,8 @@ module SWIG
 			val = get_value_wrapper aFormat
 
 			case val.format
-				when VpiBinStrVal
-					val.value.str.to_i(2)
-
-				when VpiOctStrVal
-					val.value.str.to_i(8)
-
-				when VpiDecStrVal
-					val.value.str.to_i(10)
-
-				when VpiHexStrVal
-					val.value.str.to_i(16)
-
-				when VpiStringVal
-					val.value.str.dup
+				when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal, VpiStringVal
+					val.value.str
 
 				when VpiScalarVal
 					val.value.scalar
@@ -139,20 +127,8 @@ module SWIG
 			newVal.format = aFormat || get_value_wrapper(VpiObjTypeVal).format
 
 			case newVal.format
-				when VpiBinStrVal
-					newVal.value.str = aValue.to_s(2)
-
-				when VpiOctStrVal
-					newVal.value.str = aValue.to_s(8)
-
-				when VpiDecStrVal
-					newVal.value.str = aValue.to_s(10)
-
-				when VpiHexStrVal
-					newVal.value.str = aValue.to_s(16)
-
-				when VpiStringVal
-					newVal.value.str = aValue.dup
+				when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal, VpiStringVal
+					newVal.value.str = aValue
 
 				when VpiScalarVal
 					newVal.value.scalar = aValue
