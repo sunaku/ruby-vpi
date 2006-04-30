@@ -35,7 +35,7 @@ swig-clean:
 
 
 doc: README HISTORY $(src_dir)/vpi_util.rb $(src_dir)/html
-	rdoc1.8 -t "Ruby-VPI: Ruby interface to Verilog VPI" $^
+	rdoc1.8 -c utf-8 -t "Ruby-VPI: Ruby interface to Verilog VPI" $^
 
 $(src_dir)/html:
 	cd $(src_dir) && doxygen
