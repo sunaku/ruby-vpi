@@ -14,7 +14,7 @@
 
 = What is it?
 
-Ruby-VPI is a Ruby interface to Verilog VPI. With it, you can create complex Verilog test benches easily and wholly in Ruby.
+Ruby-VPI is a Ruby[http://www.ruby-lang.org/en/20020101.html] interface to Verilog[http://en.wikipedia.org/wiki/Verilog] VPI. With it, you can create complex Verilog {test benches}[http://en.wikipedia.org/wiki/Software_testing] easily and wholly in Ruby.
 
 = How is it licensed?
 
@@ -111,9 +111,9 @@ You're looking at it! This is the documentation for the Ruby portion of Ruby-VPI
 
 === Verilog VPI
 
-The entire IEEE Std. 1364-2005 VPI interface (see <tt>src/vpi_user.h</tt>) is available inside Ruby with minor changes:
+The _entire_ IEEE Std. 1364-2005 VPI interface (see <tt>src/vpi_user.h</tt>) is available inside Ruby, but with minor changes:
 
-* The first letter of all functions, types, structures, and constants becomes capitalized. For example, the structure <tt><b>s</b>_vpi_value</tt> becomes <tt><b>S</b>_vpi_value</tt>, and the constant <tt><b>v</b>piIntVal</tt> becomes <tt><b>V</b>piIntVal</tt>.
+* The first letter in the name of every function, type, structure, and constant becomes capitalized. For example, the structure <tt><b>s</b>_vpi_value</tt> becomes <tt><b>S</b>_vpi_value</tt>, and the constant <tt><b>v</b>piIntVal</tt> becomes <tt><b>V</b>piIntVal</tt>.
 
 * The functions <tt>vpi_vprintf</tt> and <tt>vpi_mcd_vprintf</tt> are disabled because some compilers have problems with pointers to the <tt>va_list</tt> type:
 
