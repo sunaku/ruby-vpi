@@ -20,7 +20,7 @@ input = ARGF.read
 	input.gsub! %r{//.*$}, ""
 
 	# collapse the input into a single line
-	input.tr! ?\n.chr, ' '
+	input.tr! "\n", ' '
 
 	# strip multi-line comments
 	input.gsub! %r{/\*.*\*/}, ""
@@ -105,7 +105,7 @@ File.open(rubyDest, "w") do |f|
 				#{
 					moduleParamNames.inject([]) do |acc, param|
 						acc << %{@#{param} = vpi_handle_by_name("#{destModuleName}.#{param}", nil)}
-					end.join(?\n.chr)
+					end.join("\n")
 				}
 			end
 		end
