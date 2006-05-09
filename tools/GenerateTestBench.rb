@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 # Generates a Ruby-VPI test bench (including a Verilog portion and a Ruby portion) for a given Verilog module.
 
 =begin
@@ -23,93 +24,94 @@ input = ARGF.read
 	input.tr! "\n", ' '
 
 	# strip multi-line comments
-	input.gsub! %r{/\*.*\*/}, ""
+	input.gsub! %r{/\*.*?\*/}, ""
 
 
 # parse the input
-moduleDecl = input.scan(%r{module.*?;}).first
+input.scan(%r{module.*?;}).each do |moduleDecl|
 
-moduleName = moduleDecl.scan(%r{module\s+(\w+)\s*\(}).first.first
+	moduleName = moduleDecl.scan(%r{module\s+(\w+)\s*\(}).first.first
 
-moduleParamDecl = moduleDecl.gsub(%r{module.*?\((.*)\)\s*;\s*$}, %q{\1})
-moduleParamDecl.gsub! %r{(\W)reg(\W)}, %q{\1\2}	# make all parameters unregistered
+	moduleParamDecl = moduleDecl.gsub(%r{module.*?\((.*)\)\s*;\s*$}, %q{\1})
+	moduleParamDecl.gsub! %r{(\W)reg(\W)}, %q{\1\2}	# make all parameters unregistered
 
-moduleParamNames = []
-moduleParamDecl.scan(%r{(\w+)\s*[,\)]}) {|name| moduleParamNames << name.first}
-
-
-# determine output destinations
-destModuleName = "#{moduleName}_tb"
-verilogDest = destModuleName + ".v"
-rubyDest = destModuleName + ".rb"
+	moduleParamNames = []
+	moduleParamDecl.scan(%r{(\w+)\s*[,\)]}) {|name| moduleParamNames << name.first}
 
 
-# generate verilog test bench
-File.open(verilogDest, "w") do |f|
-	# accessors for inputs & outputs
-	accessorDecl = moduleParamDecl.dup
+	# determine output destinations
+	destModuleName = "#{moduleName}_tb"
+	verilogDest = destModuleName + ".v"
+	rubyDest = destModuleName + ".rb"
 
-	{ "input" => "reg", "output" => "wire" }.each_pair do |key, val|
-		accessorDecl.gsub! %r{(\W#{key}\s+)(.*?)[,\)]}, "#{val} \\2;"
+
+	# generate verilog test bench
+	File.open(verilogDest, "w") do |f|
+		# accessors for inputs & outputs
+		accessorDecl = moduleParamDecl.dup
+
+		{ "input" => "reg", "output" => "wire" }.each_pair do |key, val|
+			accessorDecl.gsub! %r{(\W#{key}\s+)(.*?)[,\)]}, "#{val} \\2;"
+		end
+
+
+		# instantiation for the module under test
+		instParamDecl = moduleParamNames.inject([]) {|acc, param| acc << ".#{param}(#{param})"}.join(",")
+		instDecl = "#{moduleName} dut (#{instParamDecl});"
+
+
+		f << %{
+			module #{destModuleName};
+
+				/* accessors for the DUT */
+				#{accessorDecl}
+
+
+				/* instantiate the DUT */
+				#{instDecl}
+
+
+				/* interface to Ruby-VPI */
+				initial begin
+					#0 $ruby_init("-w", "#{rubyDest}");
+					#1 clk = 0; reset = 0;
+				end
+
+				/* generate a 50% duty-cycle clock for the DUT */
+				always begin
+					#5 clk = ~clk;
+				end
+
+				/* transfer control to Ruby-VPI every clock cycle */
+				always @(posedge clk) begin
+					$ruby_relay();
+				end
+
+			endmodule
+		}
+
+		puts "generated #{verilogDest}"
 	end
 
 
-	# instantiation for the module under test
-	instParamDecl = moduleParamNames.inject([]) {|arr, param| arr << ".#{param}(#{param})"}.join(",")
-	instDecl = "#{moduleName} dut (#{instParamDecl});"
+	# generate Ruby test bench
+	File.open(rubyDest, "w") do |f|
+		f << %{
+			require 'test/unit'
 
+			class #{destModuleName.capitalize} < Test::Unit::TestCase
+				include Vpi
 
-	f << %{
-		module #{destModuleName};
-
-			/* accessors for the DUT */
-			#{accessorDecl}
-
-
-			/* instantiate the DUT */
-			#{instDecl}
-
-
-			/* interface to Ruby-VPI */
-			initial begin
-				#0 $ruby_init("-w", "#{rubyDest}");
-				#1 clk = 0; reset = 0;
+				def setup
+					#{
+						moduleParamNames.inject([]) do |acc, param|
+							acc << %{@#{param} = vpi_handle_by_name("#{destModuleName}.#{param}", nil)}
+						end.join("\n")
+					}
+				end
 			end
+		}
 
-			/* generate a 50% duty-cycle clock for the DUT */
-			always begin
-				#5 clk = ~clk;
-			end
-
-			/* transfer control to Ruby-VPI every clock cycle */
-			always @(posedge clk) begin
-				$ruby_relay();
-			end
-
-		endmodule
-	}
-
-	puts "generated #{verilogDest}"
-end
-
-
-# generate Ruby test bench
-File.open(rubyDest, "w") do |f|
-	f << %{
-		require 'test/unit'
-
-		class #{destModuleName.capitalize} < Test::Unit::TestCase
-			include Vpi
-
-			def setup
-				#{
-					moduleParamNames.inject([]) do |acc, param|
-						acc << %{@#{param} = vpi_handle_by_name("#{destModuleName}.#{param}", nil)}
-					end.join("\n")
-				}
-			end
-		end
-	};
-
-	puts "generated #{rubyDest}"
+		puts "generated #{rubyDest}"
+	end
 end
