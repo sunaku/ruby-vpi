@@ -3,10 +3,7 @@
 # Generates a Ruby-VPI test bench (composed of a Verilog file and a Ruby file) from Verilog 2001 module declarations.
 #
 # == Usage
-# ruby generate_test.rb [option...] [input-file...]
-#
-# option::
-# 	A command-line option, such as "--help".
+# ruby generate_test.rb [input-file...]
 #
 # input-file::
 # 	A source file which contains one or more Verilog 2001 module declarations.
