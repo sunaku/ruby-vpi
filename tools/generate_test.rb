@@ -39,24 +39,24 @@ opts.parse(ARGV) rescue RDoc::usage('usage')
 input = ARGF.read
 
 	# remove single-line comments
-	input.gsub! %r{//.*$}, ""
+	input.gsub! %r{//.*$}, ''
 
 	# collapse the input into a single line
-	input.tr! "\n", ' '
+	input.tr! "\n", ''
 
 	# remove multi-line comments
-	input.gsub! %r{/\*.*?\*/}, ""
+	input.gsub! %r{/\*.*?\*/}, ''
 
 
 # parse the input
 input.scan(%r{module.*?;}).each do |moduleDecl|
 
 	moduleDecl =~ %r{module\s+(\w+)\s*(\#\((.*?)\))?\s*\((.*?)\)\s*;}
-	moduleName, moduleConfigDecl, moduleParamDecl = $1, $3 || "", $4
+	moduleName, moduleConfigDecl, moduleParamDecl = $1, $3 || '', $4
 
 
 	# parse configuration parameters
-	moduleConfigDecl.gsub! %r{\bparameter\b}, ""
+	moduleConfigDecl.gsub! %r{\bparameter\b}, ''
 	moduleConfigDecl.strip!
 
 	moduleConfigDecls = moduleConfigDecl.split(/,/)
@@ -67,7 +67,7 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 
 
 	# parse signal parameters
-	moduleParamDecl.gsub! %r{\breg\b}, ""
+	moduleParamDecl.gsub! %r{\breg\b}, ''
 	moduleParamDecl.strip!
 
 	moduleParamDecls = moduleParamDecl.split(/,/)
@@ -91,14 +91,14 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 	File.open(verilogDest, "w") do |f|
 
 		# configuration parameters for DUT
-		configDecl = moduleConfigDecls.inject("") do |acc, decl|
+		configDecl = moduleConfigDecls.inject('') do |acc, decl|
 			acc << "parameter #{decl};\n"
 		end
 
 
-		# accessors for inputs & outputs of DUT
-		accessorDecl = moduleParamDecls.inject("") do |acc, decl|
-			{ "input" => "reg", "output" => "wire" }.each_pair do |key, val|
+		# accessors for DUT interface
+		accessorDecl = moduleParamDecls.inject('') do |acc, decl|
+			{ 'input' => 'reg', 'output' => 'wire' }.each_pair do |key, val|
 				decl.gsub! %r{\b#{key}\b(.*?)$}, "#{val}\\1;"
 			end
 
@@ -160,6 +160,18 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 
 	# generate Ruby test bench
 	File.open(rubyDest, "w") do |f|
+
+		# accessors for DUT interface
+		accessorDecl = moduleParamNames.inject('') do |acc, param|
+			acc << %{@#{param} = vpi_handle_by_name("#{destModuleName}.#{param}", nil)} << "\n"
+		end
+
+		# tests for DUT accessors
+		accessorTestDecl = moduleParamNames.inject('') do |acc, param|
+			acc << "def test_#{param}\nend" << "\n\n"
+		end
+
+
 		f << %{
 			require 'vpi_util'
 			require 'test/unit'
@@ -168,12 +180,12 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 				include Vpi
 
 				def setup
-					#{
-						moduleParamNames.inject([]) do |acc, param|
-							acc << %{@#{param} = vpi_handle_by_name("#{destModuleName}.#{param}", nil)}
-						end.join("\n")
-					}
+					\# accessors for the DUT
+					#{accessorDecl}
 				end
+
+				\# tests for DUT accessors
+				#{accessorTestDecl}
 			end
 		}
 
