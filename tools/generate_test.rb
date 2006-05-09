@@ -1,5 +1,17 @@
 #!/usr/bin/env ruby
-# Generates a Ruby-VPI test bench (including a Verilog portion and a Ruby portion) for a given Verilog module.
+# == Synopsis
+# Generates a Ruby-VPI test bench (composed of a Verilog file and a Ruby file) from Verilog 2001 module declarations.
+#
+# == Usage
+# ruby generate_test.rb [option...] [input-file...]
+#
+# option::
+# 	A command-line option, such as "--help".
+#
+# input-file::
+# 	A source file which contains one or more Verilog 2001 module declarations.
+#
+# If no input files are specified, then the standard input stream will be read instead.
 
 =begin
 	Copyright 2006 Suraj Kurapati
@@ -12,6 +24,17 @@
 
 	You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 =end
+
+require 'optparse'
+require 'rdoc/usage'
+
+DEST_SUFFIX = '_tb'
+
+
+# parse command-line options
+opts = OptionParser.new
+opts.on('-h', '--help') {RDoc::usage}
+opts.parse(ARGV) rescue RDoc::usage('usage')
 
 
 # sanitize the input
@@ -29,35 +52,42 @@ input = ARGF.read
 
 # parse the input
 input.scan(%r{module.*?;}).each do |moduleDecl|
-
 	moduleName = moduleDecl.scan(%r{module\s+(\w+)\s*\(}).first.first
 
-	moduleParamDecl = moduleDecl.gsub(%r{module.*?\((.*)\)\s*;\s*$}, %q{\1})
-	moduleParamDecl.gsub! %r{(\W)reg(\W)}, %q{\1\2}	# make all parameters unregistered
+	moduleParamDecl = moduleDecl.gsub(%r{module.*?\((.*)\)\s*;}, '\1')
+	moduleParamDecl.gsub! %r{\breg\b}, ""	# make all parameters unregistered
 
-	moduleParamNames = []
-	moduleParamDecl.scan(%r{(\w+)\s*[,\)]}) {|name| moduleParamNames << name.first}
+	moduleParamDecls = moduleParamDecl.split(/,/)
+
+	moduleParamNames = moduleParamDecls.inject([]) do |acc, decl|
+		acc << decl.scan(%r{\w+}).last
+	end
+
+	puts "parsed #{moduleName}"
 
 
 	# determine output destinations
-	destModuleName = "#{moduleName}_tb"
+	destModuleName = moduleName + DEST_SUFFIX
 	verilogDest = destModuleName + ".v"
 	rubyDest = destModuleName + ".rb"
 
 
 	# generate verilog test bench
 	File.open(verilogDest, "w") do |f|
-		# accessors for inputs & outputs
-		accessorDecl = moduleParamDecl.dup
 
-		{ "input" => "reg", "output" => "wire" }.each_pair do |key, val|
-			accessorDecl.gsub! %r{(\W#{key}\s+)(.*?)[,\)]}, "#{val} \\2;"
+		# accessors for inputs & outputs of DUT
+		accessorDecl = moduleParamDecls.inject("") do |acc, decl|
+			{ "input" => "reg", "output" => "wire" }.each_pair do |key, val|
+				decl.gsub! %r{\b#{key}\b(.*?)$}, "#{val}\\1;"
+			end
+
+			acc << decl
 		end
 
 
-		# instantiation for the module under test
-		instParamDecl = moduleParamNames.inject([]) {|acc, param| acc << ".#{param}(#{param})"}.join(",")
-		instDecl = "#{moduleName} dut (#{instParamDecl});"
+		# instantiation for the DUT
+		instParamDecl = moduleParamNames.inject([]) {|acc, param| acc << ".#{param}(#{param})"}.join(', ')
+		instDecl = "#{moduleName} #{destModuleName}_dut (#{instParamDecl});"
 
 
 		f << %{
