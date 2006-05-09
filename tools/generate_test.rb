@@ -108,12 +108,15 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 
 
 		# instantiation for the DUT
+
+			# creates a comma-separated string of parameter declarations in module instantiation format
 			def makeInstParamDecl(paramNames)
 				paramNames.inject([]) {|acc, param| acc << ".#{param}(#{param})"}.join(', ')
 			end
 
 		instConfigDecl = makeInstParamDecl(moduleConfigNames)
 		instParamDecl = makeInstParamDecl(moduleParamNames)
+
 		instDecl = "#{moduleName} \#(#{instConfigDecl}) #{destModuleName}_dut (#{instParamDecl});"
 
 
