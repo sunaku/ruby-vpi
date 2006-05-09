@@ -40,22 +40,24 @@ opts.parse(ARGV) rescue RDoc::usage('usage')
 # sanitize the input
 input = ARGF.read
 
-	# strip single-line comments
+	# remove single-line comments
 	input.gsub! %r{//.*$}, ""
 
 	# collapse the input into a single line
 	input.tr! "\n", ' '
 
-	# strip multi-line comments
+	# remove multi-line comments
 	input.gsub! %r{/\*.*?\*/}, ""
 
 
 # parse the input
 input.scan(%r{module.*?;}).each do |moduleDecl|
+
 	moduleName = moduleDecl.scan(%r{module\s+(\w+)\s*\(}).first.first
 
 	moduleParamDecl = moduleDecl.gsub(%r{module.*?\((.*)\)\s*;}, '\1')
 	moduleParamDecl.gsub! %r{\breg\b}, ""	# make all parameters unregistered
+	moduleParamDecl.strip!
 
 	moduleParamDecls = moduleParamDecl.split(/,/)
 
