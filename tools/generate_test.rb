@@ -53,10 +53,23 @@ input = ARGF.read
 # parse the input
 input.scan(%r{module.*?;}).each do |moduleDecl|
 
-	moduleName = moduleDecl.scan(%r{module\s+(\w+)\s*\(}).first.first
+	moduleDecl =~ %r{module\s+(\w+)\s*(\#\((.*?)\))?\s*\((.*?)\)\s*;}
+	moduleName, moduleConfigDecl, moduleParamDecl = $1, $3 || "", $4
 
-	moduleParamDecl = moduleDecl.gsub(%r{module.*?\((.*)\)\s*;}, '\1')
-	moduleParamDecl.gsub! %r{\breg\b}, ""	# make all parameters unregistered
+
+	# parse configuration parameters
+	moduleConfigDecl.gsub! %r{\bparameter\b}, ""
+	moduleConfigDecl.strip!
+
+	moduleConfigDecls = moduleConfigDecl.split(/,/)
+
+	moduleConfigNames = moduleConfigDecls.inject([]) do |acc, decl|
+		acc << decl.scan(%r{\w+}).first
+	end
+
+
+	# parse signal parameters
+	moduleParamDecl.gsub! %r{\breg\b}, ""
 	moduleParamDecl.strip!
 
 	moduleParamDecls = moduleParamDecl.split(/,/)
@@ -65,7 +78,9 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 		acc << decl.scan(%r{\w+}).last
 	end
 
+
 	puts "parsed #{moduleName}"
+
 
 
 	# determine output destinations
@@ -77,28 +92,41 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 	# generate verilog test bench
 	File.open(verilogDest, "w") do |f|
 
+		# configuration parameters for DUT
+		configDecl = moduleConfigDecls.inject("") do |acc, decl|
+			acc << "parameter #{decl};\n"
+		end
+
+
 		# accessors for inputs & outputs of DUT
 		accessorDecl = moduleParamDecls.inject("") do |acc, decl|
 			{ "input" => "reg", "output" => "wire" }.each_pair do |key, val|
 				decl.gsub! %r{\b#{key}\b(.*?)$}, "#{val}\\1;"
 			end
 
-			decl.lstrip!
+			decl.strip!
 			acc << decl << "\n"
 		end
 
 
 		# instantiation for the DUT
-		instParamDecl = moduleParamNames.inject([]) {|acc, param| acc << ".#{param}(#{param})"}.join(', ')
-		instDecl = "#{moduleName} #{destModuleName}_dut (#{instParamDecl});"
+			def makeInstParamDecl(paramNames)
+				paramNames.inject([]) {|acc, param| acc << ".#{param}(#{param})"}.join(', ')
+			end
+
+		instConfigDecl = makeInstParamDecl(moduleConfigNames)
+		instParamDecl = makeInstParamDecl(moduleParamNames)
+		instDecl = "#{moduleName} \#(#{instConfigDecl}) #{destModuleName}_dut (#{instParamDecl});"
 
 
 		f << %{
 			module #{destModuleName};
 
+				/* configuration for the DUT */
+				#{configDecl}
+
 				/* accessors for the DUT */
 				#{accessorDecl}
-
 
 				/* instantiate the DUT */
 				#{instDecl}
