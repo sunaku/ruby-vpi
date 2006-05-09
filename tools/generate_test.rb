@@ -83,7 +83,8 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 				decl.gsub! %r{\b#{key}\b(.*?)$}, "#{val}\\1;"
 			end
 
-			acc << decl
+			decl.lstrip!
+			acc << decl << "\n"
 		end
 
 
