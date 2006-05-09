@@ -8,7 +8,8 @@
 # input-file::
 # 	A source file which contains one or more Verilog 2001 module declarations.
 #
-# If no input files are specified, then the standard input stream will be read instead.
+# * If no input files are specified, then the standard input stream will be read instead.
+# * The first signal parameter in a module's declaration is assumed to be the clocking signal.
 
 =begin
 	Copyright 2006 Suraj Kurapati
@@ -116,6 +117,8 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 		instDecl = "#{moduleName} \#(#{instConfigDecl}) #{destModuleName}_dut (#{instParamDecl});"
 
 
+		clockSignal = moduleParamNames.first
+
 		f << %{
 			module #{destModuleName};
 
@@ -131,17 +134,17 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 
 				/* interface to Ruby-VPI */
 				initial begin
-					#0 $ruby_init("-w", "#{rubyDest}");
-					#1 clk = 0; reset = 0;
+					#{clockSignal} = 0;
+					$ruby_init("-w", "#{rubyDest}");
 				end
 
 				/* generate a 50% duty-cycle clock for the DUT */
 				always begin
-					#5 clk = ~clk;
+					#5 #{clockSignal} = ~#{clockSignal};
 				end
 
 				/* transfer control to Ruby-VPI every clock cycle */
-				always @(posedge clk) begin
+				always @(posedge #{clockSignal}) begin
 					$ruby_relay();
 				end
 
@@ -155,6 +158,7 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 	# generate Ruby test bench
 	File.open(rubyDest, "w") do |f|
 		f << %{
+			require 'vpi_util'
 			require 'test/unit'
 
 			class #{destModuleName.capitalize} < Test::Unit::TestCase
