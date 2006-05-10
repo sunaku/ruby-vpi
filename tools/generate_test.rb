@@ -87,7 +87,7 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 	rubyDest = destModuleName + ".rb"
 
 
-	# generate verilog test bench
+	# generate Verilog test bench
 	File.open(verilogDest, "w") do |f|
 
 		# configuration parameters for DUT
@@ -98,8 +98,8 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 
 		# accessors for DUT interface
 		accessorDecl = moduleParamDecls.inject('') do |acc, decl|
-			{ 'input' => 'reg', 'output' => 'wire' }.each_pair do |key, val|
-				decl.gsub! %r{\b#{key}\b(.*?)$}, "#{val}\\1;"
+			{ :input => :reg, :output => :wire }.each_pair do |key, val|
+				decl.sub! %r{\b#{key}\b(.*?)$}, "#{val}\\1;"
 			end
 
 			decl.strip!
