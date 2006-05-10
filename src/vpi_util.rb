@@ -1,7 +1,7 @@
 # A utility layer which transforms the VPI interface into one that is more suitable for Ruby.
 
 =begin
-	Copyright 2006 Suraj Kurapati
+	Copyright 2006 Suraj N. Kurapati
 
   This file is part of Ruby-VPI.
 

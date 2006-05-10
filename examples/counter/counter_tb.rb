@@ -1,5 +1,5 @@
 =begin
-	Copyright 2006 Suraj Kurapati
+	Copyright 2006 Suraj N. Kurapati
 	Copyright 1999 Kazuhiro HIWADA
 
 	This file is part of Ruby-VPI.

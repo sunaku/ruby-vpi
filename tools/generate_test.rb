@@ -12,7 +12,7 @@
 # * The first signal parameter in a module's declaration is assumed to be the clocking signal.
 
 =begin
-	Copyright 2006 Suraj Kurapati
+	Copyright 2006 Suraj N. Kurapati
 
   This file is part of Ruby-VPI.
 
