@@ -117,7 +117,13 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 		instConfigDecl = makeInstParamDecl(moduleConfigNames)
 		instParamDecl = makeInstParamDecl(moduleParamNames)
 
-		instDecl = "#{moduleName} \#(#{instConfigDecl}) #{destModuleName}_dut (#{instParamDecl});"
+		instDecl = "#{moduleName} " << (
+			unless instConfigDecl.empty?
+				"\#(#{instConfigDecl})"
+			else
+				''
+			end
+		) << " #{destModuleName}_dut (#{instParamDecl});"
 
 
 		clockSignal = moduleParamNames.first
