@@ -98,7 +98,7 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 
 		# accessors for DUT interface
 		accessorDecl = moduleParamDecls.inject('') do |acc, decl|
-			{ :input => :reg, :output => :wire }.each_pair do |key, val|
+			{ 'input' => 'reg', 'output' => 'wire' }.each_pair do |key, val|
 				decl.sub! %r{\b#{key}\b(.*?)$}, "#{val}\\1;"
 			end
 
@@ -163,12 +163,12 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 
 		# accessors for DUT interface
 		accessorDecl = moduleParamNames.inject('') do |acc, param|
-			acc << %{@#{param} = vpi_handle_by_name("#{destModuleName}.#{param}", nil)} << "\n"
+			acc << %{@#{param} = vpi_handle_by_name("#{destModuleName}.#{param}", nil)\n}
 		end
 
 		# tests for DUT accessors
 		accessorTestDecl = moduleParamNames.inject('') do |acc, param|
-			acc << "def test_#{param}\nend" << "\n\n"
+			acc << "def test_#{param}\nend\n\n"
 		end
 
 
