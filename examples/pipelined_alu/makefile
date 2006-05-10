@@ -1,9 +1,12 @@
 top_dir = ../..
 
 src_module = hw5_unit_tb
-src_files = *.v
+src_files = $(src_module).v
 
 # command-line arguments for Verilog simulator
-OPTIONS =	
+CVER_FLAGS =
+IVL_FLAGS =
+VCS_FLAGS =
+VSIM_FLAGS =
 
-include ../template.mk
+include $(top_dir)/examples/template.mk

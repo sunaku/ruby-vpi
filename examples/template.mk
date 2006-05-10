@@ -24,7 +24,7 @@ deps-clean:
 # Pragmatic C - Cver
 cver:
 	make -e deps CFLAGS="-DPRAGMATIC_CVER" LDFLAGS="-export-dynamic"
-	cver $(OPTIONS) +loadvpi=$(top_dir)/ruby-vpi.so:vlog_startup_routines_bootstrap $(src_files)
+	cver $(CVER_FLAGS) +loadvpi=$(top_dir)/ruby-vpi.so:vlog_startup_routines_bootstrap $(src_files)
 
 cver-clean:
 
@@ -33,7 +33,7 @@ cver-clean:
 ivl:
 	make -e deps CFLAGS="-DICARUS_VERILOG"
 	cp $(top_dir)/ruby-vpi.so ruby-vpi.vpi
-	iverilog $(OPTIONS) -y. -mruby-vpi $(src_files)
+	iverilog $(IVL_FLAGS) -y. -mruby-vpi $(src_files)
 	vvp -M. a.out
 
 ivl-clean:
@@ -43,7 +43,7 @@ ivl-clean:
 # Synopsys VCS
 vcs:
 	make -e deps CFLAGS="-DSYNOPSYS_VCS"
-	vcs $(OPTIONS) -R +v2k +vpi -LDFLAGS "../$(top_dir)/ruby-vpi.o $(LIB_RUBY) $(LIB_PTHREAD)" $(VCS_FLAGS) -P $(vcs_table) $(src_files)
+	vcs $(VCS_FLAGS) -R +v2k +vpi -LDFLAGS "../$(top_dir)/ruby-vpi.o $(LIB_RUBY) $(LIB_PTHREAD)" -P $(vcs_table) $(src_files)
 
 vcs-clean:
 	rm -rf csrc simv*
@@ -53,7 +53,7 @@ vcs-clean:
 vsim:
 	make -e deps CFLAGS="-DMENTOR_MODELSIM"
 	vlib work
-	vlog $(OPTIONS) $(src_files)
+	vlog $(VSIM_FLAGS) $(src_files)
 	vsim -c $(src_module) -pli $(top_dir)/ruby-vpi.so -do "run -all"
 
 vsim-clean:
