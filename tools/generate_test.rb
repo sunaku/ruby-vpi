@@ -187,6 +187,14 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 				\# tests for DUT accessors
 				#{accessorTestDecl}
 			end
+
+
+			\# $ruby_init():
+			Vpi::relay_verilog
+
+
+			\# $ruby_relay():
+			\# do nothing here, because test/unit will automatically run the unit test above
 		}
 
 		puts "generated #{rubyDest}"
