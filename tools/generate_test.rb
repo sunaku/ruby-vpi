@@ -48,12 +48,11 @@ end
 
 # parse command-line options
 OPTS = OpenStruct.new
-OPTS.rSpec = OPTS.rUnit = false
 
 optsParser = OptionParser.new
 optsParser.on('-h', '--help', 'show this help message') {raise}
-optsParser.on('-u', '--rUnit', 'generate Test::Unit friendly output') {|v| OPTS.rUnit = v}
-optsParser.on('-s', '--rSpec', 'generate RSpec friendly output') {|v| OPTS.rSpec = v}
+optsParser.on('-u', '--unit', 'optimize Ruby file for Test::Unit') {|v| OPTS.genTestUnit = v}
+optsParser.on('-s', '--spec', 'optimize Ruby file for RSpec') {|v| OPTS.genRSpec = v}
 
 begin
 	optsParser.parse!(ARGV)
@@ -218,15 +217,15 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 			require 'vpi_util'
 			#{
 				case
-					when OPTS.rUnit
+					when OPTS.genTestUnit
 						"require 'test/unit'"
 
-					when OPTS.rSpec
+					when OPTS.genRSpec
 						"require 'rspec'"
 				end
 			}
 
-			\# interface to the design
+			\# An interface to the design under test.
 			class #{className}
 				attr_reader #{accessorDecl}
 
@@ -238,7 +237,7 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 			\# verify the design
 			#{
 				case
-					when OPTS.rUnit
+					when OPTS.genTestUnit
 						%{
 							class #{testClassName} < Test::Unit::TestCase
 								include Vpi
@@ -251,7 +250,7 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 							end
 						}
 
-					when OPTS.rSpec
+					when OPTS.genRSpec
 						%{
 							context "A new #{className}" do
 								setup do
@@ -279,16 +278,16 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 
 			\# bootstrap this file
 			if $0 == __FILE__
-				\# $ruby_init():
+				\# service the $ruby_init() callback
 				Vpi::relay_verilog
 
-				\# $ruby_relay():
+				\# service the $ruby_relay() callback
 				#{
 					case
-						when OPTS.rUnit
+						when OPTS.genTestUnit
 							'# RUnit will take control from here.'
 
-						when OPTS.rSpec
+						when OPTS.genRSpec
 							'# RSpec will take control from here.'
 
 						else

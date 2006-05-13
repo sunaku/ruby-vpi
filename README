@@ -12,7 +12,7 @@
 
 * See what has changed in the release history
 
-== Contents of this package
+== Structure of this package
 
 doc:: Documentation in HTML format
 examples:: Example test benches
@@ -39,6 +39,12 @@ Ruby-VPI is {free software}[http://en.wikipedia.org/wiki/Free_software]; you can
 1. The Ruby script file is executed until it calls the <tt>Vpi::relay_verilog</tt> method. This method transfers control to the Verilog test bench.
 
 1. The Verilog simulator resumes simulation of the Verilog test bench.
+
+== This is too much work!
+
+You can use the <tt>tools/generate_test.rb</tt> tool to perform the heavy lifting for you. It generates most of a Ruby-VPI test bench when given a Verilog 2001 module declaration. Go ahead and try it!
+
+ ruby tools/generate_test.rb --help
 
 = What are the alternatives?
 
