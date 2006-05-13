@@ -97,7 +97,7 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 
 
 		# accessors for DUT interface
-		accessorDecl = moduleParamDecls.inject('') do |acc, decl|
+		accessorInitDecl = moduleParamDecls.inject('') do |acc, decl|
 			{ 'input' => 'reg', 'output' => 'wire' }.each_pair do |key, val|
 				decl.sub! %r{\b#{key}\b(.*?)$}, "#{val}\\1;"
 			end
@@ -135,7 +135,7 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 				#{configDecl}
 
 				/* accessors for the DUT */
-				#{accessorDecl}
+				#{accessorInitDecl}
 
 				/* instantiate the DUT */
 				#{instDecl}
@@ -168,9 +168,14 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 	File.open(rubyDest, "w") do |f|
 
 		# accessors for DUT interface
-		accessorDecl = moduleParamNames.inject('') do |acc, param|
+		accessorDecl = moduleParamNames.inject([]) do |acc, param|
+			acc << ":#{param}"
+		end.join(', ')
+
+		accessorInitDecl = moduleParamNames.inject('') do |acc, param|
 			acc << %{@#{param} = vpi_handle_by_name("#{destModuleName}.#{param}", nil)\n}
 		end
+
 
 		# tests for DUT accessors
 		accessorTestDecl = moduleParamNames.inject('') do |acc, param|
@@ -185,12 +190,21 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 			class #{destModuleName.capitalize} < Test::Unit::TestCase
 				include Vpi
 
-				def setup
-					\# accessors for the DUT
-					#{accessorDecl}
+				class DUT
+					include Vpi
+
+					attr_reader #{accessorDecl}
+
+					def initialize
+						#{accessorInitDecl}
+					end
 				end
 
-				\# tests for DUT accessors
+				def setup
+					@dut = DUT.new
+				end
+
+				\# test cases for DUT accessors
 				#{accessorTestDecl}
 			end
 
