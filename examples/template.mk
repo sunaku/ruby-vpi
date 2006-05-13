@@ -14,11 +14,11 @@ clean: deps-clean ivl-clean vcs-clean vsim-clean
 
 deps:
 	$(make_deps)
-	cp $(top_dir)/src/vpi_util.rb .
+	cp $(top_dir)/src/vpi_util.rb $(top_dir)/src/rspec.rb .
 
 deps-clean:
 	$(make_deps) clean
-	rm -f vpi_util.rb
+	rm -f vpi_util.rb rspec.rb
 
 
 # Pragmatic C - Cver

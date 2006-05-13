@@ -1,9 +1,13 @@
 #!/usr/bin/env ruby
+#
 # == Synopsis
 # Generates a Ruby-VPI test bench (composed of a Verilog file and a Ruby file) from Verilog 2001 module declarations.
 #
 # == Usage
-# ruby generate_test.rb [input-file...]
+# ruby generate_test.rb [option...] [input-file...]
+#
+# option::
+# 	Specify "--help" to see a list of options.
 #
 # input-file::
 # 	A source file which contains one or more Verilog 2001 module declarations.
@@ -25,6 +29,7 @@
 
 require 'optparse'
 require 'rdoc/usage'
+require 'ostruct'
 
 DEST_SUFFIX = '_tb'
 
@@ -42,12 +47,20 @@ end
 
 
 # parse command-line options
-opts = OptionParser.new
-opts.on('-h', '--help', 'show help message') {RDoc::usage}
-# opts.on('-u', '--test-unit', 'generate Ruby portion in Test::Unit format')
-# opts.on('-s', '--rspec', 'generate Ruby portion in RSpec format')
-# opts.on('-v', '--verilog-only', 'only generate Verilog portion')
-opts.parse(ARGV) rescue RDoc::usage('usage')
+OPTS = OpenStruct.new
+OPTS.rSpec = OPTS.rUnit = false
+
+optsParser = OptionParser.new
+optsParser.on('-h', '--help', 'show this help message') {raise}
+optsParser.on('-u', '--rUnit', 'generate Test::Unit friendly output') {|v| OPTS.rUnit = v}
+optsParser.on('-s', '--rSpec', 'generate RSpec friendly output') {|v| OPTS.rSpec = v}
+
+begin
+	optsParser.parse!(ARGV)
+rescue
+	puts optsParser
+	RDoc::usage
+end
 
 
 # sanitize the input
@@ -197,37 +210,91 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 			acc << "def test_#{param}\nend\n\n"
 		end
 
-		className = destModuleName.capitalize
+		className = moduleName.capitalize
+		testClassName = destModuleName.capitalize
 
 
 		f << fixIndent!(%{
 			require 'vpi_util'
+			#{
+				case
+					when OPTS.rUnit
+						"require 'test/unit'"
 
+					when OPTS.rSpec
+						"require 'rspec'"
+				end
+			}
+
+			\# interface to the design
 			class #{className}
-				include Vpi
+				attr_reader #{accessorDecl}
 
 				def initialize
-					@dut = DUT.new
-				end
-
-
-				\# the "design under test"
-				class DUT
-					attr_reader #{accessorDecl}
-
-					def initialize
-						#{accessorInitDecl}
-					end
+					#{accessorInitDecl}
 				end
 			end
 
+			\# verify the design
+			#{
+				case
+					when OPTS.rUnit
+						%{
+							class #{testClassName} < Test::Unit::TestCase
+								include Vpi
 
+								def setup
+									@design = #{className}.new
+								end
+
+								#{accessorTestDecl}
+							end
+						}
+
+					when OPTS.rSpec
+						%{
+							context "A new #{className}" do
+								setup do
+									@design = #{className}.new
+								end
+
+								specify "should ..." do
+									# @design.should ...
+								end
+							end
+						}
+
+					else
+						%{
+							class #{testClassName}
+								include Vpi
+
+								def initialize
+									@design = #{className}.new
+								end
+							end
+						}
+				end
+			}
+
+			\# bootstrap this file
 			if $0 == __FILE__
 				\# $ruby_init():
 				Vpi::relay_verilog
 
 				\# $ruby_relay():
-				#{className}.new
+				#{
+					case
+						when OPTS.rUnit
+							'# RUnit will take control from here.'
+
+						when OPTS.rSpec
+							'# RSpec will take control from here.'
+
+						else
+							testClassName + '.new'
+					end
+				}
 			end
 		})
 
