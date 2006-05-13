@@ -5,7 +5,7 @@ ldflags = `ruby -r rbconfig -e 'puts Config::CONFIG["LDFLAGS"] || ""'`
 
 
 # path to Ruby-VPI source code directory
-src_dir = src
+src_dir = ext
 
 
 all: ruby-vpi
@@ -34,14 +34,15 @@ swig-clean:
 	rm -f $(src_dir)/swig_vpi.h $(src_dir)/swig_wrap.cin
 
 
-doc: README HISTORY 
-	find . -name '*.rb' | xargs rdoc1.8 -c utf-8 -t "Ruby-VPI: Ruby interface to Verilog VPI" $^
+doc: $(src_dir)/html
+	find . -name '*.rb' | xargs rdoc1.8 -c utf-8 -t "Ruby-VPI: Ruby interface to Verilog VPI" README HISTORY
+	mv $^ doc/ext
 
 $(src_dir)/html:
 	cd $(src_dir) && doxygen
 
 doc-clean:
-	rm -rf doc $(src_dir)/html
+	rm -rf doc
 
 doc-dist: doc
 	scp -r doc/* snk@rubyforge.org:/var/www/gforge-projects/ruby-vpi/
