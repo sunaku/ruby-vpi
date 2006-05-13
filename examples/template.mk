@@ -1,5 +1,7 @@
 # A template to simplify makefiles for examples.
 
+src_dir = $(top_dir)/src
+
 make_deps = cd $(top_dir) && make
 vcs_table = $(top_dir)/examples/synopsys_vcs.tab
 
@@ -14,7 +16,7 @@ clean: deps-clean ivl-clean vcs-clean vsim-clean
 
 deps:
 	$(make_deps)
-	cp $(top_dir)/src/vpi_util.rb $(top_dir)/src/rspec.rb .
+	cp $(src_dir)/lib/vpi_util.rb $(src_dir)/lib/rspec.rb .
 
 deps-clean:
 	$(make_deps) clean
