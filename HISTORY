@@ -2,6 +2,28 @@
 
 This document is a record of important changes that have occurred with each release of Ruby-VPI.
 
+= Version 0.5 (2006-05-13)
+
+== Summary
+
+This release adds a tool which generates test benches, and adds support for {Behavior Driven Development}[http://behaviour-driven.org] via the RSpec[http://rspec.rubyforge.org] library.
+
+== Details
+
+* A tool, which generates most of a Ruby-VPI test bench from a Verilog 2001 module declaration, has been added.
+
+* Ability to use RSpec in a test bench has been added.
+
+* Ability to specify arbitrary command-line arguments to Verilog simulators has been added in the examples' makefile template.
+
+* Tested and developed using:
+  * Ruby 1.8.4 and Icarus Verilog 0.8 on i686 GNU/Linux
+  * Ruby 1.8.4 and Mentor Modelsim 6.1d on x86_64 GNU/Linux
+
+== Acknowledgment
+
+* Thanks to Scott L Holmes for helping me {use the RSpec library without its runner}[http://article.gmane.org/gmane.comp.lang.ruby.general/150087] program.
+
 = Version 0.4 (2006-04-28)
 
 == Summary
@@ -75,7 +97,7 @@ This release fixes major bugs, adds support for Mentor Modelsim, and removes the
 
 == Acknowledgment
 
-* Thanks to Nobu Nakada in the ruby-talk mailing list for explaining the {"cross-thread violation on rb_gc()"}[http://article.gmane.org/gmane.comp.lang.ruby.general/146653] error.
+* Thanks to Nobu Nakada for explaining the {"cross-thread violation on rb_gc()"}[http://article.gmane.org/gmane.comp.lang.ruby.general/146653] error.
 
 = Version 0.1 (2006-02-26)
 
