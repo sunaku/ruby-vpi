@@ -200,6 +200,7 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 					end
 				end
 
+
 				def setup
 					@dut = DUT.new
 				end
