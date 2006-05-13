@@ -29,9 +29,24 @@ require 'rdoc/usage'
 DEST_SUFFIX = '_tb'
 
 
+# Fixes the left indentation of the given output by the indentation of its first line, and then returns it.
+def fixIndent! aOutput
+	aOutput =~ %r{\n+([\t ]+)}
+
+	if indentation = $1
+		aOutput.gsub! %r{(\n+)#{indentation}}, '\1'
+	end
+
+	aOutput
+end
+
+
 # parse command-line options
 opts = OptionParser.new
-opts.on('-h', '--help') {RDoc::usage}
+opts.on('-h', '--help', 'show help message') {RDoc::usage}
+# opts.on('-u', '--test-unit', 'generate Ruby portion in Test::Unit format')
+# opts.on('-s', '--rspec', 'generate Ruby portion in RSpec format')
+# opts.on('-v', '--verilog-only', 'only generate Verilog portion')
 opts.parse(ARGV) rescue RDoc::usage('usage')
 
 
@@ -128,7 +143,7 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 
 		clockSignal = moduleParamNames.first
 
-		f << %{
+		f << fixIndent!(%{
 			module #{destModuleName};
 
 				/* configuration for the DUT */
@@ -158,7 +173,7 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 				end
 
 			endmodule
-		}
+		})
 
 		puts "generated #{verilogDest}"
 	end
@@ -173,7 +188,7 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 		end.join(', ')
 
 		accessorInitDecl = moduleParamNames.inject('') do |acc, param|
-			acc << %{@#{param} = vpi_handle_by_name("#{destModuleName}.#{param}", nil)\n}
+			acc << %{@#{param} = Vpi::vpi_handle_by_name("#{destModuleName}.#{param}", nil)\n}
 		end
 
 
@@ -182,41 +197,39 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 			acc << "def test_#{param}\nend\n\n"
 		end
 
+		className = destModuleName.capitalize
 
-		f << %{
+
+		f << fixIndent!(%{
 			require 'vpi_util'
-			require 'test/unit'
 
-			class #{destModuleName.capitalize} < Test::Unit::TestCase
+			class #{className}
 				include Vpi
 
-				class DUT
-					include Vpi
+				def initialize
+					@dut = DUT.new
+				end
 
+
+				\# the "design under test"
+				class DUT
 					attr_reader #{accessorDecl}
 
 					def initialize
 						#{accessorInitDecl}
 					end
 				end
-
-
-				def setup
-					@dut = DUT.new
-				end
-
-				\# test cases for DUT accessors
-				#{accessorTestDecl}
 			end
 
 
-			\# $ruby_init():
-			Vpi::relay_verilog
+			if $0 == __FILE__
+				\# $ruby_init():
+				Vpi::relay_verilog
 
-
-			\# $ruby_relay():
-			\# do nothing here, because test/unit will automatically run the unit test above
-		}
+				\# $ruby_relay():
+				#{className}.new
+			end
+		})
 
 		puts "generated #{rubyDest}"
 	end
