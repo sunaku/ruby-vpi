@@ -1,3 +1,4 @@
+# A specification which verifies the design under test.
 =begin
 	Copyright 2006 Suraj N. Kurapati
 	Copyright 1999 Kazuhiro HIWADA
@@ -11,36 +12,28 @@
 	You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 =end
 
+
+require 'counter_design.rb'
 require 'vpi_util'
 require 'rspec'
 
-# An interface to the design under test.
-class Counter
-	BITS = 5
-	LIMIT = 2 ** BITS
-	MAX = LIMIT - 1
-
-
-	attr_reader :clock, :reset, :count
-
-	def initialize
-		@clock = Vpi::vpi_handle_by_name("counter_tb.clock", nil)
-		@reset = Vpi::vpi_handle_by_name("counter_tb.reset", nil)
-		@count = Vpi::vpi_handle_by_name("counter_tb.count", nil)
-	end
-end
-
-# verify the design
 include Vpi
 
-	# resets the given design
-	def reset aDesign
-		aDesign.reset.intVal = 1
-		3.times {relay_verilog}
-		aDesign.reset.intVal = 0
 
-		@design.count.intVal.should.be 0
-	end
+BITS = 5
+LIMIT = 2 ** BITS
+MAX = LIMIT - 1
+
+
+# resets the given design
+def reset aDesign
+	aDesign.reset.intVal = 1
+	3.times {relay_verilog}
+	aDesign.reset.intVal = 0
+
+	@design.count.intVal.should.be 0
+end
+
 
 context "A resetted Counter" do
 	setup do
@@ -56,7 +49,7 @@ context "A resetted Counter" do
 	end
 
 	specify "should increment every cycle" do
-		Counter::LIMIT.times do |i|
+		LIMIT.times do |i|
 			@design.count.intVal.should.be i
 			relay_verilog
 		end
@@ -71,8 +64,8 @@ context "A counter with the maximum value" do
 		reset @design
 
 		# increment to maximum value
-		0.upto(Counter::MAX) {relay_verilog}
-		@design.count.intVal.should.be Counter::MAX
+		0.upto(MAX) {relay_verilog}
+		@design.count.intVal.should.be MAX
 	end
 
 	specify "should overflow upon increment" do
@@ -82,14 +75,4 @@ context "A counter with the maximum value" do
 		@design.count.intVal.should.be 0
 		relay_verilog
 	end
-end
-
-
-# bootstrap this file
-if $0 == __FILE__
-	# service the $ruby_init() callback
-	Vpi::relay_verilog
-
-	# service the $ruby_relay() callback
-	# RSpec will take control from here.
 end

@@ -1,6 +1,6 @@
 top_dir = ../..
 
-src_module = counter_tb
+src_module = counter_runner
 src_files = $(src_module).v
 
 # command-line arguments for Verilog simulator
