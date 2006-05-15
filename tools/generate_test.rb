@@ -51,18 +51,16 @@ end
 
 
 # Generates and returns the content of the Verilog runner file, which cooperates with the Ruby runner file to run the test bench.
-# aParamDecls:: An array containing declarations of module parameters.
-# aPortDecls:: An array containing declarations of module ports.
-def generateVerilogRunner aModuleName, aVerilogRunnerName, aParamNames, aParamDecls, aPortNames, aPortDecls, aRubyRunnerPath, aSpecFormat
+def generateVerilogRunner aModuleInfo, aOutputInfo
 
 	# configuration parameters for design under test
-	configDecl = aParamDecls.inject('') do |acc, decl|
+	configDecl = aModuleInfo.paramDecls.inject('') do |acc, decl|
 		acc << "parameter #{decl};\n"
 	end
 
 
 	# accessors for design under test interface
-	portInitDecl = aPortDecls.inject('') do |acc, decl|
+	portInitDecl = aModuleInfo.portDecls.inject('') do |acc, decl|
 		{ 'input' => 'reg', 'output' => 'wire' }.each_pair do |key, val|
 			decl.sub! %r{\b#{key}\b(.*?)$}, "#{val}\\1;"
 		end
@@ -79,22 +77,22 @@ def generateVerilogRunner aModuleName, aVerilogRunnerName, aParamNames, aParamDe
 			paramNames.inject([]) {|acc, param| acc << ".#{param}(#{param})"}.join(', ')
 		end
 
-	instConfigDecl = makeInstParamDecl(aParamNames)
-	instParamDecl = makeInstParamDecl(aPortNames)
+	instConfigDecl = makeInstParamDecl(aModuleInfo.paramNames)
+	instParamDecl = makeInstParamDecl(aModuleInfo.portNames)
 
-	instDecl = "#{aModuleName} " << (
+	instDecl = "#{aModuleInfo.name} " << (
 		unless instConfigDecl.empty?
 			'#(' << instConfigDecl << ')'
 		else
 			''
 		end
-	) << " #{aVerilogRunnerName}#{DESIGN_SUFFIX} (#{instParamDecl});"
+	) << " #{aOutputInfo.verilogRunnerName}#{DESIGN_SUFFIX} (#{instParamDecl});"
 
 
-	clockSignal = aPortNames.first
+	clockSignal = aModuleInfo.portNames.first
 
 	%{
-		module #{aVerilogRunnerName};
+		module #{aOutputInfo.verilogRunnerName};
 
 			// configuration for the design under test
 			#{configDecl}
@@ -109,7 +107,7 @@ def generateVerilogRunner aModuleName, aVerilogRunnerName, aParamNames, aParamDe
 			// interface to Ruby-VPI
 			initial begin
 				#{clockSignal} = 0;
-				$ruby_init("-w", "#{aRubyRunnerPath}"#{', "-f", "s"' if aSpecFormat == :RSpec});
+				$ruby_init("-w", "#{aOutputInfo.rubyRunnerPath}"#{', "-f", "s"' if aOutputInfo.specFormat == :RSpec});
 			end
 
 			// generate a 50% duty-cycle clock for the design under test
@@ -127,44 +125,39 @@ def generateVerilogRunner aModuleName, aVerilogRunnerName, aParamNames, aParamDe
 end
 
 # Generates and returns the content of the Ruby runner file, which cooperates with the Verilog runner file to run the test bench.
-# aPortNames:: An array containing names of module port variables. The first of these is assumed to be the clocking signal.
-# aRubyDesignPath:: File to the Ruby design file.
-# aRubySpecPath:: File to the Ruby specification file.
-def generateRubyRunner aSpecFormat, aPortNames, aRubySpecClassName, aRubySpecPath
+def generateRubyRunner aModuleInfo, aOutputInfo
 	%{
-		require '#{aRubySpecPath}'
+		require '#{aOutputInfo.specPath}'
 
 		\# service the $ruby_init() callback
 		Vpi::relay_verilog
 
 		\# service the $ruby_relay() callback
 		#{
-			case aSpecFormat
+			case aOutputInfo.specFormat
 				when :UnitTest, :RSpec
-					"\# #{aSpecFormat} will take control from here."
+					"\# #{aOutputInfo.specFormat} will take control from here."
 
 				else
-					aRubySpecClassName + '.new'
+					aOutputInfo.specClassName + '.new'
 			end
 		}
 	}
 end
 
 # Generates and returns the content of the Ruby design file, which is a Ruby abstraction of the Verilog module's interface.
-# aModuleName:: Name of the Verilog module.
-# aPortNames:: An array containing names of module ports.
-def generateRubyDesign aRubyDesignClassName, aPortNames, aVerilogRunnerName
-	accessorDecl = aPortNames.inject([]) do |acc, param|
+def generateDesign aModuleInfo, aOutputInfo
+	accessorDecl = aModuleInfo.portNames.inject([]) do |acc, param|
 		acc << ":#{param}"
 	end.join(', ')
 
-	portInitDecl = aPortNames.inject('') do |acc, param|
-		acc << %{@#{param} = Vpi::vpi_handle_by_name("#{aVerilogRunnerName}.#{param}", nil)\n}
+	portInitDecl = aModuleInfo.portNames.inject('') do |acc, param|
+		acc << %{@#{param} = Vpi::vpi_handle_by_name("#{aOutputInfo.verilogRunnerName}.#{param}", nil)\n}
 	end
 
 	%{
 		# An interface to the design under test.
-		class #{aRubyDesignClassName}
+		class #{aOutputInfo.designClassName}
 			attr_reader #{accessorDecl}
 
 			def initialize
@@ -175,20 +168,19 @@ def generateRubyDesign aRubyDesignClassName, aPortNames, aVerilogRunnerName
 end
 
 # Generates and returns the content of the Ruby specification file, which verifies the design under test.
-# aSpecFormat:: Format in which the output should be generated. See +SPEC_FORMATS+.
-def generateRubySpec aSpecFormat, aRubyDesignClassName, aRubySpecClassName, aRubyDesignPath, aPortNames
-	raise ArgumentError unless SPEC_FORMATS.include? aSpecFormat
+def generateSpec aModuleInfo, aOutputInfo
+	raise ArgumentError unless SPEC_FORMATS.include? aOutputInfo.specFormat
 
-	accessorTestDecl = aPortNames.inject('') do |acc, param|
+	accessorTestDecl = aModuleInfo.portNames.inject('') do |acc, param|
 		acc << "def test_#{param}\nend\n\n"
 	end
 
 	%{
 		\# A specification which verifies the design under test.
-		require '#{aRubyDesignPath}'
+		require '#{aOutputInfo.designPath}'
 		require 'vpi_util'
 		#{
-			case aSpecFormat
+			case aOutputInfo.specFormat
 				when :UnitTest
 					"require 'test/unit'"
 
@@ -199,14 +191,14 @@ def generateRubySpec aSpecFormat, aRubyDesignClassName, aRubySpecClassName, aRub
 
 
 		#{
-			case aSpecFormat
+			case aOutputInfo.specFormat
 				when :UnitTest
 					%{
-						class #{aRubySpecClassName} < Test::Unit::TestCase
+						class #{aOutputInfo.specClassName} < Test::Unit::TestCase
 							include Vpi
 
 							def setup
-								@design = #{aRubyDesignClassName}.new
+								@design = #{aOutputInfo.designClassName}.new
 							end
 
 							#{accessorTestDecl}
@@ -217,9 +209,9 @@ def generateRubySpec aSpecFormat, aRubyDesignClassName, aRubySpecClassName, aRub
 					%{
 						include Vpi
 
-						context "A new #{aRubyDesignClassName}" do
+						context "A new #{aOutputInfo.designClassName}" do
 							setup do
-								@design = #{aRubyDesignClassName}.new
+								@design = #{aOutputInfo.designClassName}.new
 							end
 
 							specify "should ..." do
@@ -230,11 +222,11 @@ def generateRubySpec aSpecFormat, aRubyDesignClassName, aRubySpecClassName, aRub
 
 				else
 					%{
-						class #{aRubySpecClassName}
+						class #{aOutputInfo.specClassName}
 							include Vpi
 
 							def initialize
-								@design = #{aRubyDesignClassName}.new
+								@design = #{aOutputInfo.designClassName}.new
 							end
 						end
 					}
@@ -242,6 +234,63 @@ def generateRubySpec aSpecFormat, aRubyDesignClassName, aRubySpecClassName, aRub
 		}
 	}
 end
+
+# Holds information about a parsed Verilog module.
+class ModuleInfo
+	attr_reader :name, :portNames, :paramNames, :portDecls, :paramDecls
+
+	def initialize aDecl
+		aDecl =~ %r{module\s+(\w+)\s*(\#\((.*?)\))?\s*\((.*?)\)\s*;}
+		@name, paramDecl, portDecl = $1, $3 || '', $4
+
+
+		# parse configuration parameters
+		paramDecl.gsub! %r{\bparameter\b}, ''
+		paramDecl.strip!
+
+		@paramDecls = paramDecl.split(/,/)
+
+		@paramNames = paramDecls.inject([]) do |acc, decl|
+			acc << decl.scan(%r{\w+}).first
+		end
+
+
+		# parse signal parameters
+		portDecl.gsub! %r{\breg\b}, ''
+		portDecl.strip!
+
+		@portDecls = portDecl.split(/,/)
+
+		@portNames = portDecls.inject([]) do |acc, decl|
+			acc << decl.scan(%r{\w+}).last
+		end
+	end
+end
+
+# Holds information about the output destinations of a parsed Verilog module.
+class OutputInfo
+	attr_reader :verilogRunnerName, :verilogRunnerPath, :rubyRunnerName, :rubyRunnerPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath
+
+	def initialize aModuleName, aSpecFormat
+		@verilogRunnerName = aModuleName + RUNNER_SUFFIX
+		@verilogRunnerPath = @verilogRunnerName + '.v'
+
+		@rubyRunnerName = aModuleName + RUNNER_SUFFIX
+		@rubyRunnerPath = @rubyRunnerName + '.rb'
+
+		@designName = aModuleName + DESIGN_SUFFIX
+		@designPath = @designName + '.rb'
+
+		@specName = aModuleName + SPEC_SUFFIX
+		@specPath = @specName + '.rb'
+
+		@designClassName = aModuleName.capitalize
+		@specClassName = @specName.capitalize
+
+		@specFormat = aSpecFormat
+	end
+end
+
 
 # parse command-line options
 $specFormat = :Generic
@@ -276,72 +325,30 @@ input = ARGF.read
 
 # parse the input
 input.scan(%r{module.*?;}).each do |moduleDecl|
-
-	moduleDecl =~ %r{module\s+(\w+)\s*(\#\((.*?)\))?\s*\((.*?)\)\s*;}
-	moduleName, moduleParamDecl, modulePortDecl = $1, $3 || '', $4	# TODO: ports optional
-
-
-	# parse configuration parameters
-	moduleParamDecl.gsub! %r{\bparameter\b}, ''
-	moduleParamDecl.strip!
-
-	moduleParamDecls = moduleParamDecl.split(/,/)
-
-	moduleParamNames = moduleParamDecls.inject([]) do |acc, decl|
-		acc << decl.scan(%r{\w+}).first
-	end
-
-
-	# parse signal parameters
-	modulePortDecl.gsub! %r{\breg\b}, ''
-	modulePortDecl.strip!
-
-	modulePortDecls = modulePortDecl.split(/,/)
-
-	modulePortNames = modulePortDecls.inject([]) do |acc, decl|
-		acc << decl.scan(%r{\w+}).last
-	end
-
-
-	puts "parsed #{moduleName}"
-
-
-
-	# determine output destinations
-	verilogRunnerName = moduleName + RUNNER_SUFFIX
-	verilogRunnerPath = verilogRunnerName + '.v'
-
-	rubyRunnerName = moduleName + RUNNER_SUFFIX
-	rubyRunnerPath = rubyRunnerName + '.rb'
-
-	rubyDesignName = moduleName + DESIGN_SUFFIX
-	rubyDesignPath = rubyDesignName + '.rb'
-
-	rubySpecName = moduleName + SPEC_SUFFIX
-	rubySpecPath = rubySpecName + '.rb'
-
-	designClassName = moduleName.capitalize
-	specClassName = rubySpecName.capitalize
+	m = ModuleInfo.new(moduleDecl).freeze
+	puts "parsed #{m.name}"
 
 
 	# generate output
-	File.open(verilogRunnerPath, "w") do |f|
-		f << generateVerilogRunner(moduleName, verilogRunnerName, moduleParamNames, moduleParamDecls, modulePortNames, modulePortDecls, rubyRunnerPath, $specFormat)
-	end
-	puts "generated #{verilogRunnerPath}"
+	o = OutputInfo.new(m.name, $specFormat).freeze
 
-	File.open(rubyRunnerPath, "w") do |f|
-		f << generateRubyRunner($specFormat, modulePortNames, specClassName, rubySpecPath)
+	File.open(o.verilogRunnerPath, "w") do |f|
+		f << generateVerilogRunner(m, o)
 	end
-	puts "generated #{rubyRunnerPath}"
+	puts "generated #{o.verilogRunnerPath}"
 
-	File.open(rubyDesignPath, "w") do |f|
-		f << generateRubyDesign(designClassName, modulePortNames, verilogRunnerName)
+	File.open(o.rubyRunnerPath, "w") do |f|
+		f << generateRubyRunner(m, o)
 	end
-	puts "generated #{rubyDesignPath}"
+	puts "generated #{o.rubyRunnerPath}"
 
-	File.open(rubySpecPath, "w") do |f|
-		f << generateRubySpec($specFormat, designClassName, specClassName, rubyDesignPath, modulePortNames)
+	File.open(o.designPath, "w") do |f|
+		f << generateDesign(m, o)
 	end
-	puts "generated #{rubySpecPath}"
+	puts "generated #{o.designPath}"
+
+	File.open(o.specPath, "w") do |f|
+		f << generateSpec(m, o)
+	end
+	puts "generated #{o.specPath}"
 end
