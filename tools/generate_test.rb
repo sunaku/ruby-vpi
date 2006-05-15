@@ -303,8 +303,8 @@ optsParser.on('-s', '--spec', 'use RSpec for specification') {|v| $specFormat = 
 begin
 	optsParser.parse!(ARGV)
 rescue
-	puts optsParser
-	RDoc::usage
+	at_exit {puts optsParser}
+	RDoc::usage	# quits the program
 end
 
 puts "Using #{$specFormat} format for specification."
