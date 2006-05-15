@@ -39,25 +39,6 @@
 require 'optparse'
 require 'rdoc/usage'
 
-OUTPUT_SUFFIX = '_test'.freeze
-RUNNER_SUFFIX = '_runner'.freeze
-DESIGN_SUFFIX = '_design'.freeze
-SPEC_SUFFIX = '_spec'.freeze
-
-SPEC_FORMATS = [:RSpec, :UnitTest, :Generic].freeze
-
-
-# Removes the left indentation of the given output by the indentation of its first line.
-def fixIndent aOutput
-	aOutput =~ %r{\n+([\t ]+)}
-
-	if indentation = $1
-		aOutput.gsub %r{(\n+)#{indentation}}, '\1'
-	end
-
-	aOutput
-end
-
 
 # Generates and returns the content of the Verilog runner file, which cooperates with the Ruby runner file to run the test bench.
 def generateVerilogRunner aModuleInfo, aOutputInfo
@@ -95,7 +76,7 @@ def generateVerilogRunner aModuleInfo, aOutputInfo
 		else
 			''
 		end
-	) << " #{aOutputInfo.verilogRunnerName}#{DESIGN_SUFFIX} (#{instParamDecl});"
+	) << " #{aOutputInfo.verilogRunnerName}#{OutputInfo::DESIGN_SUFFIX} (#{instParamDecl});"
 
 
 	clockSignal = aModuleInfo.portNames.first
@@ -178,8 +159,6 @@ end
 
 # Generates and returns the content of the Ruby specification file, which verifies the design under test.
 def generateSpec aModuleInfo, aOutputInfo
-	raise ArgumentError unless SPEC_FORMATS.include? aOutputInfo.specFormat
-
 	accessorTestDecl = aModuleInfo.portNames.inject('') do |acc, param|
 		acc << "def test_#{param}\nend\n\n"
 	end
@@ -278,25 +257,37 @@ end
 
 # Holds information about the output destinations of a parsed Verilog module.
 class OutputInfo
+	OUTPUT_SUFFIX = '_test'.freeze
+	RUNNER_SUFFIX = '_runner'.freeze
+	DESIGN_SUFFIX = '_design'.freeze
+	SPEC_SUFFIX = '_spec'.freeze
+
+	RUBY_SUFFIX = '.rb'.freeze
+	VERILOG_SUFFIX = '.v'.freeze
+
+	SPEC_FORMATS = [:RSpec, :UnitTest, :Generic].freeze
+
+
 	attr_reader :verilogRunnerName, :verilogRunnerPath, :rubyRunnerName, :rubyRunnerPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath
 
 	def initialize aModuleName, aSpecFormat
+		raise ArgumentError unless SPEC_FORMATS.include? aSpecFormat
+		@specFormat = aSpecFormat
+
 		@verilogRunnerName = aModuleName + RUNNER_SUFFIX
-		@verilogRunnerPath = @verilogRunnerName + '.v'
+		@verilogRunnerPath = @verilogRunnerName + VERILOG_SUFFIX
 
 		@rubyRunnerName = aModuleName + RUNNER_SUFFIX
-		@rubyRunnerPath = @rubyRunnerName + '.rb'
+		@rubyRunnerPath = @rubyRunnerName + RUBY_SUFFIX
 
 		@designName = aModuleName + DESIGN_SUFFIX
-		@designPath = @designName + '.rb'
+		@designPath = @designName + RUBY_SUFFIX
 
 		@specName = aModuleName + SPEC_SUFFIX
-		@specPath = @specName + '.rb'
+		@specPath = @specName + RUBY_SUFFIX
 
 		@designClassName = aModuleName.capitalize
 		@specClassName = @specName.capitalize
-
-		@specFormat = aSpecFormat
 	end
 end
 
@@ -306,8 +297,8 @@ $specFormat = :Generic
 
 optsParser = OptionParser.new
 optsParser.on('-h', '--help', 'show this help message') {raise}
-optsParser.on('-u', '--unit', 'optimize for Test::Unit') {|v| $specFormat = :UnitTest if v}
-optsParser.on('-s', '--spec', 'optimize for RSpec') {|v| $specFormat = :RSpec if v}
+optsParser.on('-u', '--unit', 'use Test::Unit for specification') {|v| $specFormat = :UnitTest if v}
+optsParser.on('-s', '--spec', 'use RSpec for specification') {|v| $specFormat = :RSpec if v}
 
 begin
 	optsParser.parse!(ARGV)
@@ -316,7 +307,7 @@ rescue
 	RDoc::usage
 end
 
-puts "output is optimized for #{$specFormat}"
+puts "Using #{$specFormat} format for specification."
 
 
 # sanitize the input
@@ -334,8 +325,10 @@ input = ARGF.read
 
 # parse the input
 input.scan(%r{module.*?;}).each do |moduleDecl|
+	puts
+
 	m = ModuleInfo.new(moduleDecl).freeze
-	puts "parsed #{m.name}"
+	puts "Parsed module: #{m.name}"
 
 
 	# generate output
@@ -344,20 +337,20 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 	File.open(o.verilogRunnerPath, "w") do |f|
 		f << generateVerilogRunner(m, o)
 	end
-	puts "generated #{o.verilogRunnerPath}"
+	puts "- Generated runner: #{o.verilogRunnerPath}"
 
 	File.open(o.rubyRunnerPath, "w") do |f|
 		f << generateRubyRunner(m, o)
 	end
-	puts "generated #{o.rubyRunnerPath}"
+	puts "- Generated runner: #{o.rubyRunnerPath}"
 
 	File.open(o.designPath, "w") do |f|
 		f << generateDesign(m, o)
 	end
-	puts "generated #{o.designPath}"
+	puts "- Generated design: #{o.designPath}"
 
 	File.open(o.specPath, "w") do |f|
 		f << generateSpec(m, o)
 	end
-	puts "generated #{o.specPath}"
+	puts "- Generated specification: #{o.specPath}"
 end
