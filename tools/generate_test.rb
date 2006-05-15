@@ -3,6 +3,8 @@
 # == Synopsis
 # Generates Ruby-VPI test benches from Verilog 2001 module declarations. A generated test bench is composed of the following parts.
 #
+# Makefile:: Written in make, this file runs the test bench.
+#
 # Runner:: Written in Verilog and Ruby, these files help run the test bench.
 #
 # Design:: Written in Ruby, this file provides an interface to the Verilog module under test.
@@ -222,6 +224,24 @@ def generateSpec aModuleInfo, aOutputInfo
 	}
 end
 
+# Generates and returns the content of the makefile, which runs the entire test bench.
+def generateMakefile aModuleInfo, aOutputInfo
+	%{
+		RubyVpiPath = #{aOutputInfo.rubyVpiPath}
+
+		src_module = #{aOutputInfo.verilogRunnerName}
+		src_files = #{aOutputInfo.verilogRunnerPath} #{aModuleInfo.name}.v
+
+		\# command-line arguments for Verilog simulator
+		CVER_FLAGS =
+		IVL_FLAGS =
+		VCS_FLAGS =
+		VSIM_FLAGS =
+
+		include $(RubyVpiPath)/examples/template.mk
+	}
+end
+
 # Holds information about a parsed Verilog module.
 class ModuleInfo
 	attr_reader :name, :portNames, :paramNames, :portDecls, :paramDecls
@@ -263,15 +283,18 @@ class OutputInfo
 
 	RUBY_SUFFIX = '.rb'.freeze
 	VERILOG_SUFFIX = '.v'.freeze
+	MAKEFILE_SUFFIX = '.mk'.freeze
 
 	SPEC_FORMATS = [:RSpec, :UnitTest, :Generic].freeze
 
 
-	attr_reader :verilogRunnerName, :verilogRunnerPath, :rubyRunnerName, :rubyRunnerPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath
+	attr_reader :verilogRunnerName, :verilogRunnerPath, :rubyRunnerName, :rubyRunnerPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :makefileName, :makefilePath
 
-	def initialize aModuleName, aSpecFormat
+	def initialize aModuleName, aSpecFormat, aRubyVpiPath
 		raise ArgumentError unless SPEC_FORMATS.include? aSpecFormat
 		@specFormat = aSpecFormat
+
+		@rubyVpiPath = aRubyVpiPath
 
 		@verilogRunnerName = aModuleName + RUNNER_SUFFIX
 		@verilogRunnerPath = @verilogRunnerName + VERILOG_SUFFIX
@@ -287,6 +310,9 @@ class OutputInfo
 
 		@designClassName = aModuleName.capitalize
 		@specClassName = @specName.capitalize
+
+		@makefileName = aModuleName
+		@makefilePath = @makefileName + MAKEFILE_SUFFIX
 	end
 end
 
@@ -331,7 +357,12 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 
 
 	# generate output
-	o = OutputInfo.new(m.name, $specFormat).freeze
+	o = OutputInfo.new(m.name, $specFormat, File.expand_path(File.dirname(File.dirname(__FILE__)))).freeze
+
+	File.open(o.makefilePath, "w") do |f|
+		f << generateMakefile(m, o)
+	end
+	puts "- Generated makefile: #{o.makefilePath}"
 
 	File.open(o.verilogRunnerPath, "w") do |f|
 		f << generateVerilogRunner(m, o)
