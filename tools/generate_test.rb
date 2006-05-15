@@ -40,6 +40,11 @@ require 'optparse'
 require 'rdoc/usage'
 
 
+# Returns a comma-separated string of parameter declarations in Verilog module instantiation format.
+def makeInstParamDecl(paramNames)
+	paramNames.inject([]) {|acc, param| acc << ".#{param}(#{param})"}.join(', ')
+end
+
 # Generates and returns the content of the Verilog runner file, which cooperates with the Ruby runner file to run the test bench.
 def generateVerilogRunner aModuleInfo, aOutputInfo
 
@@ -61,12 +66,6 @@ def generateVerilogRunner aModuleInfo, aOutputInfo
 
 
 	# instantiation for the design under test
-
-		# creates a comma-separated string of parameter declarations in module instantiation format
-		def makeInstParamDecl(paramNames)
-			paramNames.inject([]) {|acc, param| acc << ".#{param}(#{param})"}.join(', ')
-		end
-
 	instConfigDecl = makeInstParamDecl(aModuleInfo.paramNames)
 	instParamDecl = makeInstParamDecl(aModuleInfo.portNames)
 
