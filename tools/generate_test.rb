@@ -232,10 +232,10 @@ def generateBuilder aModuleInfo, aOutputInfo
 		SIMULATOR_SOURCES = ['#{aOutputInfo.verilogRunnerPath}', '#{aModuleInfo.name}.v']
 		SIMULATOR_TARGET = '#{aOutputInfo.verilogRunnerName}'
 		SIMULATOR_ARGS = {
-			:cver => nil,
-			:ivl => nil,
-			:vcs => nil,
-			:vsim => nil,
+			:cver => '',
+			:ivl => '',
+			:vcs => '',
+			:vsim => '',
 		}
 
 		load "\#{RUBY_VPI_PATH}/examples/template.rake"
