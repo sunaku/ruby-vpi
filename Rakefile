@@ -1,4 +1,9 @@
-# Main build file for Ruby-VPI.
+# Main build specification for Ruby-VPI.
+#
+# = Environment variables
+# CFLAGS:: Arguments to the compiler.
+# LDFLAGS:: Arguments to the linker.
+
 =begin
 	Copyright 2006 Suraj N. Kurapati
 
@@ -18,8 +23,8 @@ task :default => :ext
 
 
 # variables
-	$compilerFlags = [Config::CONFIG["CFLAGS"], '-g', '-DDEBUG']
-	$linkerFlags = [Config::CONFIG["LDFLAGS"]]
+	CFLAGS = "#{Config::CONFIG['CFLAGS']} #{ENV['CFLAGS']} -g -DDEBUG"
+	LDFLAGS = "#{Config::CONFIG['LDFLAGS']} #{ENV['LDFLAGS']}"
 
 
 # extension
@@ -31,7 +36,7 @@ task :default => :ext
 	CLEAN.include 'Makefile', 'mkmf.log', '*.o', '*.so'
 
 	file 'Makefile' => [:swig, 'ext/extconf.rb'] do |t|
-		ruby %{#{t.prerequisites[1]} --with-cflags="#{$compilerFlags.join(' ')}" --with-ldflags="#{$linkerFlags.join(' ')}"}
+		ruby "#{t.prerequisites[1]} --with-cflags='#{CFLAGS}' --with-ldflags='#{LDFLAGS}'"
 	end
 
 
@@ -67,8 +72,9 @@ task :default => :ext
 	file 'doc/ruby' => ['README', 'HISTORY'] do |t|
 		dest = t.name + '/html'
 		title = 'Ruby-VPI: Ruby interface to Verilog VPI'
+		sources = t.prerequisites.concat(FileList['**/*.rb']).join(' ')
 
-		sh "rdoc1.8 -c utf-8 -t '#{title}' -o #{dest} #{t.prerequisites.concat(Dir['**/*.rb']).join(' ')}"
+		sh "rdoc1.8 -c utf-8 -t '#{title}' -o #{dest} #{sources}"
 	end
 
 
@@ -79,12 +85,15 @@ task :default => :ext
 	file 'doc/c' do |t|
 		dest = 'ext/html'
 
-		sh "cd #{File.dirname dest} && doxygen"
+		cd File.dirname(dest) do
+			sh "doxygen"
+		end
+
 		mv dest, t.name
 	end
 
 
 	desc 'Publish documentation to website.'
-	task :post => 'doc' do |t|
-		sh "scp -r #{t.prerequisites[0]}/* snk@rubyforge.org:/var/www/gforge-projects/ruby-vpi/"
+	task :post => 'doc/ruby' do |t|
+		sh "scp -r #{t.prerequisites[0]}/html/* snk@rubyforge.org:/var/www/gforge-projects/ruby-vpi/"
 	end
