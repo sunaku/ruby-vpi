@@ -1,0 +1,7 @@
+RUBY_VPI_PATH = '../..'
+
+SIMULATOR_SOURCES = FileList['*.v']
+SIMULATOR_TARGET = 'counter_runner'
+SIMULATOR_ARGS = nil
+
+load "#{RUBY_VPI_PATH}/examples/template.rake"
