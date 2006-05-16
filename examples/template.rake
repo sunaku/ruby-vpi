@@ -23,6 +23,11 @@
 
 require 'rake/clean'
 
+task :default do
+	Rake.application.options.show_task_pattern = //
+	Rake.application.display_tasks_and_comments
+end
+
 
 # check for required variables
 raise ArgumentError, "Required variables are undefined." unless
@@ -78,7 +83,7 @@ def silentCopy *aArgs
 end
 
 
-desc "Fetches available Ruby libraries from Ruby-VPI."
+desc "Fetch Ruby libraries from Ruby-VPI."
 task :libs => RUBY_LIBS.keys do |t|
 	RUBY_LIBS.each_pair do |src, dst|
 		silentCopy src, dst

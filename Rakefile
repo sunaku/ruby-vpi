@@ -17,19 +17,20 @@
 =end
 
 require 'rake/clean'
-require 'rbconfig'
 
-task :default => :ext
+task :default => :build
 
 
 # variables
+	require 'rbconfig'
+
 	CFLAGS = "#{Config::CONFIG['CFLAGS']} #{ENV['CFLAGS']} -g -DDEBUG"
 	LDFLAGS = "#{Config::CONFIG['LDFLAGS']} #{ENV['LDFLAGS']}"
 
 
 # extension
 	desc 'Builds the Ruby-VPI extension.'
-	task :ext => 'Makefile' do |t|
+	task :build => 'Makefile' do |t|
 		sh "make -f #{t.prerequisites[0]}"
 	end
 
@@ -94,6 +95,6 @@ task :default => :ext
 
 
 	desc 'Publish documentation to website.'
-	task :post => 'doc/ruby' do |t|
+	task :web => 'doc/ruby' do |t|
 		sh "scp -r #{t.prerequisites[0]}/html/* snk@rubyforge.org:/var/www/gforge-projects/ruby-vpi/"
 	end
