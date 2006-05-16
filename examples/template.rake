@@ -4,7 +4,7 @@
 # RUBY_VPI_PATH:: Path to the Ruby-VPI directory.
 # SIMULATOR_SOURCES:: Array of paths to source files needed by the simulator.
 # SIMULATOR_TARGET:: Name of the Verilog module to be simulated.
-# SIMULATOR_ARGS:: Command-line arguments to pass to the simulator.
+# SIMULATOR_ARGS:: A hash containing keys for each simulator task (same as Rakefile task names) and values containing command-line arguments for each simulator.
 #
 # = Usage
 # When using one simulator after another, ensure that Ruby-VPI is properly compiled for the new simulator by invoking a cleaning task, such as _clean_ or _clobber_.
@@ -25,9 +25,9 @@ require 'rake/clean'
 
 
 # check for required variables
-raise ArgumentError, "Required variables are not defined." unless
+raise ArgumentError, "Required variables are undefined." unless
 	defined?(RUBY_VPI_PATH) &&
-	defined?(SIMULATOR_SOURCES) && SIMULATOR_SOURCES.respond_to?(:to_ary) &&
+	defined?(SIMULATOR_SOURCES) &&
 	defined?(SIMULATOR_TARGET) &&
 	defined?(SIMULATOR_ARGS)
 
@@ -83,9 +83,9 @@ end
 desc "Simulate with Pragmatic C - Cver."
 task :cver => ['cver:run', 'cver:build']
 
-namespace 'cver' do
+namespace 'cver' do |ns|
 	task :run => [:libs, *SIMULATOR_SOURCES] do |t|
-		sh "cver #{SIMULATOR_ARGS} +loadvpi=#{SHARED_OBJ_PATH}:vlog_startup_routines_bootstrap #{SIMULATOR_SOURCES_STRING}"
+		sh "cver #{SIMULATOR_ARGS[:cver]} +loadvpi=#{SHARED_OBJ_PATH}:vlog_startup_routines_bootstrap #{SIMULATOR_SOURCES_STRING}"
 	end
 
 	task :build do
@@ -101,7 +101,7 @@ task :ivl => ['ivl:build', 'ivl:run']
 
 namespace 'ivl' do
 	task :run => [:libs, *SIMULATOR_SOURCES] do |t|
-		sh "iverilog #{SIMULATOR_ARGS} -y. -mruby-vpi #{SIMULATOR_SOURCES_STRING}"
+		sh "iverilog #{SIMULATOR_ARGS[:ivl]} -y. -mruby-vpi #{SIMULATOR_SOURCES_STRING}"
 		sh "vvp -M. a.out"
 	end
 
@@ -121,7 +121,7 @@ namespace 'vcs' do
 	task :run => [:libs, "#{RUBY_VPI_PATH}/examples/synopsys_vcs.tab", *SIMULATOR_SOURCES] do |t|
 		require 'rbconfig'
 
-		sh "vcs #{SIMULATOR_ARGS} -R +v2k +vpi -LDFLAGS '#{File.expand_path(NORMAL_OBJ_PATH)} -L#{Config::CONFIG['libdir']} #{Config::CONFIG['LIBRUBYARG']} -lpthread' -P #{t.prerequisites[1]} #{SIMULATOR_SOURCES_STRING}"
+		sh "vcs #{SIMULATOR_ARGS[:vcs]} -R +v2k +vpi -LDFLAGS '#{File.expand_path(NORMAL_OBJ_PATH)} -L#{Config::CONFIG['libdir']} #{Config::CONFIG['LIBRUBYARG']} -lpthread' -P #{t.prerequisites[1]} #{SIMULATOR_SOURCES_STRING}"
 	end
 
 	task :build do
@@ -138,7 +138,7 @@ task :vsim => ['vsim:run', 'vsim:build']
 namespace 'vsim' do
 	task :run => [:libs, *SIMULATOR_SOURCES] do |t|
 		sh "vlib work"
-		sh "vlog #{SIMULATOR_ARGS} #{SIMULATOR_SOURCES_STRING}"
+		sh "vlog #{SIMULATOR_ARGS[:vsim]} #{SIMULATOR_SOURCES_STRING}"
 		sh "vsim -c #{SIMULATOR_TARGET} -pli #{SHARED_OBJ_PATH} -do 'run -all'"
 	end
 
