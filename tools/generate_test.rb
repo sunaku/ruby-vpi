@@ -3,7 +3,7 @@
 # == Synopsis
 # Generates Ruby-VPI test benches from Verilog 2001 module declarations. A generated test bench is composed of the following parts.
 #
-# Makefile:: Written in make, this file runs the test bench.
+# Builder:: Written in Rake[http://rake.rubyforge.org], this file builds and runs the test bench.
 #
 # Runner:: Written in Verilog and Ruby, these files help run the test bench.
 #
@@ -23,8 +23,8 @@
 # 	A source file which contains one or more Verilog 2001 module declarations.
 #
 # * If no input files are specified, then the standard input stream will be read instead.
-#
 # * The first signal parameter in a module's declaration is assumed to be the clocking signal.
+# * Beware: any existing output files will be silently overwritten!
 
 =begin
 	Copyright 2006 Suraj N. Kurapati
@@ -224,21 +224,21 @@ def generateSpec aModuleInfo, aOutputInfo
 	}
 end
 
-# Generates and returns the content of the makefile, which runs the entire test bench.
-def generateMakefile aModuleInfo, aOutputInfo
+# Generates and returns the content of the builder, which builds and runs the entire test bench.
+def generateBuilder aModuleInfo, aOutputInfo
 	%{
-		RubyVpiPath = #{aOutputInfo.rubyVpiPath}
+		RUBY_VPI_PATH = '#{aOutputInfo.rubyVpiPath}'
 
-		src_module = #{aOutputInfo.verilogRunnerName}
-		src_files = #{aOutputInfo.verilogRunnerPath} #{aModuleInfo.name}.v
+		SIMULATOR_SOURCES = ['#{aOutputInfo.verilogRunnerPath}', '#{aModuleInfo.name}.v']
+		SIMULATOR_TARGET = '#{aOutputInfo.verilogRunnerName}'
+		SIMULATOR_ARGS = {
+			:cver => nil,
+			:ivl => nil,
+			:vcs => nil,
+			:vsim => nil,
+		}
 
-		\# command-line arguments for Verilog simulator
-		CVER_FLAGS =
-		IVL_FLAGS =
-		VCS_FLAGS =
-		VSIM_FLAGS =
-
-		include $(RubyVpiPath)/examples/template.mk
+		load "\#{RUBY_VPI_PATH}/examples/template.rake"
 	}
 end
 
@@ -283,12 +283,12 @@ class OutputInfo
 
 	RUBY_SUFFIX = '.rb'.freeze
 	VERILOG_SUFFIX = '.v'.freeze
-	MAKEFILE_SUFFIX = '.mk'.freeze
+	BUILDER_SUFFIX = '.rake'.freeze
 
 	SPEC_FORMATS = [:RSpec, :UnitTest, :Generic].freeze
 
 
-	attr_reader :verilogRunnerName, :verilogRunnerPath, :rubyRunnerName, :rubyRunnerPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :makefileName, :makefilePath
+	attr_reader :verilogRunnerName, :verilogRunnerPath, :rubyRunnerName, :rubyRunnerPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :builderName, :builderPath
 
 	def initialize aModuleName, aSpecFormat, aRubyVpiPath
 		raise ArgumentError unless SPEC_FORMATS.include? aSpecFormat
@@ -311,8 +311,8 @@ class OutputInfo
 		@designClassName = aModuleName.capitalize
 		@specClassName = @specName.capitalize
 
-		@makefileName = aModuleName
-		@makefilePath = @makefileName + MAKEFILE_SUFFIX
+		@builderName = aModuleName
+		@builderPath = @builderName + BUILDER_SUFFIX
 	end
 end
 
@@ -359,10 +359,10 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 	# generate output
 	o = OutputInfo.new(m.name, $specFormat, File.expand_path(File.dirname(File.dirname(__FILE__)))).freeze
 
-	File.open(o.makefilePath, "w") do |f|
-		f << generateMakefile(m, o)
+	File.open(o.builderPath, "w") do |f|
+		f << generateBuilder(m, o)
 	end
-	puts "- Generated makefile: #{o.makefilePath}"
+	puts "- Generated builder: #{o.builderPath}"
 
 	File.open(o.verilogRunnerPath, "w") do |f|
 		f << generateVerilogRunner(m, o)
