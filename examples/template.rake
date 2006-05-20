@@ -74,7 +74,7 @@ desc "Simulate with Pragmatic C - Cver."
 task :cver => 'cver:run'
 
 namespace 'cver' do
-	task :run => [:build, *SIMULATOR_SOURCES] do |t|
+	task :run => [:build].concat(SIMULATOR_SOURCES) do |t|
 		sh "cver #{SIMULATOR_ARGS[:cver]} +loadvpi=#{SHARED_OBJ_PATH}:vlog_startup_routines_bootstrap #{SIMULATOR_SOURCES_STRING}"
 	end
 
@@ -90,7 +90,7 @@ desc "Simulate with Icarus Verilog."
 task :ivl => 'ivl:run'
 
 namespace 'ivl' do
-	task :run => [:build, *SIMULATOR_SOURCES] do |t|
+	task :run => [:build].concat(SIMULATOR_SOURCES) do |t|
 		sh "iverilog #{SIMULATOR_ARGS[:ivl]} -y. -mruby-vpi #{SIMULATOR_SOURCES_STRING}"
 		sh "vvp -M. a.out"
 	end
@@ -108,7 +108,7 @@ desc "Simulate with Synopsys VCS."
 task :vcs => 'vcs:run'
 
 namespace 'vcs' do
-	task :run => [:build, "#{RUBY_VPI_PATH}/examples/synopsys_vcs.tab", *SIMULATOR_SOURCES] do |t|
+	task :run => [:build, "#{RUBY_VPI_PATH}/examples/synopsys_vcs.tab"].concat(SIMULATOR_SOURCES) do |t|
 		require 'rbconfig'
 
 		sh "vcs #{SIMULATOR_ARGS[:vcs]} -R +v2k +vpi -LDFLAGS '#{File.expand_path(NORMAL_OBJ_PATH)} -L#{Config::CONFIG['libdir']} #{Config::CONFIG['LIBRUBYARG']} -lpthread' -P #{t.prerequisites[2]} #{SIMULATOR_SOURCES_STRING}"
@@ -126,7 +126,7 @@ desc "Simulate with Mentor Modelsim."
 task :vsim => 'vsim:run'
 
 namespace 'vsim' do
-	task :run => [:build, *SIMULATOR_SOURCES] do |t|
+	task :run => [:build].concat(SIMULATOR_SOURCES) do |t|
 		sh "vlib work"
 		sh "vlog #{SIMULATOR_ARGS[:vsim]} #{SIMULATOR_SOURCES_STRING}"
 		sh "vsim -c #{SIMULATOR_TARGET} -pli #{SHARED_OBJ_PATH} -do 'run -all'"

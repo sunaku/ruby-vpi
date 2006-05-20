@@ -74,7 +74,7 @@ module SWIG
 
 				def #{methName}= *aArgs
 					aArgs[1, 0] = #{varName}
-					self.put_value *aArgs.flatten
+					self.put_value(*aArgs.flatten)
 				end
 			}
 		end
@@ -157,7 +157,7 @@ module SWIG
 
 		# Invokes #put_value by passing the contents of the given array as arguments.
 		def value= *aArray
-			put_value *aArray.flatten
+			put_value(*aArray.flatten)
 		end
 
 		# Returns an array of handles of the given type.
