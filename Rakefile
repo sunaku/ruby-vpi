@@ -17,6 +17,7 @@
 =end
 
 require 'rake/clean'
+require 'rake/rdoctask'
 
 task :default => :build
 
@@ -70,12 +71,12 @@ task :default => :build
 	CLOBBER.include 'doc/ruby'
 
 	desc 'Generate Ruby documentation.'
-	file 'doc/ruby' => ['README', 'HISTORY'] do |t|
-		dest = t.name + '/html'
-		title = 'Ruby-VPI: Ruby interface to Verilog VPI'
-		sources = t.prerequisites.concat(FileList['**/*.rb']).join(' ')
+	Rake::RDocTask.new 'doc/ruby' do |t|
+		t.rdoc_dir = t.name
+		t.title = 'Ruby-VPI: Ruby interface to Verilog VPI'
+		t.options.concat %w(--charset utf-8 --tab-width 2 --line-numbers --main README)
 
-		sh "rdoc1.8 -c utf-8 -t '#{title}' -o #{dest} #{sources}"
+		t.rdoc_files.include '[A-Z][A-Z]*', '**/*.rb'
 	end
 
 
@@ -84,13 +85,15 @@ task :default => :build
 
 	desc 'Generate C documentation.'
 	file 'doc/c' do |t|
-		dest = 'ext/html'
+		# doxygen outputs to this temporary destination
+		tempDest = 'ext/html'
 
-		cd File.dirname(dest) do
+		cd File.dirname(tempDest) do
 			sh "doxygen"
 		end
 
-		mv dest, t.name
+		mv FileList[tempDest + '/*'].to_a, t.name
+		rmdir tempDest
 	end
 
 
