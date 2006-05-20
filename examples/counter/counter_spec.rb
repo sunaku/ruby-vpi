@@ -28,10 +28,8 @@ MAX = LIMIT - 1
 # resets the given design
 def reset aDesign
 	aDesign.reset.intVal = 1
-	3.times {relay_verilog}
+	relay_verilog
 	aDesign.reset.intVal = 0
-
-	@design.count.intVal.should.be 0
 end
 
 
@@ -45,12 +43,13 @@ context "A resetted Counter" do
 
 	specify "should be zero" do
 		@design.count.intVal.should.be 0
-		relay_verilog
 	end
 
 	specify "should increment every cycle" do
 		LIMIT.times do |i|
 			@design.count.intVal.should.be i
+
+			# increment the counter
 			relay_verilog
 		end
 	end
@@ -64,7 +63,7 @@ context "A counter with the maximum value" do
 		reset @design
 
 		# increment to maximum value
-		0.upto(MAX) {relay_verilog}
+		MAX.times {relay_verilog}
 		@design.count.intVal.should.be MAX
 	end
 
@@ -73,6 +72,5 @@ context "A counter with the maximum value" do
 		relay_verilog
 
 		@design.count.intVal.should.be 0
-		relay_verilog
 	end
 end

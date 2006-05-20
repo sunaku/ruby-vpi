@@ -28,8 +28,7 @@ wire  [Size - 1:0] count;
 
 			// transfer control to Ruby-VPI every clock cycle
 			always @(posedge clock) begin
-				$ruby_relay();
+				#1 $ruby_relay();
 			end
 
 		endmodule
-	

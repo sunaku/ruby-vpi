@@ -108,7 +108,7 @@ def generateVerilogRunner aModuleInfo, aOutputInfo
 
 			// transfer control to Ruby-VPI every clock cycle
 			always @(posedge #{clockSignal}) begin
-				$ruby_relay();
+				#1 $ruby_relay();
 			end
 
 		endmodule
