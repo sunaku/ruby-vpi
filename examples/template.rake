@@ -7,7 +7,7 @@
 # SIMULATOR_ARGS:: A hash containing keys for each simulator task (same as Rakefile task names) and values containing command-line arguments for each simulator.
 #
 # = Usage
-# When using one simulator after another, ensure that Ruby-VPI is properly compiled for the new simulator by invoking a cleaning task, such as _clean_ or _clobber_.
+# When using one simulator after another, ensure that Ruby-VPI is properly compiled for the new simulator by invoking the _clobber_ cleaning task.
 
 =begin
 	Copyright 2006 Suraj N. Kurapati
@@ -54,11 +54,9 @@ end
 
 
 # propogate cleaning events to Ruby-VPI
-[:clean, :clobber].each do |t|
-	task t do
-		cd RUBY_VPI_PATH do
-			sh "rake #{t}"
-		end
+task :clobber do |t|
+	cd RUBY_VPI_PATH do
+		sh "rake #{t.name}"
 	end
 end
 
