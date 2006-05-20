@@ -139,7 +139,7 @@ This release adds enough Verilog VPI functionality to make Ruby-VPI usable for s
 
 == Acknowledgment
 
-* Thanks to José Renau for helping me debug how Synopsys VCS works with Verilog VPI. The problem was that VCS required calltf signatures to be <tt>void (*)(void)</tt>, whereas the Verilog standard defines a calltf signature as <tt>PLI_INT32 (*)(PLI_BYTE8*)</tt>.
+* Thanks to Jose Renau for helping me debug how Synopsys VCS works with Verilog VPI. The problem was that VCS required calltf signatures to be <tt>void (*)(void)</tt>, whereas the Verilog standard defines a calltf signature as <tt>PLI_INT32 (*)(PLI_BYTE8*)</tt>.
 
 * Thanks to Ross Bamford, Eric Hodel, and Yukihiro Matsumoto for {helping me discover}[http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/180662] why the SystemStackError was happening.
 
