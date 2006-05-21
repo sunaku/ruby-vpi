@@ -26,7 +26,7 @@
 #
 # * If no input files are specified, then the standard input stream will be read instead.
 # * The first signal parameter in a module's declaration is assumed to be the clocking signal.
-# * *WARNING* Any existing output files will be silently overwritten!
+# * Existing output files will be backed-up before being over-written.
 
 =begin
 	Copyright 2006 Suraj N. Kurapati
@@ -42,7 +42,24 @@
 
 require 'optparse'
 require 'rdoc/usage'
+require 'fileutils'
 
+
+# Writes the given contents to the file at the given path. If the given path already exists, then a backup is created before proceeding.
+def writeFile aPath, aContent
+	# create a backup
+	backupPath = aPath.dup
+
+	while File.exist? backupPath
+		backupPath << '~'
+	end
+
+	FileUtils.cp aPath, backupPath, :preserve => true
+
+
+	# write the file
+	File.open(aPath, 'w') {|f| f << aContent}
+end
 
 # Returns a comma-separated string of parameter declarations in Verilog module instantiation format.
 def makeInstParamDecl(paramNames)
@@ -364,28 +381,18 @@ input.scan(%r{module.*?;}).each do |moduleDecl|
 	# generate output
 	o = OutputInfo.new(m.name, $specFormat, File.dirname(File.dirname(__FILE__))).freeze
 
-	File.open(o.runnerPath, 'w') do |f|
-		f << generateRunner(m, o)
-	end
+	writeFile o.runnerPath, generateRunner(m, o)
 	puts "- Generated runner: #{o.runnerPath}"
 
-	File.open(o.verilogBenchPath, 'w') do |f|
-		f << generateVerilogBench(m, o)
-	end
+	writeFile o.verilogBenchPath, generateVerilogBench(m, o)
 	puts "- Generated bench: #{o.verilogBenchPath}"
 
-	File.open(o.rubyBenchPath, 'w') do |f|
-		f << generateRubyBench(m, o)
-	end
+	writeFile o.rubyBenchPath, generateRubyBench(m, o)
 	puts "- Generated bench: #{o.rubyBenchPath}"
 
-	File.open(o.designPath, 'w') do |f|
-		f << generateDesign(m, o)
-	end
+	writeFile o.designPath, generateDesign(m, o)
 	puts "- Generated design: #{o.designPath}"
 
-	File.open(o.specPath, 'w') do |f|
-		f << generateSpec(m, o)
-	end
+	writeFile o.specPath, generateSpec(m, o)
 	puts "- Generated specification: #{o.specPath}"
 end
