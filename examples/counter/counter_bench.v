@@ -1,5 +1,5 @@
 
-		module counter_runner;
+		module counter_bench;
 
 			// configuration for the design under test
 			parameter Size = 5;
@@ -12,13 +12,13 @@ wire  [Size - 1:0] count;
 
 
 			// instantiate the design under test
-			counter #(.Size(Size)) counter_runner_design (.clock(clock), .reset(reset), .count(count));
+			counter #(.Size(Size)) counter_bench_design (.clock(clock), .reset(reset), .count(count));
 
 
 			// interface to Ruby-VPI
 			initial begin
 				clock = 0;
-				$ruby_init("-w", "counter_runner.rb", "-f", "s");
+				$ruby_init("ruby", "-w", "-I", "../../lib", "counter_bench.rb", "-f", "s");
 			end
 
 			// generate a 50% duty-cycle clock for the design under test
@@ -32,3 +32,4 @@ wire  [Size - 1:0] count;
 			end
 
 		endmodule
+	
