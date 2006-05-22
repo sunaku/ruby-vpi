@@ -1,8 +1,5 @@
-# Bootstraps the RSpec library from within Ruby.
-
 =begin
 	Copyright 2006 Suraj N. Kurapati
-	Copyright 2006 RSpec project
 
 	This file is part of Ruby-VPI.
 
@@ -13,13 +10,39 @@
 	You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 =end
 
-require 'rubygems'
-require_gem 'rspec', '>= 0.5.4'
-require 'spec'
+require 'rake/clean'
 
-# prevent RSpec termination when no arguments are provided
-ARGV.unshift ''
+SOURCES = ['src/manual.xml']
+FORMATS = {
+	# format => extension, flag
+	'html' => ['html', 'xhtml-nochunks'],
+	'text' => ['txt', 'txt'],
+}.freeze
+
+task :default => FORMATS.keys
 
 
-$context_runner = ::Spec::Runner::OptionParser.create_context_runner(ARGV, false, STDERR, STDOUT)
-at_exit {$context_runner.run false}
+# create tasks for each output format
+FORMATS.each_pair do |format, formatOpts|
+	formatExt, formatFlag = formatOpts
+
+
+	directory format
+	CLOBBER.include format
+
+	desc "Generate documentation in #{format} format."
+	file format #=> SOURCES
+
+
+	# attach each source to the current format
+	SOURCES.each do |srcPath|
+		srcPure = File.basename(srcPath, File.extname(srcPath))
+		dstPath = "#{format}/#{srcPure}.#{formatExt}"
+
+		file dstPath => srcPath do
+			sh 'xmlto', '-o', format, formatFlag, srcPath
+		end
+
+		file format => dstPath
+	end
+end

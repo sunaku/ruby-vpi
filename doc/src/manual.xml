@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Copyright 2006 Suraj N. Kurapati.
+
+	Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A copy of the license is included in the file named "LICENSE".
+-->
+
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
+	<!-- imports -->
+	<!ENTITY % sharedDTD SYSTEM "shared.dtd"> %sharedDTD;
+	<!ENTITY license SYSTEM "license.xml">
+]>
+<book lang="en">
+	<bookinfo>
+		<title>&rv; user's manual</title>
+
+		&snk..copyright;
+
+		<abstract>
+			<para>This manual explains how to use &rv;. You can find the newest version of this manual at the &rv..ulink; website.</para>
+		</abstract>
+
+		<!--<date>&rv.date;</date>
+		<releaseinfo>Version &rv.version; (&rv.date;)</releaseinfo>-->
+
+		<legalnotice>
+			<para>Permission is granted to copy, distribute and/or modify this document under the terms of the &gnu; Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A copy of the license is included in the section entitled "&gnu; Free Documentation License".</para>
+		</legalnotice>
+	</bookinfo>
+
+	<chapter id="chp..intro">
+		<title>Introduction</title>
+		<para>Ruby-VPI is a &ruby..ulink; interface to <ulink url="http://en.wikipedia.org/wiki/Verilog">Verilog VPI</ulink>. It lets you create complex Verilog <ulink url="http://en.wikipedia.org/wiki/Software_testing">test benches</ulink> easily and wholly in Ruby.</para>
+
+		<section id="sec..license">
+			<title>License</title>
+			<para>Ruby-VPI is <ulink url="http://en.wikipedia.org/wiki/Free_software">free software</ulink>; you can redistribute it and/or modify it under the terms of the <ulink url="http://www.gnu.org/copyleft/gpl.html">&gnu; General Public License</ulink> as published by the <ulink url="http://www.fsf.org">Free Software Foundation</ulink>; either version 2 of the License, or (at your option) any later version.</para>
+		</section>
+
+		<section id="sec..resources">
+			<title>Resources</title>
+
+			<variablelist>
+				<varlistentry>
+					<term><ulink url="&rv.url-project;">project portal</ulink></term>
+					<listitem>
+						<para>Hosted generously by <ulink url="http://rubyforge.org">RubyForge</ulink>.</para>
+					</listitem>
+				</varlistentry>
+
+				<varlistentry>
+					<term><ulink url="&rv.url-download;">release repository</ulink></term>
+					<listitem>
+						<para>Get the newest release package.</para>
+					</listitem>
+				</varlistentry>
+
+				<varlistentry>
+					<term><ulink url="&rv.url-source;">source repository</ulink></term>
+					<listitem>
+						<para>Get the newest source code.</para>
+					</listitem>
+				</varlistentry>
+
+				<varlistentry>
+					<term><ulink url="&rv.url-forum;">online forums</ulink></term>
+					<listitem>
+						<para>Ask for help or discuss.</para>
+					</listitem>
+				</varlistentry>
+
+				<varlistentry>
+					<term><ulink url="&rv.url-project;">project tracker</ulink></term>
+					<listitem>
+						<para>Report problems or contribute patches.</para>
+					</listitem>
+				</varlistentry>
+			</variablelist>
+		</section>
+	</chapter>
+
+	&license;
+</book>
