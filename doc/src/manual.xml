@@ -143,17 +143,19 @@
 	<chapter id="chp..background">
 		<title>Background</title>
 
-		<para>A pretend, virtual environment known as a <emphasis>&test-bench.ulink;</emphasis> is often used to verify the correctness or soundness of a Verilog model. The name <emphasis>test bench</emphasis> has its roots in electronics testing, where an engineer would sit at a <emphasis>lab bench</emphasis>&mdash;furnished with tools of measurement and manipulation, such as oscilliscopes, multi-meters (to measure voltage, amperage, and resistance), soldering irons, wire cutters, and so on&mdash;and manually verify an electronic component.</para>
+		<para>A pretend, virtual environment known as a <emphasis>&test-bench.ulink;</emphasis> is often used to verify the correctness or soundness of a Verilog model. The name <emphasis>test bench</emphasis> has its roots in testing of electronic devices, where an engineer would sit at a <emphasis>lab bench</emphasis>&mdash;furnished with tools of measurement and manipulation, such as oscilliscopes, multi-meters (to measure voltage, amperage, and resistance), soldering irons, wire cutters, and so on&mdash;and manually verify an electronic component.</para>
 
 		<para>In our case, the test bench is defined by a Verilog simulator, a Verilog module, and &rv;. The first acts as the lab bench which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. The third acts as the engineer who measures, manipulates, and verifies the electronic component.</para>
 
-		<para>In a &rv; test bench, the Verilog simulator and &rv; take turns manipulating objects in the simulation and transfer control to each other when appropriate. The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Both are able to examine and modify the ball when in hand.</para>
+		<para>However, unlike an enigneer who can verify an electronic component in real-time, the Verilog simulator and &rv; must take turns performing their duties. In particular, they take turns manipulating objects in the simulation and transfer control to each other when appropriate.</para>
+
+		<para>The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Both are able to examine and modify the ball, but only when it is in hand.</para>
 
 		<section id="sec..background.init">
 			<title>Initialization</title>
 
 			<figure id="fig..ruby_init">
-				<title>Initialization of a &rv; test bench</title>
+				<title>Initialization of a test bench</title>
 				<mediaobject>
 					<imageobject>
 						<imagedata fileref="figures/ruby_init.png"/>
@@ -174,7 +176,7 @@
 			<title>Execution</title>
 
 			<figure id="fig..ruby_relay">
-				<title>Execution of a &rv; test bench</title>
+				<title>Execution of a test bench</title>
 				<mediaobject>
 					<imageobject>
 						<imagedata fileref="figures/ruby_relay.png"/>
