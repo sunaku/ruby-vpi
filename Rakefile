@@ -61,7 +61,7 @@ task :default => :build
 
 # documentation
 	desc 'Generate documentation.'
-	task 'doc' => 'doc/api' do |t|
+	task 'doc' => 'ref' do |t|
 		cd t.name do
 			sh 'rake'
 		end
@@ -74,18 +74,18 @@ task :default => :build
 	end
 
 
-	directory 'doc/api'
-	CLOBBER.include 'doc/api'
+	directory 'ref'
+	CLOBBER.include 'ref'
 
-	desc 'Generate API documentation.'
-	file 'doc/api' => ['doc/api/c', 'doc/api/ruby']
+	desc 'Generate reference documentation.'
+	file 'ref' => ['ref/c', 'ref/ruby']
 
 
-	directory 'doc/api/ruby'
-	CLOBBER.include 'doc/api/ruby'
+	directory 'ref/ruby'
+	CLOBBER.include 'ref/ruby'
 
-	desc 'Generate API documentation for Ruby.'
-	Rake::RDocTask.new 'doc/api/ruby' do |t|
+	desc 'Generate reference for Ruby.'
+	Rake::RDocTask.new 'ref/ruby' do |t|
 		t.rdoc_dir = t.name
 		t.title = 'Ruby-VPI: Ruby interface to Verilog VPI'
 		t.options.concat %w(--charset utf-8 --tab-width 2 --line-numbers --main README)
@@ -94,11 +94,11 @@ task :default => :build
 	end
 
 
-	directory 'doc/api/c'
-	CLOBBER.include 'doc/api/c'
+	directory 'ref/c'
+	CLOBBER.include 'ref/c'
 
-	desc 'Generate API documentation for C.'
-	file 'doc/api/c' do |t|
+	desc 'Generate reference for C.'
+	file 'ref/c' do |t|
 		# doxygen outputs to this temporary destination
 		tempDest = 'ext/html'
 
@@ -112,6 +112,6 @@ task :default => :build
 
 
 	desc 'Publish documentation to website.'
-	task :web => 'doc/api/ruby' do |t|
+	task :web => 'ref/ruby' do |t|
 		sh "scp -r #{t.prerequisites[0]}/html/* snk@rubyforge.org:/var/www/gforge-projects/ruby-vpi/"
 	end
