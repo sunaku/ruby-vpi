@@ -78,7 +78,7 @@
 		<section id="sec..alternatives">
 			<title>Alternatives</title>
 
-			<para>The following projects are similar or related to Ruby-VPI. In that respect, they may be considered as alternatives.</para>
+			<para>The following projects are similar to Ruby-VPI. In that respect, they may be considered as alternatives.</para>
 
 			<variablelist>
 				<varlistentry>
@@ -132,6 +132,25 @@
 					</varlistentry>
 				</variablelist>
 			</section>
+		</section>
+	</chapter>
+
+	<chapter id="chp..background">
+		<title>Background</title>
+		<para/>
+
+		<section id="sec..how_works">
+			<title>How does it work?</title>
+
+			<figure id="fig..ruby_init">
+				<title>Initialization of the Ruby-VPI test bench</title>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="figures/ruby_init.png"/>
+					</imageobject>
+					<textobject><phrase>An illustration of the Pythagorean Theorem</phrase></textobject>
+				</mediaobject>
+			</figure>
 		</section>
 	</chapter>
 

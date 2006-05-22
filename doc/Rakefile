@@ -12,6 +12,7 @@
 
 require 'rake/clean'
 
+RESOURCES = ['src/figures']
 SOURCES = ['src/manual.xml']
 FORMATS = {
 	# format => extension, flag
@@ -42,6 +43,23 @@ FORMATS.each_pair do |format, formatOpts|
 		file dstPath => srcPath do
 			sh 'xmlto', '-o', format, formatFlag, srcPath
 		end
+
+
+		file format => dstPath
+	end
+
+
+	# attach resources to the current format
+	RESOURCES.each do |srcPath|
+		srcName = File.basename(srcPath)
+		dstPath = "#{format}/#{srcName}"
+
+		file dstPath => srcPath do
+			cp_r srcPath, dstPath
+		end
+
+		CLEAN.include dstPath
+
 
 		file format => dstPath
 	end
