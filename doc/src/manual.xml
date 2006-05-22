@@ -17,11 +17,8 @@
 		&snk..copyright;
 
 		<abstract>
-			<para>This manual explains how to use &rv;. You can find the newest version of this manual at the &rv..ulink; website.</para>
+			<para>This manual explains how to use &rv;. You can find the newest version of this manual at the <ulink url="&rv.url;">&rv; website</ulink>.</para>
 		</abstract>
-
-		<!--<date>&rv.date;</date>
-		<releaseinfo>Version &rv.version; (&rv.date;)</releaseinfo>-->
 
 		<legalnotice>
 			<para>Permission is granted to copy, distribute and/or modify this document under the terms of the &gnu; Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A copy of the license is included in the section entitled "&gnu; Free Documentation License".</para>
@@ -42,40 +39,99 @@
 
 			<variablelist>
 				<varlistentry>
-					<term><ulink url="&rv.url-project;">project portal</ulink></term>
+					<term><ulink url="&rv.url-project;">Project portal</ulink></term>
 					<listitem>
 						<para>Hosted generously by <ulink url="http://rubyforge.org">RubyForge</ulink>.</para>
 					</listitem>
 				</varlistentry>
 
 				<varlistentry>
-					<term><ulink url="&rv.url-download;">release repository</ulink></term>
+					<term><ulink url="&rv.url-project;">Project tracker</ulink></term>
+					<listitem>
+						<para>Report problems, contribute patches, and more.</para>
+					</listitem>
+				</varlistentry>
+
+				<varlistentry>
+					<term><ulink url="&rv.url-download;">File releases</ulink></term>
 					<listitem>
 						<para>Get the newest release package.</para>
 					</listitem>
 				</varlistentry>
 
 				<varlistentry>
-					<term><ulink url="&rv.url-source;">source repository</ulink></term>
+					<term><ulink url="&rv.url-source;">Source repository</ulink></term>
 					<listitem>
 						<para>Get the newest source code.</para>
 					</listitem>
 				</varlistentry>
 
 				<varlistentry>
-					<term><ulink url="&rv.url-forum;">online forums</ulink></term>
+					<term><ulink url="&rv.url-forum;">Online forums</ulink></term>
 					<listitem>
-						<para>Ask for help or discuss.</para>
-					</listitem>
-				</varlistentry>
-
-				<varlistentry>
-					<term><ulink url="&rv.url-project;">project tracker</ulink></term>
-					<listitem>
-						<para>Report problems or contribute patches.</para>
+						<para>Ask for help, give feedback, or discuss.</para>
 					</listitem>
 				</varlistentry>
 			</variablelist>
+		</section>
+
+		<section id="sec..alternatives">
+			<title>Alternatives</title>
+
+			<para>The following projects are similar or related to Ruby-VPI. In that respect, they may be considered as alternatives.</para>
+
+			<variablelist>
+				<varlistentry>
+					<term><ulink url="http://www.aracnet.com/~ptkwt/ruby_stuff/RHDL/">RHDL</ulink></term>
+					<listitem>
+						<para>Ruby abstraction of VHDL and Verilog.</para>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term><ulink url="http://myhdl.jandecaluwe.com">MyHDL</ulink></term>
+					<listitem>
+						<para>Python abstraction of Verilog.</para>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term><ulink url="http://jove.sourceforge.net">JOVE</ulink></term>
+					<listitem>
+						<para>Java interface to VPI.</para>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term><ulink url="http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/">ScriptEDA</ulink></term>
+					<listitem>
+						<para>Perl, Python, and Tcl interface to VPI.</para>
+					</listitem>
+				</varlistentry>
+			</variablelist>
+
+			<section id="sec..alternatives.pli">
+				<title>Ye olde PLI</title>
+				<para>The following projects utilize the archaic <acronym>tf</acronym> and <abbrev>acc</abbrev> PLI interfaces, which have been officially deprecated in IEEE Std. 1364-2005.</para>
+
+				<variablelist>
+					<varlistentry>
+						<term><ulink url="http://www.nelsim.com">ScriptSim</ulink></term>
+						<listitem>
+							<para>Perl, Python, and Tcl/Tk interface to PLI.</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term><ulink url="http://www.veripool.com/verilog-pli.html">Verilog::Pli</ulink></term>
+						<listitem>
+							<para>Perl interface to PLI.</para>
+						</listitem>
+					</varlistentry>
+					<varlistentry>
+						<term><ulink url="http://www.time-rover.com/jpli/">JPLI</ulink></term>
+						<listitem>
+							<para>Java interface to PLI</para>
+						</listitem>
+					</varlistentry>
+				</variablelist>
+			</section>
 		</section>
 	</chapter>
 
