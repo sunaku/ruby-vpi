@@ -137,20 +137,28 @@
 
 	<chapter id="chp..background">
 		<title>Background</title>
-		<para/>
 
-		<section id="sec..how_works">
-			<title>How does it work?</title>
+		<para>Ruby-VPI and the Verilog simulator take turns manipulating objects in the simulation and transfer control to each other when appropriate. The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Both are able to examine and modify the ball when in hand.</para>
+
+		<section id="sec..background.init">
+			<title>Initialization</title>
 
 			<figure id="fig..ruby_init">
-				<title>Initialization of the Ruby-VPI test bench</title>
+				<title>Initialization of a Ruby-VPI test bench</title>
 				<mediaobject>
 					<imageobject>
 						<imagedata fileref="figures/ruby_init.png"/>
 					</imageobject>
-					<textobject><phrase>An illustration of the Pythagorean Theorem</phrase></textobject>
 				</mediaobject>
 			</figure>
+
+			<para><xref linkend="fig..ruby_init"/> illustrates the initialization process.</para>
+
+			<para>First, the Verilog simulator initializes Ruby-VPI by invoking the <code>$ruby_init();</code> system task/function, whose arguments represent the command-line invocation of the Ruby interpreter. For example, one would specify <code>$ruby_init("ruby", "-w");</code> in Verilog to acheive the same effect as specifying <code>ruby -w</code> at a command-prompt.</para>
+
+			<para>Second, Ruby-VPI passes the arguments of the <code>$ruby_init();</code> system task/function to a Ruby interpreter.</para>
+
+			<para>Third, control is transferred back to the Verilog simulator once the Ruby interpreter invokes the <code>Vpi::relay_verilog</code> method.</para>
 		</section>
 	</chapter>
 
