@@ -143,29 +143,20 @@
 	<chapter id="background">
 		<title>Background</title>
 
-		<figure id="fig..architecture_detail">
-			<title>Detailed architecture of &rv;</title>
-			<mediaobject>
-				<imageobject>
-					<imagedata fileref="figures/architecture_detail.png"/>
-				</imageobject>
-			</mediaobject>
-		</figure>
-
 		<section id="background.test-bench">
 			<title>Test bench</title>
 
 			<para>A &test-bench.ulink; is a virtual environment used to verify the correctness or soundness of a design. Often, it is made to emulate conditions in which a design will be eventually deployed.</para>
 
-			<para>The phrase <emphasis>test bench</emphasis> has its roots in the testing of electronic devices, where an engineer would sit at a <emphasis>lab bench</emphasis>&mdash;furnished with tools of measurement and manipulation, such as oscilliscopes, voltmeters, ammeters, ohmmeters, soldering irons, wire cutters, and so on&mdash;and verify that an electronic component satisfies some criteria.</para>
+			<para>The phrase <emphasis>test bench</emphasis> has its roots in the testing of electronic devices, where an engineer would sit at a <emphasis>laboratory bench</emphasis> and verify that an electronic component satisfies some criteria. The bench would be furnished with measurement and manipulation tools&mdash;such as oscilliscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.</para>
 
-			<para>Unfortunately, that phrase has forgotten its roots and has now come to signify one or more of the following: (1) the testing environment, (2) the procedure followed when performing a test, and (3) the procedure followed when verifying the results of a test. In this manual, all three meanings are associated with the phrase <emphasis>test bench</emphasis>.</para>
+			<para>Unfortunately, that phrase has forgotten its roots and has come to signify one or more of the following: (1) an environment in which a test is performed, (2) a procedure followed when performing a test, and (3) a procedure followed when verifying the results of a test. In this manual, all three meanings are associated with the phrase <emphasis>test bench</emphasis>.</para>
 
 			<section id="background.test-bench.organization">
 				<title>Organization</title>
 
 					<figure id="fig..architecture">
-						<title>Overall architecture of &rv;</title>
+						<title>Overall organization of a test bench</title>
 						<mediaobject>
 							<imageobject>
 								<imagedata fileref="figures/architecture.png"/>
@@ -173,7 +164,18 @@
 						</mediaobject>
 					</figure>
 
-				<para>In our case, the test bench is defined by a Verilog simulator, a Verilog module, and &rv;. The first acts as the lab bench which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. The third acts as the engineer who measures, manipulates, and verifies the electronic component.</para>
+				<para>In short, a test bench is composed of &rv;, a design, and a specification. The first acts as the <link linkend="background.test-bench">lab bench</link> which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. The third acts as the engineer who measures, manipulates, and verifies the electronic component.</para>
+
+				<figure id="fig..architecture_detail">
+					<title>Detailed organization of a test bench</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="figures/architecture_detail.png"/>
+						</imageobject>
+					</mediaobject>
+				</figure>
+
+				<para>TODO</para>
 
 				<para>However, unlike an enigneer who can verify an electronic component in real-time, the Verilog simulator and &rv; must take turns performing their duties. In particular, they take turns manipulating objects in the simulation and transfer control to each other when appropriate.</para>
 
