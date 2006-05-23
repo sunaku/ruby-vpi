@@ -143,6 +143,24 @@
 	<chapter id="background">
 		<title>Background</title>
 
+		<figure id="fig..architecture">
+			<title>Overall architecture of &rv;</title>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="figures/architecture.png"/>
+				</imageobject>
+			</mediaobject>
+		</figure>
+
+		<figure id="fig..architecture_detail">
+			<title>Detailed architecture of &rv;</title>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="figures/architecture_detail.png"/>
+				</imageobject>
+			</mediaobject>
+		</figure>
+
 		<section id="background.test-bench">
 			<title>Test bench</title>
 
@@ -197,19 +215,6 @@
 
 				&background.step3;
 			</section>
-		</section>
-
-		<section id="background.architecture">
-			<title>Architecture of &rv;</title>
-
-			<figure id="fig..architecture">
-				<title>Layered architecture of &rv;</title>
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="figures/architecture.png"/>
-					</imageobject>
-				</mediaobject>
-			</figure>
 		</section>
 	</chapter>
 
