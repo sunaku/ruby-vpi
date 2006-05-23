@@ -13,7 +13,7 @@
 	<!-- content -->
 	<!ENTITY background.step3 "<para>Third, when the Ruby interpreter invokes the <code>Vpi::relay_verilog</code> method, &rv; pauses the Ruby interpreter and transfers control back to the Verilog simulator.</para>">
 
-	<!ENTITY test-bench.ulink "<ulink url='http://en.wikipedia.org/wiki/Test_bench'>test bench</ulink>">
+	<!ENTITY test-bench.ulink "<ulink url='http://en.wikipedia.org/wiki/Software_testing'>test bench</ulink>">
 ]>
 <book lang="en">
 	<bookinfo>
@@ -143,15 +143,6 @@
 	<chapter id="background">
 		<title>Background</title>
 
-		<figure id="fig..architecture">
-			<title>Overall architecture of &rv;</title>
-			<mediaobject>
-				<imageobject>
-					<imagedata fileref="figures/architecture.png"/>
-				</imageobject>
-			</mediaobject>
-		</figure>
-
 		<figure id="fig..architecture_detail">
 			<title>Detailed architecture of &rv;</title>
 			<mediaobject>
@@ -164,13 +155,30 @@
 		<section id="background.test-bench">
 			<title>Test bench</title>
 
-			<para>A &test-bench.ulink; is a pretend, virtual environment used to verify the correctness or soundness of a Verilog model. The name <emphasis>test bench</emphasis> has its roots in testing of electronic devices, where an engineer would sit at a <emphasis>lab bench</emphasis>&mdash;furnished with tools of measurement and manipulation, such as oscilliscopes, multi-meters (to measure voltage, amperage, and resistance), soldering irons, wire cutters, and so on&mdash;and manually verify an electronic component.</para>
+			<para>A &test-bench.ulink; is a virtual environment used to verify the correctness or soundness of a design. Often, it is made to emulate conditions in which a design will be eventually deployed.</para>
 
-			<para>In our case, the test bench is defined by a Verilog simulator, a Verilog module, and &rv;. The first acts as the lab bench which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. The third acts as the engineer who measures, manipulates, and verifies the electronic component.</para>
+			<para>The phrase <emphasis>test bench</emphasis> has its roots in the testing of electronic devices, where an engineer would sit at a <emphasis>lab bench</emphasis>&mdash;furnished with tools of measurement and manipulation, such as oscilliscopes, voltmeters, ammeters, ohmmeters, soldering irons, wire cutters, and so on&mdash;and verify that an electronic component satisfies some criteria.</para>
 
-			<para>However, unlike an enigneer who can verify an electronic component in real-time, the Verilog simulator and &rv; must take turns performing their duties. In particular, they take turns manipulating objects in the simulation and transfer control to each other when appropriate.</para>
+			<para>Unfortunately, that phrase has forgotten its roots and has now come to signify one or more of the following: (1) the testing environment, (2) the procedure followed when performing a test, and (3) the procedure followed when verifying the results of a test. In this manual, all three meanings are associated with the phrase <emphasis>test bench</emphasis>.</para>
 
-			<para>The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Both are able to examine and modify the ball, but only when it is in hand.</para>
+			<section id="background.test-bench.organization">
+				<title>Organization</title>
+
+					<figure id="fig..architecture">
+						<title>Overall architecture of &rv;</title>
+						<mediaobject>
+							<imageobject>
+								<imagedata fileref="figures/architecture.png"/>
+							</imageobject>
+						</mediaobject>
+					</figure>
+
+				<para>In our case, the test bench is defined by a Verilog simulator, a Verilog module, and &rv;. The first acts as the lab bench which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. The third acts as the engineer who measures, manipulates, and verifies the electronic component.</para>
+
+				<para>However, unlike an enigneer who can verify an electronic component in real-time, the Verilog simulator and &rv; must take turns performing their duties. In particular, they take turns manipulating objects in the simulation and transfer control to each other when appropriate.</para>
+
+				<para>The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Both are able to examine and modify the ball, but only when it is in hand.</para>
+			</section>
 
 			<section id="background.test-bench.init">
 				<title>Initialization</title>
