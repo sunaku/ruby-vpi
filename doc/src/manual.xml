@@ -191,12 +191,25 @@
 
 				<para>After a test bench is <link linkend="background.test-bench.init">initialized</link>, it is executed to verify a design. <xref linkend="fig..ruby_relay"/> illustrates the execution process, which is described below.</para>
 
-				<para>First, the Verilog simulator transfers control to Ruby-VPI by invoking the <code>$ruby_relay();</code> system task/function.</para>
+				<para>First, the Verilog simulator transfers control to &rv; by invoking the <code>$ruby_relay();</code> system task/function.</para>
 
 				<para>Second, &rv; pauses the Verilog simulator and resumes the Ruby interpreter.</para>
 
 				&background.step3;
 			</section>
+		</section>
+
+		<section id="background.architecture">
+			<title>Architecture of &rv;</title>
+
+			<figure id="fig..architecture">
+				<title>Layered architecture of &rv;</title>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="figures/architecture.png"/>
+					</imageobject>
+				</mediaobject>
+			</figure>
 		</section>
 	</chapter>
 
