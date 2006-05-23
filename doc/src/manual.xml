@@ -13,7 +13,7 @@
 	<!-- content -->
 	<!ENTITY background.step3 "<para>Third, when the Ruby interpreter invokes the <code>Vpi::relay_verilog</code> method, &rv; pauses the Ruby interpreter and transfers control back to the Verilog simulator.</para>">
 
-	<!ENTITY test-bench.ulink "<ulink url='http://en.wikipedia.org/wiki/Software_testing'>test bench</ulink>">
+	<!ENTITY test-bench.ulink "<ulink url='http://en.wikipedia.org/wiki/Test_bench'>test bench</ulink>">
 ]>
 <book lang="en">
 	<bookinfo>
@@ -30,16 +30,16 @@
 		</legalnotice>
 	</bookinfo>
 
-	<chapter id="chp..intro">
+	<chapter id="introduction">
 		<title>Introduction</title>
 		<para>&rv; is a &ruby..ulink; interface to <ulink url="http://en.wikipedia.org/wiki/Verilog">Verilog VPI</ulink>. It lets you create complex Verilog &test-bench.ulink;es easily and wholly in Ruby.</para>
 
-		<section id="sec..license">
+		<section id="introduction.license">
 			<title>License</title>
 			<para>&rv; is <ulink url="http://en.wikipedia.org/wiki/Free_software">free software</ulink>; you can redistribute it and/or modify it under the terms of the <ulink url="http://www.gnu.org/copyleft/gpl.html">&gnu; General Public License</ulink> as published by the <ulink url="http://www.fsf.org">Free Software Foundation</ulink>; either version 2 of the License, or (at your option) any later version.</para>
 		</section>
 
-		<section id="sec..resources">
+		<section id="introduction.resources">
 			<title>Resources</title>
 
 			<variablelist>
@@ -80,7 +80,7 @@
 			</variablelist>
 		</section>
 
-		<section id="sec..alternatives">
+		<section id="introduction.alternatives">
 			<title>Alternatives</title>
 
 			<para>The following projects are similar to &rv;. In that respect, they may be considered as alternatives.</para>
@@ -112,7 +112,7 @@
 				</varlistentry>
 			</variablelist>
 
-			<section id="sec..alternatives.pli">
+			<section id="introduction.alternatives.pli">
 				<title>Ye olde PLI</title>
 				<para>The following projects utilize the archaic <acronym>tf</acronym> and <abbrev>acc</abbrev> PLI interfaces, which have been officially deprecated in IEEE Std. 1364-2005.</para>
 
@@ -140,57 +140,63 @@
 		</section>
 	</chapter>
 
-	<chapter id="chp..background">
+	<chapter id="background">
 		<title>Background</title>
 
-		<para>A pretend, virtual environment known as a <emphasis>&test-bench.ulink;</emphasis> is often used to verify the correctness or soundness of a Verilog model. The name <emphasis>test bench</emphasis> has its roots in testing of electronic devices, where an engineer would sit at a <emphasis>lab bench</emphasis>&mdash;furnished with tools of measurement and manipulation, such as oscilliscopes, multi-meters (to measure voltage, amperage, and resistance), soldering irons, wire cutters, and so on&mdash;and manually verify an electronic component.</para>
+		<section id="background.test-bench">
+			<title>Test bench</title>
 
-		<para>In our case, the test bench is defined by a Verilog simulator, a Verilog module, and &rv;. The first acts as the lab bench which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. The third acts as the engineer who measures, manipulates, and verifies the electronic component.</para>
+			<para>A &test-bench.ulink; is a pretend, virtual environment used to verify the correctness or soundness of a Verilog model. The name <emphasis>test bench</emphasis> has its roots in testing of electronic devices, where an engineer would sit at a <emphasis>lab bench</emphasis>&mdash;furnished with tools of measurement and manipulation, such as oscilliscopes, multi-meters (to measure voltage, amperage, and resistance), soldering irons, wire cutters, and so on&mdash;and manually verify an electronic component.</para>
 
-		<para>However, unlike an enigneer who can verify an electronic component in real-time, the Verilog simulator and &rv; must take turns performing their duties. In particular, they take turns manipulating objects in the simulation and transfer control to each other when appropriate.</para>
+			<para>In our case, the test bench is defined by a Verilog simulator, a Verilog module, and &rv;. The first acts as the lab bench which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. The third acts as the engineer who measures, manipulates, and verifies the electronic component.</para>
 
-		<para>The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Both are able to examine and modify the ball, but only when it is in hand.</para>
+			<para>However, unlike an enigneer who can verify an electronic component in real-time, the Verilog simulator and &rv; must take turns performing their duties. In particular, they take turns manipulating objects in the simulation and transfer control to each other when appropriate.</para>
 
-		<section id="sec..background.init">
-			<title>Initialization</title>
+			<para>The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Both are able to examine and modify the ball, but only when it is in hand.</para>
 
-			<figure id="fig..ruby_init">
-				<title>Initialization of a test bench</title>
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="figures/ruby_init.png"/>
-					</imageobject>
-				</mediaobject>
-			</figure>
+			<section id="background.test-bench.init">
+				<title>Initialization</title>
 
-			<para><xref linkend="fig..ruby_init"/> illustrates the initialization process, which is described below.</para>
+				<figure id="fig..ruby_init">
+					<title>Initialization of a test bench</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="figures/ruby_init.png"/>
+						</imageobject>
+					</mediaobject>
+				</figure>
 
-			<para>First, the Verilog simulator initializes &rv; by invoking the <code>$ruby_init();</code> system task/function, whose arguments represent the command-line invocation of the Ruby interpreter. For example, one would specify <code>$ruby_init("ruby", "-w");</code> in Verilog to acheive the same effect as specifying <code>ruby -w</code> at a command-prompt.</para>
+				<para>A test bench is first initialized before it is executed. During execution, a design (analogous to the electronic component being verified by an engineer) is exercised and its behavior is verified according to a specification.</para>
 
-			<para>Second, &rv; pauses the Verilog simulator and passes the arguments of the <code>$ruby_init();</code> system task/function to a Ruby interpreter.</para>
+				<para><xref linkend="fig..ruby_init"/> illustrates the initialization process, which is described below.</para>
 
-			&background.step3;
-		</section>
+				<para>First, the Verilog simulator initializes &rv; by invoking the <code>$ruby_init();</code> system task/function, whose arguments represent the command-line invocation of the Ruby interpreter. For example, one would specify <code>$ruby_init("ruby", "-w");</code> in Verilog to acheive the same effect as specifying <code>ruby -w</code> at a command-prompt.</para>
 
-		<section id="sec..background.relay">
-			<title>Execution</title>
+				<para>Second, &rv; pauses the Verilog simulator and passes the arguments of the <code>$ruby_init();</code> system task/function to a Ruby interpreter.</para>
 
-			<figure id="fig..ruby_relay">
-				<title>Execution of a test bench</title>
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="figures/ruby_relay.png"/>
-					</imageobject>
-				</mediaobject>
-			</figure>
+				&background.step3;
+			</section>
 
-			<para><xref linkend="fig..ruby_relay"/> illustrates the execution process, which begins after the <link linkend="sec..background.init">initialization process</link>.</para>
+			<section id="background.test-bench.exec">
+				<title>Execution</title>
 
-			<para>First, the Verilog simulator transfers control to Ruby-VPI by invoking the <code>$ruby_relay();</code> system task/function.</para>
+				<figure id="fig..ruby_relay">
+					<title>Execution of a test bench</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="figures/ruby_relay.png"/>
+						</imageobject>
+					</mediaobject>
+				</figure>
 
-			<para>Second, &rv; pauses the Verilog simulator and resumes the Ruby interpreter.</para>
+				<para>After a test bench is <link linkend="background.test-bench.init">initialized</link>, it is executed to verify a design. <xref linkend="fig..ruby_relay"/> illustrates the execution process, which is described below.</para>
 
-			&background.step3;
+				<para>First, the Verilog simulator transfers control to Ruby-VPI by invoking the <code>$ruby_relay();</code> system task/function.</para>
+
+				<para>Second, &rv; pauses the Verilog simulator and resumes the Ruby interpreter.</para>
+
+				&background.step3;
+			</section>
 		</section>
 	</chapter>
 
