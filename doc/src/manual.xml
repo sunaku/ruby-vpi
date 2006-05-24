@@ -13,7 +13,7 @@
 	<!-- content -->
 	<!ENTITY background.step3 "<para>Third, when the Ruby interpreter invokes the <code>Vpi::relay_verilog</code> method, &rv; pauses the Ruby interpreter and transfers control back to the Verilog simulator.</para>">
 
-	<!ENTITY test-bench.ulink "<ulink url='http://en.wikipedia.org/wiki/Software_testing'>test bench</ulink>">
+	<!ENTITY test-bench.term "<glossterm linkend='term..test-bench'>test bench</glossterm>">
 ]>
 <book lang="en">
 	<bookinfo>
@@ -32,7 +32,7 @@
 
 	<chapter id="introduction">
 		<title>Introduction</title>
-		<para>&rv; is a &ruby..ulink; interface to <ulink url="http://en.wikipedia.org/wiki/Verilog">Verilog VPI</ulink>. It lets you create complex Verilog &test-bench.ulink;es easily and wholly in Ruby.</para>
+		<para>&rv; is a &ruby..ulink; interface to <ulink url="http://en.wikipedia.org/wiki/Verilog">Verilog VPI</ulink>. It lets you create complex Verilog &test-bench.term;es easily and wholly in Ruby.</para>
 
 		<section id="introduction.license">
 			<title>License</title>
@@ -145,100 +145,92 @@
 
 		<para>&rv; is a <glossterm linkend="term..bench">bench</glossterm> which lets you <glossterm linkend="term..test">test</glossterm> Verilog modules using the Ruby language.</para>
 
-		<para>As a newcomer into the world of Verilog, I often heard the term <glossterm>test bench</glossterm>: "I ran the test bench, but it didn't work!" or "Are you crazy?!! You <emphasis>still</emphasis> haven't written the test bench?!", for example. I searched my textbook and the Internet for a definition of the term, but it was to no avail. Instead, as if mocking my ignorance of what seems to be universal knowledge, both resources nonchalantly employed the term <emphasis>throught</emphasis> their being. Ludicrous!</para>
+		<section id="background.terminology">
+			<title>Terminology</title>
 
-		<para>Defeated, I turned to my inner faculties to determine the answer. "Let's see, the term <emphasis>test bench</emphasis> has the word <emphasis>test</emphasis>&mdash;so maybe it has something to do with testing&mdash;and it has the word <emphasis>bench</emphasis>&mdash;so maybe it's referring to a table where the testing should occur". This reasoning became increasingly familiar as my mind rummaged through towering stores of obsolescence and ultimately retrieved those dreaded memories of sleepless weeks debugging electronics in the laboratory.</para>
+			<para>As a newcomer into the world of Verilog, I often heard the term &test-bench.term;: "I ran the test bench, but it didn't work!" or "Are you crazy?!! You <emphasis>still</emphasis> haven't written the test bench?!", for example. I searched my textbook and the Internet for a definition of the term, but it was to no avail. Instead, as if mocking my ignorance of what seems to be universal knowledge, both resources nonchalantly employed the term <emphasis>throught</emphasis> their being. Ludicrous!</para>
 
-		<para>"Aha!", I exclaimed hesitantly, trying to forget the past. The term has its roots in the testing of electronic devices, where an engineer like myself would sit at a bench in an electronics laboratory and verify that an electronic component satisfies some criteria. The bench would be furnished with tools of measurement and manipulation&mdash;such as oscilliscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.</para>
+			<para>Defeated, I turned to my inner faculties to determine the answer. "Let's see, the term &test-bench.term; has the word <emphasis>test</emphasis>&mdash;so maybe it has something to do with testing&mdash;and it has the word <emphasis>bench</emphasis>&mdash;so maybe it's referring to a table where the testing should occur". This reasoning became increasingly familiar as my mind rummaged through towering stores of obsolescence and ultimately retrieved those dreaded memories of sleepless weeks debugging electronics in the laboratory.</para>
 
-		<para>Alright, now I remember what a laboratory bench is, but how does it compare with the term <emphasis>test bench</emphasis>? They both cannot have the same meaning, because it doesn't make sense to "run" a laboratory bench or to "write" one&mdash;unless you're equipped with a hammer and chisel. So what <emphasis>are</emphasis> these people referring to when they speak of "running" and "writing" test benches?</para>
+			<para>"Aha!", I exclaimed hesitantly, trying to forget the past. The term has its roots in the testing of electronic devices, where an engineer like myself would sit at a bench in an electronics laboratory and verify that an electronic component satisfies some criteria. The bench would be furnished with tools of measurement and manipulation&mdash;such as oscilliscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.</para>
 
-		<para>I still don't know. Therefore, I tried to disambiguate the terminology by <link linkend="glossary">simplifying and reintroducing it in a new light</link>.</para>
+			<para>Alright, now I remember what a laboratory bench is, but how does it compare with the term &test-bench.term;? They both cannot have the same meaning, because it doesn't make sense to "run" a laboratory bench or to "write" one&mdash;unless you're equipped with a hammer and chisel. So what <emphasis>are</emphasis> these people referring to when they speak of "running" and "writing" test benches?</para>
 
-		<!--Although the majority of the Verilog world seems to use the term <glossterm>test bench</glossterm>, this manual will use the term <glossterm>test</glossterm> to decouple the meaning. </para>-->
+			<para>I still don't know. Therefore, I tried to disambiguate the terminology by <link linkend="glossary">simplifying and reintroducing it in a new light</link>.</para>
+		</section>
 
-		<section id="background.test-bench">
-			<title>Test bench</title>
+		<section id="background.organization">
+			<title>Organization</title>
 
-			<para>A <emphasis>&test-bench.ulink;</emphasis> is a virtual environment used to verify the correctness or soundness of a design. Often, it is made to emulate conditions in which a design will be eventually deployed.</para>
-
-			<para>The phrase <emphasis>test bench</emphasis> has its roots in the testing of electronic devices, where an engineer would sit at a <emphasis>laboratory bench</emphasis> and verify that an electronic component satisfies some criteria. The bench would be furnished with measurement and manipulation tools&mdash;such as oscilliscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.</para>
-
-			<para>Unfortunately, that phrase has forgotten its roots and has come to signify one or more of the following: (1) an environment in which a test is performed, (2) a procedure followed when performing a test, and (3) a procedure followed when verifying the results of a test. In order to avoid confusion, this manual divides the phrase into its individual components and refers directly to those pieces:</para>
-
-			<section id="background.test-bench.organization">
-				<title>Organization</title>
-
-					<figure id="fig..architecture">
-						<title>Overall organization of a test bench</title>
-						<mediaobject>
-							<imageobject>
-								<imagedata fileref="figures/architecture.png"/>
-							</imageobject>
-						</mediaobject>
-					</figure>
-
-				<para>In short, a test bench is composed of &rv;, a design, and a specification. The first acts as the <link linkend="background.test-bench">lab bench</link> which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. The third acts as the engineer who measures, manipulates, and verifies the electronic component.</para>
-
-				<figure id="fig..architecture_detail">
-					<title>Detailed organization of a test bench</title>
+				<figure id="fig..architecture">
+					<title>Overall organization of a test bench</title>
 					<mediaobject>
 						<imageobject>
-							<imagedata fileref="figures/architecture_detail.png"/>
+							<imagedata fileref="figures/architecture.png"/>
 						</imageobject>
 					</mediaobject>
 				</figure>
 
-				<para>TODO</para>
+			<para>In short, a test bench is composed of &rv;, a design, and a specification. The first acts as the laboratory bench which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. The third acts as the engineer who measures, manipulates, and verifies the electronic component.</para>
 
-				<para>However, unlike an enigneer who can verify an electronic component in real-time, the Verilog simulator and &rv; must take turns performing their duties. In particular, they take turns manipulating objects in the simulation and transfer control to each other when appropriate.</para>
+			<figure id="fig..architecture_detail">
+				<title>Detailed organization of a test bench</title>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="figures/architecture_detail.png"/>
+					</imageobject>
+				</mediaobject>
+			</figure>
 
-				<para>The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Both are able to examine and modify the ball, but only when it is in hand.</para>
-			</section>
+			<para>TODO</para>
 
-			<section id="background.test-bench.init">
-				<title>Initialization</title>
+			<para>However, unlike an enigneer who can verify an electronic component in real-time, the Verilog simulator and &rv; must take turns performing their duties. In particular, they take turns manipulating objects in the simulation and transfer control to each other when appropriate.</para>
 
-				<figure id="fig..ruby_init">
-					<title>Initialization of a test bench</title>
-					<mediaobject>
-						<imageobject>
-							<imagedata fileref="figures/ruby_init.png"/>
-						</imageobject>
-					</mediaobject>
-				</figure>
+			<para>The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Both are able to examine and modify the ball, but only when it is in hand.</para>
+		</section>
 
-				<para>A test bench is first initialized before it is executed. During execution, a design (analogous to the electronic component being verified by an engineer) is exercised and its behavior is verified according to a specification.</para>
+		<section id="background.initialization">
+			<title>Initialization</title>
 
-				<para><xref linkend="fig..ruby_init"/> illustrates the initialization process, which is described below.</para>
+			<figure id="fig..ruby_init">
+				<title>Initialization of a test bench</title>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="figures/ruby_init.png"/>
+					</imageobject>
+				</mediaobject>
+			</figure>
 
-				<para>First, the Verilog simulator initializes &rv; by invoking the <code>$ruby_init();</code> system task/function, whose arguments represent the command-line invocation of the Ruby interpreter. For example, one would specify <code>$ruby_init("ruby", "-w");</code> in Verilog to acheive the same effect as specifying <code>ruby -w</code> at a command-prompt.</para>
+			<para>A test bench is first initialized before it is executed. During execution, a design (analogous to the electronic component being verified by an engineer) is exercised and its behavior is verified according to a specification.</para>
 
-				<para>Second, &rv; pauses the Verilog simulator and passes the arguments of the <code>$ruby_init();</code> system task/function to a Ruby interpreter.</para>
+			<para><xref linkend="fig..ruby_init"/> illustrates the initialization process, which is described below.</para>
 
-				&background.step3;
-			</section>
+			<para>First, the Verilog simulator initializes &rv; by invoking the <code>$ruby_init();</code> system task/function, whose arguments represent the command-line invocation of the Ruby interpreter. For example, one would specify <code>$ruby_init("ruby", "-w");</code> in Verilog to acheive the same effect as specifying <code>ruby -w</code> at a command-prompt.</para>
 
-			<section id="background.test-bench.exec">
-				<title>Execution</title>
+			<para>Second, &rv; pauses the Verilog simulator and passes the arguments of the <code>$ruby_init();</code> system task/function to a Ruby interpreter.</para>
 
-				<figure id="fig..ruby_relay">
-					<title>Execution of a test bench</title>
-					<mediaobject>
-						<imageobject>
-							<imagedata fileref="figures/ruby_relay.png"/>
-						</imageobject>
-					</mediaobject>
-				</figure>
+			&background.step3;
+		</section>
 
-				<para>After a test bench is <link linkend="background.test-bench.init">initialized</link>, it is executed to verify a design. <xref linkend="fig..ruby_relay"/> illustrates the execution process, which is described below.</para>
+		<section id="background.execution">
+			<title>Execution</title>
 
-				<para>First, the Verilog simulator transfers control to &rv; by invoking the <code>$ruby_relay();</code> system task/function.</para>
+			<figure id="fig..ruby_relay">
+				<title>Execution of a test bench</title>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="figures/ruby_relay.png"/>
+					</imageobject>
+				</mediaobject>
+			</figure>
 
-				<para>Second, &rv; pauses the Verilog simulator and resumes the Ruby interpreter.</para>
+			<para>After a test bench is <link linkend="background.initialization">initialized</link>, it is executed to verify a design. <xref linkend="fig..ruby_relay"/> illustrates the execution process, which is described below.</para>
 
-				&background.step3;
-			</section>
+			<para>First, the Verilog simulator transfers control to &rv; by invoking the <code>$ruby_relay();</code> system task/function.</para>
+
+			<para>Second, &rv; pauses the Verilog simulator and resumes the Ruby interpreter.</para>
+
+			&background.step3;
 		</section>
 	</chapter>
 
@@ -283,6 +275,14 @@
 				<glossterm>Test</glossterm>
 				<glossdef>
 					<para>The act of verifying a <glossterm linkend="term..design">design</glossterm> against a <glossterm linkend="term..specification">specification</glossterm> in a <glossterm linkend="term..bench">bench</glossterm>.</para>
+				</glossdef>
+			</glossentry>
+
+			<glossentry id="term..test-bench">
+				<glossterm>Test bench</glossterm>
+				<glossdef>
+					<para>An allusion to <link linkend="background.terminology">a bench in an electronics laboratoary</link>, or so it seems.</para>
+					<glossseealso otherterm="term..test"/>
 				</glossdef>
 			</glossentry>
 		</glossdiv>
