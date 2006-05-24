@@ -148,11 +148,11 @@
 		<section id="background.terminology">
 			<title>Terminology</title>
 
-			<para>As a newcomer into the world of Verilog, I often heard the term &test-bench.term;: "I ran the test bench, but it didn't work!" or "Are you crazy?!! You <emphasis>still</emphasis> haven't written the test bench?!", for example. I searched my textbook and the Internet for a definition of the term, but it was to no avail. Instead, as if mocking my ignorance of what seems to be universal knowledge, both resources nonchalantly employed the term <emphasis>throught</emphasis> their being. Ludicrous!</para>
+			<para>As a newcomer into the world of Verilog, I often heard the term &test-bench.term;: "I ran the test bench, but it didn't work!" or "Are you crazy?!! You <emphasis>still</emphasis> haven't written the test bench?!", for example. I searched my textbook and the Internet for a definition of the term, but it was to no avail. Instead, as if mocking my ignorance of what seems to be universal knowledge, both resources nonchalantly employed the term <emphasis>throughout</emphasis> their being. Ludicrous!</para>
 
 			<para>Defeated, I turned to my inner faculties to determine the answer. "Let's see, the term &test-bench.term; has the word <emphasis>test</emphasis>&mdash;so maybe it has something to do with testing&mdash;and it has the word <emphasis>bench</emphasis>&mdash;so maybe it's referring to a table where the testing should occur". This reasoning became increasingly familiar as my mind rummaged through towering stores of obsolescence and ultimately retrieved those dreaded memories of sleepless weeks debugging electronics in the laboratory.</para>
 
-			<para>"Aha!", I exclaimed hesitantly, trying to forget the past. The term has its roots in the testing of electronic devices, where an engineer like myself would sit at a bench in an electronics laboratory and verify that an electronic component satisfies some criteria. The bench would be furnished with tools of measurement and manipulation&mdash;such as oscilliscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.</para>
+			<para>"Aha!", I exclaimed hesitantly, trying to forget the past. The term has its roots in the testing of electronic devices, where an engineer like myself would sit at a bench in an electronics laboratory and verify that an electronic component satisfies some criteria. The bench would be furnished with tools of measurement and manipulation&mdash;such as oscilloscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.</para>
 
 			<para>Alright, now I remember what a laboratory bench is, but how does it compare with the term &test-bench.term;? They both cannot have the same meaning, because it doesn't make sense to "run" a laboratory bench or to "write" one&mdash;unless you're equipped with a hammer and chisel. So what <emphasis>are</emphasis> these people referring to when they speak of "running" and "writing" test benches?</para>
 
@@ -184,7 +184,7 @@
 
 			<para>TODO</para>
 
-			<para>However, unlike an enigneer who can verify an electronic component in real-time, the Verilog simulator and &rv; must take turns performing their duties. In particular, they take turns manipulating objects in the simulation and transfer control to each other when appropriate.</para>
+			<para>However, unlike an engineer who can verify an electronic component in real-time, the Verilog simulator and &rv; must take turns performing their duties. In particular, they take turns manipulating objects in the simulation and transfer control to each other when appropriate.</para>
 
 			<para>The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Both are able to examine and modify the ball, but only when it is in hand.</para>
 		</section>
@@ -205,7 +205,7 @@
 
 			<para><xref linkend="fig..ruby_init"/> illustrates the initialization process, which is described below.</para>
 
-			<para>First, the Verilog simulator initializes &rv; by invoking the <code>$ruby_init();</code> system task/function, whose arguments represent the command-line invocation of the Ruby interpreter. For example, one would specify <code>$ruby_init("ruby", "-w");</code> in Verilog to acheive the same effect as specifying <code>ruby -w</code> at a command-prompt.</para>
+			<para>First, the Verilog simulator initializes &rv; by invoking the <code>$ruby_init();</code> system task/function, whose arguments represent the command-line invocation of the Ruby interpreter. For example, one would specify <code>$ruby_init("ruby", "-w");</code> in Verilog to achieve the same effect as specifying <code>ruby -w</code> at a command-prompt.</para>
 
 			<para>Second, &rv; pauses the Verilog simulator and passes the arguments of the <code>$ruby_init();</code> system task/function to a Ruby interpreter.</para>
 
@@ -281,7 +281,7 @@
 			<glossentry id="term..test-bench">
 				<glossterm>Test bench</glossterm>
 				<glossdef>
-					<para>An allusion to <link linkend="background.terminology">a bench in an electronics laboratoary</link>, or so it seems.</para>
+					<para>An allusion to <link linkend="background.terminology">a bench in an electronics laboratory</link>, or so it seems.</para>
 					<glossseealso otherterm="term..test"/>
 				</glossdef>
 			</glossentry>
