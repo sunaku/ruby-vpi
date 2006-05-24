@@ -11,7 +11,7 @@
 	<!ENTITY license SYSTEM "license.xml">
 
 	<!-- content -->
-	<!ENTITY background.step3 "<para>Third, when the Ruby interpreter invokes the <code>Vpi::relay_verilog</code> method, it is paused and the Verilog simulator is given control.</para>">
+	<!ENTITY background.step3 "<para>When the Ruby interpreter invokes the <code>Vpi::relay_verilog</code> method, it is paused and the Verilog simulator is given control.</para>">
 
 	<!ENTITY test-bench.gloss "<glossterm linkend='term..test-bench'>test bench</glossterm>">
 	<!ENTITY test.gloss "<glossterm linkend='term..test'>test</glossterm>">
@@ -166,14 +166,14 @@
 		<section id="background.organization">
 			<title>Organization</title>
 
-				<figure id="fig..organization">
-					<title>Overall organization of a test</title>
-					<mediaobject>
-						<imageobject>
-							<imagedata fileref="figures/organization.png"/>
-						</imageobject>
-					</mediaobject>
-				</figure>
+			<figure id="fig..organization">
+				<title>Overall organization of a test</title>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="figures/organization.png"/>
+					</imageobject>
+				</mediaobject>
+			</figure>
 
 			<para>As <xref linkend="fig..organization"/> shows, a &test.gloss; is composed of a &bench.gloss;, a &design.gloss;, and a &specification.gloss;. To extend the <link linkend="background.terminology">analogy of an electronics laboratory</link>, the first acts as the laboratory bench which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. And the third acts as the engineer who measures, manipulates, and verifies the electronic component.</para>
 
@@ -199,6 +199,8 @@
 			<section id="background.running-tests.init">
 				<title>Initialization</title>
 
+				<para>A &test.gloss; is first initialized before it is <link linkend="background.running-tests.exec">executed</link>. <xref linkend="fig..ruby_init"/> illustrates the initialization process <link linkend="proc..ruby_init">described below</link>.</para>
+
 				<figure id="fig..ruby_init">
 					<title>Initialization of a test</title>
 					<mediaobject>
@@ -208,17 +210,25 @@
 					</mediaobject>
 				</figure>
 
-				<para>A &test.gloss; is first initialized before it is <link linkend="background.running-tests.exec">executed</link>. <xref linkend="fig..ruby_init"/> illustrates the initialization process, which is described below.</para>
+				<procedure id="proc..ruby_init">
+					<title>Initialization of a test</title>
 
-				<para>First, the Verilog simulator initializes the Ruby interpreter by invoking the <code>$ruby_init();</code> system task/function, whose parameters represent the command-line invocation of the Ruby interpreter. For example, one would specify <code>$ruby_init("ruby", "-w");</code> in Verilog to achieve the same effect as specifying <code>ruby -w</code> at a command-prompt.</para>
+					<step>
+						<para>The Verilog simulator initializes the Ruby interpreter by invoking the <code>$ruby_init();</code> system task/function, whose parameters represent the command-line invocation of the Ruby interpreter. For example, one would specify <code>$ruby_init("ruby", "-w");</code> in Verilog to achieve the same effect as specifying <code>ruby -w</code> at a command-prompt.</para>
+					</step>
 
-				<para>Second, the Ruby interpreter is initialized with the arguments of the <code>$ruby_init();</code> system task/function.</para>
+					<step>
+						<para>The Verilog simulator is paused and the Ruby interpreter is initialized with the arguments of the <code>$ruby_init();</code> system task/function.</para>
+					</step>
 
-				&background.step3;
+					<step>&background.step3;</step>
+				</procedure>
 			</section>
 
 			<section id="background.running-tests.exec">
 				<title>Execution</title>
+
+				<para>After a test is <link linkend="background.running-tests.init">initialized</link>, it is executed such that the &design.gloss; is verified against the &specification.gloss;. <xref linkend="fig..ruby_relay"/> illustrates the execution process <link linkend="proc..ruby_relay">described below</link>.</para>
 
 				<figure id="fig..ruby_relay">
 					<title>Execution of a test</title>
@@ -229,15 +239,27 @@
 					</mediaobject>
 				</figure>
 
-				<para>After a test is <link linkend="background.running-tests.init">initialized</link>, it is executed such that the &design.gloss; is verified against the &specification.gloss;. <xref linkend="fig..ruby_relay"/> illustrates the execution process, which is described below.</para>
 
-				<para>First, the Verilog simulator transfers control to the Ruby interpreter by invoking the <code>$ruby_relay();</code> system task/function.</para>
+				<procedure id="proc..ruby_relay">
+					<title>Execution of a test</title>
 
-				<para>Second, the Verilog simulator is paused and the Ruby interpreter is given control.</para>
+					<step>
+						<para>The Verilog simulator transfers control to the Ruby interpreter by invoking the <code>$ruby_relay();</code> system task/function.</para>
+					</step>
 
-				&background.step3;
+					<step>
+						<para>The Verilog simulator is paused and the Ruby interpreter is given control.</para>
+					</step>
+
+					<step>&background.step3;</step>
+				</procedure>
 			</section>
 		</section>
+	</chapter>
+
+	<chapter id="usage">
+		<title>Usage</title>
+		<para/>
 	</chapter>
 
 	<glossary id="glossary">
