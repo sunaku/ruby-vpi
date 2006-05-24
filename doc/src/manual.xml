@@ -370,12 +370,14 @@
 
 		<section id="usage.examples">
 			<title>Examples</title>
-			<para>The <filename>examples</filename> directory contains several example &test.gloss;s to illustrate how &rv; can be used. Each example has an associated <filename>Rakefile</filename> which simplifies the process of running it. Thus, simply navigate into an example directory and run the command <command>rake</command> to get started.</para>
+			<para>The <filename>examples</filename> directory contains several example &test.gloss;s which illustrate how &rv; can be used. Each example has an associated <filename>Rakefile</filename> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the command <command>rake</command> to get started.</para>
 		</section>
 
 		<section id="usage.tools">
 			<title>Tools</title>
-			<para/>
+			<para>The <filename>tools</filename> directory contains tools which ease the process of writing &test.gloss;s. Each tool provides help and usage information invoked with the <option>--help</option> option at a command-prompt.</para>
+
+			<para>In particular, the <filename>tools/generate_test.rb</filename> tool can be used to automatically generate &test.gloss;s from Verilog 2001 module declarations. You can try it by invoking <command>ruby <replaceable>tools/generate_test.rb</replaceable> <option>--help</option></command> at your command-prompt.</para>
 		</section>
 	</chapter>
 
