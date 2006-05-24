@@ -11,7 +11,7 @@
 	<!ENTITY license SYSTEM "license.xml">
 
 	<!-- content -->
-	<!ENTITY background.step3 "<para>Third, when the Ruby interpreter invokes the <code>Vpi::relay_verilog</code> method, &rv; pauses the Ruby interpreter and transfers control back to the Verilog simulator.</para>">
+	<!ENTITY background.step3 "<para>Third, when the Ruby interpreter invokes the <code>Vpi::relay_verilog</code> method, it is paused and the Verilog simulator is given control.</para>">
 
 	<!ENTITY test-bench.gloss "<glossterm linkend='term..test-bench'>test bench</glossterm>">
 	<!ENTITY test.gloss "<glossterm linkend='term..test'>test</glossterm>">
@@ -160,7 +160,7 @@
 
 			<para>Alright, now I remember what a laboratory bench is, but how does it compare with the term &test-bench.gloss;? They both cannot have the same meaning, because it doesn't make sense to "run" a laboratory bench or to "write" one&mdash;unless you're equipped with a hammer and chisel. So what <emphasis>are</emphasis> these people referring to when they speak of "running" and "writing" test benches?</para>
 
-			<para>I still don't know. Thus, to avoid propogating such confusion into this manual, I tried to disambiguate the terminology by <link linkend="glossary">simplifying and reintroducing it in a new light</link>.</para>
+			<para>I still don't know. Thus, to avoid propagating such confusion into this manual, I tried to disambiguate the terminology by <link linkend="glossary">simplifying and reintroducing it in a new light</link>.</para>
 		</section>
 
 		<section id="background.organization">
@@ -175,9 +175,9 @@
 					</mediaobject>
 				</figure>
 
-			<para>As <xref linkend="fig..organization"/> shows, a &test.gloss; is composed of &rv;, a &design.gloss;, and a &specification.gloss;. To extend the <link linkend="background.terminology">analogy of an electronics laboratory</link>, the first acts as the laboratory bench which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. And the third acts as the engineer who measures, manipulates, and verifies the electronic component.</para>
+			<para>As <xref linkend="fig..organization"/> shows, a &test.gloss; is composed of a &bench.gloss;, a &design.gloss;, and a &specification.gloss;. To extend the <link linkend="background.terminology">analogy of an electronics laboratory</link>, the first acts as the laboratory bench which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. And the third acts as the engineer who measures, manipulates, and verifies the electronic component.</para>
 
-			<figure id="fig..organization_detail">
+			<figure id="fig..organization.detail">
 				<title>Detailed organization of a test</title>
 				<mediaobject>
 					<imageobject>
@@ -186,55 +186,57 @@
 				</mediaobject>
 			</figure>
 
-			<para>TODO</para>
-
-			<para>However, unlike an engineer who can verify an electronic component in real-time, the Verilog simulator and &rv; must take turns performing their duties. In particular, they take turns manipulating objects in the simulation and transfer control to each other when appropriate.</para>
-
-			<para>The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Both are able to examine and modify the ball, but only when it is in hand.</para>
+			<para>In <xref linkend="fig..organization.detail"/>, &rv; acts as the &bench.gloss;, a Verilog simulator encapsulates the &design.gloss;, and a Ruby interpreter encapsulates the &specification.gloss;. An important point to note is that the &specification.gloss; has a choice in how it communicates with &rv;. In particular, it can (1) use the bare, C-like VPI interface; or (2) use the VPI utility layer which presents a more Ruby-like version of the bare, C-like VPI interface.</para>
 		</section>
 
-		<section id="background.initialization">
-			<title>Initialization</title>
+		<section id="background.running-tests">
+			<title>Running a test</title>
 
-			<figure id="fig..ruby_init">
-				<title>Initialization of a test bench</title>
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="figures/ruby_init.png"/>
-					</imageobject>
-				</mediaobject>
-			</figure>
+			<para>When a &test.gloss; is run, the Verilog simulator and the Ruby interpreter (see <xref linkend="fig..organization.detail"/>) must take turns performing their duties, unlike an engineer who can verify an electronic component in real-time. In particular, they take turns manipulating the &design.gloss; and transfer control to each other when appropriate.</para>
 
-			<para>A test bench is first initialized before it is executed. During execution, a design (analogous to the electronic component being verified by an engineer) is exercised and its behavior is verified according to a specification.</para>
+			<para>The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Either is able to examine and modify the ball, but only when it is in hand.</para>
 
-			<para><xref linkend="fig..ruby_init"/> illustrates the initialization process, which is described below.</para>
+			<section id="background.running-tests.init">
+				<title>Initialization</title>
 
-			<para>First, the Verilog simulator initializes &rv; by invoking the <code>$ruby_init();</code> system task/function, whose arguments represent the command-line invocation of the Ruby interpreter. For example, one would specify <code>$ruby_init("ruby", "-w");</code> in Verilog to achieve the same effect as specifying <code>ruby -w</code> at a command-prompt.</para>
+				<figure id="fig..ruby_init">
+					<title>Initialization of a test</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="figures/ruby_init.png"/>
+						</imageobject>
+					</mediaobject>
+				</figure>
 
-			<para>Second, &rv; pauses the Verilog simulator and passes the arguments of the <code>$ruby_init();</code> system task/function to a Ruby interpreter.</para>
+				<para>A &test.gloss; is first initialized before it is <link linkend="background.running-tests.exec">executed</link>. <xref linkend="fig..ruby_init"/> illustrates the initialization process, which is described below.</para>
 
-			&background.step3;
-		</section>
+				<para>First, the Verilog simulator initializes the Ruby interpreter by invoking the <code>$ruby_init();</code> system task/function, whose parameters represent the command-line invocation of the Ruby interpreter. For example, one would specify <code>$ruby_init("ruby", "-w");</code> in Verilog to achieve the same effect as specifying <code>ruby -w</code> at a command-prompt.</para>
 
-		<section id="background.execution">
-			<title>Execution</title>
+				<para>Second, the Ruby interpreter is initialized with the arguments of the <code>$ruby_init();</code> system task/function.</para>
 
-			<figure id="fig..ruby_relay">
-				<title>Execution of a test bench</title>
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="figures/ruby_relay.png"/>
-					</imageobject>
-				</mediaobject>
-			</figure>
+				&background.step3;
+			</section>
 
-			<para>After a test bench is <link linkend="background.initialization">initialized</link>, it is executed to verify a design. <xref linkend="fig..ruby_relay"/> illustrates the execution process, which is described below.</para>
+			<section id="background.running-tests.exec">
+				<title>Execution</title>
 
-			<para>First, the Verilog simulator transfers control to &rv; by invoking the <code>$ruby_relay();</code> system task/function.</para>
+				<figure id="fig..ruby_relay">
+					<title>Execution of a test</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="figures/ruby_relay.png"/>
+						</imageobject>
+					</mediaobject>
+				</figure>
 
-			<para>Second, &rv; pauses the Verilog simulator and resumes the Ruby interpreter.</para>
+				<para>After a test is <link linkend="background.running-tests.init">initialized</link>, it is executed such that the &design.gloss; is verified against the &specification.gloss;. <xref linkend="fig..ruby_relay"/> illustrates the execution process, which is described below.</para>
 
-			&background.step3;
+				<para>First, the Verilog simulator transfers control to the Ruby interpreter by invoking the <code>$ruby_relay();</code> system task/function.</para>
+
+				<para>Second, the Verilog simulator is paused and the Ruby interpreter is given control.</para>
+
+				&background.step3;
+			</section>
 		</section>
 	</chapter>
 
