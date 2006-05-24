@@ -158,7 +158,7 @@
 
 			<para>"Aha!", I exclaimed hesitantly, trying to forget the past. The term has its roots in the testing of electronic devices, where an engineer would sit at a bench in an electronics laboratory and verify that an electronic component satisfies some criteria. The bench would be furnished with tools of measurement and manipulation&mdash;such as oscilloscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.</para>
 
-			<para>Alright, now I remember what a laboratory bench is, but how does that compare with the term &test-bench.gloss;? Surely, they both cannot have the same meaning, because it doesn't make sense to "run" a laboratory bench or to "write" one&mdash;unless you're particularly skilled with a hammer and chisel. So what <emphasis>are</emphasis> these people referring to when they speak of "running" and "writing" test benches?</para>
+			<para>Alright, now I remember what a laboratory bench is, but how does that compare with the term &test-bench.gloss;? Surely, they cannot have the same meaning, because it doesn't make sense to "run" a laboratory bench or to "write" one&mdash;unless you're particularly skilled with a hammer and chisel. So what <emphasis>are</emphasis> these people referring to when they speak of "running" and "writing" test benches?</para>
 
 			<para>I still don't know. Thus, to avoid propagating my confusion into this manual, I have attempted to clarify the terminology by <link linkend="glossary">simplifying and reintroducing it in a new light</link>.</para>
 		</section>
@@ -269,7 +269,7 @@
 			<glossentry id="term..bench">
 				<glossterm>Bench</glossterm>
 				<glossdef>
-					<para>An environment in which a &design.gloss; is verified against a &specification.gloss;. Often, it is made to emulate conditions in which the &design.gloss; will be eventually deployed.</para>
+					<para>An environment in which a &design.gloss; is verified against a &specification.gloss;. Often, it is used to emulate conditions in which the &design.gloss; will be eventually deployed.</para>
 				</glossdef>
 			</glossentry>
 		</glossdiv>
