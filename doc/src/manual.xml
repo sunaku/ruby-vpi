@@ -143,14 +143,26 @@
 	<chapter id="background">
 		<title>Background</title>
 
+		<para>&rv; is a <glossterm linkend="term..bench">bench</glossterm> which lets you <glossterm linkend="term..test">test</glossterm> Verilog modules using the Ruby language.</para>
+
+		<para>As a newcomer into the world of Verilog, I often heard the term <glossterm>test bench</glossterm>: "I ran the test bench, but it didn't work!" or "Are you crazy?!! You <emphasis>still</emphasis> haven't written the test bench?!", for example. I searched my textbook and the Internet for a definition of the term, but it was to no avail. Instead, as if mocking my efforts, both resources nonchalantly employed the term <emphasis>throught</emphasis> their being. Ludicrous!</para>
+
+		<para>Defeated, I turned to my inner faculties to determine the answer. "Let's see, the term <emphasis>test bench</emphasis> has the word <emphasis>test</emphasis>&mdash;so maybe it has something to do with testing&mdash;and it has the word <emphasis>bench</emphasis>&mdash;so maybe it's referring to a table where the testing should occur". This reasoning sounded increasingly familiar as my mind rummaged through towering repositories of obsolescence, and ultimately retrieved those dreaded memories of sleepless weeks in the electronics laboratory.</para>
+
+		<para>"Aha!", I exclaimed half heartedly, trying to forget the past. The term has its roots in the testing of electronic devices, where an engineer like myself would sit at a <emphasis>laboratory bench</emphasis> and verify that an electronic component satisfies some criteria. The bench would be furnished with measurement and manipulation tools&mdash;such as oscilliscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.</para>
+
+		<para>Alright, now I understand what a laboratory bench is, but how does the term <emphasis>test bench</emphasis> apply to the testing of Verilog modules? One certainly cannot "run" a test bench (unless you're taking it to the beach) and one cannot "write" a test bench (maybe with a hammer and chisel). So what <emphasis>are</emphasis> these people talking about?!</para>
+
+		<!--Although the majority of the Verilog world seems to use the term <glossterm>test bench</glossterm>, this manual will use the term <glossterm>test</glossterm> to decouple the meaning. </para>-->
+
 		<section id="background.test-bench">
 			<title>Test bench</title>
 
-			<para>A &test-bench.ulink; is a virtual environment used to verify the correctness or soundness of a design. Often, it is made to emulate conditions in which a design will be eventually deployed.</para>
+			<para>A <emphasis>&test-bench.ulink;</emphasis> is a virtual environment used to verify the correctness or soundness of a design. Often, it is made to emulate conditions in which a design will be eventually deployed.</para>
 
 			<para>The phrase <emphasis>test bench</emphasis> has its roots in the testing of electronic devices, where an engineer would sit at a <emphasis>laboratory bench</emphasis> and verify that an electronic component satisfies some criteria. The bench would be furnished with measurement and manipulation tools&mdash;such as oscilliscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.</para>
 
-			<para>Unfortunately, that phrase has forgotten its roots and has come to signify one or more of the following: (1) an environment in which a test is performed, (2) a procedure followed when performing a test, and (3) a procedure followed when verifying the results of a test. In this manual, all three meanings are associated with the phrase <emphasis>test bench</emphasis>.</para>
+			<para>Unfortunately, that phrase has forgotten its roots and has come to signify one or more of the following: (1) an environment in which a test is performed, (2) a procedure followed when performing a test, and (3) a procedure followed when verifying the results of a test. In order to avoid confusion, this manual divides the phrase into its individual components and refers directly to those pieces:</para>
 
 			<section id="background.test-bench.organization">
 				<title>Organization</title>
@@ -227,6 +239,52 @@
 			</section>
 		</section>
 	</chapter>
+
+	<glossary id="glossary">
+		<glossdiv>
+			<title>B</title>
+
+			<glossentry id="term..bench">
+				<glossterm>Bench</glossterm>
+				<glossdef>
+					<para>An environment in which a <glossterm linkend="term..design">design</glossterm> is verified against a <glossterm linkend="term..specification">specification</glossterm>. Often, it is made to emulate conditions in which the <glossterm>design</glossterm> will be eventually deployed.</para>
+				</glossdef>
+			</glossentry>
+		</glossdiv>
+
+		<glossdiv>
+			<title>D</title>
+
+			<glossentry id="term..design">
+				<glossterm>Design</glossterm>
+				<glossdef>
+					<para>An idea or entity that is verified against a <glossterm linkend="term..specification">specification</glossterm> in order to ensure correctness or soundness of its being.</para>
+				</glossdef>
+			</glossentry>
+		</glossdiv>
+
+		<glossdiv>
+			<title>S</title>
+
+			<glossentry id="term..specification">
+				<glossterm>Specification</glossterm>
+				<glossdef>
+					<para>A collection of expectations that must be satisfied by a <glossterm linkend="term..design">design</glossterm> when subjected to certain conditions.</para>
+				</glossdef>
+			</glossentry>
+		</glossdiv>
+
+		<glossdiv>
+			<title>T</title>
+
+			<glossentry id="term..test">
+				<glossterm>Test</glossterm>
+				<glossdef>
+					<para>The act of verifying a <glossterm linkend="term..design">design</glossterm> against a <glossterm linkend="term..specification">specification</glossterm> in a <glossterm linkend="term..bench">bench</glossterm>.</para>
+				</glossdef>
+			</glossentry>
+		</glossdiv>
+	</glossary>
 
 	&license;
 </book>
