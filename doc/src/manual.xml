@@ -258,7 +258,83 @@
 
 	<chapter id="usage">
 		<title>Usage</title>
-		<para/>
+		<para>This chapter describes how to use &rv;.</para>
+
+		<section id="usage.req">
+			<title>Requirements</title>
+			<para>The following software is necessary in order to use &rv;. Once you have obtained them, proceed to <xref linkend="usage.req.install"/>.</para>
+
+			<variablelist>
+				<varlistentry>
+					<term><command>make</command></term>
+					<listitem>
+						<para><ulink url="http://www.gnu.org/software/make/">&gnu; make</ulink> is preferred but any distribution of <command>make</command> should be acceptable.</para>
+					</listitem>
+				</varlistentry>
+
+				<varlistentry>
+					<term>C compiler</term>
+					<listitem>
+						<para><ulink url="http://www.gnu.org/software/gcc/">&gnu; Compiler Collection (<acronym>GCC</acronym>)</ulink> is preferred but any C compiler should be acceptable.</para>
+					</listitem>
+				</varlistentry>
+
+				<varlistentry>
+					<term><ulink url="http://www.swig.org"><abbrev>SWIG</abbrev></ulink></term>
+					<listitem>
+						<para>Version 1.3 or newer is necessary.</para>
+					</listitem>
+				</varlistentry>
+
+				<varlistentry>
+					<term><ulink url="http://en.wikipedia.org/wiki/Pthreads"><acronym>POSIX</acronym> threads (pthreads)</ulink></term>
+					<listitem>
+						<para>Header and linkable object files, and operating system support for this library are necessary.</para>
+					</listitem>
+				</varlistentry>
+
+				<varlistentry>
+					<term><ulink url="http://www.ruby-lang.org">Ruby</ulink></term>
+					<listitem>
+						<para>Version 1.8 or newer, including header and linkable object files for building extensions, is necessary.</para>
+					</listitem>
+				</varlistentry>
+
+				<varlistentry>
+					<term><ulink url="http://rubyforge.org/frs/?group_id=126">RubyGems</ulink></term>
+					<listitem>
+						<para>Any recent version should be acceptable.</para>
+					</listitem>
+				</varlistentry>
+
+				<varlistentry>
+					<term><ulink url="http://rubyforge.org/frs/?group_id=50">Rake</ulink></term>
+					<listitem>
+						<para>Version 0.7.0 or newer is necessary.</para>
+					</listitem>
+				</varlistentry>
+
+				<varlistentry>
+					<term><ulink url="http://rubyforge.org/frs/?group_id=797">RSpec</ulink></term>
+					<listitem>
+						<para>Version 0.5.4 or newer is necessary.</para>
+					</listitem>
+				</varlistentry>
+			</variablelist>
+
+			<procedure id="usage.req.install">
+				<title>Installing the required software</title>
+
+				<step>
+					<para>Foo</para>
+				</step>
+			</procedure>
+		</section>
+
+		<section id="usage.ex">
+			<title>Examples</title>
+			<para/>
+		</section>
 	</chapter>
 
 	<glossary id="glossary">
