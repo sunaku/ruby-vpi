@@ -266,6 +266,43 @@
 
 			<variablelist>
 				<varlistentry>
+					<term>Verilog simulator</term>
+					<listitem>
+						<para>You should be able to use &rv; with any Verilog simulator. However, only the following simulators have been tested because we do not have knowledge of or access to other ones. Therefore, please share your experiences of using &rv; with other simulators, in the online forums.</para>
+
+						<variablelist>
+							<varlistentry>
+								<term><ulink url="http://www.icarus.com/eda/Verilog/">Icarus Verilog</ulink></term>
+								<listitem>
+									<para>Version 0.8 or newer is acceptable.</para>
+								</listitem>
+							</varlistentry>
+
+							<varlistentry>
+								<term><ulink url="http://www.pragmatic-c.com/gpl-cVer/">GPL CVer</ulink></term>
+								<listitem>
+									<para>Version 2.11a is not yet acceptable.</para>
+								</listitem>
+							</varlistentry>
+
+							<varlistentry>
+								<term><ulink url="http://www.synopsys.com/products/simulation/simulation.html">Synopsys VCS</ulink></term>
+								<listitem>
+									<para>Version X-2005.06 or newer is acceptable.</para>
+								</listitem>
+							</varlistentry>
+
+							<varlistentry>
+								<term><ulink url="http://www.model.com">Mentor Modelsim</ulink></term>
+								<listitem>
+									<para>Version 6.1b newer is acceptable.</para>
+								</listitem>
+							</varlistentry>
+						</variablelist>
+					</listitem>
+				</varlistentry>
+
+				<varlistentry>
 					<term><command>make</command></term>
 					<listitem>
 						<para><ulink url="http://www.gnu.org/software/make/">&gnu; make</ulink> is preferred but any distribution of <command>make</command> should be acceptable.</para>
@@ -326,13 +363,18 @@
 				<title>Installing the required software</title>
 
 				<step>
-					<para>Foo</para>
+					<para>After installing RubyGems, you can install Rake and RSpec by issuing the command <command>gem <action>install</action> <option>--remote</option> <replaceable>rake</replaceable> <replaceable>rspec</replaceable></command> at your command-prompt.</para>
 				</step>
 			</procedure>
 		</section>
 
-		<section id="usage.ex">
+		<section id="usage.examples">
 			<title>Examples</title>
+			<para>The <filename>examples</filename> directory contains several example &test.gloss;s to illustrate how &rv; can be used. Each example has an associated <filename>Rakefile</filename> which simplifies the process of running it. Thus, simply navigate into an example directory and run the command <command>rake</command> to get started.</para>
+		</section>
+
+		<section id="usage.tools">
+			<title>Tools</title>
 			<para/>
 		</section>
 	</chapter>
