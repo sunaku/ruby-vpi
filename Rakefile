@@ -112,6 +112,9 @@ task :default => :build
 
 
 	desc 'Publish documentation to website.'
-	task :web => 'ref/ruby' do |t|
-		sh "scp -r #{t.prerequisites[0]}/html/* snk@rubyforge.org:/var/www/gforge-projects/ruby-vpi/"
+	task :web => ['HISTORY'] do |t|
+		sh "rdoc1.8 -1 #{t.prerequisites[0]} > README.html"
+		sh "scp README.html snk@rubyforge.org:/var/www/gforge-projects/ruby-vpi/"
+
+		CLEAN.include 'README.html'
 	end

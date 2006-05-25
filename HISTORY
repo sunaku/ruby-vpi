@@ -26,7 +26,7 @@ This major release adds a comprehensive user manual, upgrades from make to Rake[
 
 == Acknowledgment
 
-* Thanks to Jose Renau for solving the problem of strange delays occurring whenever a design was reset.
+* Thanks to Jose Renau for solving the problem of strange delays that occurred whenever a design was reset.
 
 = Version 0.5 (2006-05-13)
 
