@@ -88,9 +88,9 @@ task :default => :build
 	Rake::RDocTask.new 'ref/ruby' do |t|
 		t.rdoc_dir = t.name
 		t.title = 'Ruby-VPI: Ruby interface to Verilog VPI'
-		t.options.concat %w(--charset utf-8 --tab-width 2 --line-numbers --main README)
+		t.options.concat %w(--charset utf-8 --tab-width 2 --line-numbers)
 
-		t.rdoc_files.include '[A-Z][A-Z]*', '**/*.rb'
+		t.rdoc_files.include '**/*.rb'
 	end
 
 
