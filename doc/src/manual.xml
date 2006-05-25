@@ -225,13 +225,13 @@
 
 			<para>&rv; presents an open-ended interface to &vpi;. You can use any methodology you wish in writing &test.gloss;s. However, &BDD.gloss; is emphasized in this project through use of the &rspec.gloss; library in the <link linkend="usage.examples">examples</link>.</para>
 
-			<para>The reason is, in my humble opinion, &BDD.gloss; makes thinking about how to verify a design <emphasis>much</emphasis> easier. Please take a few minutes to read through the wonderful &rspec-tutorial..ulink; and see for yourself how easy, effective, and useful &BDD.gloss; is as means of verification.</para>
+			<para>The reason is, in my humble opinion, &BDD.gloss; makes thinking about how to verify a design <emphasis>much</emphasis> easier. Please read the wonderful &rspec-tutorial..ulink; and see for yourself how easy, effective, and useful &BDD.gloss; is as means of verification.</para>
 		</section>
 
 		<section id="background.terminology">
 			<title>Terminology</title>
 
-			<para>As a newcomer into the world of &v;, I often heard the term &test-bench.gloss;: "I ran the test bench, but it didn't work!" or "Are you crazy?!! You <emphasis>still</emphasis> haven't written the test bench? o_O", for example. I searched through my textbook and the Internet for a definition of the term, but it was to no avail. Instead, both resources nonchalantly employed the term <emphasis>throughout</emphasis> their being, as if mocking my ignorance of what seems to be universal knowledge.</para>
+			<para>As a newcomer into the world of &v;, I often heard the term &test-bench.gloss;: <quote>I ran the test bench, but it didn't work!</quote> or <quote>Are you crazy?!! You <emphasis>still</emphasis> haven't written the test bench? o_O</quote>, for example. I flipped through my textbook and surfed the Internet for a definition of the term, but it was to no avail. Instead, both resources nonchalantly employed the term <emphasis>throughout</emphasis> their being, as if mocking my ignorance of what seems to be universal knowledge.</para>
 
 			<para>Defeated, I turned to my inner faculties to determine the answer. "Let's see, the term &test-bench.gloss; has the word <emphasis>test</emphasis>&mdash;so maybe it has something to do with testing&mdash;and it has the word <emphasis>bench</emphasis>&mdash;so maybe it's referring to a table where the testing should occur". This reasoning grew increasingly familiar as my mind rummaged through towering stores of obsolescence and ultimately revealed dreaded memories of sleepless anguish: debugging electronics in the laboratory.</para>
 
