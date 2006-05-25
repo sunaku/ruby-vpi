@@ -2,6 +2,32 @@
 
 This document is a record of important changes that have occurred with each release of Ruby-VPI.
 
+= Version 0.6 (2006-05-24)
+
+== Summary
+
+This major release adds a comprehensive user manual, upgrades from make to Rake[http://rspec.rubyforge.org], and improves the test generation tool.
+
+== Details
+
+* A comprehensive user manual, written in DocBook-XML, has been added.
+
+* Rake has replaced the role of +make+. All makefiles have been converted accordingly.
+
+* The test generation tool now generates multiple files (runner, bench, design, spec) and makes backups of existing files. See its help information for details.
+
+* Support for RSpec 0.5.4 has been added.
+
+* The counter example now makes use of RSpec.
+
+* Tested and developed using:
+  * Ruby 1.8.4 and Icarus Verilog 0.8 on i686 GNU/Linux
+  * Ruby 1.8.4 and Mentor Modelsim 6.1d on x86_64 GNU/Linux
+
+== Acknowledgment
+
+* Thanks to Jose Renau for solving the problem of strange delays occurring whenever a design was reset.
+
 = Version 0.5 (2006-05-13)
 
 == Summary
