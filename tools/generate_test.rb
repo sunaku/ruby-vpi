@@ -50,11 +50,13 @@ def writeFile aPath, aContent
 	# create a backup
 	backupPath = aPath.dup
 
-	while File.exist? backupPath
-		backupPath << '~'
-	end
+	if File.exist? aPath
+		while File.exist? backupPath
+			backupPath << '~'
+		end
 
-	FileUtils.cp aPath, backupPath, :preserve => true
+		FileUtils.cp aPath, backupPath, :preserve => true
+	end
 
 
 	# write the file
