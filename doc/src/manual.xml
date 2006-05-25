@@ -164,13 +164,13 @@
 				<varlistentry>
 					<term><ulink url="http://www.aracnet.com/~ptkwt/ruby_stuff/RHDL/">RHDL</ulink></term>
 					<listitem>
-						<para>Ruby abstraction of VHDL and &v;.</para>
+						<para>Hardware description and verification language based on Ruby, which features conversion to VHDL and, in the future, &v;.</para>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
 					<term><ulink url="http://myhdl.jandecaluwe.com">MyHDL</ulink></term>
 					<listitem>
-						<para>Python abstraction of &v;.</para>
+						<para>Hardware description and verification language based on Python, which features conversion to &v; and co-simulation.</para>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
