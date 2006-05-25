@@ -14,10 +14,10 @@
 	<!-- content -->
 	<!ENTITY background.step3 "<para>When the Ruby interpreter invokes the <code>Vpi::relay_verilog</code> method, it is paused and the &v; simulator is given control.</para>">
 
-	<!ENTITY fixed-0.2 "<tip>
+	<!ENTITY fixed-0.2 "<note>
 		<title>Fixed in &rv; 0.2</title>
-		<para>This problem was fixed in release 0.2  of &rv;. If it still occurs, then <link linkend='introduction.resources'>please report it</link>.</para>
-	</tip>">
+		<para>This problem was fixed in release 0.2 of &rv;. If it still occurs, then <link linkend='introduction.resources'>please report it</link>.</para>
+	</note>">
 
 	<!ENTITY test-bench.gloss "<glossterm linkend='term..test-bench'>test bench</glossterm>">
 	<!ENTITY test.gloss "<glossterm linkend='term..test'>test</glossterm>">
@@ -566,9 +566,9 @@ endmodule;
 			<section id="problems.ivl.vpi_reset">
 				<title>Vpi::reset</title>
 
-				<tip>
+				<note>
 					<para>This method was removed in release 0.3 of &rv;, and is deprecated. Please use <code>Vpi::vpi_control(VpiReset)</code> instead.</para>
-				</tip>
+				</note>
 
 				<para>In version 0.8, the <code>vpi_control(vpiReset)</code> &vpi; function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.</para>
 			</section>
