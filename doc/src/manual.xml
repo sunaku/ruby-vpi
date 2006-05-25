@@ -49,6 +49,56 @@
 			<para>&rv; is <ulink url="http://en.wikipedia.org/wiki/Free_software">free software</ulink>; you can redistribute it and/or modify it under the terms of the <ulink url="http://www.gnu.org/copyleft/gpl.html">&gnu; General Public License</ulink> as published by the <ulink url="http://www.fsf.org">Free Software Foundation</ulink>; either version 2 of the License, or (at your option) any later version.</para>
 		</section>
 
+		<section id="introduction.manifest">
+			<title>Manifest</title>
+
+			<para>This section describes the contents of a &rv; release package. That is, when you extract a release package, the following is what you would expect to find.</para>
+
+			<variablelist>
+				<varlistentry>
+					<term><filename>doc</filename></term>
+					<listitem>
+						<para>This directory contains user documentation in various formats.</para>
+					</listitem>
+				</varlistentry>
+
+				<varlistentry>
+					<term><filename>ref</filename></term>
+					<listitem>
+						<para>This directory contains reference <acronym>API</acronym> documentation in &html; format.</para>
+					</listitem>
+				</varlistentry>
+
+				<varlistentry>
+					<term><filename>ext</filename></term>
+					<listitem>
+						<para>This directory contains source code for the <link linkend="background.organization">core of &rv;</link>, which is written in the C language.</para>
+					</listitem>
+				</varlistentry>
+
+				<varlistentry>
+					<term><filename>lib</filename></term>
+					<listitem>
+						<para>This directory contains libraries for use by &specification.gloss;s written in the Ruby language.</para>
+					</listitem>
+				</varlistentry>
+
+				<varlistentry>
+					<term><filename>tools</filename></term>
+					<listitem>
+						<para>This directory contains various tools. See <xref linkend="usage.tools"/> for more information.</para>
+					</listitem>
+				</varlistentry>
+
+				<varlistentry>
+					<term><filename>examples</filename></term>
+					<listitem>
+						<para>This directory contains example &test.gloss;s. See <xref linkend="usage.examples"/> for more information.</para>
+					</listitem>
+				</varlistentry>
+			</variablelist>
+		</section>
+
 		<section id="introduction.resources">
 			<title>Resources</title>
 
@@ -386,7 +436,42 @@
 		</section>
 	</chapter>
 
+	<chapter id="reference">
+		<title>Reference</title>
 
+		<section id="reference.vpi">
+			<title>Verilog VPI</title>
+
+			<para>The <emphasis>entire</emphasis> IEEE Std. 1364-2005 VPI interface (see <filename>ext/vpi_user.h</filename>) is available inside Ruby, but with the following minor changes.</para>
+
+			<itemizedlist>
+				<listitem>
+					<para>The first letter in the name of every function, type, structure, and constant becomes capitalized.</para>
+
+					<para>For example, the structure <literal>s_vpi_value</literal> becomes <literal>S_vpi_value</literal>, and the constant <literal>vpiIntVal</literal> becomes <literal>VpiIntVal</literal>.</para>
+				</listitem>
+
+				<listitem>
+					<para>The functions <function>vpi_vprintf</function> and <function>vpi_mcd_vprintf</function> are disabled because some compilers have problems with pointers to the <literal>va_list</literal> type, as follows.</para>
+
+<programlisting>
+void foo(va_list ap) {
+	/* causes "type mismatch" error */
+	va_list *p = &amp;ap;
+}
+</programlisting>
+				</listitem>
+			</itemizedlist>
+
+			<para>Atop this interface sits the VPI utility layer (see <filename>lib/vpi_util.rb</filename> and <xref linkend="background.organization"/>) whose goal is to transform the VPI interface into something more Ruby-like. For example, it is more Ruby-like to write <code>handle.each(VpiNet) {|net| . . .}</code> than <programlisting>
+if itr = vpi_iterate(VpiNet, handle)
+	while net = vpi_scan(itr)
+		. . .
+	end
+end
+</programlisting> throughout your code.</para>
+		</section>
+	</chapter>
 
 	<chapter id="problems">
 		<title>Known problems</title>
