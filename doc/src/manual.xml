@@ -469,7 +469,11 @@ end
 			<title>Tools</title>
 			<para>The <filename>tools</filename> directory contains tools which ease the process of writing &test.gloss;s. Each tool provides help and usage information invoked with the <option>--help</option> option at a command-prompt.</para>
 
-			<para>In particular, the <filename>tools/generate_test.rb</filename> tool can be used to automatically generate &test.gloss;s from &v; 2001 module declarations. You can try it by invoking <command>ruby <replaceable>tools/generate_test.rb</replaceable> <option>--help</option></command> at your command-prompt.</para>
+			<section id="usage.tools.generate-test">
+				<title>Automatic test generation</title>
+
+				<para>The <filename>tools/generate_test.rb</filename> tool can be used to automatically generate &test.gloss;s from &v; 2001 module declarations. You can try it by invoking <command>ruby <replaceable>tools/generate_test.rb</replaceable> <option>--help</option></command> at your command-prompt.</para>
+			</section>
 		</section>
 	</chapter>
 

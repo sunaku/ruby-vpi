@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 #
 # == Synopsis
-# Generates Ruby-VPI test benches from Verilog 2001 module declarations. A generated test bench is composed of the following parts.
+# Generates Ruby-VPI tests from Verilog 2001 module declarations. A generated test is composed of the following parts.
 #
 # Runner:: Written in Rake[http://rake.rubyforge.org], this file builds and runs the test bench.
 #
@@ -26,7 +26,7 @@
 #
 # * If no input files are specified, then the standard input stream will be read instead.
 # * The first signal parameter in a module's declaration is assumed to be the clocking signal.
-# * Existing output files will be backed-up before being over-written.
+# * Existing output files will be backed-up before being over-written. A backed-up file has a tilde (~) appended to its name.
 
 =begin
 	Copyright 2006 Suraj N. Kurapati
