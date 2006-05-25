@@ -102,6 +102,8 @@
 		<section id="introduction.resources">
 			<title>Resources</title>
 
+			<para>This section describes resources associated with the &rv; project.</para>
+
 			<variablelist>
 				<varlistentry>
 					<term><ulink url="&rv.url-project;">Project portal</ulink></term>
@@ -174,7 +176,7 @@
 
 			<section id="introduction.alternatives.pli">
 				<title>Ye olde PLI</title>
-				<para>The following projects utilize the archaic <acronym>tf</acronym> and <abbrev>acc</abbrev> PLI interfaces, which have been officially deprecated in IEEE Std. 1364-2005.</para>
+				<para>The following projects utilize the archaic <acronym>tf</acronym> and <abbrev>acc</abbrev> PLI interfaces, which have been officially deprecated in IEEE Std 1364-2005.</para>
 
 				<variablelist>
 					<varlistentry>
@@ -192,7 +194,7 @@
 					<varlistentry>
 						<term><ulink url="http://www.time-rover.com/jpli/">JPLI</ulink></term>
 						<listitem>
-							<para>Java interface to PLI</para>
+							<para>Java interface to PLI.</para>
 						</listitem>
 					</varlistentry>
 				</variablelist>
@@ -231,16 +233,52 @@
 
 			<para>As <xref linkend="fig..organization"/> shows, a &test.gloss; is composed of a &bench.gloss;, a &design.gloss;, and a &specification.gloss;. To extend the <link linkend="background.terminology">analogy of an electronics laboratory</link>, the first acts as the laboratory bench which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. And the third acts as the engineer who measures, manipulates, and verifies the electronic component.</para>
 
-			<figure id="fig..organization.detail">
-				<title>Detailed organization of a test</title>
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="figures/organization_detailed.png"/>
-					</imageobject>
-				</mediaobject>
-			</figure>
+			<section id="organization.vpi">
+				<title>Interface to Verilog VPI</title>
 
-			<para>In <xref linkend="fig..organization.detail"/>, &rv; acts as the &bench.gloss;, a Verilog simulator encapsulates the &design.gloss;, and a Ruby interpreter encapsulates the &specification.gloss;. An important point to note is that the &specification.gloss; has a choice in how it communicates with &rv;. In particular, it can (1) use the bare, C-like VPI interface; or (2) use the VPI utility layer which presents a more Ruby-like version of the bare, C-like VPI interface.</para>
+				<figure id="fig..organization.detail">
+					<title>Detailed organization of a test</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="figures/organization_detailed.png"/>
+						</imageobject>
+					</mediaobject>
+				</figure>
+
+				<para>In <xref linkend="fig..organization.detail"/>, &rv; acts as the &bench.gloss;, a Verilog simulator encapsulates the &design.gloss;, and a Ruby interpreter encapsulates the &specification.gloss;. Notice that &rv; encapsulates all communication between the Ruby interpreter and Verilog VPI. This allows the &specification.gloss;, or any Ruby program in general, to access Verilog VPI using nothing more than the Ruby language! Thus, &rv; removes the burden of having to write C programs in order to access Verilog VPI.</para>
+
+				<para>Furthermore, &rv; presents the <emphasis>entire</emphasis> IEEE Std 1364-2005 Verilog VPI interface to the Ruby interpreter, but with the following minor changes.
+
+					<itemizedlist>
+						<listitem>
+							<para>The first letter in the name of every function, type, structure, and constant becomes capitalized.</para>
+
+							<para>For example, the structure <literal>s_vpi_value</literal> becomes <literal>S_vpi_value</literal>, and the constant <literal>vpiIntVal</literal> becomes <literal>VpiIntVal</literal>.</para>
+						</listitem>
+
+						<listitem>
+							<para>The functions <function>vpi_vprintf</function> and <function>vpi_mcd_vprintf</function> are disabled because some compilers have problems with pointers to the <literal>va_list</literal> type, as shown in the code below.</para>
+
+	<programlisting>
+void foo(va_list ap) {
+	/* causes "type mismatch" error */
+	va_list *p = &amp;ap;
+}
+</programlisting>
+						</listitem>
+					</itemizedlist>
+				</para>
+
+				<para>However, when a &specification.gloss; uses &rv; directly, it ends up appearing very much like a C program, because Verilog VPI was designed for the C language. For this reason, the VPI utility layer (see <xref linkend="fig..organization.detail"/>) exists to enlighten the boring C-like interface of &rv; using the brilliant ethos of the <emphasis>Ruby Way</emphasis>. For example, it is more natural to write <code>handle.each(VpiNet) {|net| . . .}</code> in Ruby than it is to write:</para>
+
+<programlisting>
+if itr = vpi_iterate(VpiNet, handle)
+	while net = vpi_scan(itr)
+		. . .
+	end
+end
+</programlisting>
+			</section>
 		</section>
 
 		<section id="background.running-tests">
@@ -442,7 +480,7 @@
 		<section id="reference.vpi">
 			<title>Verilog VPI</title>
 
-			<para>The <emphasis>entire</emphasis> IEEE Std. 1364-2005 VPI interface (see <filename>ext/vpi_user.h</filename>) is available inside Ruby, but with the following minor changes.</para>
+			<para>The <emphasis>entire</emphasis> IEEE Std 1364-2005 VPI interface (see <filename>ext/vpi_user.h</filename>) is available inside Ruby, but with the following minor changes.</para>
 
 			<itemizedlist>
 				<listitem>
@@ -507,7 +545,7 @@ end
 				<section id="problems.ivl.vpi_handle_by_name.absolute-paths">
 					<title>Give full paths to Verilog objects</title>
 
-					<para>In version 0.8, the <function>vpi_handle_by_name</function> function requires an <emphasis>absolute</emphasis> path (including the name of the test-bench which instantiates a module) to a Verilog object.</para>
+					<para>In version 0.8, the <function>vpi_handle_by_name</function> function requires an <emphasis>absolute</emphasis> path (including the name of the &bench.gloss; which instantiates the &design.gloss;) to a Verilog object.</para>
 
 					<para>For example, consider <xref linkend="ex..TestFoo"/>. Here, one needs to specify <literal>TestFoo.my_foo.clk</literal> instead of <literal>my_foo.clk</literal> in order to access the <varname>clk</varname> input of the <varname>my_foo</varname> module instance.</para>
 
