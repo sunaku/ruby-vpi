@@ -14,6 +14,11 @@
 	<!-- content -->
 	<!ENTITY background.step3 "<para>When the Ruby interpreter invokes the <code>Vpi::relay_verilog</code> method, it is paused and the Verilog simulator is given control.</para>">
 
+	<!ENTITY fixed-0.2 "<tip>
+		<title>Fixed in release 0.2 of &rv;</title>
+		<para>This problem was fixed in release 0.2  of &rv;. If it still occurs, then <link linkend='introduction.resources'>please report it</link>.</para>
+	</tip>">
+
 	<!ENTITY test-bench.gloss "<glossterm linkend='term..test-bench'>test bench</glossterm>">
 	<!ENTITY test.gloss "<glossterm linkend='term..test'>test</glossterm>">
 	<!ENTITY design.gloss "<glossterm linkend='term..design'>design</glossterm>">
@@ -378,6 +383,118 @@
 			<para>The <filename>tools</filename> directory contains tools which ease the process of writing &test.gloss;s. Each tool provides help and usage information invoked with the <option>--help</option> option at a command-prompt.</para>
 
 			<para>In particular, the <filename>tools/generate_test.rb</filename> tool can be used to automatically generate &test.gloss;s from Verilog 2001 module declarations. You can try it by invoking <command>ruby <replaceable>tools/generate_test.rb</replaceable> <option>--help</option></command> at your command-prompt.</para>
+		</section>
+	</chapter>
+
+
+
+	<chapter id="problems">
+		<title>Known problems</title>
+
+		<para>This chapter presents known problems and possible solutions.</para>
+
+		<section id="problems.ruby">
+			<title>Ruby</title>
+
+			<section id="problems.ruby.SystemStackError">
+				<title>SystemStackError</title>
+
+				&fixed-0.2;
+
+				<para>If a "stack level too deep (SystemStackError)" error occurs during the simulation, then increase the system-resource limit for stack-size by running the command <command>ulimit <option>-s</option> <replaceable>unlimited</replaceable></command> before starting the simulation.</para>
+			</section>
+
+			<section id="problems.ruby.TestUnit">
+				<title>test/unit</title>
+
+				&fixed-0.2;
+
+				<para>If your &specification.gloss; employs Ruby's unit testing framework, then you will encounter the error: "[BUG] cross-thread violation on rb_gc()".</para>
+			</section>
+		</section>
+
+		<section id="problem.ivl">
+			<title>Icarus Verilog</title>
+
+			<section id="problems.ivl.vpi_handle_by_name">
+				<title>vpi_handle_by_name</title>
+
+				<section id="problems.ivl.vpi_handle_by_name.absolute-paths">
+					<title>Give full paths to Verilog objects</title>
+
+					<para>In version 0.8, the <function>vpi_handle_by_name</function> function requires an <emphasis>absolute</emphasis> path (including the name of the test-bench which instantiates a module) to a Verilog object.</para>
+
+					<para>For example, consider <xref linkend="ex..TestFoo"/>. Here, one needs to specify <literal>TestFoo.my_foo.clk</literal> instead of <literal>my_foo.clk</literal> in order to access the <varname>clk</varname> input of the <varname>my_foo</varname> module instance.</para>
+
+					<example id="ex..TestFoo">
+						<title>Part of a bench which instantiates a Verilog design</title>
+<programlisting>
+module TestFoo;
+	reg clk_reg;
+	Foo my_foo(.clk(clk_reg));
+endmodule;
+</programlisting>
+					</example>
+				</section>
+
+				<section id="problems.ivl.vpi_handle_by_name.connect-registers">
+					<title>Registers must be connected</title>
+
+					<para>In version 0.8, if you want to access a register in a &design.gloss;, then it must be connected to something (either assigned to a wire or passed as a parameter to a module instantiation). Otherwise, Icarus will give you a <literal>nil</literal> value as the result of <function>vpi_handle_by_name</function> method.</para>
+
+					<para>For example, suppose you wanted to access the <varname>clk_reg</varname> register, from the &bench.gloss; shown in <xref linkend="ex..TestFoo_bad"/>. If you execute the statement <code>clk_reg = vpi_handle_by_name("TestFoo.clk_reg", nil)</code> in a &specification.gloss;, then you will discover that the <function>vpi_handle_by_name</function> method returns <literal>nil</literal> instead of a handle to the <varname>clk_reg</varname> register.</para>
+
+					<para>The solution is to change the &design.gloss; such that it appears like the one shown in <xref linkend="ex..TestFoo_fix"/> where the register is connected to a wire, or <xref linkend="ex..TestFoo"/> where the register is connected to a module instantiation.</para>
+
+					<example id="ex..TestFoo_bad">
+						<title>Bad design with unconnected registers</title>
+
+						<para>Here the <varname>clk_reg</varname> register is not connected to anything.</para>
+
+<programlisting>
+module TestFoo;
+	reg clk_reg;
+endmodule;
+</programlisting>
+					</example>
+
+					<example id="ex..TestFoo_fix">
+						<title>Fixed design with wired registers</title>
+
+						<para>Here the <varname>clk_reg</varname> register is connected to the <varname>clk_wire</varname> wire.</para>
+
+<programlisting>
+module TestFoo;
+	reg clk_reg;
+	wire clk_wire;
+	assign clk_wire = clk_reg;
+endmodule;
+</programlisting>
+					</example>
+				</section>
+			</section>
+
+			<section id="problems.ivl.vpi_reset">
+				<title>Vpi::reset</title>
+
+				<tip>
+					<para>This method was removed in release 0.3 of &rv;, and is deprecated. Please use <code>Vpi::vpi_control(VpiReset)</code> instead.</para>
+				</tip>
+
+				<para>In version 0.8, the <code>vpi_control(vpiReset)</code> VPI function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.</para>
+			</section>
+		</section>
+
+		<section id="problems.vsim">
+			<title>Mentor Modelsim</title>
+
+			<section id="problems.vsim.ruby_run">
+				<title>ruby_run()</title>
+
+				&fixed-0.2;
+
+				<para>Version 6.1b doesn't play nicely with either an embedded Ruby interpreter or POSIX threads in a PLI application. When Ruby-VPI invokes the <function>ruby_run</function> function (which starts the Ruby interpreter), the simulator terminates immediately with an exit status of 0.</para>
+			</section>
 		</section>
 	</chapter>
 
