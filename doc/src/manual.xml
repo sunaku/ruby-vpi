@@ -24,6 +24,19 @@
 	<!ENTITY design.gloss "<glossterm linkend='term..design'>design</glossterm>">
 	<!ENTITY specification.gloss "<glossterm linkend='term..specification'>specification</glossterm>">
 	<!ENTITY bench.gloss "<glossterm linkend='term..bench'>bench</glossterm>">
+	<!ENTITY BDD.gloss "<glossterm linkend='term..BDD'>BDD</glossterm>">
+	<!ENTITY rspec.gloss "<glossterm linkend='term..rspec'>&rspec;</glossterm>">
+	<!ENTITY rake.gloss "<glossterm linkend='term..rake'>&rake;</glossterm>">
+
+	<!ENTITY rake "Rake">
+	<!ENTITY rake.url "http://rake.rubyforge.org/">
+	<!ENTITY rake-doc.url "http://docs.rubyrake.org/">
+
+	<!ENTITY rspec "RSpec">
+	<!ENTITY rspec.url "http://rspec.rubyforge.org">
+	<!ENTITY rspec..ulink "<ulink url='&rspec.url;'>&rspec;</ulink>">
+	<!ENTITY rspec-tutorial.url "http://rspec.rubyforge.org/tutorials/index.html">
+	<!ENTITY rspec-tutorial..ulink "<ulink url='&rspec-tutorial.url;'>&rspec; tutorial</ulink>">
 ]>
 <book lang="en">
 	<bookinfo>
@@ -206,6 +219,14 @@
 		<title>Background</title>
 
 		<para>&rv; is a &bench.gloss; which lets you &test.gloss; &v; modules using the Ruby language.</para>
+
+		<section id="background.methodology">
+			<title>Methodology</title>
+
+			<para>&rv; presents an open-ended interface to &vpi;. You can use any methodology you wish in writing &test.gloss;s. However, &BDD.gloss; is emphasized in this project through use of the &rspec.gloss; library in the <link linkend="usage.examples">examples</link>.</para>
+
+			<para>The reason is, in my humble opinion, &BDD.gloss; makes thinking about how to verify a design <emphasis>much</emphasis> easier. Please take a few minutes to read through the wonderful &rspec-tutorial..ulink; and see for yourself how easy, effective, and useful &BDD.gloss; is as means of verification.</para>
+		</section>
 
 		<section id="background.terminology">
 			<title>Terminology</title>
@@ -437,14 +458,14 @@ end
 				</varlistentry>
 
 				<varlistentry>
-					<term><ulink url="http://rubyforge.org/frs/?group_id=50">Rake</ulink></term>
+					<term><ulink url="http://rubyforge.org/frs/?group_id=50">&rake;</ulink></term>
 					<listitem>
 						<para>Version 0.7.0 or newer is necessary.</para>
 					</listitem>
 				</varlistentry>
 
 				<varlistentry>
-					<term><ulink url="http://rubyforge.org/frs/?group_id=797">RSpec</ulink></term>
+					<term><ulink url="http://rubyforge.org/frs/?group_id=797">&rspec;</ulink></term>
 					<listitem>
 						<para>Version 0.5.4 or newer is necessary.</para>
 					</listitem>
@@ -455,7 +476,7 @@ end
 				<title>Installing the required software</title>
 
 				<step>
-					<para>After installing RubyGems, you can install Rake and RSpec by issuing the command <command>gem <action>install</action> <option>--remote</option> <replaceable>rake</replaceable> <replaceable>rspec</replaceable></command> at your command-prompt.</para>
+					<para>After installing RubyGems, you can install &rake.gloss; and &rspec.gloss; by issuing the command <command>gem <action>install</action> <option>--remote</option> <replaceable>rake</replaceable> <replaceable>rspec</replaceable></command> at your command-prompt.</para>
 				</step>
 			</procedure>
 		</section>
@@ -463,6 +484,8 @@ end
 		<section id="usage.examples">
 			<title>Examples</title>
 			<para>The <filename>examples</filename> directory contains several example &test.gloss;s which illustrate how &rv; can be used. Each example has an associated <filename>Rakefile</filename> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the command <command>rake</command> to get started.</para>
+
+			<para>Also, the example &specification.gloss;s make use of &BDD.gloss; through the &rspec.gloss; library. See the <xref linkend="background.methodology"/> for a discussion of &rspec.gloss;.</para>
 		</section>
 
 		<section id="usage.tools">
@@ -597,6 +620,17 @@ endmodule;
 					<para>An environment in which a &design.gloss; is verified against a &specification.gloss;. Often, it is used to emulate conditions in which the &design.gloss; will be eventually deployed.</para>
 				</glossdef>
 			</glossentry>
+
+			<glossentry id="term..BDD">
+				<glossterm><acronym>BDD</acronym></glossterm>
+
+				<glossdef>
+					<para>Behavior driven development.</para>
+					<para>A software development methodology which emphasizes thinking in terms of behavior when designing, implementing, and verifying software. See the <ulink url="http://behaviour-driven.org/">official wiki</ulink> for more information.</para>
+
+					<glossseealso otherterm="term..rspec"/>
+				</glossdef>
+			</glossentry>
 		</glossdiv>
 
 		<glossdiv>
@@ -606,6 +640,31 @@ endmodule;
 				<glossterm>Design</glossterm>
 				<glossdef>
 					<para>An idea or entity that is verified against a &specification.gloss; in order to ensure correctness or soundness of its being.</para>
+				</glossdef>
+			</glossentry>
+		</glossdiv>
+
+		<glossdiv>
+			<title>R</title>
+
+			<glossentry id="term..rake">
+				<glossterm>&rake;</glossterm>
+				<glossdef>
+					<blockquote>
+						<attribution><ulink url="&rake-doc.url;">&rake; documentation</ulink></attribution>
+						<para>Rake is a build tool, written in Ruby, using Ruby as a build language. Rake is similar to make in scope and purpose.</para>
+					</blockquote>
+
+					<para>See the <ulink url="&rake.url;">&rake; website</ulink> for more information.</para>
+				</glossdef>
+			</glossentry>
+
+			<glossentry id="term..rspec">
+				<glossterm>&rspec;</glossterm>
+				<glossdef>
+					<para>Ruby framework for &BDD.gloss;. See the <ulink url="&rspec.url;">&rspec; website</ulink> and &rspec-tutorial..ulink; for more information.</para>
+
+					<glossseealso otherterm="term..BDD"/>
 				</glossdef>
 			</glossentry>
 		</glossdiv>
