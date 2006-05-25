@@ -18,15 +18,17 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 =end
 
-# Note: DUT means "design under test"
-
+# A specification which verifies the design under test.
+require 'hw5_unit_design.rb'
 require 'vpi_util'
-require 'InputGenerator'
-require 'Hw5UnitModel'
 require 'test/unit'
 
+require 'InputGenerator'
+require 'Hw5UnitModel'
 
-class TestHw5Unit < Test::Unit::TestCase
+
+
+class Hw5_unit_spec < Test::Unit::TestCase
 	include Vpi
 
 	# Number of input sequences to test.
@@ -54,28 +56,16 @@ class TestHw5Unit < Test::Unit::TestCase
 
 	def setup
 		@ig = InputGenerator.new(RUBY_INTEGER_BITS)
-
-
-		# get handles to simulation objects
-		@dut_reset = vpi_handle_by_name("hw5_unit_tb.reset", nil)
-		@dut_in_tag = vpi_handle_by_name("hw5_unit_tb.in_tag", nil)
-		@dut_in_arg1 = vpi_handle_by_name("hw5_unit_tb.in_arg1", nil)
-		@dut_in_arg2 = vpi_handle_by_name("hw5_unit_tb.in_arg2", nil)
-		@dut_in_type = vpi_handle_by_name("hw5_unit_tb.in_type", nil)
-
-		@dut_out_result = vpi_handle_by_name("hw5_unit_tb.out_result", nil)
-		@dut_out_tag = vpi_handle_by_name("hw5_unit_tb.out_tag", nil)
-		@dut_out_type = vpi_handle_by_name("hw5_unit_tb.out_type", nil)
+		@design = Hw5_unit.new
 
 		reset
 	end
 
 	def reset
-		@dut_reset.intVal = 1
+		@design.reset.intVal = 1
 		DUT_RESET_DELAY.times {relay_verilog}
 
-		@dut_reset.intVal = 0
-		relay_verilog
+		@design.reset.intVal = 0
 	end
 
 	def test_pipeline
@@ -93,10 +83,10 @@ class TestHw5Unit < Test::Unit::TestCase
 				)
 
 
-				@dut_in_arg1.intVal = op.arg1
-				@dut_in_arg2.intVal = op.arg2
-				@dut_in_type.intVal = OPERATION_ENCODINGS[op.type]
-				@dut_in_tag.intVal = op.tag
+				@design.a.intVal = op.arg1
+				@design.b.intVal = op.arg2
+				@design.in_op.intVal = OPERATION_ENCODINGS[op.type]
+				@design.in_databits.intVal = op.tag
 
 
 				operationQueue << op
@@ -109,12 +99,12 @@ class TestHw5Unit < Test::Unit::TestCase
 
 
 			# verify the output when present
-			unless @dut_out_tag.hexStrVal =~ /x/
+			unless @design.out_databits.hexStrVal =~ /x/
 				finishedOp = Hw5UnitModel::Operation.new(
-					OPERATION_ENCODINGS.index(@dut_out_type.intVal),
-					@dut_out_tag.intVal
+					OPERATION_ENCODINGS.index(@design.out_op.intVal),
+					@design.out_databits.intVal
 				)
-				finishedOp.result = @dut_out_result.intVal & VPI_INTEGER_MASK
+				finishedOp.result = @design.res.intVal & VPI_INTEGER_MASK
 
 				expectedOp = operationQueue.shift
 
@@ -131,11 +121,3 @@ class TestHw5Unit < Test::Unit::TestCase
 		end until operationQueue.empty?
 	end
 end
-
-
-# $ruby_init():
-Vpi::relay_verilog
-
-
-# $ruby_relay():
-# do nothing here, because test/unit will automatically run the unit test above
