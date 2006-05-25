@@ -12,10 +12,10 @@
 
 
 	<!-- content -->
-	<!ENTITY background.step3 "<para>When the Ruby interpreter invokes the <code>Vpi::relay_verilog</code> method, it is paused and the Verilog simulator is given control.</para>">
+	<!ENTITY background.step3 "<para>When the Ruby interpreter invokes the <code>Vpi::relay_verilog</code> method, it is paused and the &v; simulator is given control.</para>">
 
 	<!ENTITY fixed-0.2 "<tip>
-		<title>Fixed in release 0.2 of &rv;</title>
+		<title>Fixed in &rv; 0.2</title>
 		<para>This problem was fixed in release 0.2  of &rv;. If it still occurs, then <link linkend='introduction.resources'>please report it</link>.</para>
 	</tip>">
 
@@ -42,7 +42,7 @@
 
 	<chapter id="introduction">
 		<title>Introduction</title>
-		<para>&rv; is a &ruby..ulink; interface to <ulink url="http://en.wikipedia.org/wiki/Verilog">Verilog VPI</ulink>. It lets you create complex Verilog &test-bench.gloss;es easily and wholly in Ruby.</para>
+		<para>&rv; is a &ruby..ulink; interface to <ulink url="http://en.wikipedia.org/wiki/Verilog">&vpi;</ulink>. It lets you create complex &v; &test-bench.gloss;es easily and wholly in Ruby.</para>
 
 		<section id="introduction.license">
 			<title>License</title>
@@ -151,25 +151,25 @@
 				<varlistentry>
 					<term><ulink url="http://www.aracnet.com/~ptkwt/ruby_stuff/RHDL/">RHDL</ulink></term>
 					<listitem>
-						<para>Ruby abstraction of VHDL and Verilog.</para>
+						<para>Ruby abstraction of VHDL and &v;.</para>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
 					<term><ulink url="http://myhdl.jandecaluwe.com">MyHDL</ulink></term>
 					<listitem>
-						<para>Python abstraction of Verilog.</para>
+						<para>Python abstraction of &v;.</para>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
 					<term><ulink url="http://jove.sourceforge.net">JOVE</ulink></term>
 					<listitem>
-						<para>Java interface to VPI.</para>
+						<para>Java interface to &vpi;.</para>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
 					<term><ulink url="http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/">ScriptEDA</ulink></term>
 					<listitem>
-						<para>Perl, Python, and Tcl interface to VPI.</para>
+						<para>Perl, Python, and Tcl interface to &vpi;.</para>
 					</listitem>
 				</varlistentry>
 			</variablelist>
@@ -186,7 +186,7 @@
 						</listitem>
 					</varlistentry>
 					<varlistentry>
-						<term><ulink url="http://www.veripool.com/verilog-pli.html">Verilog::Pli</ulink></term>
+						<term><ulink url="http://www.veripool.com/verilog-pli.html">&v;::Pli</ulink></term>
 						<listitem>
 							<para>Perl interface to PLI.</para>
 						</listitem>
@@ -205,12 +205,12 @@
 	<chapter id="background">
 		<title>Background</title>
 
-		<para>&rv; is a &bench.gloss; which lets you &test.gloss; Verilog modules using the Ruby language.</para>
+		<para>&rv; is a &bench.gloss; which lets you &test.gloss; &v; modules using the Ruby language.</para>
 
 		<section id="background.terminology">
 			<title>Terminology</title>
 
-			<para>As a newcomer into the world of Verilog, I often heard the term &test-bench.gloss;: "I ran the test bench, but it didn't work!" or "Are you crazy?!! You <emphasis>still</emphasis> haven't written the test bench? o_O", for example. I searched through my textbook and the Internet for a definition of the term, but it was to no avail. Instead, both resources nonchalantly employed the term <emphasis>throughout</emphasis> their being, as if mocking my ignorance of what seems to be universal knowledge.</para>
+			<para>As a newcomer into the world of &v;, I often heard the term &test-bench.gloss;: "I ran the test bench, but it didn't work!" or "Are you crazy?!! You <emphasis>still</emphasis> haven't written the test bench? o_O", for example. I searched through my textbook and the Internet for a definition of the term, but it was to no avail. Instead, both resources nonchalantly employed the term <emphasis>throughout</emphasis> their being, as if mocking my ignorance of what seems to be universal knowledge.</para>
 
 			<para>Defeated, I turned to my inner faculties to determine the answer. "Let's see, the term &test-bench.gloss; has the word <emphasis>test</emphasis>&mdash;so maybe it has something to do with testing&mdash;and it has the word <emphasis>bench</emphasis>&mdash;so maybe it's referring to a table where the testing should occur". This reasoning grew increasingly familiar as my mind rummaged through towering stores of obsolescence and ultimately revealed dreaded memories of sleepless anguish: debugging electronics in the laboratory.</para>
 
@@ -234,7 +234,7 @@
 			<para>As <xref linkend="fig..organization"/> shows, a &test.gloss; is composed of a &bench.gloss;, a &design.gloss;, and a &specification.gloss;. To extend the <link linkend="background.terminology">analogy of an electronics laboratory</link>, the first acts as the laboratory bench which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. And the third acts as the engineer who measures, manipulates, and verifies the electronic component.</para>
 
 			<section id="organization.vpi">
-				<title>Interface to Verilog VPI</title>
+				<title>Interface to &vpi;</title>
 
 				<figure id="fig..organization.detail">
 					<title>Detailed organization of a test</title>
@@ -245,9 +245,9 @@
 					</mediaobject>
 				</figure>
 
-				<para>In <xref linkend="fig..organization.detail"/>, &rv; acts as the &bench.gloss;, a Verilog simulator encapsulates the &design.gloss;, and a Ruby interpreter encapsulates the &specification.gloss;. Notice that &rv; encapsulates all communication between the Ruby interpreter and Verilog VPI. This allows the &specification.gloss;, or any Ruby program in general, to access Verilog VPI using nothing more than the Ruby language! Thus, &rv; removes the burden of having to write C programs in order to access Verilog VPI.</para>
+				<para>In <xref linkend="fig..organization.detail"/>, &rv; acts as the &bench.gloss;, a &v; simulator encapsulates the &design.gloss;, and a Ruby interpreter encapsulates the &specification.gloss;. Notice that &rv; encapsulates all communication between the Ruby interpreter and &vpi;. This allows the &specification.gloss;, or any Ruby program in general, to access &vpi; using nothing more than the Ruby language! Thus, &rv; removes the burden of having to write C programs in order to access &vpi;.</para>
 
-				<para>Furthermore, &rv; presents the <emphasis>entire</emphasis> IEEE Std 1364-2005 Verilog VPI interface to the Ruby interpreter, but with the following minor changes.
+				<para>Furthermore, &rv; presents the <emphasis>entire</emphasis> IEEE Std 1364-2005 &vpi; interface to the Ruby interpreter, but with the following minor changes.
 
 					<itemizedlist>
 						<listitem>
@@ -269,7 +269,7 @@ void foo(va_list ap) {
 					</itemizedlist>
 				</para>
 
-				<para>However, when a &specification.gloss; uses &rv; directly, it ends up appearing very much like a C program, because Verilog VPI was designed for the C language. For this reason, the VPI utility layer (see <xref linkend="fig..organization.detail"/>) exists to enlighten the boring C-like interface of &rv; using the brilliant ethos of the <emphasis>Ruby Way</emphasis>. For example, it is more natural to write <code>handle.each(VpiNet) {|net| . . .}</code> in Ruby than it is to write:</para>
+				<para>However, when a &specification.gloss; uses &rv; directly, it ends up appearing very much like a C program, because &vpi; was designed for the C language. For this reason, the &vpi; utility layer (see <xref linkend="fig..organization.detail"/>) exists to enlighten the boring C-like interface of &rv; using the brilliant ethos of the <emphasis>Ruby Way</emphasis>. For example, it is more natural to write <code>handle.each(VpiNet) {|net| . . .}</code> in Ruby than it is to write:</para>
 
 <programlisting>
 if itr = vpi_iterate(VpiNet, handle)
@@ -284,7 +284,7 @@ end
 		<section id="background.running-tests">
 			<title>Running a test</title>
 
-			<para>When a &test.gloss; is run, the Verilog simulator and the Ruby interpreter (see <xref linkend="fig..organization.detail"/>) must take turns performing their duties, unlike an engineer who can verify an electronic component in real-time. In particular, they take turns manipulating the &design.gloss; and transfer control to each other when appropriate.</para>
+			<para>When a &test.gloss; is run, the &v; simulator and the Ruby interpreter (see <xref linkend="fig..organization.detail"/>) must take turns performing their duties, unlike an engineer who can verify an electronic component in real-time. In particular, they take turns manipulating the &design.gloss; and transfer control to each other when appropriate.</para>
 
 			<para>The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Either is able to examine and modify the ball, but only when it is in hand.</para>
 
@@ -306,11 +306,11 @@ end
 					<title>Initialization of a test</title>
 
 					<step>
-						<para>The Verilog simulator initializes the Ruby interpreter by invoking the <code>$ruby_init();</code> system task/function, whose parameters represent the command-line invocation of the Ruby interpreter. For example, one would specify <code>$ruby_init("ruby", "-w");</code> in Verilog to achieve the same effect as specifying <code>ruby -w</code> at a command-prompt.</para>
+						<para>The &v; simulator initializes the Ruby interpreter by invoking the <code>$ruby_init();</code> system task/function, whose parameters represent the command-line invocation of the Ruby interpreter. For example, one would specify <code>$ruby_init("ruby", "-w");</code> in &v; to achieve the same effect as specifying <code>ruby -w</code> at a command-prompt.</para>
 					</step>
 
 					<step>
-						<para>The Verilog simulator is paused and the Ruby interpreter is initialized with the arguments of the <code>$ruby_init();</code> system task/function.</para>
+						<para>The &v; simulator is paused and the Ruby interpreter is initialized with the arguments of the <code>$ruby_init();</code> system task/function.</para>
 					</step>
 
 					<step>&background.step3;</step>
@@ -331,16 +331,15 @@ end
 					</mediaobject>
 				</figure>
 
-
 				<procedure id="proc..ruby_relay">
 					<title>Execution of a test</title>
 
 					<step>
-						<para>The Verilog simulator transfers control to the Ruby interpreter by invoking the <code>$ruby_relay();</code> system task/function.</para>
+						<para>The &v; simulator transfers control to the Ruby interpreter by invoking the <code>$ruby_relay();</code> system task/function.</para>
 					</step>
 
 					<step>
-						<para>The Verilog simulator is paused and the Ruby interpreter is given control.</para>
+						<para>The &v; simulator is paused and the Ruby interpreter is given control.</para>
 					</step>
 
 					<step>&background.step3;</step>
@@ -359,13 +358,13 @@ end
 
 			<variablelist>
 				<varlistentry>
-					<term>Verilog simulator</term>
+					<term>&v; simulator</term>
 					<listitem>
-						<para>You should be able to use &rv; with any Verilog simulator. However, only the following simulators have been tested because we do not have knowledge of or access to other ones. Therefore, please share your experiences of using &rv; with other simulators, in the online forums.</para>
+						<para>You should be able to use &rv; with any &v; simulator. However, only the following simulators have been tested because we do not have knowledge of or access to other ones. Therefore, please share your experiences of using &rv; with other simulators, in the online forums.</para>
 
 						<variablelist>
 							<varlistentry>
-								<term><ulink url="http://www.icarus.com/eda/Verilog/">Icarus Verilog</ulink></term>
+								<term><ulink url="http://www.icarus.com/eda/&v;/">Icarus &v;</ulink></term>
 								<listitem>
 									<para>Version 0.8 or newer is acceptable.</para>
 								</listitem>
@@ -470,7 +469,7 @@ end
 			<title>Tools</title>
 			<para>The <filename>tools</filename> directory contains tools which ease the process of writing &test.gloss;s. Each tool provides help and usage information invoked with the <option>--help</option> option at a command-prompt.</para>
 
-			<para>In particular, the <filename>tools/generate_test.rb</filename> tool can be used to automatically generate &test.gloss;s from Verilog 2001 module declarations. You can try it by invoking <command>ruby <replaceable>tools/generate_test.rb</replaceable> <option>--help</option></command> at your command-prompt.</para>
+			<para>In particular, the <filename>tools/generate_test.rb</filename> tool can be used to automatically generate &test.gloss;s from &v; 2001 module declarations. You can try it by invoking <command>ruby <replaceable>tools/generate_test.rb</replaceable> <option>--help</option></command> at your command-prompt.</para>
 		</section>
 	</chapter>
 
@@ -478,9 +477,9 @@ end
 		<title>Reference</title>
 
 		<section id="reference.vpi">
-			<title>Verilog VPI</title>
+			<title>&vpi;</title>
 
-			<para>The <emphasis>entire</emphasis> IEEE Std 1364-2005 VPI interface (see <filename>ext/vpi_user.h</filename>) is available inside Ruby, but with the following minor changes.</para>
+			<para>The <emphasis>entire</emphasis> IEEE Std 1364-2005 &vpi; interface (see <filename>ext/vpi_user.h</filename>) is available inside Ruby, but with the following minor changes.</para>
 
 			<itemizedlist>
 				<listitem>
@@ -501,7 +500,7 @@ void foo(va_list ap) {
 				</listitem>
 			</itemizedlist>
 
-			<para>Atop this interface sits the VPI utility layer (see <filename>lib/vpi_util.rb</filename> and <xref linkend="background.organization"/>) whose goal is to transform the VPI interface into something more Ruby-like. For example, it is more Ruby-like to write <code>handle.each(VpiNet) {|net| . . .}</code> than <programlisting>
+			<para>Atop this interface sits the &vpi; utility layer (see <filename>lib/vpi_util.rb</filename> and <xref linkend="background.organization"/>) whose goal is to transform the &vpi; interface into something more Ruby-like. For example, it is more Ruby-like to write <code>handle.each(VpiNet) {|net| . . .}</code> than <programlisting>
 if itr = vpi_iterate(VpiNet, handle)
 	while net = vpi_scan(itr)
 		. . .
@@ -537,20 +536,20 @@ end
 		</section>
 
 		<section id="problem.ivl">
-			<title>Icarus Verilog</title>
+			<title>Icarus &v;</title>
 
 			<section id="problems.ivl.vpi_handle_by_name">
 				<title>vpi_handle_by_name</title>
 
 				<section id="problems.ivl.vpi_handle_by_name.absolute-paths">
-					<title>Give full paths to Verilog objects</title>
+					<title>Give full paths to &v; objects</title>
 
-					<para>In version 0.8, the <function>vpi_handle_by_name</function> function requires an <emphasis>absolute</emphasis> path (including the name of the &bench.gloss; which instantiates the &design.gloss;) to a Verilog object.</para>
+					<para>In version 0.8, the <function>vpi_handle_by_name</function> function requires an <emphasis>absolute</emphasis> path (including the name of the &bench.gloss; which instantiates the &design.gloss;) to a &v; object.</para>
 
 					<para>For example, consider <xref linkend="ex..TestFoo"/>. Here, one needs to specify <literal>TestFoo.my_foo.clk</literal> instead of <literal>my_foo.clk</literal> in order to access the <varname>clk</varname> input of the <varname>my_foo</varname> module instance.</para>
 
 					<example id="ex..TestFoo">
-						<title>Part of a bench which instantiates a Verilog design</title>
+						<title>Part of a bench which instantiates a &v; design</title>
 <programlisting>
 module TestFoo;
 	reg clk_reg;
@@ -604,7 +603,7 @@ endmodule;
 					<para>This method was removed in release 0.3 of &rv;, and is deprecated. Please use <code>Vpi::vpi_control(VpiReset)</code> instead.</para>
 				</tip>
 
-				<para>In version 0.8, the <code>vpi_control(vpiReset)</code> VPI function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.</para>
+				<para>In version 0.8, the <code>vpi_control(vpiReset)</code> &vpi; function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.</para>
 			</section>
 		</section>
 
@@ -616,7 +615,7 @@ endmodule;
 
 				&fixed-0.2;
 
-				<para>Version 6.1b doesn't play nicely with either an embedded Ruby interpreter or POSIX threads in a PLI application. When Ruby-VPI invokes the <function>ruby_run</function> function (which starts the Ruby interpreter), the simulator terminates immediately with an exit status of 0.</para>
+				<para>Version 6.1b doesn't play nicely with either an embedded Ruby interpreter or POSIX threads in a PLI application. When &rv; invokes the <function>ruby_run</function> function (which starts the Ruby interpreter), the simulator terminates immediately with an exit status of 0.</para>
 			</section>
 		</section>
 	</chapter>

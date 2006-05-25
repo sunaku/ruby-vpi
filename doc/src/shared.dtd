@@ -30,6 +30,9 @@
 <!ENTITY ruby.url "http://www.ruby-lang.org/en/20020101.html">
 <!ENTITY ruby..ulink "<ulink url='&ruby.url;'>&ruby;</ulink>">
 
+<!ENTITY v "Verilog">
+<!ENTITY vpi "&v; <acronym>VPI</acronym>">
+
 <!ENTITY unix "<acronym>UNIX</acronym>">
 <!ENTITY url "<acronym>URL</acronym>">
 <!ENTITY l10n "<acronym>L10N</acronym>">
