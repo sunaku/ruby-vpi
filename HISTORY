@@ -6,7 +6,7 @@ This document is a record of important changes that have occurred with each rele
 
 == Summary
 
-This major release adds a comprehensive user manual, upgrades from make to Rake[http://rspec.rubyforge.org], and improves the test generation tool.
+This major release adds a comprehensive user manual, upgrades from make to Rake[http://rake.rubyforge.org], and improves the test generation tool.
 
 == Details
 
