@@ -164,7 +164,7 @@
 				<varlistentry>
 					<term><ulink url="http://www.aracnet.com/~ptkwt/ruby_stuff/RHDL/">RHDL</ulink></term>
 					<listitem>
-						<para>Hardware description and verification language based on Ruby, which features conversion to VHDL and, in the future, &v;.</para>
+						<para>Hardware description and verification language based on Ruby.</para>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
