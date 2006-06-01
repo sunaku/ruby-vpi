@@ -40,7 +40,7 @@
 ]>
 <book lang="en">
 	<bookinfo>
-		<title>&rv; user's manual</title>
+		<title>&rv; user manual</title>
 
 		&snk..copyright;
 
@@ -233,9 +233,9 @@
 
 			<para>As a newcomer into the world of &v;, I often heard the term &test-bench.gloss;: <quote>I ran the test bench, but it didn't work!</quote> or <quote>Are you crazy?!! You <emphasis>still</emphasis> haven't written the test bench? o_O</quote>, for example. I flipped through my textbook and surfed the Internet for a definition of the term, but it was to no avail. Instead, both resources nonchalantly employed the term <emphasis>throughout</emphasis> their being, as if mocking my ignorance of what seems to be universal knowledge.</para>
 
-			<para>Defeated, I turned to my inner faculties to determine the answer. "Let's see, the term &test-bench.gloss; has the word <emphasis>test</emphasis>&mdash;so maybe it has something to do with testing&mdash;and it has the word <emphasis>bench</emphasis>&mdash;so maybe it's referring to a table where the testing should occur". This reasoning grew increasingly familiar as my mind rummaged through towering stores of obsolescence and ultimately revealed dreaded memories of sleepless anguish: debugging electronics in the laboratory.</para>
+			<para>Defeated, I turned to my inner faculties to determine the answer. <quote>Let's see, the term &test-bench.gloss; has the word <emphasis>test</emphasis>&mdash;so maybe it has something to do with testing&mdash;and it has the word <emphasis>bench</emphasis>&mdash;so maybe it's referring to a table where the testing should occur</quote>. This reasoning grew increasingly familiar as my mind rummaged through towering stores of obsolescence and ultimately revealed dreaded memories of sleepless anguish&mdash;debugging electronics in the laboratory.</para>
 
-			<para>"Aha!", I exclaimed hesitantly, trying to forget the past. The term has its roots in the testing of electronic devices, where an engineer would sit at a bench in an electronics laboratory and verify that an electronic component satisfies some criteria. The bench would be furnished with tools of measurement and manipulation&mdash;such as oscilloscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.</para>
+			<para><quote>Aha!</quote>, I exclaimed hesitantly, trying to forget the past. The term has its roots in the testing of electronic devices, where an engineer would sit at a bench in an electronics laboratory and verify that an electronic component satisfies some criteria. The bench would be furnished with tools of measurement and manipulation&mdash;such as oscilloscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.</para>
 
 			<para>Alright, now I remember what a laboratory bench is, but how does that compare with the term &test-bench.gloss;? Surely they cannot have the same meaning, because it doesn't make sense to <emphasis>run</emphasis> a laboratory bench or to <emphasis>write</emphasis> one&mdash;unless you're particularly skilled with a hammer and chisel. Thus, to avoid propagating such confusion into this manual, I have attempted to clarify the terminology by <link linkend="glossary">simplifying and reintroducing it in a new light</link>.</para>
 		</section>
@@ -513,7 +513,7 @@ end
 
 				&fixed-0.2;
 
-				<para>If a "stack level too deep (SystemStackError)" error occurs during the simulation, then increase the system-resource limit for stack-size by running the command <command>ulimit <option>-s</option> <replaceable>unlimited</replaceable></command> before starting the simulation.</para>
+				<para>If a <quote>stack level too deep (SystemStackError)</quote> error occurs during the simulation, then increase the system-resource limit for stack-size by running the command <command>ulimit <option>-s</option> <replaceable>unlimited</replaceable></command> before starting the simulation.</para>
 			</section>
 
 			<section id="problems.ruby.TestUnit">
@@ -521,7 +521,7 @@ end
 
 				&fixed-0.2;
 
-				<para>If your &specification.gloss; employs Ruby's unit testing framework, then you will encounter the error: "[BUG] cross-thread violation on rb_gc()".</para>
+				<para>If your &specification.gloss; employs Ruby's unit testing framework, then you will encounter the error: <quote>[BUG] cross-thread violation on rb_gc()</quote>.</para>
 			</section>
 		</section>
 

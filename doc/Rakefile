@@ -12,55 +12,32 @@
 
 require 'rake/clean'
 
-RESOURCES = ['src/figures']
 SOURCES = ['src/manual.xml']
+
 FORMATS = {
-	# format => extension, flag
-	'html' => ['html', 'xhtml-nochunks'],
-	'text' => ['txt', 'txt'],
+	# extension => flag
+	'html' => 'xhtml-nochunks',
+	'txt' => 'txt',
 }.freeze
 
 task :default => FORMATS.keys
 
 
 # create tasks for each output format
-FORMATS.each_pair do |format, formatOpts|
-	formatExt, formatFlag = formatOpts
-
-
-	directory format
-	CLOBBER.include format
-
-	desc "Generate documentation in #{format} format."
-	file format #=> SOURCES
+FORMATS.each_pair do |formatExt, formatFlag|
+	desc "Generate documentation in #{formatExt} format."
+	task formatExt
 
 
 	# attach each source to the current format
 	SOURCES.each do |srcPath|
 		srcPure = File.basename(srcPath, File.extname(srcPath))
-		dstPath = "#{format}/#{srcPure}.#{formatExt}"
+		dstPath = "#{srcPure}.#{formatExt}"
 
 		file dstPath => srcPath do
-			sh 'xmlto', '-o', format, formatFlag, srcPath
+			sh 'xmlto', formatFlag, srcPath
 		end
 
-
-		file format => dstPath
-	end
-
-
-	# attach resources to the current format
-	RESOURCES.each do |srcPath|
-		srcName = File.basename(srcPath)
-		dstPath = "#{format}/#{srcName}"
-
-		file dstPath => srcPath do
-			cp_r srcPath, dstPath
-		end
-
-		CLEAN.include dstPath
-
-
-		file format => dstPath
+		task formatExt => dstPath
 	end
 end
