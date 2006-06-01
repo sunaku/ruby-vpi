@@ -38,6 +38,8 @@ FORMATS.each_pair do |formatExt, formatFlag|
 			sh 'xmlto', formatFlag, srcPath
 		end
 
+		CLEAN.include dstPath
+
 		task formatExt => dstPath
 	end
 end
