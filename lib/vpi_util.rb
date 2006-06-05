@@ -90,7 +90,7 @@ module SWIG
 
 		# Reads the value using the given format and returns it. If a format is not given, then the Verilog simulator will attempt to determine the correct format.
 		def get_value aFormat = VpiObjTypeVal
-			val = get_value_wrapper aFormat
+			val = get_value_wrapper(aFormat)
 
 			case val.format
 				when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal, VpiStringVal
@@ -100,7 +100,7 @@ module SWIG
 					val.value.scalar
 
 				when VpiIntVal
-					val.value.integer
+					get_value_wrapper(VpiBinStrVal).value.str.to_i(2)
 
 				when VpiRealVal
 					val.value.real
@@ -134,7 +134,12 @@ module SWIG
 					newVal.value.scalar = aValue
 
 				when VpiIntVal
-					newVal.value.integer = aValue
+					if aValue < 0
+						newVal.value.integer = aValue
+					else
+						newVal.format = VpiBinStrVal
+						newVal.value.str = aValue.to_s(2)
+					end
 
 				when VpiRealVal
 					newVal.value.real = aValue
