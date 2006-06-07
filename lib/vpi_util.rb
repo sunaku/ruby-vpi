@@ -134,12 +134,8 @@ module SWIG
 					newVal.value.scalar = aValue
 
 				when VpiIntVal
-					if aValue < 0
-						newVal.value.integer = aValue
-					else
-						newVal.format = VpiBinStrVal
-						newVal.value.str = aValue.to_s(2)
-					end
+					newVal.format = VpiBinStrVal
+					newVal.value.str = aValue.to_s(2)
 
 				when VpiRealVal
 					newVal.value.real = aValue
