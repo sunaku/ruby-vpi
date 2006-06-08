@@ -48,8 +48,8 @@
 	}
 
 	typedef struct {
-		PLI_BYTE8** args;
-		uint count;
+		PLI_BYTE8** mArgs;	/// Array of command-line arguments.
+		uint mCount;	/// Number of command-line arguments.
 	} relay__RubyOptions__def;
 
 	/**
@@ -66,21 +66,14 @@
 			// pass command-line arguments to the interpreter
 			relay__RubyOptions__def* pRubyOptions = (relay__RubyOptions__def*) apRubyOptions;
 
-			PLI_BYTE8** argv = pRubyOptions->args;
-			uint argc = pRubyOptions->count;
-
-			common_debug("got %d options => %p", argc, argv);
-
-			uint i;
-			for (i = 0; i < argc; i++) {
-				common_debug("passing option %d to ruby: %s", i, argv[i]);
-			}
+			PLI_BYTE8** argv = pRubyOptions->mArgs;
+			uint argc = pRubyOptions->mCount;
 
 			ruby_options(argc, argv);
 
 			// free the memory used by command-line options
+			uint i;
 			for (i = 0; i < argc; i++) {
-				common_debug("freeing option %d => %s", i, argv[i]);
 				free(argv[i]);
 			}
 
@@ -92,7 +85,7 @@
 		ruby_run();
 
 
-		// stop Ruby interpreter
+		// Ruby interpreter is now finished, so clean it up before terminating this thread
 		ruby_finalize();
 		return NULL;
 	}
@@ -101,8 +94,8 @@
 		relay__RubyOptions__def* pRubyOptions = malloc(sizeof(relay__RubyOptions__def));
 
 		if (pRubyOptions) {
-			pRubyOptions->args = NULL;
-			pRubyOptions->count = 0;
+			pRubyOptions->mArgs = NULL;
+			pRubyOptions->mCount = 0;
 
 			// transform the arguments passed to this function by Verilog into command-line arguments for Ruby interpeter
 			vpiHandle vCall = vpi_handle(vpiSysTfCall, NULL);
@@ -117,25 +110,23 @@
 
 					while ((vArg = vpi_scan(vCallArgs)) != NULL) {
 						vpi_get_value(vArg, &argVal);
-						common_debug("created option %d => %s", pRubyOptions->count, argVal.value.str);
 
-						pRubyOptions->count++;
+						pRubyOptions->mCount++;
 
 
-						if (pRubyOptions->args == NULL)
-							pRubyOptions->args = malloc(sizeof(PLI_BYTE8*) * pRubyOptions->count);
+						if (pRubyOptions->mArgs == NULL)
+							pRubyOptions->mArgs = malloc(sizeof(PLI_BYTE8*) * pRubyOptions->mCount);
 						else
-							pRubyOptions->args = realloc(pRubyOptions->args, sizeof(PLI_BYTE8*) * pRubyOptions->count);
+							pRubyOptions->mArgs = realloc(pRubyOptions->mArgs, sizeof(PLI_BYTE8*) * pRubyOptions->mCount);
 
-						assert(pRubyOptions->args != NULL);
+						assert(pRubyOptions->mArgs != NULL);
 
 
-						pRubyOptions->args[pRubyOptions->count-1] = strdup(argVal.value.str);
+						pRubyOptions->mArgs[pRubyOptions->mCount-1] = strdup(argVal.value.str);
 					}
 				}
 			}
 
-			common_debug("passed %d options => %p", pRubyOptions->count, pRubyOptions->args);
 			pthread_create(&relay__rubyThread, 0, ruby_run_handshake, pRubyOptions);
 			return;
 		}
