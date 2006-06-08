@@ -64,7 +64,7 @@ module SWIG
 		VALUE_FORMAT_NAMES.each do |var|
 			varName = var.to_s
 
-			methName = varName.sub(%r{^Vpi}, '')
+			methName = varName.sub(/^Vpi/, '')
 			methName[0] = methName[0].chr.downcase
 
 			eval %{
@@ -100,7 +100,7 @@ module SWIG
 					val.value.scalar
 
 				when VpiIntVal
-					get_value_wrapper(VpiBinStrVal).value.str.to_i(2)
+					get_value_wrapper(VpiHexStrVal).value.str.to_i(16)
 
 				when VpiRealVal
 					val.value.real
@@ -134,8 +134,8 @@ module SWIG
 					newVal.value.scalar = aValue
 
 				when VpiIntVal
-					newVal.format = VpiBinStrVal
-					newVal.value.str = aValue.to_s(2)
+					newVal.format = VpiHexStrVal
+					newVal.value.str = aValue.to_s(16)
 
 				when VpiRealVal
 					newVal.value.real = aValue

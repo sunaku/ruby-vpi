@@ -48,9 +48,9 @@ require 'fileutils'
 # Writes the given contents to the file at the given path. If the given path already exists, then a backup is created before proceeding.
 def writeFile aPath, aContent
 	# create a backup
-	backupPath = aPath.dup
-
 	if File.exist? aPath
+		backupPath = aPath.dup
+
 		while File.exist? backupPath
 			backupPath << '~'
 		end
@@ -159,12 +159,16 @@ end
 
 # Generates and returns the content of the Ruby design file, which is a Ruby abstraction of the Verilog module's interface.
 def generateDesign aModuleInfo, aOutputInfo
-	accessorDecl = aModuleInfo.portNames.inject([]) do |acc, param|
-		acc << ":#{param}"
+	accessorDecl = aModuleInfo.portNames.inject([]) do |acc, port|
+		acc << ":#{port}"
 	end.join(', ')
 
-	portInitDecl = aModuleInfo.portNames.inject('') do |acc, param|
-		acc << %{@#{param} = Vpi::vpi_handle_by_name("#{aOutputInfo.verilogBenchName}.#{param}", nil)\n}
+	portInitDecl = aModuleInfo.portNames.inject('') do |acc, port|
+		acc << %{@#{port} = Vpi::vpi_handle_by_name("#{aOutputInfo.verilogBenchName}.#{port}", nil)\n}
+	end
+
+	portResetCode = aModuleInfo.inputPortNames[1..-1].inject('') do |acc, port|
+		acc << %{@#{port}.hexStrVal = 'x'\n}
 	end
 
 	%{
@@ -174,6 +178,7 @@ def generateDesign aModuleInfo, aOutputInfo
 
 			def initialize
 				#{portInitDecl}
+				#{portResetCode}
 			end
 		end
 	}
@@ -265,7 +270,7 @@ end
 
 # Holds information about a parsed Verilog module.
 class ModuleInfo
-	attr_reader :name, :portNames, :paramNames, :portDecls, :paramDecls
+	attr_reader :name, :portNames, :paramNames, :portDecls, :paramDecls, :inputPortNames
 
 	def initialize aDecl
 		aDecl =~ %r{module\s+(\w+)\s*(\#\((.*?)\))?\s*\((.*?)\)\s*;}
@@ -289,8 +294,13 @@ class ModuleInfo
 
 		@portDecls = portDecl.split(/,/)
 
+		@inputPortNames = []
+
 		@portNames = portDecls.inject([]) do |acc, decl|
-			acc << decl.scan(%r{\w+}).last
+			name = decl.scan(%r{\w+}).last
+			@inputPortNames << name if decl =~ /\binput\b/
+
+			acc << name
 		end
 	end
 end
