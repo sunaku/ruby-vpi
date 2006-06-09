@@ -178,5 +178,15 @@ module SWIG
 		def each aType, &aBlock	# :yields: handle
 			self[aType].each(&aBlock)
 		end
+
+		def to_s
+			name = vpi_get_str(VpiFullName, self)
+
+			values = VALUE_FORMAT_NAMES.inject([]) do |acc, fmt|
+				acc << "#{fmt}=#{get_value Vpi.module_eval(fmt.to_s)}"
+			end.join(', ')
+
+			"\#<VpiHandle(#{name}) #{values}>"
+		end
 	end
 end

@@ -411,7 +411,7 @@ end
 							<varlistentry>
 								<term><ulink url="http://www.model.com">Mentor Modelsim</ulink></term>
 								<listitem>
-									<para>Version 6.1b newer is acceptable.</para>
+									<para>Version 6.1b or newer is acceptable.</para>
 								</listitem>
 							</varlistentry>
 						</variablelist>
