@@ -65,7 +65,7 @@
 		<section id="introduction.manifest">
 			<title>Manifest</title>
 
-			<para>This section describes the contents of a &rv; release package. That is, when you extract a release package, the following is what you would expect to find.</para>
+			<para>When you extract a &rv; release package, the following is what you would expect to find.</para>
 
 			<variablelist>
 				<varlistentry>
@@ -115,13 +115,11 @@
 		<section id="introduction.resources">
 			<title>Resources</title>
 
-			<para>This section describes resources associated with the &rv; project.</para>
-
 			<variablelist>
 				<varlistentry>
 					<term><ulink url="&rv.url-project;">Project portal</ulink></term>
 					<listitem>
-						<para>Hosted generously by <ulink url="http://rubyforge.org">RubyForge</ulink>.</para>
+						<para>Access project facilities, hosted generously by <ulink url="http://rubyforge.org">RubyForge</ulink>.</para>
 					</listitem>
 				</varlistentry>
 
@@ -158,7 +156,7 @@
 		<section id="introduction.alternatives">
 			<title>Alternatives</title>
 
-			<para>The following projects are similar to &rv;. In that respect, they may be considered as alternatives.</para>
+			<para>The following projects are similar to &rv;. You may wish to consider them in addition to &rv;.</para>
 
 			<variablelist>
 				<varlistentry>
@@ -223,9 +221,7 @@
 		<section id="background.methodology">
 			<title>Methodology</title>
 
-			<para>&rv; presents an open-ended interface to &vpi;. You can use any methodology you wish in writing &test.gloss;s. However, &BDD.gloss; is emphasized in this project through use of the &rspec.gloss; library in the <link linkend="usage.examples">examples</link>.</para>
-
-			<para>The reason is, in my humble opinion, &BDD.gloss; makes thinking about how to verify a design <emphasis>much</emphasis> easier. Please read the wonderful &rspec-tutorial..ulink; and see for yourself how easy, effective, and useful &BDD.gloss; is as means of verification.</para>
+			<para>&rv; presents an open-ended interface to &vpi;. You can use any methodology you wish in writing &test.gloss;s. However, &BDD.gloss; is emphasized in this project, through use of the &rspec.gloss; library in the provided <link linkend="usage.examples">examples</link>, because it greatly simplifies thinking about how to verify a design. Read the wonderful &rspec-tutorial..ulink; and see for yourself how easy, effective, and useful &BDD.gloss; is as means of verification.</para>
 		</section>
 
 		<section id="background.terminology">
@@ -233,7 +229,7 @@
 
 			<para>As a newcomer into the world of &v;, I often heard the term &test-bench.gloss;: <quote>I ran the test bench, but it didn't work!</quote> or <quote>Are you crazy?!! You <emphasis>still</emphasis> haven't written the test bench? o_O</quote>, for example. I flipped through my textbook and surfed the Internet for a definition of the term, but it was to no avail. Instead, both resources nonchalantly employed the term <emphasis>throughout</emphasis> their being, as if mocking my ignorance of what seems to be universal knowledge.</para>
 
-			<para>Defeated, I turned to my inner faculties to determine the answer. <quote>Let's see, the term &test-bench.gloss; has the word <emphasis>test</emphasis>&mdash;so maybe it has something to do with testing&mdash;and it has the word <emphasis>bench</emphasis>&mdash;so maybe it's referring to a table where the testing should occur</quote>. This reasoning grew increasingly familiar as my mind rummaged through towering stores of obsolescence and ultimately revealed dreaded memories of sleepless anguish&mdash;debugging electronics in the laboratory.</para>
+			<para>Defeated, I turned to my inner faculties to determine the answer. <quote>Let's see, the term &test-bench.gloss; has the word <emphasis>test</emphasis>&mdash;so it has something to do with testing&mdash;and it has the word <emphasis>bench</emphasis>&mdash;so maybe it's referring to a table where the testing should occur</quote>. This reasoning grew increasingly familiar as my mind rummaged through towering stores of obsolescence and ultimately revealed dreaded memories of sleepless anguish: debugging electronics in the robotics laboratory.</para>
 
 			<para><quote>Aha!</quote>, I exclaimed hesitantly, trying to forget the past. The term has its roots in the testing of electronic devices, where an engineer would sit at a bench in an electronics laboratory and verify that an electronic component satisfies some criteria. The bench would be furnished with tools of measurement and manipulation&mdash;such as oscilloscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.</para>
 
@@ -274,11 +270,13 @@
 						<listitem>
 							<para>The first letter in the name of every function, type, structure, and constant becomes capitalized.</para>
 
-							<para>For example, the structure <literal>s_vpi_value</literal> becomes <literal>S_vpi_value</literal>, and the constant <literal>vpiIntVal</literal> becomes <literal>VpiIntVal</literal>.</para>
+							<para>For example, the <literal>s_vpi_value</literal> structure in C becomes the <literal>S_vpi_value</literal> class in Ruby. Likewise, the <literal>vpiIntVal</literal> constant in C becomes the <literal>VpiIntVal</literal> constant in Ruby.</para>
 						</listitem>
 
 						<listitem>
-							<para>The functions <function>vpi_vprintf</function> and <function>vpi_mcd_vprintf</function> are disabled because some compilers have problems with pointers to the <literal>va_list</literal> type, as shown in the code below.</para>
+							<para>The &vpi; functions <function>vpi_vprintf</function> and <function>vpi_mcd_vprintf</function> are not made accessible to Ruby. However, this isn't a big problem because you can use Ruby's <code>Kernel#printf</code> method instead.</para>
+
+							<para>The reason for this limitation is that some C compilers have trouble with pointers to the <literal>va_list</literal> type, as shown in the code below.</para>
 
 	<programlisting>
 void foo(va_list ap) {
@@ -290,7 +288,11 @@ void foo(va_list ap) {
 					</itemizedlist>
 				</para>
 
-				<para>However, when a &specification.gloss; uses &rv; directly, it ends up appearing very much like a C program, because &vpi; was designed for the C language. For this reason, the &vpi; utility layer (see <xref linkend="fig..organization.detail"/>) exists to enlighten the boring C-like interface of &rv; using the brilliant ethos of the <emphasis>Ruby Way</emphasis>. For example, it is more natural to write <code>handle.each(VpiNet) {|net| . . .}</code> in Ruby than it is to write:</para>
+				<section id="organization.vpi.util">
+					<title>&vpi; utility layer</title>
+					<para>When a &specification.gloss; uses &rv; directly, it happens to appear very much like a C program, because &vpi; was designed for the C language. For this reason, the &vpi; utility layer (see <xref linkend="fig..organization.detail"/>) exists to enlighten the boring, C-like interface of &rv; using the brilliant ethos of the <emphasis>Ruby Way</emphasis>.</para>
+
+					<para>For example, it is more natural to write <code>handle.each(VpiNet) {|net| . . .}</code> in Ruby than it is to write:</para>
 
 <programlisting>
 if itr = vpi_iterate(VpiNet, handle)
@@ -299,6 +301,7 @@ if itr = vpi_iterate(VpiNet, handle)
 	end
 end
 </programlisting>
+				</section>
 			</section>
 		</section>
 
