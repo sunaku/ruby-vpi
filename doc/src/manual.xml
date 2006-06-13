@@ -276,11 +276,10 @@
 						<listitem>
 							<para>The &vpi; functions <function>vpi_vprintf</function> and <function>vpi_mcd_vprintf</function> are not made accessible to Ruby. However, this isn't a big problem because you can use Ruby's <code>Kernel#printf</code> method instead.</para>
 
-							<para>The reason for this limitation is that some C compilers have trouble with pointers to the <literal>va_list</literal> type, as shown in the code below.</para>
+							<para>The reason for this limitation is that some C compilers have trouble with pointers to the <literal>va_list</literal> type. For example, in the code shown below, the second line causes a <quote>type mismatch</quote> error.</para>
 
 	<programlisting>
 void foo(va_list ap) {
-	/* causes "type mismatch" error */
 	va_list *p = &amp;ap;
 }
 </programlisting>
@@ -290,17 +289,16 @@ void foo(va_list ap) {
 
 				<section id="organization.vpi.util">
 					<title>&vpi; utility layer</title>
-					<para>When a &specification.gloss; uses &rv; directly, it happens to appear very much like a C program, because &vpi; was designed for the C language. For this reason, the &vpi; utility layer (see <xref linkend="fig..organization.detail"/>) exists to enlighten the boring, C-like interface of &rv; using the brilliant ethos of the <emphasis>Ruby Way</emphasis>.</para>
+					<para>Because &vpi; was designed for the C language, &specification.gloss;s appear very much like C programs when they use &rv; directly. For this reason, the &vpi; utility layer (see <xref linkend="fig..organization.detail"/>) exists to enlighten and encapsulate the boring, C-like interface of &rv; through the brilliant ethos of the <emphasis>Ruby Way</emphasis>.</para>
 
-					<para>For example, it is more natural to write <code>handle.each(VpiNet) {|net| . . .}</code> in Ruby than it is to write:</para>
-
+					<para>For example, it is more natural to write <programlisting>handle.each(VpiNet) {|net| . . .}</programlisting> in Ruby than
 <programlisting>
 if itr = vpi_iterate(VpiNet, handle)
 	while net = vpi_scan(itr)
 		. . .
 	end
 end
-</programlisting>
+</programlisting>.</para>
 				</section>
 			</section>
 		</section>
@@ -308,9 +306,9 @@ end
 		<section id="background.running-tests">
 			<title>Running a test</title>
 
-			<para>When a &test.gloss; is run, the &v; simulator and the Ruby interpreter (see <xref linkend="fig..organization.detail"/>) must take turns performing their duties, unlike an engineer who can verify an electronic component in real-time. In particular, they take turns manipulating the &design.gloss; and transfer control to each other when appropriate.</para>
+			<para>Unlike an engineer who can verify an electronic component in real-time, the &v; simulator and the Ruby interpreter (see <xref linkend="fig..organization.detail"/>) take turns working with objects in a simulation when a &test.gloss; is run. In particular, they take turns manipulating the &design.gloss; and transfer control to each other when appropriate.</para>
 
-			<para>The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Either is able to examine and modify the ball, but only when it is in hand.</para>
+			<para>The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Either is able to inspect and modify the ball, but only when it is in hand.</para>
 
 			<section id="background.running-tests.init">
 				<title>Initialization</title>

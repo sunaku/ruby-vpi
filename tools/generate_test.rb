@@ -178,6 +178,8 @@ def generateDesign aModuleInfo, aOutputInfo
 
 			def initialize
 				#{portInitDecl}
+
+				# unset all inputs
 				#{portResetCode}
 			end
 		end
