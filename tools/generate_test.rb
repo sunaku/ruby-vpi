@@ -167,6 +167,12 @@ def generateDesign aModuleInfo, aOutputInfo
 		acc << %{@#{port} = Vpi::vpi_handle_by_name("#{aOutputInfo.verilogBenchName}.#{port}", nil)\n}
 	end
 
+
+	# make module parameters as class constants
+	paramInitDecl = aModuleInfo.paramDecls.inject('') do |acc, decl|
+		acc << decl.strip.capitalize
+	end
+
 	portResetCode = aModuleInfo.inputPortNames[1..-1].inject('') do |acc, port|
 		acc << %{@#{port}.hexStrVal = 'x'\n}
 	end
@@ -174,6 +180,8 @@ def generateDesign aModuleInfo, aOutputInfo
 	%{
 		# An interface to the design under test.
 		class #{aOutputInfo.designClassName}
+			#{paramInitDecl}
+
 			attr_reader #{accessorDecl}
 
 			def initialize
