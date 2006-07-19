@@ -20,7 +20,7 @@ require 'rspec'
 include Vpi
 
 
-BITS = 5
+BITS = Counter::Size 
 LIMIT = 2 ** BITS
 MAX = LIMIT - 1
 
