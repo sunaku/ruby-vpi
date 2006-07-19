@@ -20,25 +20,17 @@ require 'rspec'
 include Vpi
 
 
-BITS = Counter::Size 
-LIMIT = 2 ** BITS
+# Lowest upper bound of counter's value
+LIMIT = 2 ** Counter::Size
+
+# Maximum allowed value for a counter
 MAX = LIMIT - 1
 
 
-# resets the given design
-def reset aDesign
-	aDesign.reset.intVal = 1
-	relay_verilog
-	aDesign.reset.intVal = 0
-end
-
-
-context "A resetted Counter" do
+context "A resetted counter" do
 	setup do
 		@design = Counter.new
-
-		# reset the counter
-		reset @design
+		@design.reset!
 	end
 
 	specify "should be zero" do
@@ -58,9 +50,7 @@ end
 context "A counter with the maximum value" do
 	setup do
 		@design = Counter.new
-
-		# reset the counter
-		reset @design
+		@design.reset!
 
 		# increment to maximum value
 		MAX.times {relay_verilog}
