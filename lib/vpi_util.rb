@@ -5,55 +5,59 @@
 
 	This file is part of Ruby-VPI.
 
-	Ruby-VPI is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+	Ruby-VPI is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
 
-	Ruby-VPI is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+	Ruby-VPI is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
 module SWIG
-	# Represents an object, known as a "handle", in the Verilog simulation environment. See +vpiHandle+ in IEEE Std. 1364-2005 for details.
-	#
-	# = Reading and writing values
-	# There are several ways to read and write a handle's value, depending on its representation.
-	#
-	# == Using +S_vpi_value+ objects
-	# You can read and write values using +S_vpi_value+ objects through the following methods.
-	# * #get_value_wrapper
-	# * Vpi::vpi_get_value
-	# * Vpi::vpi_put_value
-	#
-	# == Using values and formats
-	# You can read and write values, while specifying their format, through the following methods.
-	# * value = handle.#get_value(format)
-	# * handle.#put_value(value, format)
-	#
-	# Another way to express the code shown above is:
-	# * value = handle.#value(format)
-	# * handle.#value = [value, format]
-	#
-	# == Using values directly
-	# You can read and write values directly, while implicitly specifying their format, through several shortcut methods. The names of these methods can be determined by (1) taking the name of a VPI value format (see the #VALUE_FORMAT_NAMES array), (2) removing the "Vpi" prefix, and (3) converting the first character into lower-case.
-	#
-	# For example, the shortcut methods for reading and writing values using the <tt><b>Vpi</b><em>I</em>ntVal</tt> format are:
-	# * intVal
-	# * intVal=
-	#
-	# The methods shown above can be used like so:
-	# * value = handle.#intVal
-	# * handle.#intVal = value
-	#
-	# == Examples of all approaches
-	# To read a handle's value as an integer:
-	# * handle.#get_value(VpiIntVal)
-	# * handle.#value(VpiIntVal)
-	# * handle.intVal
-	#
-	# To write a handle's value as an integer:
-	# * handle.#put_value(15, VpiIntVal)
-	# * handle.#value = [15, VpiIntVal]
-	# * handle.intVal = 15
+=begin rdoc
+	Represents an object, known as a "handle", in the Verilog simulation environment. See +vpiHandle+ in IEEE Std. 1364-2005 for details.
+
+	= Reading and writing values
+	There are several ways to read and write a handle's value, depending on its representation.
+
+	== Using +S_vpi_value+ objects
+	You can read and write values using +S_vpi_value+ objects through the following methods.
+	* #get_value_wrapper
+	* Vpi::vpi_get_value
+	* Vpi::vpi_put_value
+
+	== Using values and formats
+	You can read and write values, while specifying their format, through the following methods.
+	* value = handle.#get_value(format)
+	* handle.#put_value(value, format)
+
+	== Using values directly
+	You can read and write values directly, while implicitly specifying their format, through several shortcut methods. The names of these methods can be determined by (1) taking the name of a VPI value format (see the #VALUE_FORMAT_NAMES array), (2) removing the "Vpi" prefix, and (3) converting the first character into lower-case.
+
+	For example, the shortcut methods for reading and writing values using the <tt><b>Vpi</b><em>I</em>ntVal</tt> format are:
+	* intVal
+	* intVal=
+
+	The methods shown above can be used like so:
+	* value = handle.#intVal
+	* handle.#intVal = value
+
+	== Examples of all approaches
+	To read a handle's value as an integer:
+	* handle.#get_value(VpiIntVal)
+	* handle.intVal
+
+	To write a handle's value as an integer:
+	* handle.#put_value(15, VpiIntVal)
+	* handle.intVal = 15
+=end
 	class TYPE_p_unsigned_int
 		include Vpi
 
@@ -69,12 +73,11 @@ module SWIG
 
 			eval %{
 				def #{methName}
-					self.value #{varName}
+					get_value #{varName}
 				end
 
-				def #{methName}= *aArgs
-					aArgs[1, 0] = #{varName}
-					self.put_value(*aArgs.flatten)
+				def #{methName}= aValue, *aArgs
+					put_value(aValue, #{varName}, *aArgs)
 				end
 			}
 		end
@@ -119,8 +122,6 @@ module SWIG
 			end
 		end
 
-		alias_method :value, :get_value
-
 		# Writes the given value using the given format, time, and delay. If a format is not given, then the Verilog simulator will attempt to determine the correct format.
 		def put_value aValue, aFormat = nil, aTime = nil, aDelay = VpiNoDelay
 			newVal = S_vpi_value.new
@@ -154,11 +155,6 @@ module SWIG
 			end
 
 			vpi_put_value self, newVal, aTime, aDelay
-		end
-
-		# Invokes #put_value by passing the contents of the given array as arguments.
-		def value= *aArray
-			put_value(*aArray.flatten)
 		end
 
 		# Returns an array of handles of the given type.
