@@ -39,7 +39,7 @@ module SWIG
 	* handle.#put_value(value, format)
 
 	== Using values directly
-	You can read and write values directly, while implicitly specifying their format, through several shortcut methods. The names of these methods can be determined by (1) taking the name of a VPI value format (see the *VALUE_FORMAT_NAMES* array), (2) removing the "Vpi" prefix, and (3) converting the first character into lower-case.
+	You can read and write values directly, while implicitly specifying their format, through several shortcut methods. The names of these methods can be determined by (1) taking the name of a VPI value format listed in the *VALUE_FORMAT_NAMES* array, (2) removing the "Vpi" prefix, and (3) converting the first character into lower-case.
 
 	For example, the shortcut methods for reading and writing values using the <tt><b>Vpi</b><em>I</em>ntVal</tt> format are:
 	* intVal
@@ -71,7 +71,7 @@ module SWIG
 			methName = varName.sub(/^Vpi/, '')
 			methName[0] = methName[0].chr.downcase
 
-			eval %{
+			class_eval %{
 				def #{methName}
 					get_value #{varName}
 				end
