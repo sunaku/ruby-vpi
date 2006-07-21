@@ -61,27 +61,6 @@ module SWIG
 	class TYPE_p_unsigned_int
 		include Vpi
 
-		# Names of VPI value formats. See <tt>S_vpi_value.format</tt> for details.
-		VALUE_FORMAT_NAMES = [:VpiBinStrVal, :VpiOctStrVal, :VpiDecStrVal, :VpiHexStrVal, :VpiStringVal, :VpiScalarVal, :VpiIntVal, :VpiRealVal, :VpiTimeVal, :VpiVectorVal, :VpiStrengthVal].freeze
-
-		# Create methods for reading and writing every VPI value format. These methods wrap the +value+ and +value=+ methods.
-		VALUE_FORMAT_NAMES.each do |var|
-			varName = var.to_s
-
-			methName = varName.sub(/^Vpi/, '')
-			methName[0] = methName[0].chr.downcase
-
-			class_eval %{
-				def #{methName}
-					get_value #{varName}
-				end
-
-				def #{methName}= aValue, *aArgs
-					put_value(aValue, #{varName}, *aArgs)
-				end
-			}
-		end
-
 		# Reads the value using the given format and returns a +S_vpi_value+ object.
 		def get_value_wrapper aFormat
 			val = S_vpi_value.new
@@ -155,6 +134,88 @@ module SWIG
 			end
 
 			vpi_put_value self, newVal, aTime, aDelay
+		end
+
+		HINT_REGEXP = %r{_([a-z])$}
+		ASSIGN_REGEXP = %r{=$}
+
+		# Enables read and write access to VPI properties of this handle.
+		def method_missing aMethId, *aMethArgs
+			methName = aMethId.to_s
+
+			# determine if property is being written
+				assign = methName =~ ASSIGN_REGEXP
+				methName.sub! ASSIGN_REGEXP, ''
+
+			# parse operation hint
+				methName =~ HINT_REGEXP
+				hint = $1
+
+				methName.sub! HINT_REGEXP, ''
+
+			# resolve VPI identifier of property
+				propName = methName[0, 1].upcase << methName[1..-1]
+				propName.insert(0, 'Vpi') unless methName =~ /^vpi/
+
+				prop = Kernel.const_get(propName)
+
+				puts '', Kernel.caller.join("\n"), '', "meth: #{aMethId}", "args: #{aMethArgs.inspect}", "name: #{methName}", "prop: #{propName} => #{prop}", "assign: #{assign}" if $DEBUG
+
+			# perform operation based on hint
+				loop do
+					puts "looping, hint: #{hint}" if $DEBUG
+
+					case hint
+						when 'v'
+							if assign
+								value = aMethArgs.shift
+								return put_value(value, prop, *aMethArgs)
+							else
+								return get_value(prop)
+							end
+
+						when 't'
+							if assign
+								# put_value prop, *aMethArgs
+							else
+								return vpi_get(prop, self)
+							end
+
+						when 's'
+							if assign
+								# put_value prop, *aMethArgs
+							else
+								return vpi_get_str(prop, self)
+							end
+
+						when 'h'
+							if assign
+								# put_value prop, *aMethArgs
+							else
+								return vpi_handle(prop, self)
+							end
+
+						else
+							# hint not given. infer desired operation from property name
+							case methName
+								when /Val$/
+									hint = 'v'
+									redo
+
+								when /Type$/
+									hint = 't'
+									redo
+
+								when /Name$/
+									hint = 's'
+									redo
+							end
+					end
+
+					break
+				end
+
+				raise NoMethodError, "unknown method `#{aMethId}' called with arguments `#{aMethArgs.inspect}'"
 		end
 
 		# Returns an array of handles of the given type.
