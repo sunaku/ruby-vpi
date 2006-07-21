@@ -22,7 +22,7 @@
 
 module SWIG
 =begin rdoc
-	Represents an object, known as a "handle", in the Verilog simulation environment. See +vpiHandle+ in IEEE Std. 1364-2005 for details.
+	This class represents an object inside a Verilog simulation. Such an object is known as a _handle_ in Verilog jargon. See *vpiHandle* in IEEE Std. 1364-2005 for details.
 
 	= Reading and writing values
 	There are several ways to read and write a handle's value, depending on its representation.
@@ -39,7 +39,7 @@ module SWIG
 	* handle.#put_value(value, format)
 
 	== Using values directly
-	You can read and write values directly, while implicitly specifying their format, through several shortcut methods. The names of these methods can be determined by (1) taking the name of a VPI value format (see the #VALUE_FORMAT_NAMES array), (2) removing the "Vpi" prefix, and (3) converting the first character into lower-case.
+	You can read and write values directly, while implicitly specifying their format, through several shortcut methods. The names of these methods can be determined by (1) taking the name of a VPI value format (see the *VALUE_FORMAT_NAMES* array), (2) removing the "Vpi" prefix, and (3) converting the first character into lower-case.
 
 	For example, the shortcut methods for reading and writing values using the <tt><b>Vpi</b><em>I</em>ntVal</tt> format are:
 	* intVal
