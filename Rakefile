@@ -18,6 +18,7 @@
 
 require 'rake/clean'
 require 'rake/rdoctask'
+require 'tempfile'
 
 task :default => :build
 
@@ -113,8 +114,8 @@ task :default => :build
 
 	desc 'Publish documentation to website.'
 	task :web => ['HISTORY'] do |t|
-		sh "rdoc1.8 -t 'Ruby-VPI: Ruby interface to Verilog VPI' -1 #{t.prerequisites[0]} > README.html"
-		sh "scp README.html snk@rubyforge.org:/var/www/gforge-projects/ruby-vpi/"
+		buf = Tempfile.new($$).path
 
-		CLEAN.include 'README.html'
+		sh "rdoc1.8 -t 'Ruby-VPI: Ruby interface to Verilog VPI' -1 #{t.prerequisites[0]} | sed '/h2>Classes/,$d' > #{buf}"
+		sh "scp #{buf} snk@rubyforge.org:/var/www/gforge-projects/ruby-vpi/history.html"
 	end
