@@ -138,14 +138,21 @@ module SWIG
 
 		HINT_REGEXP = %r{_([a-z])$}
 		ASSIGN_REGEXP = %r{=$}
+		PREFIX_REGEXP = %r{^(.*?)_}
 
 		# Enables read and write access to VPI properties of this handle.
-		def method_missing aMethId, *aMethArgs
+		def method_missing aMethId, *aMethArgs, &aMethBlock
 			methName = aMethId.to_s
 
 			# determine if property is being written
 				assign = methName =~ ASSIGN_REGEXP
 				methName.sub! ASSIGN_REGEXP, ''
+
+			# parse operation prefix
+				methName =~ PREFIX_REGEXP
+				prefix = $1
+
+				methName.sub! PREFIX_REGEXP, ''
 
 			# parse operation hint
 				methName =~ HINT_REGEXP
@@ -159,63 +166,81 @@ module SWIG
 
 				prop = Kernel.const_get(propName)
 
-				puts '', Kernel.caller.join("\n"), '', "meth: #{aMethId}", "args: #{aMethArgs.inspect}", "name: #{methName}", "prop: #{propName} => #{prop}", "assign: #{assign}" if $DEBUG
+				puts '', Kernel.caller.join("\n"), '', "prefix: #{prefix}", "meth: #{aMethId}", "args: #{aMethArgs.inspect}", "name: #{methName}", "prop: #{propName} => #{prop}", "assign: #{assign}" if $DEBUG
 
-			# perform operation based on hint
-				loop do
-					puts "looping, hint: #{hint}" if $DEBUG
+			# preform operation based on prefix
+				case prefix
+					when 'each'
+						return each(prop, *aMethArgs, &aMethBlock)
 
-					case hint
-						when 'v'
-							if assign
-								value = aMethArgs.shift
-								return put_value(value, prop, *aMethArgs)
-							else
-								return get_value(prop)
+					else
+						# perform operation based on hint
+							loop do
+								puts "looping, hint: #{hint}" if $DEBUG
+
+								case hint
+									# delay values
+									when 'd'
+
+									# logic values
+									when 'l'
+										if assign
+											value = aMethArgs.shift
+											return put_value(value, prop, *aMethArgs)
+										else
+											return get_value(prop)
+										end
+
+									# integer & boolean values
+									when 'i', 'b'
+										if assign
+											# put_value prop, *aMethArgs
+										else
+											return vpi_get(prop, self)
+										end
+
+									# string values
+									when 's'
+										if assign
+											# put_value prop, *aMethArgs
+										else
+											return vpi_get_str(prop, self)
+										end
+
+									# handle values
+									when 'h'
+										if assign
+											# put_value prop, *aMethArgs
+										else
+											return vpi_handle(prop, self)
+										end
+
+									else
+										# hint not given. infer desired operation from property name
+											case propName
+												when /Delay$/
+													hint = 'd'
+													redo
+
+												when /Val$/
+													hint = 'l'
+													redo
+
+												when /Type$/
+													hint = 'i'
+													redo
+
+												when /Name$/
+													hint = 's'
+													redo
+											end
+								end
+
+								break
 							end
-
-						when 't'
-							if assign
-								# put_value prop, *aMethArgs
-							else
-								return vpi_get(prop, self)
-							end
-
-						when 's'
-							if assign
-								# put_value prop, *aMethArgs
-							else
-								return vpi_get_str(prop, self)
-							end
-
-						when 'h'
-							if assign
-								# put_value prop, *aMethArgs
-							else
-								return vpi_handle(prop, self)
-							end
-
-						else
-							# hint not given. infer desired operation from property name
-							case methName
-								when /Val$/
-									hint = 'v'
-									redo
-
-								when /Type$/
-									hint = 't'
-									redo
-
-								when /Name$/
-									hint = 's'
-									redo
-							end
-					end
-
-					break
 				end
 
-				raise NoMethodError, "unknown method `#{aMethId}' called with arguments `#{aMethArgs.inspect}'"
+			raise NoMethodError, "unknown property `#{aMethId}' accessed with arguments `#{aMethArgs.inspect}'"
 		end
 
 		# Returns an array of handles of the given type.
@@ -236,6 +261,7 @@ module SWIG
 			self[aType].each(&aBlock)
 		end
 
+=begin
 		def to_s
 			name = vpi_get_str(VpiFullName, self)
 
@@ -245,5 +271,6 @@ module SWIG
 
 			"\#<VpiHandle(#{name}) #{values}>"
 		end
+=end
 	end
 end
