@@ -178,87 +178,73 @@ module SWIG
 					when 'each'
 						return each(prop, *aMethArgs, &aMethBlock)
 
-					else
-						# perform operation based on hint
-							loop do
-								puts "looping, hint: #{hint}" if $DEBUG
+					else	# perform operation based on hint
+						loop do
+							puts "looping, hint: #{hint}" if $DEBUG
 
-								case hint
-									# delay values
-									when 'd'
-
-									# logic values
-									when 'l'
-										if isAssign
-											value = aMethArgs.shift
-											return put_value(value, prop, *aMethArgs)
-										else
-											return get_value(prop)
-										end
-
-									# integer & boolean values
-									when 'i', 'b'
-										if isAssign
-											# put_value prop, *aMethArgs
-										else
-											return vpi_get(prop, self)
-										end
-
-									# string values
-									when 's'
-										if isAssign
-											# put_value prop, *aMethArgs
-										else
-											return vpi_get_str(prop, self)
-										end
-
-									# handle values
-									when 'h'
-										if isAssign
-											# put_value prop, *aMethArgs
-										else
-											return vpi_handle(prop, self)
-										end
-
+							case hint
+								when 'd'	# delay values
+									if isAssign
+										# TODO: vpi_put_delays
 									else
-										# hint not given. try infer desired operation from property name
-											if isQuery
-												hint = 'b'
-												redo
-											end
+										# TODO: vpi_gut_delays
+									end
 
-											case propName
-												when /Delay$/	# consider moving to 'handle' section?
-													hint = 'd'
-													redo
+								when 'l'	# logic values
+									if isAssign
+										value = aMethArgs.shift
+										return put_value(value, prop, *aMethArgs)
+									else
+										return get_value(prop)
+									end
 
-												when /Val$/
-													hint = 'l'
-													redo
+								when 'i', 'b'	# integer & boolean values
+									return vpi_get(prop, self) unless isAssign
 
-												when /Type$/, /Direction$/, /Index$/, /Size$/, /Strength\d?$/, /Polarity$/, /Edge$/, /Offset$/, /Mode$/
-													hint = 'i'
-													redo
+								when 's'	# string values
+									return vpi_get_str(prop, self) unless isAssign
 
-												when /Is[A-Z]/, /ed$/
-													hint = 'b'
-													redo
+								when 'h'	# handle values
+									return vpi_handle(prop, self) unless isAssign
 
-												when /Name$/, /File$/, /Decompile$/
-													hint = 's'
-													redo
+								else	# hint not given. infer desired operation from property name
+									if isQuery
+										hint = 'b'
+										redo
+									end
 
-												when /Parent$/, /Inst$/, /Range$/, /Driver$/, /Net$/, /Load$/, /Conn$/, /Bit$/, /Word$/, /[LR]hs$/, /(In|Out)$/, /Term$/, /Argument$/, /Condition$/, /Use$/, /Operand$/, /Stmt$/, /Expr$/, /Scope$/, /Memory$/,
-													hint = 'h'
-													redo
-											end
-								end
+									case propName
+										when /Time$/
+											hint = 'd'
+											redo
 
-								break
+										when /Val$/
+											hint = 'l'
+											redo
+
+										when /Type$/, /Direction$/, /Index$/, /Size$/, /Strength\d?$/, /Polarity$/, /Edge$/, /Offset$/, /Mode$/
+											hint = 'i'
+											redo
+
+										when /Is[A-Z]/, /ed$/
+											hint = 'b'
+											redo
+
+										when /Name$/, /File$/, /Decompile$/
+											hint = 's'
+											redo
+
+										when /Parent$/, /Inst$/, /Range$/, /Driver$/, /Net$/, /Load$/, /Conn$/, /Bit$/, /Word$/, /[LR]hs$/, /(In|Out)$/, /Term$/, /Argument$/, /Condition$/, /Use$/, /Operand$/, /Stmt$/, /Expr$/, /Scope$/, /Memory$/, /Delay$/
+											hint = 'h'
+											redo
+									end
 							end
+
+							break
+						end
 				end
 
-			raise NoMethodError, "unable to access property `#{aMethId}' with arguments `#{aMethArgs.inspect}'; try specify a hint"
+			raise NoMethodError, "unable to access property `#{aMethId}' with arguments `#{aMethArgs.inspect}'; specify a hint in the property name"
 		end
 
 		# Returns an array of handles of the given type.
