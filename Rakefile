@@ -31,7 +31,7 @@ require 'tempfile'
 task :default => :build
 
 desc "Prepare for distribution."
-task :dist => [:swig, :doc, :web]
+task :dist => [:clobber, :swig, :doc, :web]
 
 
 # variables
