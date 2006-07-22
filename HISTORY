@@ -2,6 +2,23 @@
 
 This document is a record of important changes that have occurred with each release of Ruby-VPI.
 
+= Version 0.7 (2006-xx-xx)
+
+== Summary
+
+== Details
+
+* SWIG is no longer a requirement for users.
+
+* The #value and #value= methods have been removed from SWIG::TYPE_p_unsigned_int.
+
+* Tested and developed using:
+  * Ruby 1.8.4 and Icarus Verilog 0.8 on i686 GNU/Linux
+  * Ruby 1.8.4 and Mentor Modelsim 6.1d on x86_64 GNU/Linux
+
+== Acknowledgment
+
+
 = Version 0.6 (2006-05-25)
 
 == Summary

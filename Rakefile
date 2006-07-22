@@ -22,6 +22,9 @@ require 'tempfile'
 
 task :default => :build
 
+desc "Prepare for distribution."
+task :dist => [:swig, :doc, :web]
+
 
 # variables
 	require 'rbconfig'
@@ -56,8 +59,6 @@ task :default => :build
 		# avoid problems with SWIG-generated wrapper for VPI vprintf functions which use va_list
 		ruby %{-pe 'gsub /\\bva_list\\b/, "int"' #{t.prerequisites[0]} > #{t.name}}
 	end
-
-	CLEAN.include 'ext/swig_vpi.h', 'ext/swig_wrap.cin'
 
 
 # documentation
