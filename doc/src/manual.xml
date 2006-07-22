@@ -295,11 +295,11 @@ void foo(va_list ap) {
 
 				<section id="organization.vpi.util">
 					<title>&vpi; utility layer</title>
-					<para>From a user's perspective, the &vpi; utility layer greatly enhances the ability to interact with &handle.gloss;s. You can simply invoke methods on a handle to access its &vpi; properties. These methods are named in the following manner:</para>
+					<para>From a user's perspective, the &vpi; utility layer greatly enhances the ability to interact with &handle.gloss;s. One simply invokes a handle's methods, which are carefully named in the following manner, to access its &vpi; properties.</para>
 
 					<table id="table..handle-property-format" frame='all'>
 						<title>Naming format for accessing a &handle.gloss;'s &vpi; properties.</title>
-						<tgroup cols='6' colsep='1' rowsep='1'>
+						<tgroup cols='6'>
 							<colspec colname='c1'/>
 							<colspec colname='c2'/>
 							<colspec colname='c3'/>
@@ -327,79 +327,77 @@ void foo(va_list ap) {
 						</tgroup>
 					</table>
 
-					<para>Each placeholder suggests <emphasis>how</emphasis> a &vpi; property should be accessed. These placeholders are described thus:
-						<variablelist>
-							<varlistentry>
-								<term>Operation</term>
-								<listitem>
-									<para>This placeholder suggests a method that should be invoked in the context of the specified &vpi; property.</para>
-								</listitem>
-							</varlistentry>
-							<varlistentry>
-								<term>Property</term>
-								<listitem>
-									<para>This placeholder suggests which &vpi; property should be accessed.</para>
-								</listitem>
-							</varlistentry>
-							<varlistentry>
-								<term>Accessor</term>
-								<listitem>
-									<para>This placeholder suggests &vpi; functions that should be used to access the specified &vpi; property.</para>
+					<variablelist>
+						<varlistentry>
+							<term>Operation</term>
+							<listitem>
+								<para>This placeholder suggests a method that should be invoked in the context of the specified &vpi; property.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term>Property</term>
+							<listitem>
+								<para>This placeholder suggests which &vpi; property should be accessed.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term>Accessor</term>
+							<listitem>
+								<para>This placeholder suggests &vpi; functions that should be used to access the specified &vpi; property.</para>
 
-									<table frame='all'>
-										<title>Possible accessors and their implications.</title>
-										<tgroup cols='0' colsep='1' rowsep='1'>
-											<thead>
-												<row>
-													<entry>Accessor</entry>
-													<entry>Kind of value accessed</entry>
-													<entry>&vpi; functions used to access value</entry>
-												</row>
-											</thead>
-											<tbody>
-												<row>
-													<entry>d</entry>
-													<entry>Delay</entry>
-													<entry><function>vpi_get_delays</function>, <function>vpi_put_delays</function></entry>
-												</row>
-												<row>
-													<entry>l</entry>
-													<entry>Logic</entry>
-													<entry><function>vpi_get_value</function>, <function>vpi_put_value</function></entry>
-												</row>
-												<row>
-													<entry>i</entry>
-													<entry>Integer</entry>
-													<entry><function>vpi_get</function></entry>
-												</row>
-												<row>
-													<entry>b</entry>
-													<entry>Boolean</entry>
-													<entry><function>vpi_get</function></entry>
-												</row>
-												<row>
-													<entry>s</entry>
-													<entry>String</entry>
-													<entry><function>vpi_get_str</function></entry>
-												</row>
-												<row>
-													<entry>h</entry>
-													<entry>Handle</entry>
-													<entry><function>vpi_handle</function></entry>
-												</row>
-											</tbody>
-										</tgroup>
-									</table>
-								</listitem>
-							</varlistentry>
-							<varlistentry>
-								<term>Addendum</term>
-								<listitem>
-									<para>This placeholder suggests that the specified &vpi; property should be queried or written.</para>
-								</listitem>
-							</varlistentry>
-						</variablelist>
-					</para>
+								<table frame='all'>
+									<title>Possible accessors and their implications.</title>
+									<tgroup cols='0'>
+										<thead>
+											<row>
+												<entry>Accessor</entry>
+												<entry>Kind of value accessed</entry>
+												<entry>&vpi; functions used to access the value</entry>
+											</row>
+										</thead>
+										<tbody>
+											<row>
+												<entry>d</entry>
+												<entry>delay</entry>
+												<entry><function>vpi_get_delays</function>, <function>vpi_put_delays</function></entry>
+											</row>
+											<row>
+												<entry>l</entry>
+												<entry>logic</entry>
+												<entry><function>vpi_get_value</function>, <function>vpi_put_value</function></entry>
+											</row>
+											<row>
+												<entry>i</entry>
+												<entry>integer</entry>
+												<entry><function>vpi_get</function></entry>
+											</row>
+											<row>
+												<entry>b</entry>
+												<entry>boolean</entry>
+												<entry><function>vpi_get</function></entry>
+											</row>
+											<row>
+												<entry>s</entry>
+												<entry>string</entry>
+												<entry><function>vpi_get_str</function></entry>
+											</row>
+											<row>
+												<entry>h</entry>
+												<entry>handle</entry>
+												<entry><function>vpi_handle</function></entry>
+											</row>
+										</tbody>
+									</tgroup>
+								</table>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term>Addendum</term>
+							<listitem>
+								<para>When this placeholder is a question mark (<emphasis>?</emphasis>), it suggests that the specified &vpi; property should be queried as a boolean value. This has the same effect as specifying <emphasis>b</emphasis> in place of the accessor placeholder.</para>
+							</listitem>
+						</varlistentry>
+					</variablelist>
 
 					<para>The &vpi; utility layer (see <xref linkend="fig..organization.detail"/>) transforms the laborious, C-like interface of &rv; into one that embodies the brilliant ethos of the <emphasis>Ruby Way</emphasis>. For example, the &vpi; utility layer allows us express the following code:
 <programlisting>
