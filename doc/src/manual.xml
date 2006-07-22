@@ -280,7 +280,7 @@
 						</listitem>
 
 						<listitem>
-							<para>The &vpi; functions <function>vpi_vprintf</function> and <function>vpi_mcd_vprintf</function> are not made accessible to Ruby. However, this isn't a big problem because you can use Ruby's <code>Kernel#printf</code> method instead.</para>
+							<para>The &vpi; functions <function>vpi_vprintf</function> and <function>vpi_mcd_vprintf</function> are not made accessible to Ruby. However, this isn't a big problem because you can use Ruby's <function>printf</function> method instead.</para>
 
 							<para>The reason for this limitation is that some C compilers have trouble with pointers to the <literal>va_list</literal> type. For example, in the code shown below, the second line causes a <quote>type mismatch</quote> error.</para>
 
@@ -331,13 +331,13 @@ void foo(va_list ap) {
 						<varlistentry>
 							<term>Operation</term>
 							<listitem>
-								<para>This placeholder suggests a method that should be invoked in the context of the specified &vpi; property.</para>
+								<para>This parameter suggests a method that should be invoked in the context of the Property parameter.</para>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
 							<term>Property</term>
 							<listitem>
-								<para>This placeholder suggests which &vpi; property should be accessed. The first letter of the property should be lower case. Also, the <emphasis>vpi</emphasis> prefix, common to all &vpi; properties, can be omitted.</para>
+								<para>This parameter suggests which &vpi; property should be accessed. The first letter of this parameter's value should be lower case, and the <emphasis>vpi</emphasis> prefix&mdash;common to all &vpi; properties&mdash;can be omitted.</para>
 
 								<para>For example, the &vpi; property <emphasis>vpiFullName</emphasis> is considered equivalent to <emphasis>fullName</emphasis> but not to either <emphasis>FullName</emphasis> or <emphasis>full_name</emphasis>.</para>
 							</listitem>
@@ -345,7 +345,7 @@ void foo(va_list ap) {
 						<varlistentry>
 							<term>Accessor</term>
 							<listitem>
-								<para>This placeholder suggests &vpi; functions that should be used to access the specified &vpi; property. When this placeholder is not specified, the &vpi; utility layer will attempt to guess the value of this placeholder by inspecting the name of the specified &vpi; property.</para>
+								<para>This parameter suggests &vpi; functions that should be used to access the specified &vpi; property. When this parameter is not specified, the &vpi; utility layer will <!--VOLATILE LINK!--><ulink url="../ref/ruby/classes/SWIG/TYPE_p_unsigned_int.src/M000037.html">attempt to <emphasis>guess</emphasis> the value of this parameter</ulink>.</para>
 
 								<table frame='all'>
 									<title>Possible accessors and their implications.</title>
@@ -396,7 +396,7 @@ void foo(va_list ap) {
 						<varlistentry>
 							<term>Addendum</term>
 							<listitem>
-								<para>When this placeholder is a question mark (<emphasis>?</emphasis>), it suggests that the specified &vpi; property should be queried as a boolean value. This has the same effect as specifying <emphasis>b</emphasis> in place of the accessor placeholder.</para>
+								<para>When this parameter is a question mark (<emphasis>?</emphasis>), it suggests that the specified &vpi; property should be queried as a boolean value. This produces the same effect as specifying <emphasis>b</emphasis> for the Accessor parameter.</para>
 							</listitem>
 						</varlistentry>
 					</variablelist>
@@ -405,43 +405,68 @@ void foo(va_list ap) {
 						<title>Accessing a &handle.gloss;'s &vpi; properties.</title>
 						<variablelist>
 							<varlistentry>
-								<term>vpiFullName</term>
-								<term>vpiFullName_s</term>
-								<term>fullName</term>
-								<term>fullName_s</term>
+								<term>handle.each_vpiNet {|net| puts net.fullName}</term>
+								<term>handle.each_net {|net| puts net.fullName}</term>
 								<listitem>
-									<para>These methods access the string value of the <code>vpiFullName</code> property.</para>
+									<para>These methods invoke the <code>each</code> iterator in the context of the <code>vpiNet</code> property. In effect, they print the full &vpi; path name of each <code>vpiNet</code> object associated with the handle.</para>
 								</listitem>
 							</varlistentry>
 							<varlistentry>
-								<term>vpiProtected_b</term>
-								<term>vpiProtected?</term>
-								<term>protected_b</term>
-								<term>protected?</term>
+								<term>handle.vpiIntVal</term>
+								<term>handle.vpiIntVal_l</term>
+								<term>handle.intVal</term>
+								<term>handle.intVal_l</term>
 								<listitem>
-									<para>These methods access the boolean value of the <code>vpiProtected</code> property.</para>
+									<para>These methods access the logic value of the handle's <code>vpiIntVal</code> property.</para>
 								</listitem>
 							</varlistentry>
 							<varlistentry>
-								<term>vpiIntVal</term>
-								<term>vpiIntVal_v</term>
-								<term>intVal</term>
-								<term>intVal_v</term>
+								<term>handle.vpiIntVal = 15</term>
+								<term>handle.vpiIntVal_l = 15</term>
+								<term>handle.intVal = 15</term>
+								<term>handle.intVal_l = 15</term>
 								<listitem>
-									<para>These methods access the logic value of the <code>vpiIntVal</code> property as an integer.</para>
+									<para>These methods assign the number 15 to the logic value of the handle's <code>vpiIntVal</code> property.</para>
+								</listitem>
+							</varlistentry>
+							<varlistentry>
+								<term>handle.vpiType</term>
+								<term>handle.vpiType_i</term>
+								<term>handle.type</term>
+								<term>handle.type_i</term>
+								<listitem>
+									<para>These methods access the integer value of the handle's <code>vpiType</code> property.</para>
+								</listitem>
+							</varlistentry>
+							<varlistentry>
+								<term>handle.vpiProtected_b</term>
+								<term>handle.vpiProtected?</term>
+								<term>handle.protected_b</term>
+								<term>handle.protected?</term>
+								<listitem>
+									<para>These methods access the boolean value of the handle's <code>vpiProtected</code> property.</para>
+								</listitem>
+							</varlistentry>
+							<varlistentry>
+								<term>handle.vpiFullName</term>
+								<term>handle.vpiFullName_s</term>
+								<term>handle.fullName</term>
+								<term>handle.fullName_s</term>
+								<listitem>
+									<para>These methods access the string value of the handle's <code>vpiFullName</code> property.</para>
+								</listitem>
+							</varlistentry>
+							<varlistentry>
+								<term>handle.vpiParent</term>
+								<term>handle.vpiParent_h</term>
+								<term>handle.parent</term>
+								<term>handle.parent_h</term>
+								<listitem>
+									<para>These methods access the handle value of the handle's <code>vpiParent</code> property.</para>
 								</listitem>
 							</varlistentry>
 						</variablelist>
 					</example>
-
-					<para>The &vpi; utility layer (see <xref linkend="fig..organization.detail"/>) transforms the laborious, C-like interface of &rv; into one that embodies the brilliant ethos of the <emphasis>Ruby Way</emphasis>. For example, the &vpi; utility layer allows us express the following code:
-<programlisting>
-if itr = vpi_iterate(VpiNet, handle)
-	while net = vpi_scan(itr)
-		. . .
-	end
-end
-</programlisting> in a more natural way: <programlisting>handle.each_net {|net| . . .}</programlisting></para>
 				</section>
 			</section>
 		</section>

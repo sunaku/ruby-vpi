@@ -155,96 +155,98 @@ module SWIG
 					methName.sub! QUERY_REGEXP, ''
 				end
 
-			# parse operation hint
-				if hint = methName[HINT_REGEXP, 1]
+			# parse Accessor parameter
+				if accessor = methName[HINT_REGEXP, 1]
 					methName.sub! HINT_REGEXP, ''
 				end
 
-			# parse operation prefix
-				if prefix = methName[PREFIX_REGEXP, 1]
+			# parse Operation parameter
+				if operation = methName[PREFIX_REGEXP, 1]
 					methName.sub! PREFIX_REGEXP, ''
 				end
 
-			# resolve VPI identifier of property
+			# resolve Property parameter into a valid VPI property
 				propName = methName[0, 1].upcase << methName[1..-1]
 				propName.insert(0, 'Vpi') unless methName =~ /^vpi/
 
-				puts '', Kernel.caller.join("\n"), '', "prefix: #{prefix}", "meth: #{aMethId}", "args: #{aMethArgs.inspect}", "name: #{methName}", "prop: #{propName}", "assign: #{isAssign}" if $DEBUG
+				puts '', Kernel.caller.join("\n"), '', "operation: #{operation}", "meth: #{aMethId}", "args: #{aMethArgs.inspect}", "name: #{methName}", "prop: #{propName}", "assign: #{isAssign}", "query: #{isQuery}" if $DEBUG
 
-				prop = Kernel.const_get(propName)
-
-			# preform operation based on prefix
-				case prefix
-					when 'each'
-						return each(prop, *aMethArgs, &aMethBlock)
-
-					else	# perform operation based on hint
-						loop do
-							puts "looping, hint: #{hint}" if $DEBUG
-
-							case hint
-								when 'd'	# delay values
-									if isAssign
-										# TODO: vpi_put_delays
-									else
-										# TODO: vpi_gut_delays
-									end
-
-								when 'l'	# logic values
-									if isAssign
-										value = aMethArgs.shift
-										return put_value(value, prop, *aMethArgs)
-									else
-										return get_value(prop)
-									end
-
-								when 'i', 'b'	# integer & boolean values
-									return vpi_get(prop, self) unless isAssign
-
-								when 's'	# string values
-									return vpi_get_str(prop, self) unless isAssign
-
-								when 'h'	# handle values
-									return vpi_handle(prop, self) unless isAssign
-
-								else	# hint not given. infer desired operation from property name
-									if isQuery
-										hint = 'b'
-										redo
-									end
-
-									case propName
-										when /Time$/
-											hint = 'd'
-											redo
-
-										when /Val$/
-											hint = 'l'
-											redo
-
-										when /Type$/, /Direction$/, /Index$/, /Size$/, /Strength\d?$/, /Polarity$/, /Edge$/, /Offset$/, /Mode$/
-											hint = 'i'
-											redo
-
-										when /Is[A-Z]/, /ed$/
-											hint = 'b'
-											redo
-
-										when /Name$/, /File$/, /Decompile$/
-											hint = 's'
-											redo
-
-										when /Parent$/, /Inst$/, /Range$/, /Driver$/, /Net$/, /Load$/, /Conn$/, /Bit$/, /Word$/, /[LR]hs$/, /(In|Out)$/, /Term$/, /Argument$/, /Condition$/, /Use$/, /Operand$/, /Stmt$/, /Expr$/, /Scope$/, /Memory$/, /Delay$/
-											hint = 'h'
-											redo
-									end
-							end
-
-							break
-						end
+				begin
+					prop = Vpi.const_get(propName)
+				rescue NameError
+					raise ArgumentError, "invalid VPI property `#{propName}'"
 				end
 
-			raise NoMethodError, "unable to access property `#{aMethId}' with arguments `#{aMethArgs.inspect}'; specify a hint in the property name"
+			# access the VPI property
+				if operation
+					return self.send(operation.to_sym, prop, *aMethArgs, &aMethBlock)
+				else
+					loop do
+						puts "looping, accessor: #{accessor}" if $DEBUG
+
+						case accessor
+							when 'd'	# delay values
+								if isAssign
+									# TODO: vpi_put_delays
+								else
+									# TODO: vpi_get_delays
+								end
+
+							when 'l'	# logic values
+								if isAssign
+									value = aMethArgs.shift
+									return put_value(value, prop, *aMethArgs)
+								else
+									return get_value(prop)
+								end
+
+							when 'i', 'b'	# integer & boolean values
+								return vpi_get(prop, self) unless isAssign
+
+							when 's'	# string values
+								return vpi_get_str(prop, self) unless isAssign
+
+							when 'h'	# handle values
+								return vpi_handle(prop, self) unless isAssign
+
+							else	# accessor not specified. guess its value from property name
+								if isQuery
+									accessor = 'b'
+									redo
+								end
+
+								case propName
+									when /Time$/
+										accessor = 'd'
+										redo
+
+									when /Val$/
+										accessor = 'l'
+										redo
+
+									when /Type$/, /Direction$/, /Index$/, /Size$/, /Strength\d?$/, /Polarity$/, /Edge$/, /Offset$/, /Mode$/
+										accessor = 'i'
+										redo
+
+									when /Is[A-Z]/, /ed$/
+										accessor = 'b'
+										redo
+
+									when /Name$/, /File$/, /Decompile$/
+										accessor = 's'
+										redo
+
+									when /Parent$/, /Inst$/, /Range$/, /Driver$/, /Net$/, /Load$/, /Conn$/, /Bit$/, /Word$/, /[LR]hs$/, /(In|Out)$/, /Term$/, /Argument$/, /Condition$/, /Use$/, /Operand$/, /Stmt$/, /Expr$/, /Scope$/, /Memory$/, /Delay$/
+										accessor = 'h'
+										redo
+								end
+						end
+
+						break
+					end
+				end
+
+			raise NoMethodError, "unable to access VPI property `#{propName}' through method `#{aMethId}' with arguments `#{aMethArgs.inspect}' for #{self}"
 		end
 
 		# Returns an array of handles of the given type.
