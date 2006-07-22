@@ -138,6 +138,7 @@ module SWIG
 
 		HINT_REGEXP = %r{_([a-z])$}
 		ASSIGN_REGEXP = %r{=$}
+		QUERY_REGEXP = %r{\?$}
 		PREFIX_REGEXP = %r{^(.*?)_}
 
 		# Enables read and write access to VPI properties of this handle.
@@ -145,28 +146,32 @@ module SWIG
 			methName = aMethId.to_s
 
 			# determine if property is being written
-				assign = methName =~ ASSIGN_REGEXP
-				methName.sub! ASSIGN_REGEXP, ''
+				if isAssign = methName =~ ASSIGN_REGEXP
+					methName.sub! ASSIGN_REGEXP, ''
+				end
 
-			# parse operation prefix
-				methName =~ PREFIX_REGEXP
-				prefix = $1
-
-				methName.sub! PREFIX_REGEXP, ''
+			# determine if property is being queried
+				if isQuery = methName =~ QUERY_REGEXP
+					methName.sub! QUERY_REGEXP, ''
+				end
 
 			# parse operation hint
-				methName =~ HINT_REGEXP
-				hint = $1
+				if hint = methName[HINT_REGEXP, 1]
+					methName.sub! HINT_REGEXP, ''
+				end
 
-				methName.sub! HINT_REGEXP, ''
+			# parse operation prefix
+				if prefix = methName[PREFIX_REGEXP, 1]
+					methName.sub! PREFIX_REGEXP, ''
+				end
 
 			# resolve VPI identifier of property
 				propName = methName[0, 1].upcase << methName[1..-1]
 				propName.insert(0, 'Vpi') unless methName =~ /^vpi/
 
-				prop = Kernel.const_get(propName)
+				puts '', Kernel.caller.join("\n"), '', "prefix: #{prefix}", "meth: #{aMethId}", "args: #{aMethArgs.inspect}", "name: #{methName}", "prop: #{propName}", "assign: #{isAssign}" if $DEBUG
 
-				puts '', Kernel.caller.join("\n"), '', "prefix: #{prefix}", "meth: #{aMethId}", "args: #{aMethArgs.inspect}", "name: #{methName}", "prop: #{propName} => #{prop}", "assign: #{assign}" if $DEBUG
+				prop = Kernel.const_get(propName)
 
 			# preform operation based on prefix
 				case prefix
@@ -184,7 +189,7 @@ module SWIG
 
 									# logic values
 									when 'l'
-										if assign
+										if isAssign
 											value = aMethArgs.shift
 											return put_value(value, prop, *aMethArgs)
 										else
@@ -193,7 +198,7 @@ module SWIG
 
 									# integer & boolean values
 									when 'i', 'b'
-										if assign
+										if isAssign
 											# put_value prop, *aMethArgs
 										else
 											return vpi_get(prop, self)
@@ -201,7 +206,7 @@ module SWIG
 
 									# string values
 									when 's'
-										if assign
+										if isAssign
 											# put_value prop, *aMethArgs
 										else
 											return vpi_get_str(prop, self)
@@ -209,16 +214,21 @@ module SWIG
 
 									# handle values
 									when 'h'
-										if assign
+										if isAssign
 											# put_value prop, *aMethArgs
 										else
 											return vpi_handle(prop, self)
 										end
 
 									else
-										# hint not given. infer desired operation from property name
+										# hint not given. try infer desired operation from property name
+											if isQuery
+												hint = 'b'
+												redo
+											end
+
 											case propName
-												when /Delay$/
+												when /Delay$/	# consider moving to 'handle' section?
 													hint = 'd'
 													redo
 
@@ -226,12 +236,20 @@ module SWIG
 													hint = 'l'
 													redo
 
-												when /Type$/
+												when /Type$/, /Direction$/, /Index$/, /Size$/, /Strength\d?$/, /Polarity$/, /Edge$/, /Offset$/, /Mode$/
 													hint = 'i'
 													redo
 
-												when /Name$/
+												when /Is[A-Z]/, /ed$/
+													hint = 'b'
+													redo
+
+												when /Name$/, /File$/, /Decompile$/
 													hint = 's'
+													redo
+
+												when /Parent$/, /Inst$/, /Range$/, /Driver$/, /Net$/, /Load$/, /Conn$/, /Bit$/, /Word$/, /[LR]hs$/, /(In|Out)$/, /Term$/, /Argument$/, /Condition$/, /Use$/, /Operand$/, /Stmt$/, /Expr$/, /Scope$/, /Memory$/,
+													hint = 'h'
 													redo
 											end
 								end
@@ -240,7 +258,7 @@ module SWIG
 							end
 				end
 
-			raise NoMethodError, "unknown property `#{aMethId}' accessed with arguments `#{aMethArgs.inspect}'"
+			raise NoMethodError, "unable to access property `#{aMethId}' with arguments `#{aMethArgs.inspect}'; try specify a hint"
 		end
 
 		# Returns an array of handles of the given type.
