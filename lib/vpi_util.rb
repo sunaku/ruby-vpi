@@ -142,8 +142,8 @@ module SWIG
 		PREFIX_REGEXP = %r{^(.*?)_}
 
 		# Enables read and write access to VPI properties of this handle.
-		def method_missing aMethId, *aMethArgs, &aMethBlock
-			methName = aMethId.to_s
+		def method_missing aMsg, *aArgs, &aBlockArg
+			methName = aMsg.to_s
 
 			# determine if property is being written
 				if isAssign = methName =~ ASSIGN_REGEXP
@@ -169,7 +169,7 @@ module SWIG
 				propName = methName[0, 1].upcase << methName[1..-1]
 				propName.insert(0, 'Vpi') unless methName =~ /^vpi/
 
-				puts '', Kernel.caller.join("\n"), '', "operation: #{operation}", "meth: #{aMethId}", "args: #{aMethArgs.inspect}", "name: #{methName}", "prop: #{propName}", "assign: #{isAssign}", "query: #{isQuery}" if $DEBUG
+				puts '', Kernel.caller.join("\n"), '', "operation: #{operation}", "meth: #{aMsg}", "args: #{aArgs.inspect}", "name: #{methName}", "prop: #{propName}", "assign: #{isAssign}", "query: #{isQuery}" if $DEBUG
 
 				begin
 					prop = Vpi.const_get(propName)
@@ -179,7 +179,7 @@ module SWIG
 
 			# access the VPI property
 				if operation
-					return self.send(operation.to_sym, prop, *aMethArgs, &aMethBlock)
+					return self.send(operation.to_sym, prop, *aArgs, &aBlockArg)
 				else
 					loop do
 						puts "looping, accessor: #{accessor}" if $DEBUG
@@ -194,8 +194,8 @@ module SWIG
 
 							when 'l'	# logic values
 								if isAssign
-									value = aMethArgs.shift
-									return put_value(value, prop, *aMethArgs)
+									value = aArgs.shift
+									return put_value(value, prop, *aArgs)
 								else
 									return get_value(prop)
 								end
@@ -246,7 +246,7 @@ module SWIG
 					end
 				end
 
-			raise NoMethodError, "unable to access VPI property `#{propName}' through method `#{aMethId}' with arguments `#{aMethArgs.inspect}' for #{self}"
+			raise NoMethodError, "unable to access VPI property `#{propName}' through method `#{aMsg}' with arguments `#{aArgs.inspect}' for handle #{self}"
 		end
 
 		# Returns an array of handles of the given type.

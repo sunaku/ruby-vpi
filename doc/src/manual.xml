@@ -339,13 +339,13 @@ void foo(va_list ap) {
 							<listitem>
 								<para>This parameter suggests which &vpi; property should be accessed. The first letter of this parameter's value should be lower case, and the <emphasis>vpi</emphasis> prefix&mdash;common to all &vpi; properties&mdash;can be omitted.</para>
 
-								<para>For example, the &vpi; property <emphasis>vpiFullName</emphasis> is considered equivalent to <emphasis>fullName</emphasis> but not to either <emphasis>FullName</emphasis> or <emphasis>full_name</emphasis>.</para>
+								<para>For example, the &vpi; property <emphasis>vpiFullName</emphasis> is considered equivalent to <emphasis>fullName</emphasis> but not equivalent to either <emphasis>FullName</emphasis> or <emphasis>full_name</emphasis>.</para>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
 							<term>Accessor</term>
 							<listitem>
-								<para>This parameter suggests &vpi; functions that should be used to access the specified &vpi; property. When this parameter is not specified, the &vpi; utility layer will <!--VOLATILE LINK!--><ulink url="../ref/ruby/classes/SWIG/TYPE_p_unsigned_int.src/M000037.html">attempt to <emphasis>guess</emphasis> the value of this parameter</ulink>.</para>
+								<para>This parameter suggests which &vpi; function should be used to access the &vpi; property. When this parameter is not specified, the &vpi; utility layer will attempt to <emphasis>guess</emphasis> the value of this parameter (see the source code for the <!--VOLATILE LINK!--><ulink url="../ref/ruby/classes/SWIG/TYPE_p_unsigned_int.src/M000037.html"><code>SWIG::TYPE_p_unsigned_int#method_missing</code></ulink> method for details).</para>
 
 								<table frame='all'>
 									<title>Possible accessors and their implications.</title>
