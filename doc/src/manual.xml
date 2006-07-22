@@ -345,7 +345,7 @@ void foo(va_list ap) {
 						<varlistentry>
 							<term>Accessor</term>
 							<listitem>
-								<para>This placeholder suggests &vpi; functions that should be used to access the specified &vpi; property.</para>
+								<para>This placeholder suggests &vpi; functions that should be used to access the specified &vpi; property. When this placeholder is not specified, the &vpi; utility layer will attempt to guess the value of this placeholder by inspecting the name of the specified &vpi; property.</para>
 
 								<table frame='all'>
 									<title>Possible accessors and their implications.</title>
@@ -405,9 +405,30 @@ void foo(va_list ap) {
 						<title>Accessing a &handle.gloss;'s &vpi; properties.</title>
 						<variablelist>
 							<varlistentry>
-								<term><code>handle.vpiIntVal</code></term>
+								<term>vpiFullName</term>
+								<term>vpiFullName_s</term>
+								<term>fullName</term>
+								<term>fullName_s</term>
 								<listitem>
-									<para>Foo</para>
+									<para>These methods access the string value of the <code>vpiFullName</code> property.</para>
+								</listitem>
+							</varlistentry>
+							<varlistentry>
+								<term>vpiProtected_b</term>
+								<term>vpiProtected?</term>
+								<term>protected_b</term>
+								<term>protected?</term>
+								<listitem>
+									<para>These methods access the boolean value of the <code>vpiProtected</code> property.</para>
+								</listitem>
+							</varlistentry>
+							<varlistentry>
+								<term>vpiIntVal</term>
+								<term>vpiIntVal_v</term>
+								<term>intVal</term>
+								<term>intVal_v</term>
+								<listitem>
+									<para>These methods access the logic value of the <code>vpiIntVal</code> property as an integer.</para>
 								</listitem>
 							</varlistentry>
 						</variablelist>
