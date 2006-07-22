@@ -297,7 +297,7 @@ void foo(va_list ap) {
 					<title>&vpi; utility layer</title>
 					<para>From a user's perspective, the &vpi; utility layer greatly enhances the ability to interact with &handle.gloss;s. One simply invokes a handle's methods, which are carefully named in the following manner, to access its &vpi; properties.</para>
 
-					<table id="table..handle-property-format" frame='all'>
+					<table id="table..handle-property-accessor-naming-format" frame='all'>
 						<title>Naming format for accessing a &handle.gloss;'s &vpi; properties.</title>
 						<tgroup cols='6'>
 							<colspec colname='c1'/>
@@ -337,7 +337,9 @@ void foo(va_list ap) {
 						<varlistentry>
 							<term>Property</term>
 							<listitem>
-								<para>This placeholder suggests which &vpi; property should be accessed.</para>
+								<para>This placeholder suggests which &vpi; property should be accessed. The first letter of the property should be lower case. Also, the <emphasis>vpi</emphasis> prefix, common to all &vpi; properties, can be omitted.</para>
+
+								<para>For example, the &vpi; property <emphasis>vpiFullName</emphasis> is considered equivalent to <emphasis>fullName</emphasis> but not to either <emphasis>FullName</emphasis> or <emphasis>full_name</emphasis>.</para>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
@@ -398,6 +400,18 @@ void foo(va_list ap) {
 							</listitem>
 						</varlistentry>
 					</variablelist>
+
+					<example id="ex..handle-property-accessor-naming-format">
+						<title>Accessing a &handle.gloss;'s &vpi; properties.</title>
+						<variablelist>
+							<varlistentry>
+								<term><code>handle.vpiIntVal</code></term>
+								<listitem>
+									<para>Foo</para>
+								</listitem>
+							</varlistentry>
+						</variablelist>
+					</example>
 
 					<para>The &vpi; utility layer (see <xref linkend="fig..organization.detail"/>) transforms the laborious, C-like interface of &rv; into one that embodies the brilliant ethos of the <emphasis>Ruby Way</emphasis>. For example, the &vpi; utility layer allows us express the following code:
 <programlisting>
