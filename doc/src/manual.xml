@@ -159,14 +159,14 @@
 			</variablelist>
 		</section>
 
-		<section id="introduction.alternatives">
-			<title>Alternatives</title>
+		<section id="introduction.related-works">
+			<title>Related works</title>
 
-			<para>The following projects are similar to &rv;. You may wish to consider them in addition to &rv;.</para>
+			<para>You may wish to consider the following projects, which are similar to &rv;.</para>
 
 			<variablelist>
 				<varlistentry>
-					<term><ulink url="http://www.aracnet.com/~ptkwt/ruby_stuff/RHDL/">RHDL</ulink></term>
+					<term><ulink url="http://rhdl.rubyforge.org">RHDL</ulink></term>
 					<listitem>
 						<para>Hardware description and verification language based on Ruby.</para>
 					</listitem>
@@ -191,7 +191,7 @@
 				</varlistentry>
 			</variablelist>
 
-			<section id="introduction.alternatives.pli">
+			<section id="introduction.related-works.pli">
 				<title>Ye olde PLI</title>
 				<para>The following projects utilize the archaic <acronym>tf</acronym> and <abbrev>acc</abbrev> PLI interfaces, which have been officially deprecated in IEEE Std 1364-2005.</para>
 
@@ -227,7 +227,7 @@
 		<section id="background.methodology">
 			<title>Methodology</title>
 
-			<para>&rv; presents an open-ended interface to &vpi;. You can use any methodology you wish in writing &test.gloss;s. However, &BDD.gloss; is emphasized in this project, through use of the &rspec.gloss; library in the provided <link linkend="usage.examples">examples</link>, because it greatly simplifies thinking about how to verify a design. Read the wonderful &rspec-tutorial..ulink; and see for yourself how easy, effective, and useful &BDD.gloss; is as means of verification.</para>
+			<para>&rv; presents an open-ended interface to &vpi;. Thus, you can use any methodology you wish when writing &test.gloss;s. However, &BDD.gloss; is emphasized in this project&mdash;through use of &rspec.gloss; in the <link linkend="usage.examples">examples</link>&mdash;because it greatly simplifies thinking about <emphasis>how</emphasis> to verify a design.</para>
 		</section>
 
 		<section id="background.terminology">
