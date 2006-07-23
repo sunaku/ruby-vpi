@@ -28,10 +28,10 @@ require 'rake/clean'
 require 'rake/rdoctask'
 require 'tempfile'
 
-task :default => :build
 
-desc "Prepare for distribution."
-task :dist => [:clobber, :swig, :doc, :web]
+SSH_URL = 'snk@rubyforge.org:/var/www/gforge-projects/ruby-vpi'
+
+task :default => :build
 
 
 # variables
@@ -120,11 +120,24 @@ task :dist => [:clobber, :swig, :doc, :web]
 		rmdir tempDest
 	end
 
+# distribution
+	distDocs = ['HISTORY', 'README'].map do |src|
+		dst = src.downcase << '.html'
+
+		file dst => src do |t|
+			sh "rdoc1.8 -t 'Ruby-VPI: Ruby interface to Verilog VPI' -1 #{t.prerequisites[0]} | grep -v '^$' | sed '/h2>Classes/,$d' | sed '$a</body></html>' > #{t.name}"
+		end
+
+		CLEAN.include dst
+		dst
+	end
+
+
+	desc "Prepare for distribution."
+	task :dist => [:clobber, :swig, :doc, *distDocs]
+
 
 	desc 'Publish documentation to website.'
-	task :web => ['HISTORY'] do |t|
-		buf = Tempfile.new($$).path
-
-		sh "rdoc1.8 -t 'Ruby-VPI: Ruby interface to Verilog VPI' -1 #{t.prerequisites[0]} | sed '/h2>Classes/,$d' > #{buf}"
-		sh "scp #{buf} snk@rubyforge.org:/var/www/gforge-projects/ruby-vpi/history.html"
+	task :web => ['ref', 'doc', *distDocs] do |t|
+		sh "scp -Cr #{t.prerequisites.join(' ')} #{SSH_URL}"
 	end
