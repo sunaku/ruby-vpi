@@ -298,7 +298,7 @@ void foo(va_list ap) {
 					<para>From a user's perspective, the &vpi; utility layer greatly enhances the ability to interact with &handle.gloss;s. One simply invokes a handle's methods, which are carefully named in the following manner, to access its &vpi; properties.</para>
 
 					<table id="table..handle-property-accessor-naming-format" frame='all'>
-						<title>Naming format for accessing a &handle.gloss;'s &vpi; properties.</title>
+						<title>Naming format for accessing a &handle.gloss;'s &vpi; properties</title>
 						<tgroup cols='6'>
 							<colspec colname='c1'/>
 							<colspec colname='c2'/>
@@ -348,7 +348,7 @@ void foo(va_list ap) {
 								<para>This parameter suggests which &vpi; function should be used to access the &vpi; property. When this parameter is not specified, the &vpi; utility layer will attempt to <emphasis>guess</emphasis> the value of this parameter (see the source code for the <!--VOLATILE LINK!--><ulink url="../ref/ruby/classes/SWIG/TYPE_p_unsigned_int.src/M000037.html"><code>SWIG::TYPE_p_unsigned_int#method_missing</code></ulink> method for details).</para>
 
 								<table frame='all'>
-									<title>Possible accessors and their implications.</title>
+									<title>Possible accessors and their implications</title>
 									<tgroup cols='0'>
 										<thead>
 											<row>
@@ -404,7 +404,7 @@ void foo(va_list ap) {
 					</variablelist>
 
 					<example id="ex..handle-property-accessor-naming-format">
-						<title>Accessing a &handle.gloss;'s &vpi; properties.</title>
+						<title>Accessing a &handle.gloss;'s &vpi; properties</title>
 
 						<informaltable frame='all'>
 							<tgroup cols='6'>
@@ -776,9 +776,29 @@ void foo(va_list ap) {
 	<chapter id="usage">
 		<title>Usage</title>
 
-		<section id="usage.req">
+		<procedure>
+			<title>Typical way of using &rv;</title>
+
+			<step>
+				<para>Declare a &v; module (the &design.gloss;) using &v; 2001 syntax, or work with an existing one.</para>
+			</step>
+
+			<step>
+				<para>Generate a &test.gloss; for your &design.gloss; using the <link linkend="usage.tools.generate-test">automated test generator tool</link>.</para>
+			</step>
+
+			<step>
+				<para>Specify your expectations in the generated &specification.gloss;.</para>
+			</step>
+
+			<step>
+				<para>Run the &test.gloss; to verify your &design.gloss;.</para>
+			</step>
+		</procedure>
+
+		<section id="usage.requirements">
 			<title>Requirements</title>
-			<para>The following software is necessary in order to use &rv;. Once you have obtained them, proceed to <xref linkend="usage.req.install"/>.</para>
+			<para>The following software is necessary in order to use &rv;. Once you have obtained them, proceed to <xref linkend="usage.requirements.install"/>.</para>
 
 			<variablelist>
 				<varlistentry>
@@ -868,20 +888,15 @@ void foo(va_list ap) {
 				</varlistentry>
 			</variablelist>
 
-			<procedure id="usage.req.install">
+			<procedure id="usage.requirements.install">
 				<title>Installing the required software</title>
 
-				<step>
-					<para>After installing RubyGems, you can install &rake.gloss; and &rspec.gloss; by issuing the command <command>gem <action>install</action> <option>--remote</option> <replaceable>rake</replaceable> <replaceable>rspec</replaceable></command> at your command-prompt.</para>
-				</step>
+				<step><para>Install a C language compiler.</para></step>
+				<step><para>Install Ruby.</para></step>
+				<step><para>Install RubyGems.</para></step>
+				<step><para>Install &rake.gloss; and &rspec.gloss; by issuing the command <command>gem <action>install</action> <option>--remote</option> <replaceable>rake</replaceable> <replaceable>rspec</replaceable></command> at your command-prompt.</para></step>
+				<step><para>Install a &v; simulator.</para></step>
 			</procedure>
-		</section>
-
-		<section id="usage.examples">
-			<title>Examples</title>
-			<para>The <filename>examples</filename> directory contains several example &test.gloss;s which illustrate how &rv; can be used. Each example has an associated <filename>Rakefile</filename> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the command <command>rake</command> to get started.</para>
-
-			<para>Also, the example &specification.gloss;s make use of &BDD.gloss; through the &rspec.gloss; library. See the <xref linkend="background.methodology"/> for a discussion of &rspec.gloss;.</para>
 		</section>
 
 		<section id="usage.tools">
@@ -889,10 +904,17 @@ void foo(va_list ap) {
 			<para>The <filename>tools</filename> directory contains tools which ease the process of writing &test.gloss;s. Each tool provides help and usage information invoked with the <option>--help</option> option at a command-prompt.</para>
 
 			<section id="usage.tools.generate-test">
-				<title>Automatic test generation</title>
+				<title>Automated test generation</title>
 
 				<para>The <filename>tools/generate_test.rb</filename> tool can be used to automatically generate &test.gloss;s from &v; 2001 module declarations. You can try it by invoking <command>ruby <replaceable>tools/generate_test.rb</replaceable> <option>--help</option></command> at your command-prompt.</para>
 			</section>
+		</section>
+
+		<section id="usage.examples">
+			<title>Examples</title>
+			<para>The <filename>examples</filename> directory contains several example &test.gloss;s which illustrate how &rv; can be used. Each example has an associated <filename>Rakefile</filename> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the command <command>rake</command> to get started.</para>
+
+			<para>Also, some example &specification.gloss;s make use of &BDD.gloss; through the &rspec.gloss; library. See the <xref linkend="background.methodology"/> for a discussion of &rspec.gloss;.</para>
 		</section>
 	</chapter>
 
