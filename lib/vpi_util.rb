@@ -200,8 +200,14 @@ module SWIG
 									return get_value(prop)
 								end
 
-							when 'i', 'b'	# integer & boolean values
+							when 'i', 'b'	# integer values
 								return vpi_get(prop, self) unless isAssign
+
+							when 'b'	# boolean values
+								unless isAssign
+									value = vpi_get(prop, self)
+									return value && (value != 0)	# zero is false in C
+								end
 
 							when 's'	# string values
 								return vpi_get_str(prop, self) unless isAssign
