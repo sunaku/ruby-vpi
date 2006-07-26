@@ -804,7 +804,7 @@ void foo(va_list ap) {
 				<varlistentry>
 					<term>&v; simulator</term>
 					<listitem>
-						<para>You should be able to use &rv; with any &v; simulator. However, only the following simulators have been tested because we do not have knowledge of or access to other ones. Therefore, please share your experiences of using &rv; with other simulators, in the online forums.</para>
+						<para>&rv; is known to work with the following simulators. Nevertheless, you should be able to use &rv; with any &v; simulator that supports &vpi;.</para>
 
 						<variablelist>
 							<varlistentry>
@@ -891,11 +891,10 @@ void foo(va_list ap) {
 			<procedure id="usage.requirements.install">
 				<title>Installing the required software</title>
 
-				<step><para>Install a C language compiler.</para></step>
 				<step><para>Install Ruby.</para></step>
 				<step><para>Install RubyGems.</para></step>
 				<step><para>Install &rake.gloss; and &rspec.gloss; by issuing the command <command>gem <action>install</action> <option>--remote</option> <replaceable>rake</replaceable> <replaceable>rspec</replaceable></command> at your command-prompt.</para></step>
-				<step><para>Install a &v; simulator.</para></step>
+				<step><para>Build &rv; by the command <command>rake <action>build</action></command> inside the directory in which you extracted the release package.</para></step>
 			</procedure>
 		</section>
 
