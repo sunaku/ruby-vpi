@@ -414,17 +414,17 @@ end
 			o = OutputInfo.new(m.name, optSpecFmt, optTestName, File.dirname(File.dirname(__FILE__))).freeze
 
 			writeFile o.runnerPath, generateRunner(m, o)
-			puts "- Generated runner: #{o.runnerPath}"
+			puts "- Generated runner:           #{o.runnerPath}"
 
 			writeFile o.verilogBenchPath, generateVerilogBench(m, o)
-			puts "- Generated bench: #{o.verilogBenchPath}"
+			puts "- Generated bench:            #{o.verilogBenchPath}"
 
 			writeFile o.rubyBenchPath, generateRubyBench(m, o)
-			puts "- Generated bench: #{o.rubyBenchPath}"
+			puts "- Generated bench:            #{o.rubyBenchPath}"
 
 			writeFile o.designPath, generateDesign(m, o)
-			puts "- Generated design: #{o.designPath}"
+			puts "- Generated design:           #{o.designPath}"
 
 			writeFile o.specPath, generateSpec(m, o)
-			puts "- Generated specification: #{o.specPath}"
+			puts "- Generated specification:    #{o.specPath}"
 	end
