@@ -20,34 +20,38 @@
 
 require 'rake/clean'
 
-SOURCES = ['src/manual.xml']
-
 FORMATS = {
 	# extension => flag
-	'html' => 'xhtml-nochunks',
-	'txt' => 'txt',
+	'html' => 'xhtml',
+	'text' => 'txt',
 }.freeze
 
-task :default => FORMATS.keys
+task :default => FORMATS.keys << :resources
 
+FORMATS.each_pair do |outDir, outFmt|
+	directory outDir
 
-# create tasks for each output format
-FORMATS.each_pair do |formatExt, formatFlag|
-	desc "Generate documentation in #{formatExt} format."
-	task formatExt
-
-
-	# attach each source to the current format
-	SOURCES.each do |srcPath|
-		srcPure = File.basename(srcPath, File.extname(srcPath))
-		dstPath = "#{srcPure}.#{formatExt}"
-
-		file dstPath => srcPath do
-			sh 'xmlto', formatFlag, srcPath
-		end
-
-		CLEAN.include dstPath
-
-		task formatExt => dstPath
+	desc "Generate documentation in #{outDir} format."
+	file outDir => ['src/manual.xml', 'src/manual.xsl'] do |t|
+		sh %{xmlto #{outFmt} -o #{outDir} -m #{t.prerequisites[1]} #{t.prerequisites[0]}}
 	end
+
+	CLOBBER.include outDir
+
+
+	# copy resources needed by output
+		FileList['src/*'].each do |path|
+			if FileTest.directory? path
+				dst = File.join(outDir, File.basename(path))
+
+				file dst => path do |t|
+					cp_r t.prerequisites[0], t.name
+				end
+
+				CLEAN.include dst
+
+				file :resources => dst
+				file dst => outDir
+			end
+		end
 end
