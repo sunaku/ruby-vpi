@@ -70,7 +70,7 @@
 
 	<chapter id="introduction">
 		<title>Introduction</title>
-		<para>&rv; is a &ruby..ulink; interface to <ulink url="http://en.wikipedia.org/wiki/Verilog">&vpi;</ulink>. It lets you create complex &v; &test-bench.gloss;es easily and wholly in Ruby.</para>
+		<para>&rv; is a &ruby..ulink; interface to <ulink url="http://en.wikipedia.org/wiki/Verilog">&vpi;</ulink>. It lets you create complex &v; test benches easily and wholly in Ruby.</para>
 
 		<section id="introduction.license">
 			<title>License</title>
@@ -107,7 +107,7 @@
 				<varlistentry>
 					<term><filename>lib</filename></term>
 					<listitem>
-						<para>This directory contains libraries for use by &specification.gloss;s written in the Ruby language.</para>
+						<para>This directory contains libraries for use by specifications written in the Ruby language.</para>
 					</listitem>
 				</varlistentry>
 
@@ -121,7 +121,7 @@
 				<varlistentry>
 					<term><filename>examples</filename></term>
 					<listitem>
-						<para>This directory contains example &test.gloss;s. See <xref linkend="usage.examples"/> for more information.</para>
+						<para>This directory contains example tests. See <xref linkend="usage.examples"/> for more information.</para>
 					</listitem>
 				</varlistentry>
 			</variablelist>
@@ -236,19 +236,19 @@
 		<section id="background.methodology">
 			<title>Methodology</title>
 
-			<para>&rv; presents an open-ended interface to &vpi;. Thus, you can use any methodology you wish when writing &test.gloss;s. However, &BDD.gloss; is emphasized in this project&mdash;through use of &rspec.gloss; in the <link linkend="usage.examples">examples</link>&mdash;because it greatly simplifies thinking about <emphasis>how</emphasis> to verify a design.</para>
+			<para>&rv; presents an open-ended interface to &vpi;. Thus, you can use any methodology you wish when writing tests. However, &BDD.gloss; is emphasized in this project&mdash;through use of <application>RSpec</application> in the <link linkend="usage.examples">examples</link>&mdash;because it greatly simplifies thinking about <emphasis>how</emphasis> to verify a design.</para>
 		</section>
 
 		<section id="background.terminology">
 			<title>Terminology</title>
 
-			<para>As a newcomer into the world of &v;, I often heard the term &test-bench.gloss;: <quote>I ran the test bench, but it didn't work!</quote> or <quote>Are you crazy?!! You <emphasis>still</emphasis> haven't written the test bench? o_O</quote>, for example. I flipped through my textbook and surfed the Internet for a definition of the term, but it was to no avail. Instead, both resources nonchalantly employed the term <emphasis>throughout</emphasis> their being, as if mocking my ignorance of what seems to be universal knowledge.</para>
+			<para>As a newcomer into the world of &v;, I often heard the term <emphasis>test bench</emphasis>: <quote>I ran the test bench, but it didn't work!</quote> or <quote>Are you crazy?!! You <emphasis>still</emphasis> haven't written the test bench? o_O</quote>, for example. I flipped through my textbook and surfed the Internet for a definition of the term, but it was to no avail. Instead, both resources nonchalantly employed the term <emphasis>throughout</emphasis> their being, as if mocking my ignorance of what seems to be universal knowledge.</para>
 
-			<para>Defeated, I turned to my inner faculties to determine the answer. <quote>Let's see, the term &test-bench.gloss; has the word <emphasis>test</emphasis>&mdash;so it has something to do with testing&mdash;and it has the word <emphasis>bench</emphasis>&mdash;so maybe it's referring to a table where the testing should occur</quote>. This reasoning grew increasingly familiar as my mind rummaged through towering stores of obsolescence and ultimately revealed dreaded memories of sleepless anguish: debugging electronics in the robotics laboratory.</para>
+			<para>Defeated, I turned to my inner faculties to determine the answer. <quote>Let's see, the term <emphasis>test bench</emphasis> has the word <emphasis>test</emphasis>&mdash;so it has something to do with testing&mdash;and it has the word <emphasis>bench</emphasis>&mdash;so maybe it's referring to a table where the testing should occur</quote>. This reasoning grew increasingly familiar as my mind rummaged through towering stores of obsolescence and ultimately revealed dreaded memories of sleepless anguish: debugging electronics in the robotics laboratory.</para>
 
 			<para><quote>Aha!</quote>, I exclaimed hesitantly, trying to forget the past. The term has its roots in the testing of electronic devices, where an engineer would sit at a bench in an electronics laboratory and verify that an electronic component satisfies some criteria. The bench would be furnished with tools of measurement and manipulation&mdash;such as oscilloscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.</para>
 
-			<para>Alright, now I remember what a laboratory bench is, but how does that compare with the term &test-bench.gloss;? Surely they cannot have the same meaning, because it doesn't make sense to <emphasis>run</emphasis> a laboratory bench or to <emphasis>write</emphasis> one. Thus, to avoid propagating such confusion into this manual, I have attempted to clarify the terminology by <link linkend="glossary">simplifying and reintroducing it in a new light</link>.</para>
+			<para>Alright, now I remember what a laboratory bench is, but how does that compare with the term test bench? Surely they cannot have the same meaning, because it doesn't make sense to <emphasis>run</emphasis> a laboratory bench or to <emphasis>write</emphasis> one. Thus, to avoid propagating such confusion into this manual, I have attempted to clarify the terminology by <link linkend="glossary">simplifying and reintroducing it in a new light</link>.</para>
 		</section>
 
 		<section id="background.organization">
@@ -263,7 +263,7 @@
 				</mediaobject>
 			</figure>
 
-			<para>As <xref linkend="fig..organization"/> shows, a &test.gloss; is composed of a &bench.gloss;, a &design.gloss;, and a &specification.gloss;. To extend the <link linkend="background.terminology">analogy of an electronics laboratory</link>, the first acts as the laboratory bench which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. And the third acts as the engineer who measures, manipulates, and verifies the electronic component.</para>
+			<para>As <xref linkend="fig..organization"/> shows, a test is composed of a bench, a design, and a specification. To extend the <link linkend="background.terminology">analogy of an electronics laboratory</link>, the first acts as the laboratory bench which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. And the third acts as the engineer who measures, manipulates, and verifies the electronic component.</para>
 
 			<section id="organization.vpi">
 				<title>Interface to &vpi;</title>
@@ -277,7 +277,7 @@
 					</mediaobject>
 				</figure>
 
-				<para>In <xref linkend="fig..organization.detail"/>, &rv; acts as the &bench.gloss;, a &v; simulator encapsulates the &design.gloss;, and a Ruby interpreter encapsulates the &specification.gloss;. Notice that &rv; encapsulates all communication between the Ruby interpreter and &vpi;. This allows the &specification.gloss;, or any Ruby program in general, to access &vpi; using nothing more than the Ruby language! Thus, &rv; removes the burden of having to write C programs in order to access &vpi;.</para>
+				<para>In <xref linkend="fig..organization.detail"/>, &rv; acts as the bench, a &v; simulator encapsulates the design, and a Ruby interpreter encapsulates the specification. Notice that &rv; encapsulates all communication between the Ruby interpreter and &vpi;. This allows the specification, or any Ruby program in general, to access &vpi; using nothing more than the Ruby language! Thus, &rv; removes the burden of having to write C programs in order to access &vpi;.</para>
 
 				<para>Furthermore, &rv; presents the <emphasis>entire</emphasis> IEEE Std 1364-2005 &vpi; interface to the Ruby interpreter, but with the following minor changes.
 
@@ -291,11 +291,11 @@
 						<listitem>
 							<para>The &vpi; functions <function>vpi_vprintf</function> and <function>vpi_mcd_vprintf</function> are not made accessible to Ruby. However, this isn't a big problem because you can use Ruby's <function>printf</function> method instead.</para>
 
-							<para>The reason for this limitation is that some C compilers have trouble with pointers to the <type>va_list</type> type. For example, in the code shown below, the second line causes a <quote>type mismatch</quote> error.</para>
+							<para>The reason for this limitation is that some C compilers have trouble with pointers to the <type>va_list</type> type. For these compilers, the second line in the code shown below causes a <quote>type mismatch</quote> error.</para>
 
 	<programlisting>
-<type>void</type> <function>foo</function>(<parameter>va_list <varname>ap</varname></parameter>) {
-	va_list *<varname>p</varname> = &amp;<varname>ap</varname>;
+<type>void</type> <function>foo</function>(<parameter><type>va_list</type> <varname>ap</varname></parameter>) {
+	<type>va_list</type> *<varname>p</varname> = &amp;<varname>ap</varname>;
 }
 </programlisting>
 						</listitem>
@@ -304,10 +304,10 @@
 
 				<section id="organization.vpi.util">
 					<title>&vpi; utility layer</title>
-					<para>From a user's perspective, the &vpi; utility layer greatly enhances the ability to interact with &handle.gloss;s. One simply invokes a handle's methods, which are carefully named in the following manner, to access its &vpi; properties.</para>
+					<para>From a user's perspective, the &vpi; utility layer greatly enhances the ability to interact with handles. One simply invokes a handle's methods, which are carefully named in the following manner, to access its &vpi; properties.</para>
 
 					<table id="table..handle-property-accessor-naming-format" frame='all'>
-						<title>Naming format for accessing a &handle.gloss;'s &vpi; properties</title>
+						<title>Naming format for accessing a handle's &vpi; properties</title>
 						<tgroup cols='6'>
 							<colspec colname='c1'/>
 							<colspec colname='c2'/>
@@ -354,7 +354,7 @@
 						<varlistentry>
 							<term>Accessor</term>
 							<listitem>
-								<para>This parameter suggests which &vpi; function should be used to access the &vpi; property. When this parameter is not specified, the &vpi; utility layer will attempt to <emphasis>guess</emphasis> the value of this parameter (<ulink url="../ref/ruby/classes/SWIG/TYPE_p_unsigned_int.html">see the source code</ulink> of the <code><constant>SWIG</constant>::<constant>TYPE_p_unsigned_int</constant>#<function>method_missing</function></code> method for details).</para>
+								<para>This parameter suggests which &vpi; function should be used to access the &vpi; property. When this parameter is not specified, the &vpi; utility layer will attempt to <emphasis>guess</emphasis> the value of this parameter (<ulink url="../../ref/ruby/classes/SWIG/TYPE_p_unsigned_int.html">see the source code</ulink> of the <code><constant>SWIG</constant>::<constant>TYPE_p_unsigned_int</constant>#<function>method_missing</function></code> method for details).</para>
 
 								<table frame='all'>
 									<title>Possible accessors and their implications</title>
@@ -413,7 +413,7 @@
 					</variablelist>
 
 					<example id="ex..handle-property-accessor-naming-format">
-						<title>Accessing a &handle.gloss;'s &vpi; properties</title>
+						<title>Accessing a handle's &vpi; properties</title>
 
 						<informaltable frame='all'>
 							<tgroup cols='6'>
@@ -718,14 +718,14 @@
 		<section id="background.running-tests">
 			<title>Running a test</title>
 
-			<para>Unlike an engineer who can verify an electronic component in real-time, the &v; simulator and the Ruby interpreter (see <xref linkend="fig..organization.detail"/>) take turns working with objects in a simulation when a &test.gloss; is run. In particular, they take turns manipulating the &design.gloss; and transfer control to each other when appropriate.</para>
+			<para>Unlike an engineer who can verify an electronic component in real-time, the &v; simulator and the Ruby interpreter (see <xref linkend="fig..organization.detail"/>) take turns working with objects in a simulation when a test is run. In particular, they take turns manipulating the design and transfer control to each other when appropriate.</para>
 
 			<para>The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Either is able to inspect and modify the ball, but only when it is in hand.</para>
 
 			<section id="background.running-tests.init">
 				<title>Initialization</title>
 
-				<para>A &test.gloss; is first initialized before it is <link linkend="background.running-tests.exec">executed</link>. <xref linkend="fig..ruby_init"/> illustrates the initialization process <link linkend="proc..ruby_init">described below</link>.</para>
+				<para>A test is first initialized before it is <link linkend="background.running-tests.exec">executed</link>. <xref linkend="fig..ruby_init"/> illustrates the initialization process <link linkend="proc..ruby_init">described below</link>.</para>
 
 				<figure id="fig..ruby_init">
 					<title>Initialization of a test</title>
@@ -754,7 +754,7 @@
 			<section id="background.running-tests.exec">
 				<title>Execution</title>
 
-				<para>After a test is <link linkend="background.running-tests.init">initialized</link>, it is executed such that the &design.gloss; is verified against the &specification.gloss;. <xref linkend="fig..ruby_relay"/> illustrates the execution process <link linkend="proc..ruby_relay">described below</link>.</para>
+				<para>After a test is <link linkend="background.running-tests.init">initialized</link>, it is executed such that the design is verified against the specification. <xref linkend="fig..ruby_relay"/> illustrates the execution process <link linkend="proc..ruby_relay">described below</link>.</para>
 
 				<figure id="fig..ruby_relay">
 					<title>Execution of a test</title>
@@ -882,27 +882,27 @@
 
 				<step><para>Install Ruby.</para></step>
 				<step><para>Install RubyGems.</para></step>
-				<step><para>Install &rake.gloss; and &rspec.gloss; by issuing the command <command>gem <action>install</action> <option>--remote</option> <replaceable>rake</replaceable> <replaceable>rspec</replaceable></command> at your command-prompt.</para></step>
+				<step><para>Install <application>Rake</application> and <application>RSpec</application> by issuing the command <command>gem <action>install</action> <option>--remote</option> <replaceable>rake</replaceable> <replaceable>rspec</replaceable></command> at your command-prompt.</para></step>
 				<step><para>Build &rv; by the command <command>rake <action>build</action></command> inside the directory in which you extracted the release package.</para></step>
 			</procedure>
 		</section>
 
 		<section id="usage.tools">
 			<title>Tools</title>
-			<para>The <filename>tools</filename> directory contains tools which ease the process of writing &test.gloss;s. Each tool provides help and usage information invoked with the <option>--help</option> option at a command-prompt.</para>
+			<para>The <filename>tools</filename> directory contains tools which ease the process of writing tests. Each tool provides help and usage information invoked with the <option>--help</option> option at a command-prompt.</para>
 
 			<section id="usage.tools.generate-test">
 				<title>Automated test generation</title>
 
-				<para>The <filename>tools/generate_test.rb</filename> tool can be used to automatically generate &test.gloss;s from &v; 2001 module declarations. You can try it by invoking <command>ruby <replaceable>tools/generate_test.rb</replaceable> <option>--help</option></command> at your command-prompt.</para>
+				<para>The <filename>tools/generate_test.rb</filename> tool can be used to automatically generate tests from &v; 2001 module declarations. You can try it by invoking <command>ruby <replaceable>tools/generate_test.rb</replaceable> <option>--help</option></command> at your command-prompt.</para>
 			</section>
 		</section>
 
 		<section id="usage.examples">
 			<title>Examples</title>
-			<para>The <filename>examples</filename> directory contains several example &test.gloss;s which illustrate how &rv; can be used. Each example has an associated <filename>Rakefile</filename> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the command <command>rake</command> to get started.</para>
+			<para>The <filename>examples</filename> directory contains several example tests which illustrate how &rv; can be used. Each example has an associated <filename>Rakefile</filename> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the command <command>rake</command> to get started.</para>
 
-			<para>Also, some example &specification.gloss;s make use of &BDD.gloss; through the &rspec.gloss; library. See the <xref linkend="background.methodology"/> for a discussion of &rspec.gloss;.</para>
+			<para>Also, some example specifications make use of BDD through the <application>RSpec</application> library. See the <xref linkend="background.methodology"/> for a discussion of <application>RSpec</application>.</para>
 		</section>
 
 		<section id="usage.tutorial">
@@ -912,31 +912,31 @@
 				<title>Typical way of using &rv;</title>
 
 				<step>
-					<para>Declare a &v; module (the &design.gloss;) using &v; 2001 syntax, or work with an existing one.</para>
+					<para>Declare a &v; module (the design) using &v; 2001 syntax, or work with an existing one.</para>
 				</step>
 
 				<step>
-					<para>Generate a &test.gloss; for your &design.gloss; using the <link linkend="usage.tools.generate-test">automated test generator tool</link>.</para>
+					<para>Generate a test for your design using the <link linkend="usage.tools.generate-test">automated test generator tool</link>.</para>
 				</step>
 
 				<step>
-					<para>Specify your expectations in the generated &specification.gloss;.</para>
+					<para>Specify your expectations in the generated specification.</para>
 				</step>
 
 				<step>
-					<para>Run the &test.gloss; to verify your &design.gloss;.</para>
+					<para>Run the test to verify your design.</para>
 				</step>
 			</procedure>
 
 			<section id="usage.tutorial.start-with-a-design">
 				<title>Start with a design</title>
 
-				<para>First, we need a design to verify. In this tutorial, <link linkend="fig..counter.v">a simple, up-counter</link> will serve as our design. This design, declared using &v; 2001 syntax, increments the value of its <varname>count</varname> output upon each positive edge of its <varname>clock</varname> input.</para>
+				<para>First, we need a design to verify. In this tutorial, <link linkend="fig..counter.v">a simple up-counter</link> will serve as our design. This design, declared using &v; 2001 syntax, increments the value of its <varname>count</varname> output upon each positive edge of its <varname>clock</varname> input.</para>
 
 				<para>In addition, when <varname>count</varname> reaches the value <code>2 ** <constant>Size</constant></code>, it will automatically become zero upon the next positive edge of the <varname>clock</varname>. Likewise, when <varname>reset</varname> is asserted during a positive edge of the <varname>clock</varname>, <varname>count</varname> will become zero during the next positive edge of the <varname>clock</varname>.</para>
 
 				<figure id="fig..counter.v">
-					<title>Verilog source code for a simple, up-counter with synchronous reset.</title>
+					<title>A simple up-counter with synchronous reset: <filename>counter.v</filename></title>
 <programlisting>
 module counter #(parameter <constant>Size</constant> = <literal>5</literal>) (
   input <varname>clock</varname>,
@@ -1180,7 +1180,7 @@ end
 
 				&fixed-0.2;
 
-				<para>If your &specification.gloss; employs Ruby's unit testing framework, then you will encounter the error: <quote>[BUG] cross-thread violation on rb_gc()</quote>.</para>
+				<para>If your specification employs Ruby's unit testing framework, then you will encounter the error: <quote>[BUG] cross-thread violation on rb_gc()</quote>.</para>
 			</section>
 		</section>
 
@@ -1193,7 +1193,7 @@ end
 				<section id="problems.ivl.vpi_handle_by_name.absolute-paths">
 					<title>Give full paths to &v; objects</title>
 
-					<para>In version 0.8, the <function>vpi_handle_by_name</function> function requires an <emphasis>absolute</emphasis> path (including the name of the &bench.gloss; which instantiates the &design.gloss;) to a &v; object.</para>
+					<para>In version 0.8, the <function>vpi_handle_by_name</function> function requires an <emphasis>absolute</emphasis> path (including the name of the bench which instantiates the design) to a &v; object.</para>
 
 					<para>For example, consider <xref linkend="ex..TestFoo"/>. Here, one needs to specify <code>TestFoo.my_foo.clk</code> instead of <code>my_foo.clk</code> in order to access the <varname>clk</varname> input of the <varname>my_foo</varname> module instance.</para>
 
@@ -1211,11 +1211,11 @@ endmodule
 				<section id="problems.ivl.vpi_handle_by_name.connect-registers">
 					<title>Registers must be connected</title>
 
-					<para>In version 0.8, if you want to access a register in a &design.gloss;, then it must be connected to something (either assigned to a wire or passed as a parameter to a module instantiation). Otherwise, Icarus will give you a <literal>nil</literal> value as the result of <function>vpi_handle_by_name</function> method.</para>
+					<para>In version 0.8, if you want to access a register in a design, then it must be connected to something (either assigned to a wire or passed as a parameter to a module instantiation). Otherwise, Icarus will give you a <literal>nil</literal> value as the result of <function>vpi_handle_by_name</function> method.</para>
 
-					<para>For example, suppose you wanted to access the <varname>clk_reg</varname> register, from the &bench.gloss; shown in <xref linkend="ex..TestFoo_bad"/>. If you execute the statement <code><varname>clk_reg</varname> = <function>vpi_handle_by_name</function>(<parameter><literal>"TestFoo.clk_reg"</literal></parameter>, <parameter><literal>nil</literal></parameter>)</code> in a &specification.gloss;, then you will discover that the <function>vpi_handle_by_name</function> method returns <literal>nil</literal> instead of a handle to the <varname>clk_reg</varname> register.</para>
+					<para>For example, suppose you wanted to access the <varname>clk_reg</varname> register, from the bench shown in <xref linkend="ex..TestFoo_bad"/>. If you execute the statement <code><varname>clk_reg</varname> = <function>vpi_handle_by_name</function>(<parameter><literal>"TestFoo.clk_reg"</literal></parameter>, <parameter><literal>nil</literal></parameter>)</code> in a specification, then you will discover that the <function>vpi_handle_by_name</function> method returns <literal>nil</literal> instead of a handle to the <varname>clk_reg</varname> register.</para>
 
-					<para>The solution is to change the &design.gloss; such that it appears like the one shown in <xref linkend="ex..TestFoo_fix"/> where the register is connected to a wire, or <xref linkend="ex..TestFoo"/> where the register is connected to a module instantiation.</para>
+					<para>The solution is to change the design such that it appears like the one shown in <xref linkend="ex..TestFoo_fix"/> where the register is connected to a wire, or <xref linkend="ex..TestFoo"/> where the register is connected to a module instantiation.</para>
 
 					<example id="ex..TestFoo_bad">
 						<title>Bad design with unconnected registers</title>
@@ -1276,7 +1276,7 @@ endmodule
 			<glossentry id="term..bench">
 				<glossterm>Bench</glossterm>
 				<glossdef>
-					<para>An environment in which a &design.gloss; is verified against a &specification.gloss;. Often, it is used to emulate conditions in which the &design.gloss; will be eventually deployed.</para>
+					<para>An environment in which a design is verified against a specification. Often, it is used to emulate conditions in which the design will be eventually deployed.</para>
 				</glossdef>
 			</glossentry>
 
@@ -1298,7 +1298,7 @@ endmodule
 			<glossentry id="term..design">
 				<glossterm>Design</glossterm>
 				<glossdef>
-					<para>An idea or entity that is verified against a &specification.gloss; in order to ensure correctness or soundness of its being.</para>
+					<para>An idea or entity that is verified against a specification in order to ensure correctness or soundness of its being.</para>
 				</glossdef>
 			</glossentry>
 		</glossdiv>
@@ -1332,7 +1332,7 @@ endmodule
 			<glossentry id="term..rspec">
 				<glossterm>&rspec;</glossterm>
 				<glossdef>
-					<para>Ruby framework for &BDD.gloss;. See the <ulink url="&rspec.url;">&rspec; website</ulink> and &rspec-tutorial..ulink; for more information.</para>
+					<para>Ruby framework for BDD. See the <ulink url="&rspec.url;">&rspec; website</ulink> and &rspec-tutorial..ulink; for more information.</para>
 
 					<glossseealso otherterm="term..BDD"/>
 				</glossdef>
@@ -1345,7 +1345,7 @@ endmodule
 			<glossentry id="term..specification">
 				<glossterm>Specification</glossterm>
 				<glossdef>
-					<para>A collection of expectations that must be satisfied by a &design.gloss; when subjected to certain conditions.</para>
+					<para>A collection of expectations that must be satisfied by a design when subjected to certain conditions.</para>
 				</glossdef>
 			</glossentry>
 		</glossdiv>
@@ -1356,7 +1356,7 @@ endmodule
 			<glossentry id="term..test">
 				<glossterm>Test</glossterm>
 				<glossdef>
-					<para>The act of verifying a &design.gloss; against a &specification.gloss; in a &bench.gloss;.</para>
+					<para>The act of verifying a design against a specification in a bench.</para>
 					<glossseealso otherterm="term..test-bench"/>
 				</glossdef>
 			</glossentry>
