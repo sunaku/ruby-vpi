@@ -49,15 +49,17 @@
 	}
 
 /* tables */
-	th {
+	table[border] {
+		border: none;
+	}
+
+	table[border] th {
+		border: none;
 		background-color: whitesmoke;
 	}
 
-	td {
+	table[border] th,
+	table[border] td {
+		border: thin solid silver;
 		padding: 1em;
-	}
-
-/* links */
-	a {
-		/*background-color: aliceblue;*/
 	}
