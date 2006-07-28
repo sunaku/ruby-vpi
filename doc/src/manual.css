@@ -1,0 +1,63 @@
+/* code */
+	.screen {
+		background-color: whitesmoke;
+	}
+
+	.code, .programlisting, .function, .constant, .literal, .varname, .token, .type, .remark {
+		font-family: monospace;
+		background-color: ivory;
+	}
+
+	.screen, .programlisting {
+		border: thin solid silver;
+		padding: 1em;
+
+		display: block;
+		overflow: auto;
+	}
+
+	.function {
+		color: orangered;
+	}
+
+	.constant {
+		color: brown;
+		font-weight: bold;
+	}
+
+
+	.literal {
+		color: darkgreen;
+		background-color: honeydew;
+	}
+
+	.varname {
+		color: magenta;
+		/*background-color: ghostwhite;*/
+	}
+
+	.token {
+		font-weight: bold;
+	}
+
+	.type {
+		color: royalblue;
+	}
+
+	.remark {
+		color: olive;
+	}
+
+/* tables */
+	th {
+		background-color: whitesmoke;
+	}
+
+	td {
+		padding: 1em;
+	}
+
+/* links */
+	a {
+		/*background-color: aliceblue;*/
+	}

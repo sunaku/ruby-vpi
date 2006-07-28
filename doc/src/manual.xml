@@ -8,6 +8,15 @@
 	Foundation; with no Invariant Sections, no Front-Cover Texts and
 	no Back-Cover Texts.  A copy of the license is included in the
 	the file named "LICENSE".
+
+	Source code formatting rules:
+		 is a reserved keyword
+		<type> is structure, class, variable type, etc.
+		<varname> is a variable name
+		<function> is function or method name
+		<literal> is for strings, numbers, etc. anything literal
+		<constant> is a constant variable name
+		<remark> is a comment
 -->
 
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
@@ -17,7 +26,7 @@
 
 
 	<!-- content -->
-	<!ENTITY background.step3 "<para>When the Ruby interpreter invokes the <code>Vpi::relay_verilog</code> method, it is paused and the &v; simulator is given control.</para>">
+	<!ENTITY background.step3 "<para>When the Ruby interpreter invokes the <code><constant>Vpi</constant>::<function>relay_verilog</function></code> method, it is paused and the &v; simulator is given control.</para>">
 
 	<!ENTITY fixed-0.2 "<note>
 		<title>Fixed in &rv; 0.2</title>
@@ -276,17 +285,17 @@
 						<listitem>
 							<para>The first letter in the name of every function, type, structure, and constant becomes capitalized.</para>
 
-							<para>For example, the <literal>s_vpi_value</literal> structure in C becomes the <literal>S_vpi_value</literal> class in Ruby. Likewise, the <literal>vpiIntVal</literal> constant in C becomes the <literal>VpiIntVal</literal> constant in Ruby.</para>
+							<para>For example, the <type>s_vpi_value</type> structure in C becomes the <type>S_vpi_value</type> class in Ruby. Likewise, the <constant>vpiIntVal</constant> constant in C becomes the <constant>VpiIntVal</constant> constant in Ruby.</para>
 						</listitem>
 
 						<listitem>
 							<para>The &vpi; functions <function>vpi_vprintf</function> and <function>vpi_mcd_vprintf</function> are not made accessible to Ruby. However, this isn't a big problem because you can use Ruby's <function>printf</function> method instead.</para>
 
-							<para>The reason for this limitation is that some C compilers have trouble with pointers to the <literal>va_list</literal> type. For example, in the code shown below, the second line causes a <quote>type mismatch</quote> error.</para>
+							<para>The reason for this limitation is that some C compilers have trouble with pointers to the <type>va_list</type> type. For example, in the code shown below, the second line causes a <quote>type mismatch</quote> error.</para>
 
 	<programlisting>
-void foo(va_list ap) {
-	va_list *p = &amp;ap;
+<type>void</type> <function>foo</function>(<parameter>va_list <varname>ap</varname></parameter>) {
+	va_list *<varname>p</varname> = &amp;<varname>ap</varname>;
 }
 </programlisting>
 						</listitem>
@@ -345,7 +354,7 @@ void foo(va_list ap) {
 						<varlistentry>
 							<term>Accessor</term>
 							<listitem>
-								<para>This parameter suggests which &vpi; function should be used to access the &vpi; property. When this parameter is not specified, the &vpi; utility layer will attempt to <emphasis>guess</emphasis> the value of this parameter (see the source code for the <!--VOLATILE LINK!--><ulink url="../ref/ruby/classes/SWIG/TYPE_p_unsigned_int.src/M000037.html"><code>SWIG::TYPE_p_unsigned_int#method_missing</code></ulink> method for details).</para>
+								<para>This parameter suggests which &vpi; function should be used to access the &vpi; property. When this parameter is not specified, the &vpi; utility layer will attempt to <emphasis>guess</emphasis> the value of this parameter (<ulink url="../ref/ruby/classes/SWIG/TYPE_p_unsigned_int.html">see the source code</ulink> of the <code><constant>SWIG</constant>::<constant>TYPE_p_unsigned_int</constant>#<function>method_missing</function></code> method for details).</para>
 
 								<table frame='all'>
 									<title>Possible accessors and their implications</title>
@@ -433,17 +442,17 @@ void foo(va_list ap) {
 								</thead>
 								<tbody>
 									<row>
-										<entry><code>handle.each_vpiNet {|net| puts net.fullName}</code></entry>
+										<entry><code><varname>handle</varname>.<function>each_vpiNet</function> {|<varname>net</varname>| <function>puts</function> <varname>net</varname>.<function>fullName</function>}</code></entry>
 										<entry>each</entry>
 										<entry>_</entry>
 										<entry>vpiNet</entry>
 										<entry></entry>
 										<entry></entry>
 										<entry></entry>
-										<entry morerows="1">These expressions print the full name of each <code>vpiNet</code> object associated with the handle.</entry>
+										<entry morerows="1">These expressions print the full name of each <constant>vpiNet</constant> object associated with the handle.</entry>
 									</row>
 									<row>
-										<entry><code>handle.each_net {|net| puts net.fullName}</code></entry>
+										<entry><code><varname>handle</varname>.<function>each_net</function> {|<varname>net</varname>| <function>puts</function> <varname>net</varname>.<function>fullName</function>}</code></entry>
 										<entry>each</entry>
 										<entry>_</entry>
 										<entry>net</entry>
@@ -453,17 +462,17 @@ void foo(va_list ap) {
 									</row>
 
 									<row>
-										<entry><code>handle.vpiIntVal</code></entry>
+										<entry><code><varname>handle</varname>.<function>vpiIntVal</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>vpiIntVal</entry>
 										<entry></entry>
 										<entry></entry>
 										<entry></entry>
-										<entry morerows="3">These expressions access the logic value of the handle's <code>vpiIntVal</code> property.</entry>
+										<entry morerows="3">These expressions access the logic value of the handle's <constant>vpiIntVal</constant> property.</entry>
 									</row>
 									<row>
-										<entry><code>handle.vpiIntVal_l</code></entry>
+										<entry><code><varname>handle</varname>.<function>vpiIntVal_l</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>vpiIntVal</entry>
@@ -472,7 +481,7 @@ void foo(va_list ap) {
 										<entry></entry>
 									</row>
 									<row>
-										<entry><code>handle.intVal</code></entry>
+										<entry><code><varname>handle</varname>.<function>intVal</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>intVal</entry>
@@ -481,7 +490,7 @@ void foo(va_list ap) {
 										<entry></entry>
 									</row>
 									<row>
-										<entry><code>handle.intVal_l</code></entry>
+										<entry><code><varname>handle</varname>.<function>intVal_l</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>intVal</entry>
@@ -491,17 +500,17 @@ void foo(va_list ap) {
 									</row>
 
 									<row>
-										<entry><code>handle.vpiIntVal = 15</code></entry>
+										<entry><code><varname>handle</varname>.<function>vpiIntVal</function> = <literal>15</literal></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>vpiIntVal</entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>=</entry>
-										<entry morerows="3">These methods assign the number 15 to the logic value of the handle's <code>vpiIntVal</code> property.</entry>
+										<entry morerows="3">These expressions assign the number 15 to the logic value of the handle's <constant>vpiIntVal</constant> property.</entry>
 									</row>
 									<row>
-										<entry><code>handle.vpiIntVal_l = 15</code></entry>
+										<entry><code><varname>handle</varname>.<function>vpiIntVal_l</function> = <literal>15</literal></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>vpiIntVal</entry>
@@ -510,7 +519,7 @@ void foo(va_list ap) {
 										<entry>=</entry>
 									</row>
 									<row>
-										<entry><code>handle.intVal = 15</code></entry>
+										<entry><code><varname>handle</varname>.<function>intVal</function> = <literal>15</literal></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>intVal</entry>
@@ -519,7 +528,7 @@ void foo(va_list ap) {
 										<entry>=</entry>
 									</row>
 									<row>
-										<entry><code>handle.intVal_l = 15</code></entry>
+										<entry><code><varname>handle</varname>.<function>intVal</function>_l = <literal>15</literal></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>intVal</entry>
@@ -529,17 +538,17 @@ void foo(va_list ap) {
 									</row>
 
 									<row>
-										<entry><code>handle.vpiType</code></entry>
+										<entry><code><varname>handle</varname>.<function>vpiType</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>vpiType</entry>
 										<entry></entry>
 										<entry></entry>
 										<entry></entry>
-										<entry morerows="3">These expressions access the integer value of the handle's <code>vpiType</code> property.</entry>
+										<entry morerows="3">These expressions access the integer value of the handle's <constant>vpiType</constant> property.</entry>
 									</row>
 									<row>
-										<entry><code>handle.vpiType_i</code></entry>
+										<entry><code><varname>handle</varname>.<function>vpiType_i</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>vpiType</entry>
@@ -548,7 +557,7 @@ void foo(va_list ap) {
 										<entry></entry>
 									</row>
 									<row>
-										<entry><code>handle.type</code></entry>
+										<entry><code><varname>handle</varname>.<function>type</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>type</entry>
@@ -557,7 +566,7 @@ void foo(va_list ap) {
 										<entry></entry>
 									</row>
 									<row>
-										<entry><code>handle.type_i</code></entry>
+										<entry><code><varname>handle</varname>.<function>type_i</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>type</entry>
@@ -567,17 +576,17 @@ void foo(va_list ap) {
 									</row>
 
 									<row>
-										<entry><code>handle.vpiProtected</code></entry>
+										<entry><code><varname>handle</varname>.<function>vpiProtected</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>vpiProtected</entry>
 										<entry></entry>
 										<entry></entry>
 										<entry></entry>
-										<entry morerows="5">These expressions access the boolean value of the handle's <code>vpiProtected</code> property.</entry>
+										<entry morerows="5">These expressions access the boolean value of the handle's <constant>vpiProtected</constant> property.</entry>
 									</row>
 									<row>
-										<entry><code>handle.vpiProtected_b</code></entry>
+										<entry><code><varname>handle</varname>.<function>vpiProtected_b</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>vpiProtected</entry>
@@ -586,7 +595,7 @@ void foo(va_list ap) {
 										<entry></entry>
 									</row>
 									<row>
-										<entry><code>handle.vpiProtected?</code></entry>
+										<entry><code><varname>handle</varname>.<function>vpiProtected?</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>vpiProtected</entry>
@@ -595,7 +604,7 @@ void foo(va_list ap) {
 										<entry>?</entry>
 									</row>
 									<row>
-										<entry><code>handle.protected</code></entry>
+										<entry><code><varname>handle</varname>.<function>protected</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>protected</entry>
@@ -604,7 +613,7 @@ void foo(va_list ap) {
 										<entry></entry>
 									</row>
 									<row>
-										<entry><code>handle.protected_b</code></entry>
+										<entry><code><varname>handle</varname>.<function>protected_b</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>protected</entry>
@@ -613,7 +622,7 @@ void foo(va_list ap) {
 										<entry></entry>
 									</row>
 									<row>
-										<entry><code>handle.protected?</code></entry>
+										<entry><code><varname>handle</varname>.<function>protected?</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>protected</entry>
@@ -623,17 +632,17 @@ void foo(va_list ap) {
 									</row>
 
 									<row>
-										<entry><code>handle.vpiFullName</code></entry>
+										<entry><code><varname>handle</varname>.<function>vpiFullName</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>vpiFullName</entry>
 										<entry></entry>
 										<entry></entry>
 										<entry></entry>
-										<entry morerows="3">These methods access the string value of the handle's <code>vpiFullName</code> property.</entry>
+										<entry morerows="3">These expressions access the string value of the handle's <constant>vpiFullName</constant> property.</entry>
 									</row>
 									<row>
-										<entry><code>handle.vpiFullName_s</code></entry>
+										<entry><code><varname>handle</varname>.<function>vpiFullName_s</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>vpiFullName</entry>
@@ -642,7 +651,7 @@ void foo(va_list ap) {
 										<entry></entry>
 									</row>
 									<row>
-										<entry><code>handle.fullName</code></entry>
+										<entry><code><varname>handle</varname>.<function>fullName</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>fullName</entry>
@@ -651,7 +660,7 @@ void foo(va_list ap) {
 										<entry></entry>
 									</row>
 									<row>
-										<entry><code>handle.fullName_s</code></entry>
+										<entry><code><varname>handle</varname>.<function>fullName_s</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>fullName</entry>
@@ -661,17 +670,17 @@ void foo(va_list ap) {
 									</row>
 
 									<row>
-										<entry><code>handle.vpiParent</code></entry>
+										<entry><code><varname>handle</varname>.<function>vpiParent</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>vpiParent</entry>
 										<entry></entry>
 										<entry></entry>
 										<entry></entry>
-										<entry morerows="3">These methods access the handle value of the handle's <code>vpiParent</code> property.</entry>
+										<entry morerows="3">These expressions access the handle value of the handle's <constant>vpiParent</constant> property.</entry>
 									</row>
 									<row>
-										<entry><code>handle.vpiParent_h</code></entry>
+										<entry><code><varname>handle</varname>.<function>vpiParent_h</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>vpiParent</entry>
@@ -680,7 +689,7 @@ void foo(va_list ap) {
 										<entry></entry>
 									</row>
 									<row>
-										<entry><code>handle.parent</code></entry>
+										<entry><code><varname>handle</varname>.<function>parent</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>parent</entry>
@@ -689,7 +698,7 @@ void foo(va_list ap) {
 										<entry></entry>
 									</row>
 									<row>
-										<entry><code>handle.parent_h</code></entry>
+										<entry><code><varname>handle</varname>.<function>parent_h</function></code></entry>
 										<entry></entry>
 										<entry></entry>
 										<entry>parent</entry>
@@ -731,11 +740,11 @@ void foo(va_list ap) {
 					<title>Initialization of a test</title>
 
 					<step>
-						<para>The &v; simulator initializes the Ruby interpreter by invoking the <code>$ruby_init();</code> system task/function, whose parameters represent the command-line invocation of the Ruby interpreter. For example, one would specify <code>$ruby_init("ruby", "-w");</code> in &v; to achieve the same effect as specifying <code>ruby -w</code> at a command-prompt.</para>
+						<para>The &v; simulator initializes the Ruby interpreter by invoking the <code><function>$ruby_init</function>();</code> system task/function, whose parameters represent the command-line invocation of the Ruby interpreter. For example, one would specify <code><function>$ruby_init</function>(<parameter><literal>"ruby"</literal></parameter>, <parameter><literal>"-w"</literal></parameter>);</code> in &v; to achieve the same effect as specifying <command>ruby <option>-w</option></command> at a command-prompt.</para>
 					</step>
 
 					<step>
-						<para>The &v; simulator is paused and the Ruby interpreter is initialized with the arguments of the <code>$ruby_init();</code> system task/function.</para>
+						<para>The &v; simulator is paused and the Ruby interpreter is initialized with the arguments of the <code><function>$ruby_init</function>();</code> system task/function.</para>
 					</step>
 
 					<step>&background.step3;</step>
@@ -760,7 +769,7 @@ void foo(va_list ap) {
 					<title>Execution of a test</title>
 
 					<step>
-						<para>The &v; simulator transfers control to the Ruby interpreter by invoking the <code>$ruby_relay();</code> system task/function.</para>
+						<para>The &v; simulator transfers control to the Ruby interpreter by invoking the <code><function>$ruby_relay</function>();</code> system task/function.</para>
 					</step>
 
 					<step>
@@ -775,26 +784,6 @@ void foo(va_list ap) {
 
 	<chapter id="usage">
 		<title>Usage</title>
-
-		<procedure>
-			<title>Typical way of using &rv;</title>
-
-			<step>
-				<para>Declare a &v; module (the &design.gloss;) using &v; 2001 syntax, or work with an existing one.</para>
-			</step>
-
-			<step>
-				<para>Generate a &test.gloss; for your &design.gloss; using the <link linkend="usage.tools.generate-test">automated test generator tool</link>.</para>
-			</step>
-
-			<step>
-				<para>Specify your expectations in the generated &specification.gloss;.</para>
-			</step>
-
-			<step>
-				<para>Run the &test.gloss; to verify your &design.gloss;.</para>
-			</step>
-		</procedure>
 
 		<section id="usage.requirements">
 			<title>Requirements</title>
@@ -915,6 +904,259 @@ void foo(va_list ap) {
 
 			<para>Also, some example &specification.gloss;s make use of &BDD.gloss; through the &rspec.gloss; library. See the <xref linkend="background.methodology"/> for a discussion of &rspec.gloss;.</para>
 		</section>
+
+		<section id="usage.tutorial">
+			<title>Tutorial</title>
+
+			<procedure>
+				<title>Typical way of using &rv;</title>
+
+				<step>
+					<para>Declare a &v; module (the &design.gloss;) using &v; 2001 syntax, or work with an existing one.</para>
+				</step>
+
+				<step>
+					<para>Generate a &test.gloss; for your &design.gloss; using the <link linkend="usage.tools.generate-test">automated test generator tool</link>.</para>
+				</step>
+
+				<step>
+					<para>Specify your expectations in the generated &specification.gloss;.</para>
+				</step>
+
+				<step>
+					<para>Run the &test.gloss; to verify your &design.gloss;.</para>
+				</step>
+			</procedure>
+
+			<section id="usage.tutorial.start-with-a-design">
+				<title>Start with a design</title>
+
+				<para>First, we need a design to verify. In this tutorial, <link linkend="fig..counter.v">a simple, up-counter</link> will serve as our design. This design, declared using &v; 2001 syntax, increments the value of its <varname>count</varname> output upon each positive edge of its <varname>clock</varname> input.</para>
+
+				<para>In addition, when <varname>count</varname> reaches the value <code>2 ** <constant>Size</constant></code>, it will automatically become zero upon the next positive edge of the <varname>clock</varname>. Likewise, when <varname>reset</varname> is asserted during a positive edge of the <varname>clock</varname>, <varname>count</varname> will become zero during the next positive edge of the <varname>clock</varname>.</para>
+
+				<figure id="fig..counter.v">
+					<title>Verilog source code for a simple, up-counter with synchronous reset.</title>
+<programlisting>
+module counter #(parameter <constant>Size</constant> = <literal>5</literal>) (
+  input <varname>clock</varname>,
+  input <varname>reset</varname>,
+  output <type>reg</type> [<constant>Size</constant> - 1 : 0] <varname>count</varname>
+);
+  always @(posedge <varname>clock</varname>) begin
+    <varname>count</varname> &lt;= <varname>reset</varname> ? <literal>0</literal> : <varname>count</varname> + <literal>1</literal>;
+  end
+endmodule
+</programlisting>
+				</figure>
+			</section>
+
+			<section id="usage.tutorial.generate-test">
+				<title>Generate a test</title>
+
+				<para>Now that we have a design (written to a file named <filename>counter.v</filename>) to verify, we will generate a test for it using the automated test generator tool. However, before generating a test for our design, we must decide how we want to implement our specification.</para>
+
+				<para>The test generation tool allows us to express our specification in either &rspec;, unit test, or our very own format. In <xref linkend="usage.tutorial.specification"/>, we will see how to express specifications in both &rspec; and unit test formats.</para>
+
+				<figure id="fig..generate-test.rspec">
+					<title>Generating a test with specification in &rspec; format.</title>
+<screen>
+<prompt>$</prompt> <command>ruby <replaceable>tools/generate_test.rb</replaceable> <replaceable>counter.v</replaceable> <option>-s</option></command>
+<computeroutput>Using RSpec format for specification.
+
+Parsed module: counter
+- Generated runner: counter_runner.rake
+- Generated bench: counter_bench.v
+- Generated bench: counter_bench.rb
+- Generated design: counter_design.rb
+- Generated specification: counter_spec.rb</computeroutput>
+</screen>
+				</figure>
+
+				<figure id="fig..generate-test.unit-test">
+					<title>Generating a test with specification in unit test format.</title>
+<screen>
+<prompt>$</prompt> <command>ruby <replaceable>tools/generate_test.rb</replaceable> <replaceable>counter.v</replaceable> <option>-u</option></command>
+<computeroutput>Using UnitTest format for specification.
+
+Parsed module: counter
+- Generated runner: counter_runner.rake
+- Generated bench: counter_bench.v
+- Generated bench: counter_bench.rb
+- Generated design: counter_design.rb
+- Generated specification: counter_spec.rb</computeroutput>
+</screen>
+					</figure>
+			</section>
+
+			<section id="usage.tutorial.specification">
+				<title>Specify your expectations</title>
+
+				<para>So far, the test generation tool has created a basic foundation for our test. Now we must build upon this foundation by identifying our expectations of the design. That is, how do we expect the design to <emphasis>behave</emphasis> under certain conditions?</para>
+
+				<para>The following is a reaonable set of expectations for our simple counter:
+					<itemizedlist>
+						<listitem>
+							<para>A resetted counter's value should be zero.</para>
+						</listitem>
+						<listitem>
+							<para>A resetted counter's value should increment by one count upon each rising clock edge.</para>
+						</listitem>
+						<listitem>
+							<para>A counter with the maximum value should overflow upon increment.</para>
+						</listitem>
+					</itemizedlist>
+				</para>
+
+
+				<section id="usage.tutorial.specification.rspec">
+					<title>Expressing a specification in &rspec; format</title>
+					<para/>
+
+					<figure>
+						<title><filename>counter_design.rb</filename></title>
+<programlisting>
+class <constant>Counter</constant>
+  <function>include</function> <constant>Vpi</constant>
+
+  <constant>Size</constant> = <literal>5</literal>
+  <function>attr_reader</function> <literal>:clock</literal>, <literal>:reset</literal>, <literal>:count</literal>
+
+  def <function>initialize</function>
+    <remark># assimilate design's interface</remark>
+    <varname>@clock</varname> = <function>vpi_handle_by_name</function>(<parameter><literal>"counter_bench.clock"</literal></parameter>, <parameter><literal>nil</literal></parameter>)
+    <varname>@reset</varname> = <function>vpi_handle_by_name</function>(<parameter><literal>"counter_bench.reset"</literal></parameter>, <parameter><literal>nil</literal></parameter>)
+    <varname>@count</varname> = <function>vpi_handle_by_name</function>(<parameter><literal>"counter_bench.count"</literal></parameter>, <parameter><literal>nil</literal></parameter>)
+
+    <remark># unset all inputs</remark>
+    <varname>@reset</varname>.<function>hexStrVal</function> = <literal>'x'</literal>
+  end
+
+  def <function>reset!</function>
+    <varname>@reset</varname>.<function>intVal</function> = <literal>1</literal>
+    <function>relay_verilog</function>
+    <varname>@reset</varname>.<function>intVal</function> = <literal>0</literal>
+  end
+end
+</programlisting>
+					</figure>
+
+					<figure>
+						<title><filename>counter_spec.rb</filename></title>
+<programlisting>
+<function>require</function> <literal>'counter_design.rb'</literal>
+<function>require</function> <literal>'vpi_util'</literal>
+<function>require</function> <literal>'rspec'</literal>
+
+
+<remark># Lowest upper bound of counter's value</remark>
+<constant>LIMIT</constant> = <literal>2</literal> ** <constant>Counter</constant>::<constant>Size</constant>
+
+<remark># Maximum allowed value for a counter</remark>
+<constant>MAX</constant> = <constant>LIMIT</constant> - <literal>1</literal>
+
+
+<function>include</function> <constant>Vpi</constant>
+
+<function>context</function> <literal>"A resetted counter's value"</literal> do
+  <function>setup</function> do
+    <varname>@design</varname> = <constant>Counter</constant>.<function>new</function>
+    <varname>@design</varname>.<function>reset!</function>
+  end
+
+  <function>specify</function> <literal>"should be zero"</literal> do
+    <varname>@design</varname>.<function>count</function>.<function>intVal</function>.<function>should_be</function> <literal>0</literal>
+  end
+
+  <function>specify</function> <literal>"should increment by one count upon each rising clock edge"</literal> do
+    <constant>LIMIT</constant>.<function>times</function> do |<varname>i</varname>|
+      <varname>@design</varname>.<function>count</function>.<function>intVal</function>.<function>should_be</function> <varname>i</varname>
+      <function>relay_verilog</function> <remark># advance the clock</remark>
+    end
+  end
+end
+
+<function>context</function> <literal>"A counter with the maximum value"</literal> do
+  <function>setup</function> do
+    <varname>@design</varname> = <constant>Counter</constant>.<function>new</function>
+    <varname>@design</varname>.<function>reset!</function>
+
+    <remark># increment to maximum value</remark>
+    <constant>MAX</constant>.<function>times</function> do <function>relay_verilog</function> end
+    <varname>@design</varname>.<function>count</function>.<function>intVal</function>.<function>should_be</function> <constant>MAX</constant>
+  end
+
+  <function>specify</function> <literal>"should overflow upon increment"</literal> do
+    <function>relay_verilog</function> <remark># increment the counter</remark>
+    <varname>@design</varname>.<function>count</function>.<function>intVal</function>.<function>should_be</function> <literal>0</literal>
+  end
+end
+</programlisting>
+					</figure>
+				</section>
+
+				<section id="usage.tutorial.specification.unit-test">
+					<title>Expressing a specification in unit test format</title>
+					<para/>
+					<figure>
+						<title><filename>counter_spec.rb</filename></title>
+<programlisting>
+<function>require</function> <literal>'counter_design.rb'</literal>
+<function>require</function> <literal>'vpi_util'</literal>
+<function>require</function> <literal>'test/unit'</literal>
+
+
+<remark># Lowest upper bound of counter's value</remark>
+<constant>LIMIT</constant> = <literal>2</literal> ** <constant>Counter</constant>::<constant>Size</constant>
+
+<remark># Maximum allowed value for a counter</remark>
+<constant>MAX</constant> = <constant>LIMIT</constant> - <literal>1</literal>
+
+
+class <constant>ResettedCounterValue</constant> &lt; <constant>Test</constant>::<constant>Unit</constant>::<constant>TestCase</constant>
+  <function>include</function> <constant>Vpi</constant>
+
+  def <function>setup</function>
+    <varname>@design</varname> = <constant>Counter</constant>.<function>new</function>
+    <varname>@design</varname>.<function>reset!</function>
+  end
+
+  def <function>test_zero</function>
+    <function>assert_equal</function> <literal>0</literal>, <varname>@design</varname>.<function>count</function>.<function>intVal</function>
+  end
+
+  def <function>test_increment</function>
+    <constant>LIMIT</constant>.<function>times</function> do |<varname>i</varname>|
+      <function>assert_equal</function> <varname>i</varname>, <varname>@design</varname>.<function>count</function>.<function>intVal</function>
+      <function>relay_verilog</function> <remark># advance the clock</remark>
+    end
+  end
+end
+
+class <constant>MaximumCounterValue</constant> &lt; <constant>Test</constant>::<constant>Unit</constant>::<constant>TestCase</constant>
+  <function>include</function> <constant>Vpi</constant>
+
+  def <function>setup</function>
+    <varname>@design</varname> = <constant>Counter</constant>.<function>new</function>
+    <varname>@design</varname>.<function>reset!</function>
+
+    <remark># increment to maximum value</remark>
+    <constant>MAX</constant>.<function>times</function> do <function>relay_verilog</function> end
+    <function>assert_equal</function> <constant>MAX</constant>, <varname>@design</varname>.<function>count</function>.<function>intVal</function>
+  end
+
+  def <function>test_overflow</function>
+    <function>relay_verilog</function> <remark># increment the counter</remark>
+    <function>assert_equal</function> <literal>0</literal>, <varname>@design</varname>.<function>count</function>.<function>intVal</function>
+  end
+end
+</programlisting>
+					</figure>
+				</section>
+			</section>
+
+
+		</section>
 	</chapter>
 
 	<chapter id="problems">
@@ -953,15 +1195,15 @@ void foo(va_list ap) {
 
 					<para>In version 0.8, the <function>vpi_handle_by_name</function> function requires an <emphasis>absolute</emphasis> path (including the name of the &bench.gloss; which instantiates the &design.gloss;) to a &v; object.</para>
 
-					<para>For example, consider <xref linkend="ex..TestFoo"/>. Here, one needs to specify <literal>TestFoo.my_foo.clk</literal> instead of <literal>my_foo.clk</literal> in order to access the <varname>clk</varname> input of the <varname>my_foo</varname> module instance.</para>
+					<para>For example, consider <xref linkend="ex..TestFoo"/>. Here, one needs to specify <code>TestFoo.my_foo.clk</code> instead of <code>my_foo.clk</code> in order to access the <varname>clk</varname> input of the <varname>my_foo</varname> module instance.</para>
 
 					<example id="ex..TestFoo">
 						<title>Part of a bench which instantiates a &v; design</title>
 <programlisting>
 module TestFoo;
-	reg clk_reg;
-	Foo my_foo(.clk(clk_reg));
-endmodule;
+	<type>reg</type> <varname>clk_reg</varname>;
+	Foo <varname>my_foo</varname>(<parameter>.clk</parameter>(<varname>clk_reg</varname>));
+endmodule
 </programlisting>
 					</example>
 				</section>
@@ -971,7 +1213,7 @@ endmodule;
 
 					<para>In version 0.8, if you want to access a register in a &design.gloss;, then it must be connected to something (either assigned to a wire or passed as a parameter to a module instantiation). Otherwise, Icarus will give you a <literal>nil</literal> value as the result of <function>vpi_handle_by_name</function> method.</para>
 
-					<para>For example, suppose you wanted to access the <varname>clk_reg</varname> register, from the &bench.gloss; shown in <xref linkend="ex..TestFoo_bad"/>. If you execute the statement <code>clk_reg = vpi_handle_by_name("TestFoo.clk_reg", nil)</code> in a &specification.gloss;, then you will discover that the <function>vpi_handle_by_name</function> method returns <literal>nil</literal> instead of a handle to the <varname>clk_reg</varname> register.</para>
+					<para>For example, suppose you wanted to access the <varname>clk_reg</varname> register, from the &bench.gloss; shown in <xref linkend="ex..TestFoo_bad"/>. If you execute the statement <code><varname>clk_reg</varname> = <function>vpi_handle_by_name</function>(<parameter><literal>"TestFoo.clk_reg"</literal></parameter>, <parameter><literal>nil</literal></parameter>)</code> in a &specification.gloss;, then you will discover that the <function>vpi_handle_by_name</function> method returns <literal>nil</literal> instead of a handle to the <varname>clk_reg</varname> register.</para>
 
 					<para>The solution is to change the &design.gloss; such that it appears like the one shown in <xref linkend="ex..TestFoo_fix"/> where the register is connected to a wire, or <xref linkend="ex..TestFoo"/> where the register is connected to a module instantiation.</para>
 
@@ -982,8 +1224,8 @@ endmodule;
 
 <programlisting>
 module TestFoo;
-	reg clk_reg;
-endmodule;
+	<type>reg</type> <varname>clk_reg</varname>;
+endmodule
 </programlisting>
 					</example>
 
@@ -994,10 +1236,10 @@ endmodule;
 
 <programlisting>
 module TestFoo;
-	reg clk_reg;
-	wire clk_wire;
-	assign clk_wire = clk_reg;
-endmodule;
+	<type>reg</type> <varname>clk_reg</varname>;
+	<type>wire</type> <varname>clk_wire</varname>;
+	assign <varname>clk_wire</varname> = <varname>clk_reg</varname>;
+endmodule
 </programlisting>
 					</example>
 				</section>
@@ -1007,10 +1249,10 @@ endmodule;
 				<title>Vpi::reset</title>
 
 				<note>
-					<para>This method was removed in release 0.3 of &rv;, and is deprecated. Please use <code>Vpi::vpi_control(VpiReset)</code> instead.</para>
+					<para>This method was removed in release 0.3 of &rv;, and is deprecated. Please use <code><constant>Vpi</constant>::<function>vpi_control</function>(<parameter><constant>VpiReset</constant></parameter>)</code> instead.</para>
 				</note>
 
-				<para>In version 0.8, the <code>vpi_control(vpiReset)</code> &vpi; function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.</para>
+				<para>In version 0.8, the <code><function>vpi_control</function>(<parameter><constant>vpiReset</constant></parameter>)</code> &vpi; function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.</para>
 			</section>
 		</section>
 
