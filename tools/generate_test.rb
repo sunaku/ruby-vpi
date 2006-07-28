@@ -378,7 +378,7 @@ end
 	optsParser = OptionParser.new
 	optsParser.on('-h', '--help', 'show this help message') {raise}
 	optsParser.on('-u', '--unit', 'use Test::Unit specification format') {|val| optSpecFmt = :UnitTest if val}
-	optsParser.on('-s', '--spec', 'use RSpec specification format') {|val| optSpecFmt = :RSpec if val}
+	optsParser.on('-r', '--rspec', 'use RSpec specification format') {|val| optSpecFmt = :RSpec if val}
 	optsParser.on('-n', '--name NAME', 'specify name of generated test') {|val| optTestName = val}
 
 	begin
