@@ -961,30 +961,32 @@ endmodule
 				<figure id="fig..generate-test.rspec">
 					<title>Generating a test with specification in &rspec; format.</title>
 <screen>
-<prompt>$</prompt> <command>ruby <replaceable>tools/generate_test.rb</replaceable> <replaceable>counter.v</replaceable> <option>-s</option></command>
-<computeroutput>Using RSpec format for specification.
+<prompt>$</prompt> <command>ruby <replaceable>tools/generate_test.rb</replaceable> <replaceable>counter.v</replaceable> <option>--rspec</option> <option>--name</option> <replaceable>rspecTest</replaceable></command>
+<computeroutput>Using name `rspecTest' for generated test.
+Using RSpec specification format.
 
 Parsed module: counter
-- Generated runner: counter_runner.rake
-- Generated bench: counter_bench.v
-- Generated bench: counter_bench.rb
-- Generated design: counter_design.rb
-- Generated specification: counter_spec.rb</computeroutput>
+- Generated runner:           counter_rspecTest_runner.rk
+- Generated bench:            counter_rspecTest_bench.v
+- Generated bench:            counter_rspecTest_bench.rb
+- Generated design:           counter_rspecTest_design.rb
+- Generated specification:    counter_rspecTest_spec.rb</computeroutput>
 </screen>
 				</figure>
 
 				<figure id="fig..generate-test.unit-test">
 					<title>Generating a test with specification in unit test format.</title>
 <screen>
-<prompt>$</prompt> <command>ruby <replaceable>tools/generate_test.rb</replaceable> <replaceable>counter.v</replaceable> <option>-u</option></command>
-<computeroutput>Using UnitTest format for specification.
+<prompt>$</prompt> <command>ruby <replaceable>tools/generate_test.rb</replaceable> <replaceable>counter.v</replaceable> <option>--unit</option> <option>--name</option> <replaceable>unitTest</replaceable></command>
+<computeroutput>Using name `unitTest' for generated test.
+Using UnitTest specification format.
 
 Parsed module: counter
-- Generated runner: counter_runner.rake
-- Generated bench: counter_bench.v
-- Generated bench: counter_bench.rb
-- Generated design: counter_design.rb
-- Generated specification: counter_spec.rb</computeroutput>
+- Generated runner:           counter_unitTest_runner.rk
+- Generated bench:            counter_unitTest_bench.v
+- Generated bench:            counter_unitTest_bench.rb
+- Generated design:           counter_unitTest_design.rb
+- Generated specification:    counter_unitTest_spec.rb</computeroutput>
 </screen>
 					</figure>
 			</section>

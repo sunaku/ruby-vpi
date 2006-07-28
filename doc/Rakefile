@@ -21,12 +21,12 @@
 require 'rake/clean'
 
 FORMATS = {
-	# extension => flag
+	# friendly name => xsltproc flag
 	'html' => 'xhtml',
 	'text' => 'txt',
-}.freeze
+}
 
-task :default => FORMATS.keys << :resources
+task :default => FORMATS.keys
 
 FORMATS.each_pair do |outDir, outFmt|
 	directory outDir
@@ -34,24 +34,14 @@ FORMATS.each_pair do |outDir, outFmt|
 	desc "Generate documentation in #{outDir} format."
 	file outDir => ['src/manual.xml', 'src/manual.xsl'] do |t|
 		sh %{xmlto #{outFmt} -o #{outDir} -m #{t.prerequisites[1]} #{t.prerequisites[0]}}
+
+		# copy resources needed by output
+			FileList['src/*'].each do |path|
+				if FileTest.directory? path
+					cp_r path, File.join(outDir, File.basename(path))
+				end
+			end
 	end
 
-	CLOBBER.include outDir
-
-
-	# copy resources needed by output
-		FileList['src/*'].each do |path|
-			if FileTest.directory? path
-				dst = File.join(outDir, File.basename(path))
-
-				file dst => path do |t|
-					cp_r t.prerequisites[0], t.name
-				end
-
-				CLEAN.include dst
-
-				file :resources => dst
-				file dst => outDir
-			end
-		end
+	CLEAN.include outDir
 end
