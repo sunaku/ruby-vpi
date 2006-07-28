@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+#!/usr/bin/ruby -w
 #
 # == Synopsis
 # Generates Ruby-VPI tests from Verilog 2001 module declarations. A generated test is composed of the following parts.
@@ -106,7 +106,7 @@ def generateVerilogBench aModuleInfo, aOutputInfo
 		else
 			''
 		end
-	) << " #{aOutputInfo.verilogBenchName}#{OutputInfo::DESIGN_SUFFIX} (#{instParamDecl});"
+	) << " #{aOutputInfo.verilogBenchName}#{aOutputInfo.designSuffix} (#{instParamDecl});"
 
 
 	clockSignal = aModuleInfo.portNames.first
@@ -325,104 +325,106 @@ end
 
 # Holds information about the output destinations of a parsed Verilog module.
 class OutputInfo
-	OUTPUT_SUFFIX = '_test'
-	BENCH_SUFFIX = '_bench'
-	DESIGN_SUFFIX = '_design'
-	SPEC_SUFFIX = '_spec'
-	RUNNER_SUFFIX = '_runner'
-
-	RUBY_SUFFIX = '.rb'
-	VERILOG_SUFFIX = '.v'
-	BUILDER_SUFFIX = '.rake'
+	RUBY_EXT = '.rb'
+	VERILOG_EXT = '.v'
+	RUNNER_EXT = '.rk'
 
 	SPEC_FORMATS = [:RSpec, :UnitTest, :Generic]
 
-
 	attr_reader :verilogBenchName, :verilogBenchPath, :rubyBenchName, :rubyBenchPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :rubyVpiLibPath, :runnerName, :runnerPath, :runnerTemplateRelPath
 
-	def initialize aModuleName, aSpecFormat, aRubyVpiPath
+	attr_reader :testName, :suffix, :benchSuffix, :designSuffix, :specSuffix, :runnerSuffix
+
+	def initialize aModuleName, aSpecFormat, aTestName, aRubyVpiPath
 		raise ArgumentError unless SPEC_FORMATS.include? aSpecFormat
 		@specFormat = aSpecFormat
+		@testName = aTestName
+
+		@suffix = '_' + @testName
+		@benchSuffix = @suffix + '_bench'
+		@designSuffix = @suffix + '_design'
+		@specSuffix = @suffix + '_spec'
+		@runnerSuffix = @suffix + '_runner'
 
 		@rubyVpiPath = aRubyVpiPath
 		@rubyVpiLibPath = @rubyVpiPath + '/lib'
 		@runnerTemplateRelPath = 'examples/template.rake'
 
-		@verilogBenchName = aModuleName + BENCH_SUFFIX
-		@verilogBenchPath = @verilogBenchName + VERILOG_SUFFIX
+		@verilogBenchName = aModuleName + @benchSuffix
+		@verilogBenchPath = @verilogBenchName + VERILOG_EXT
 
-		@rubyBenchName = aModuleName + BENCH_SUFFIX
-		@rubyBenchPath = @rubyBenchName + RUBY_SUFFIX
+		@rubyBenchName = aModuleName + @benchSuffix
+		@rubyBenchPath = @rubyBenchName + RUBY_EXT
 
-		@designName = aModuleName + DESIGN_SUFFIX
-		@designPath = @designName + RUBY_SUFFIX
+		@designName = aModuleName + @designSuffix
+		@designPath = @designName + RUBY_EXT
 
-		@specName = aModuleName + SPEC_SUFFIX
-		@specPath = @specName + RUBY_SUFFIX
+		@specName = aModuleName + @specSuffix
+		@specPath = @specName + RUBY_EXT
 
 		@designClassName = aModuleName.capitalize
 		@specClassName = @specName.capitalize
 
-		@runnerName = aModuleName + RUNNER_SUFFIX
-		@runnerPath = @runnerName + BUILDER_SUFFIX
+		@runnerName = aModuleName + @runnerSuffix
+		@runnerPath = @runnerName + RUNNER_EXT
 	end
 end
 
 
 # parse command-line options
-$specFormat = :Generic
+	optSpecFmt = :Generic
+	optTestName = 'test'
 
-optsParser = OptionParser.new
-optsParser.on('-h', '--help', 'show this help message') {raise}
-optsParser.on('-u', '--unit', 'use Test::Unit for specification') {|v| $specFormat = :UnitTest if v}
-optsParser.on('-s', '--spec', 'use RSpec for specification') {|v| $specFormat = :RSpec if v}
+	optsParser = OptionParser.new
+	optsParser.on('-h', '--help', 'show this help message') {raise}
+	optsParser.on('-u', '--unit', 'use Test::Unit specification format') {|val| optSpecFmt = :UnitTest if val}
+	optsParser.on('-s', '--spec', 'use RSpec specification format') {|val| optSpecFmt = :RSpec if val}
+	optsParser.on('-n', '--name NAME', 'specify name of generated test') {|val| optTestName = val}
 
-begin
-	optsParser.parse!(ARGV)
-rescue
-	at_exit {puts optsParser}
-	RDoc::usage	# NOTE: this terminates the program
-end
+	begin
+		optsParser.parse!(ARGV)
+	rescue
+		at_exit {puts optsParser}
+		RDoc::usage	# NOTE: this terminates the program
+	end
 
-puts "Using #{$specFormat} format for specification."
-
+	puts "Using name `#{optTestName}' for generated test."
+	puts "Using #{optSpecFmt} specification format."
 
 # sanitize the input
-input = ARGF.read
+	input = ARGF.read
 
 	# remove single-line comments
-	input.gsub! %r{//.*$}, ''
+		input.gsub! %r{//.*$}, ''
 
 	# collapse the input into a single line
-	input.tr! "\n", ''
+		input.tr! "\n", ''
 
 	# remove multi-line comments
-	input.gsub! %r{/\*.*?\*/}, ''
-
+		input.gsub! %r{/\*.*?\*/}, ''
 
 # parse the input
-input.scan(%r{module.*?;}).each do |moduleDecl|
-	puts
+	input.scan(%r{module.*?;}).each do |moduleDecl|
+		puts
 
-	m = ModuleInfo.new(moduleDecl).freeze
-	puts "Parsed module: #{m.name}"
+		m = ModuleInfo.new(moduleDecl).freeze
+		puts "Parsed module: #{m.name}"
 
+		# generate output
+			o = OutputInfo.new(m.name, optSpecFmt, optTestName, File.dirname(File.dirname(__FILE__))).freeze
 
-	# generate output
-	o = OutputInfo.new(m.name, $specFormat, File.dirname(File.dirname(__FILE__))).freeze
+			writeFile o.runnerPath, generateRunner(m, o)
+			puts "- Generated runner: #{o.runnerPath}"
 
-	writeFile o.runnerPath, generateRunner(m, o)
-	puts "- Generated runner: #{o.runnerPath}"
+			writeFile o.verilogBenchPath, generateVerilogBench(m, o)
+			puts "- Generated bench: #{o.verilogBenchPath}"
 
-	writeFile o.verilogBenchPath, generateVerilogBench(m, o)
-	puts "- Generated bench: #{o.verilogBenchPath}"
+			writeFile o.rubyBenchPath, generateRubyBench(m, o)
+			puts "- Generated bench: #{o.rubyBenchPath}"
 
-	writeFile o.rubyBenchPath, generateRubyBench(m, o)
-	puts "- Generated bench: #{o.rubyBenchPath}"
+			writeFile o.designPath, generateDesign(m, o)
+			puts "- Generated design: #{o.designPath}"
 
-	writeFile o.designPath, generateDesign(m, o)
-	puts "- Generated design: #{o.designPath}"
-
-	writeFile o.specPath, generateSpec(m, o)
-	puts "- Generated specification: #{o.specPath}"
-end
+			writeFile o.specPath, generateSpec(m, o)
+			puts "- Generated specification: #{o.specPath}"
+	end
