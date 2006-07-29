@@ -35,6 +35,7 @@ FORMATS.each_pair do |fmtName, (fmtFlag, needsResources)|
 	end
 
 	CLOBBER.include fmtFlag
+
 	task fmtName => fmtFlag
 
 	# copy additional resources to output directory
