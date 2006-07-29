@@ -128,7 +128,7 @@ task :default => :build
 			sh "rdoc1.8 -t 'Ruby-VPI: Ruby interface to Verilog VPI' -1 #{t.prerequisites[0]} | grep -v '^$' | sed '/h2>Classes/,$d' | sed '$a</body></html>' > #{t.name}"
 		end
 
-		CLEAN.include dst
+		CLOBBER.include dst
 		dst
 	end
 

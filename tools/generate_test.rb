@@ -172,7 +172,7 @@ def generateDesign aModuleInfo, aOutputInfo
 	end.join(', ')
 
 	portInitDecl = aModuleInfo.portNames.inject('') do |acc, port|
-		acc << %{@#{port} = Vpi::vpi_handle_by_name("#{aOutputInfo.verilogBenchName}.#{port}", nil)\n}
+		acc << %{@#{port} = vpi_handle_by_name("#{aOutputInfo.verilogBenchName}.#{port}", nil)\n}
 	end
 
 
@@ -188,11 +188,13 @@ def generateDesign aModuleInfo, aOutputInfo
 	%{
 		# An interface to the design under test.
 		class #{aOutputInfo.designClassName}
-			#{paramInitDecl}
+			include Vpi
 
+			#{paramInitDecl}
 			attr_reader #{accessorDecl}
 
 			def initialize
+				# assimilate design's interface
 				#{portInitDecl}
 
 				# unset all inputs
@@ -327,7 +329,7 @@ end
 class OutputInfo
 	RUBY_EXT = '.rb'
 	VERILOG_EXT = '.v'
-	RUNNER_EXT = '.rk'
+	RUNNER_EXT = '.rake'
 
 	SPEC_FORMATS = [:RSpec, :UnitTest, :Generic]
 
@@ -348,7 +350,7 @@ class OutputInfo
 
 		@rubyVpiPath = aRubyVpiPath
 		@rubyVpiLibPath = @rubyVpiPath + '/lib'
-		@runnerTemplateRelPath = 'examples/template.rake'
+		@runnerTemplateRelPath = 'examples/runner_template.rake'
 
 		@verilogBenchName = aModuleName + @benchSuffix
 		@verilogBenchPath = @verilogBenchName + VERILOG_EXT

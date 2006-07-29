@@ -1,4 +1,4 @@
-# A template to simplify building examples. This file is meant to be embedded in another Rakefile, which bears the responsibility of defining the following variables.
+# A template to simplify building and running examples. This file is meant to be embedded in another Rakefile, which bears the responsibility of defining the following variables.
 #
 # = Required variables
 # RUBY_VPI_PATH:: Path to the Ruby-VPI directory.
@@ -53,7 +53,7 @@ NORMAL_OBJ_PATH = "#{RUBY_VPI_PATH}/ruby-vpi.o"
 # propogate cleaning events to Ruby-VPI
 task :clobber do |t|
 	cd RUBY_VPI_PATH do
-		sh "rake #{t.name}"
+		sh "rake clean"
 	end
 end
 

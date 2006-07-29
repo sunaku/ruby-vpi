@@ -1,1 +1,1 @@
-load 'counter_runner.rake'
+load '../launcher_template.rake'

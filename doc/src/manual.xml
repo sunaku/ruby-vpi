@@ -966,7 +966,7 @@ endmodule
 Using RSpec specification format.
 
 Parsed module: counter
-- Generated runner:           counter_rspecTest_runner.rk
+- Generated runner:           counter_rspecTest_runner.rake
 - Generated bench:            counter_rspecTest_bench.v
 - Generated bench:            counter_rspecTest_bench.rb
 - Generated design:           counter_rspecTest_design.rb
@@ -982,7 +982,7 @@ Parsed module: counter
 Using UnitTest specification format.
 
 Parsed module: counter
-- Generated runner:           counter_unitTest_runner.rk
+- Generated runner:           counter_unitTest_runner.rake
 - Generated bench:            counter_unitTest_bench.v
 - Generated bench:            counter_unitTest_bench.rb
 - Generated design:           counter_unitTest_design.rb
@@ -1046,6 +1046,7 @@ end
 					<figure>
 						<title><filename>counter_spec.rb</filename></title>
 <programlisting>
+<remark># A specification which verifies the design under test.</remark>
 <function>require</function> <literal>'counter_design.rb'</literal>
 <function>require</function> <literal>'vpi_util'</literal>
 <function>require</function> <literal>'rspec'</literal>
@@ -1103,6 +1104,7 @@ end
 					<figure>
 						<title><filename>counter_spec.rb</filename></title>
 <programlisting>
+<remark># A specification which verifies the design under test.</remark>
 <function>require</function> <literal>'counter_design.rb'</literal>
 <function>require</function> <literal>'vpi_util'</literal>
 <function>require</function> <literal>'test/unit'</literal>
