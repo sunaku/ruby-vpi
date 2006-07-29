@@ -1,4 +1,17 @@
-/* code */
+/* admonitions */
+	.tip, .note, .important, .caution, .warning {
+		/* border: thin solid lightgreen;
+		background-color: honeydew; */
+		border: thin solid steelblue;
+		background-color: aliceblue;
+		padding: 1em;
+	}
+/* headings */
+	.title, th {
+		font-family: serif;
+	}
+
+/* source code */
 	.screen {
 		background-color: whitesmoke;
 	}
