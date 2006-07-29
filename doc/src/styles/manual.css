@@ -47,7 +47,18 @@
 	.remark {
 		color: black;
 		background-color: khaki;
+	}
+
+	.remark, .command {
 		padding: 0.5em;
+	}
+
+	.command {
+		background-color: lavenderblush;
+	}
+
+	.filename {
+		background-color: lavender;
 	}
 
 /* tables */
