@@ -34,6 +34,15 @@ SSH_URL = 'snk@rubyforge.org:/var/www/gforge-projects/ruby-vpi'
 task :default => :build
 
 
+# cleaning
+	task :clobber do |t|
+		FileList['examples/*/', 'doc'].each do |dir|
+			cd dir do
+				sh 'rake', t.name
+			end
+		end
+	end
+
 # variables
 	require 'rbconfig'
 
@@ -74,12 +83,6 @@ task :default => :build
 	task 'doc' => 'ref' do |t|
 		cd t.name do
 			sh 'rake'
-		end
-	end
-
-	task :clobber do |t|
-		cd 'doc' do
-			sh 'rake', t.name
 		end
 	end
 
