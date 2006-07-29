@@ -882,19 +882,19 @@
 
 				<step><para>Install Ruby.</para></step>
 				<step><para>Install RubyGems.</para></step>
-				<step><para>Install <application>Rake</application> and <application>RSpec</application> by issuing the command <command>gem <action>install</action> <option>--remote</option> <replaceable>rake</replaceable> <replaceable>rspec</replaceable></command> at your command-prompt.</para></step>
-				<step><para>Build &rv; by the command <command>rake <action>build</action></command> inside the directory in which you extracted the release package.</para></step>
+				<step><para>Install <application>Rake</application> and <application>RSpec</application> by running the command <command>gem <action>install</action> <option>--remote</option> <replaceable>rake</replaceable> <replaceable>rspec</replaceable></command>.</para></step>
+				<step><para>Build &rv; by running the command <command>rake <action>build</action></command> inside the directory in which you extracted the release package.</para></step>
 			</procedure>
 		</section>
 
 		<section id="usage.tools">
 			<title>Tools</title>
-			<para>The <filename>tools</filename> directory contains tools which ease the process of writing tests. Each tool provides help and usage information invoked with the <option>--help</option> option at a command-prompt.</para>
+			<para>The <filename>tools</filename> directory contains tools which ease the process of writing tests. Each tool provides help and usage information invoked with the <option>--help</option> option.</para>
 
 			<section id="usage.tools.generate-test">
 				<title>Automated test generation</title>
 
-				<para>The <filename>tools/generate_test.rb</filename> tool can be used to automatically generate tests from &v; 2001 module declarations. You can try it by invoking <command>ruby <replaceable>tools/generate_test.rb</replaceable> <option>--help</option></command> at your command-prompt.</para>
+				<para>The <filename>tools/generate_test.rb</filename> tool can be used to automatically generate tests from &v; 2001 module declarations. You can try it by running the command <command>ruby <replaceable>tools/generate_test.rb</replaceable> <option>--help</option></command>.</para>
 			</section>
 		</section>
 
@@ -1003,7 +1003,7 @@ endmodule
 				<figure id="fig..generate-test.rspec">
 					<title>Generating a test with specification in &rspec; format.</title>
 <screen>
-<prompt>$</prompt> <command>ruby <replaceable>tools/generate_test.rb</replaceable> <replaceable>counter.v</replaceable> <option>--rspec</option> <option>--name</option> <replaceable>rspecTest</replaceable></command>
+<prompt>$</prompt> <userinput><command>ruby <replaceable>tools/generate_test.rb</replaceable> <replaceable>counter.v</replaceable> <option>--rspec</option> <option>--name</option> <replaceable>rspecTest</replaceable></command></userinput>
 <computeroutput>Using name `rspecTest' for generated test.
 Using RSpec specification format.
 
@@ -1019,7 +1019,7 @@ Parsed module: counter
 				<figure id="fig..generate-test.unit-test">
 					<title>Generating a test with specification in unit test format.</title>
 <screen>
-<prompt>$</prompt> <command>ruby <replaceable>tools/generate_test.rb</replaceable> <replaceable>counter.v</replaceable> <option>--unit</option> <option>--name</option> <replaceable>unitTest</replaceable></command>
+<prompt>$</prompt> <userinput><command>ruby <replaceable>tools/generate_test.rb</replaceable> <replaceable>counter.v</replaceable> <option>--unit</option> <option>--name</option> <replaceable>unitTest</replaceable></command></userinput>
 <computeroutput>Using name `unitTest' for generated test.
 Using UnitTest specification format.
 
@@ -1054,7 +1054,7 @@ Parsed module: counter
 
 				<note>
 					<title>Before we continue&hellip;</title>
-					<para>Append the following code to the files <filename>counter_rspecTest_design.rb</filename> and <filename>counter_unitTest_design.rb</filename>. This code adds a convenient <function>reset!</function> method, to the <constant>Counter</constant> class, which resets the counter's value to zero.</para>
+					<para>Append the following code to the files <filename>counter_rspecTest_design.rb</filename> and <filename>counter_unitTest_design.rb</filename>. This code adds a convenient <function>reset!</function> method, which resets the counter's value to zero, to the <constant>Counter</constant> class.</para>
 
 <programlisting>
 class <constant>Counter</constant>
