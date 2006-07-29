@@ -4,11 +4,8 @@ require 'vpi_util'
 require 'test/unit'
 
 
-# Lowest upper bound of counter's value
-LIMIT = 2 ** Counter::Size
-
-# Maximum allowed value for a counter
-MAX = LIMIT - 1
+LIMIT = 2 ** Counter::Size # lowest upper bound of counter's value
+MAX = LIMIT - 1 # maximum allowed value for a counter
 
 
 class ResettedCounterValue < Test::Unit::TestCase

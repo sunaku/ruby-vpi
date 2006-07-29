@@ -45,7 +45,9 @@
 	}
 
 	.remark {
-		color: olive;
+		color: black;
+		background-color: khaki;
+		padding: 0.5em;
 	}
 
 /* tables */

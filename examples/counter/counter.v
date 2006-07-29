@@ -1,10 +1,10 @@
 /**
-	An up-counter with synchronous reset.
+	A simple up-counter with synchronous reset.
 
-	@param	Size	The number of bits to use in representing the counter's value.
-	@param	clock The clocking signal.
-	@param	reset Sets the value of this counter to zero when asserted.
-	@param	count The value of this counter.
+	@param	Size	Number of bits used to represent the counter's value.
+	@param	clock Increments the counter's value upon each positive edge.
+	@param	reset Zeroes the counter's value when asserted.
+	@param	count The counter's value.
 */
 module counter #(parameter Size = 5) (
 	input clock,

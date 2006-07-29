@@ -912,7 +912,7 @@
 				<title>Typical way of using &rv;</title>
 
 				<step>
-					<para>Declare a &v; module (the design) using &v; 2001 syntax, or work with an existing one.</para>
+					<para>Declare a &v; module using &v; 2001 syntax, or work with an existing one.</para>
 				</step>
 
 				<step>
@@ -920,7 +920,7 @@
 				</step>
 
 				<step>
-					<para>Specify your expectations in the generated specification.</para>
+					<para>Specify your expectations in the generated specification template.</para>
 				</step>
 
 				<step>
@@ -931,13 +931,19 @@
 			<section id="usage.tutorial.start-with-a-design">
 				<title>Start with a design</title>
 
-				<para>First, we need a design to verify. In this tutorial, <link linkend="fig..counter.v">a simple up-counter</link> will serve as our design. This design, declared using &v; 2001 syntax, increments the value of its <varname>count</varname> output upon each positive edge of its <varname>clock</varname> input.</para>
-
-				<para>In addition, when <varname>count</varname> reaches the value <code>2 ** <constant>Size</constant></code>, it will automatically become zero upon the next positive edge of the <varname>clock</varname>. Likewise, when <varname>reset</varname> is asserted during a positive edge of the <varname>clock</varname>, <varname>count</varname> will become zero during the next positive edge of the <varname>clock</varname>.</para>
+				<para>First, we need a design to verify. For this tutorial, <link linkend="fig..counter.v">a simple up-counter</link> module&mdash;declared using &v; 2001 syntax&mdash;will serve as our design.</para>
 
 				<figure id="fig..counter.v">
 					<title>A simple up-counter with synchronous reset: <filename>counter.v</filename></title>
 <programlisting>
+<remark>/**
+  A simple up-counter with synchronous reset.
+
+  @param  Size  Number of bits used to represent the counter's value.
+  @param  clock Increments the counter's value upon each positive edge.
+  @param  reset Zeroes the counter's value when asserted.
+  @param  count The counter's value.
+*/</remark>
 module counter #(parameter <constant>Size</constant> = <literal>5</literal>) (
   input <varname>clock</varname>,
   input <varname>reset</varname>,
@@ -949,6 +955,8 @@ module counter #(parameter <constant>Size</constant> = <literal>5</literal>) (
 endmodule
 </programlisting>
 				</figure>
+
+ 				<para>The counter's value, accessed through the <varname>count</varname> signal, is restricted by its <constant>Size</constant> parameter, which defines the number of bits used to represent the value. This value is incremented upon each positive edge of the <varname>clock</varname> signal. When it exceeds the maximum value representable by <constant>Size</constant> bits, <varname>count</varname> automatically overflows (becomes zero) upon the next positive edge of the <varname>clock</varname> signal. Likewise, when the <varname>reset</varname> signal is asserted (enabled or activated by being set to a <quote>logic high</quote> value) during a positive edge of the <varname>clock</varname> signal, <varname>count</varname> will become zero during the next positive edge of the <varname>clock</varname>.</para>
 			</section>
 
 			<section id="usage.tutorial.generate-test">
@@ -1010,38 +1018,21 @@ Parsed module: counter
 					</itemizedlist>
 				</para>
 
+				<para>Before we continue, append the following code to the files <filename>counter_rspecTest_design.rb</filename> and <filename>counter_unitTest_design.rb</filename>. This code will make it easier for us to implement the specification by adding a convenient <function>reset!</function> method, to the <constant>Counter</constant> class, which resets the counter's value to zero.</para>
 
-				<section id="usage.tutorial.specification.rspec">
-					<title>Expressing a specification in &rspec; format</title>
-					<para/>
-
-					<figure>
-						<title><filename>counter_design.rb</filename></title>
 <programlisting>
 class <constant>Counter</constant>
-  <function>include</function> <constant>Vpi</constant>
-
-  <constant>Size</constant> = <literal>5</literal>
-  <function>attr_reader</function> <literal>:clock</literal>, <literal>:reset</literal>, <literal>:count</literal>
-
-  def <function>initialize</function>
-    <remark># assimilate design's interface</remark>
-    <varname>@clock</varname> = <function>vpi_handle_by_name</function>(<parameter><literal>"counter_bench.clock"</literal></parameter>, <parameter><literal>nil</literal></parameter>)
-    <varname>@reset</varname> = <function>vpi_handle_by_name</function>(<parameter><literal>"counter_bench.reset"</literal></parameter>, <parameter><literal>nil</literal></parameter>)
-    <varname>@count</varname> = <function>vpi_handle_by_name</function>(<parameter><literal>"counter_bench.count"</literal></parameter>, <parameter><literal>nil</literal></parameter>)
-
-    <remark># unset all inputs</remark>
-    <varname>@reset</varname>.<function>hexStrVal</function> = <literal>'x'</literal>
-  end
-
   def <function>reset!</function>
     <varname>@reset</varname>.<function>intVal</function> = <literal>1</literal>
-    <function>relay_verilog</function>
+    <function>relay_verilog</function> <remark># advance the clock</remark>
     <varname>@reset</varname>.<function>intVal</function> = <literal>0</literal>
   end
 end
 </programlisting>
-					</figure>
+
+				<section id="usage.tutorial.specification.rspec">
+					<title>Expressing a specification in &rspec; format</title>
+					<para/>
 
 					<figure>
 						<title><filename>counter_spec.rb</filename></title>
@@ -1051,13 +1042,8 @@ end
 <function>require</function> <literal>'vpi_util'</literal>
 <function>require</function> <literal>'rspec'</literal>
 
-
-<remark># Lowest upper bound of counter's value</remark>
-<constant>LIMIT</constant> = <literal>2</literal> ** <constant>Counter</constant>::<constant>Size</constant>
-
-<remark># Maximum allowed value for a counter</remark>
-<constant>MAX</constant> = <constant>LIMIT</constant> - <literal>1</literal>
-
+<constant>LIMIT</constant> = <literal>2</literal> ** <constant>Counter</constant>::<constant>Size</constant>  <remark># lowest upper bound of counter's value</remark>
+<constant>MAX</constant> = <constant>LIMIT</constant> - <literal>1</literal>             <remark># maximum allowed value for a counter</remark>
 
 <function>include</function> <constant>Vpi</constant>
 
@@ -1109,13 +1095,8 @@ end
 <function>require</function> <literal>'vpi_util'</literal>
 <function>require</function> <literal>'test/unit'</literal>
 
-
-<remark># Lowest upper bound of counter's value</remark>
-<constant>LIMIT</constant> = <literal>2</literal> ** <constant>Counter</constant>::<constant>Size</constant>
-
-<remark># Maximum allowed value for a counter</remark>
-<constant>MAX</constant> = <constant>LIMIT</constant> - <literal>1</literal>
-
+<constant>LIMIT</constant> = <literal>2</literal> ** <constant>Counter</constant>::<constant>Size</constant>  <remark># lowest upper bound of counter's value</remark>
+<constant>MAX</constant> = <constant>LIMIT</constant> - <literal>1</literal>             <remark># maximum allowed value for a counter</remark>
 
 class <constant>ResettedCounterValue</constant> &lt; <constant>Test</constant>::<constant>Unit</constant>::<constant>TestCase</constant>
   <function>include</function> <constant>Vpi</constant>
