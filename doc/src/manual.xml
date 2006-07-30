@@ -944,7 +944,14 @@
 			<section id="usage.tutorial.start-with-a-design">
 				<title>Start with a design</title>
 
-				<para>First, we need a design to verify. For this tutorial, <link linkend="fig..counter.v">a simple up-counter</link> module&mdash;declared using &v; 2001 syntax&mdash;will serve as our design.</para>
+				<para>First, we need a design to verify. <xref linkend="fig..counter.v"/> will serve as our design throughout this tutorial.</para>
+
+				<para>The counter's value, accessed through the <varname>count</varname> signal, is restricted by its <constant>Size</constant> parameter, which defines the number of bits used to represent the value. This value is incremented upon each positive edge of the <varname>clock</varname> signal. When it exceeds the maximum value representable by <constant>Size</constant> bits, <varname>count</varname> automatically overflows (becomes zero) upon the next positive edge of the <varname>clock</varname> signal. Likewise, when the <varname>reset</varname> signal is asserted (enabled or activated by being set to a <quote>logic high</quote> value) during a positive edge of the <varname>clock</varname> signal, <varname>count</varname> will become zero during the next positive edge of the <varname>clock</varname>.</para>
+
+				<important>
+					<title>Before we continue&hellip;</title>
+					<para>Save the source code shown in <xref linkend="fig..counter.v"/> into a file named <filename>counter.v</filename>.</para>
+				</important>
 
 				<figure id="fig..counter.v">
 					<title>A simple up-counter with synchronous reset</title>
@@ -968,13 +975,6 @@ module counter #(parameter <constant>Size</constant> = <literal>5</literal>) (
 endmodule
 </programlisting>
 				</figure>
-
- 				<para>The counter's value, accessed through the <varname>count</varname> signal, is restricted by its <constant>Size</constant> parameter, which defines the number of bits used to represent the value. This value is incremented upon each positive edge of the <varname>clock</varname> signal. When it exceeds the maximum value representable by <constant>Size</constant> bits, <varname>count</varname> automatically overflows (becomes zero) upon the next positive edge of the <varname>clock</varname> signal. Likewise, when the <varname>reset</varname> signal is asserted (enabled or activated by being set to a <quote>logic high</quote> value) during a positive edge of the <varname>clock</varname> signal, <varname>count</varname> will become zero during the next positive edge of the <varname>clock</varname>.</para>
-
-				<important>
-					<title>Before we continue&hellip;</title>
-					<para>Save the counter's source code into a file named <filename>counter.v</filename>.</para>
-				</important>
 			</section>
 
 			<section id="usage.tutorial.generate-test">
