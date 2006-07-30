@@ -139,8 +139,34 @@ task :default => :build
 	desc "Prepare for distribution."
 	task :dist => [:swig, :doc, *distDocs]
 
+	# website publishing
+		# uploads the given sources without their SVN meta-data to the given destination URL
+		def uploadWithoutSvn aDestUrl, *aSources
+			tmpDir = Tempfile.new($$).path
+			rm_f tmpDir
+			mkdir tmpDir
 
-	desc 'Publish documentation to website.'
-	task :web => ['ref', 'doc', *distDocs] do |t|
-		sh "scp -Cr #{t.prerequisites.join(' ')} #{SSH_URL}"
-	end
+			tmpSources = aSources.map do |src|
+				cp_r src, tmpDir, :preserve => true
+				File.join(tmpDir, File.basename(src))
+			end
+
+			# remove SVN meta-data from sources
+				sh "find #{tmpDir} -name .svn | xargs rm -rf"
+
+			# upload sources
+				sh 'scp', '-Cr', *(tmpSources + [aDestUrl])
+
+			rm_rf tmpDir
+		end
+
+		desc 'Publish documentation to website.'
+		task :web => [:web_dist, :web_doc]
+
+		task :web_dist => ['ref', *distDocs] do |t|
+			uploadWithoutSvn SSH_URL, *t.prerequisites
+		end
+
+		task :web_doc => :doc do |t|
+			uploadWithoutSvn "#{SSH_URL}/doc/", *FileList['doc/xhtml/*']
+		end
