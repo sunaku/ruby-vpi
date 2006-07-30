@@ -1100,7 +1100,7 @@ end
 					<title>Specification expressed in &rspec; format</title>
 <programlisting>
 <remark># A specification which verifies the design under test.</remark>
-<function>require</function> <literal>'counter_design.rb'</literal>
+<function>require</function> <literal>'counter_rspecTest_design.rb'</literal>
 <function>require</function> <literal>'vpi_util'</literal>
 <function>require</function> <literal>'rspec'</literal>
 
@@ -1149,7 +1149,7 @@ end
 					<title>Specification expressed in unit test format</title>
 <programlisting>
 <remark># A specification which verifies the design under test.</remark>
-<function>require</function> <literal>'counter_design.rb'</literal>
+<function>require</function> <literal>'counter_unitTest_design.rb'</literal>
 <function>require</function> <literal>'vpi_util'</literal>
 <function>require</function> <literal>'test/unit'</literal>
 
