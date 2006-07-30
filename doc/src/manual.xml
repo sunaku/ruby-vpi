@@ -255,6 +255,10 @@
 		<section id="background.terminology">
 			<title>Terminology</title>
 
+			<tip>
+				<para>Have a look at the <xref linkend="glossary"/> for definitions of terms used in this manual.</para>
+			</tip>
+
 			<para>As a newcomer into the world of &v;, I often heard the term <emphasis>test bench</emphasis>: <quote>I ran the test bench, but it didn't work!</quote> or <quote>Are you crazy?!! You <emphasis>still</emphasis> haven't written the test bench? o_O</quote>, for example. I flipped through my textbook and surfed the Internet for a definition of the term, but it was to no avail. Instead, both resources nonchalantly employed the term <emphasis>throughout</emphasis> their being, as if mocking my ignorance of what seems to be universal knowledge.</para>
 
 			<para>Defeated, I turned to my inner faculties to determine the answer. <quote>Let's see, the term <emphasis>test bench</emphasis> has the word <emphasis>test</emphasis>&mdash;so it has something to do with testing&mdash;and it has the word <emphasis>bench</emphasis>&mdash;so maybe it's referring to a table where the testing should occur</quote>. This reasoning grew increasingly familiar as my mind rummaged through towering stores of obsolescence and ultimately revealed dreaded memories of sleepless anguish: debugging electronics in the robotics laboratory.</para>
@@ -1196,6 +1200,11 @@ end
 			<section id="usage.tutorial.testing">
 				<title>Run the test</title>
 				<para>Now that we have a completed specification for our design, we are ready to verify it by running the test. <xref linkend="fig..run-test.rspec"/> and <xref linkend="fig..run-test.unit-test"/> illustrate this process. Here, the Icarus &v; simulator, denoted by <replaceable>ivl</replaceable>, is used to simulate our design.</para>
+
+				<tip>
+					<title>Changing &v; simulators</title>
+					<para>Run the command <command>rake <replaceable>clobber</replaceable></command> when changing from one &v; simulator to another. This command ensures that &rv; will be recompiled to accomodate the new simulator when the test is run.</para>
+				</tip>
 
 				<figure id="fig..run-test.rspec">
 					<title>Running a test with specification in &rspec; format</title>

@@ -63,16 +63,16 @@
 		background-color: khaki;
 	}
 
-	.remark, .command {
+	.remark, .command, .filename {
 		padding: 0.5em;
 	}
 
 	.command {
-		background-color: lavenderblush;
+		background-color: bisque;
 	}
 
 	.filename {
-		background-color: lavender;
+		background-color: palegreen;
 	}
 
 /* tables */
