@@ -1069,7 +1069,7 @@ Parsed module: counter
 					</itemizedlist>
 				</para>
 
-				<para>Now that we have identified a set of expectations for our design, we are ready to express them in our specification. <xref linkend="fig..counter_unitTest_spec.rb"/> and <xref linkend="fig..counter_unitTest_spec.rb"/> illustrate this process. Note the striking similarities between these expressions and our original expectations above.</para>
+				<para>Now that we have identified a set of expectations for our design, we are ready to express them in our specification. <xref linkend="fig..counter_rspecTest_spec.rb"/> and <xref linkend="fig..counter_unitTest_spec.rb"/> illustrate this process. Note the striking similarities between these expressions and our original expectations above.</para>
 
 				<important>
 					<title>Before we continue&hellip;</title>
