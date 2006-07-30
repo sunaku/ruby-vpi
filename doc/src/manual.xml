@@ -59,6 +59,19 @@
 
 		&snk..copyright;
 
+		<copyright>
+			<year>2005</year>
+			<year>2006</year>
+			<holder><ulink url="http://tango.freedesktop.org">Tango Desktop Project</ulink> <remark>for admonition and navigation graphics released under <ulink url="images/COPYING">this license</ulink>.</remark></holder>
+		</copyright>
+
+		<copyright>
+			<year>1999</year>
+			<year>2000</year>
+			<year>2001</year>
+			<holder>Norman Walsh <remark>for DocBook graphics released under <ulink url="images/copyright">this license</ulink>.</remark></holder>
+		</copyright>
+
 		<abstract>
 			<para>This manual explains how to use &rv;. You can find the newest version of this manual at the <ulink url="&rv.url;">&rv; website</ulink>.</para>
 		</abstract>
@@ -1188,8 +1201,7 @@ end
 					<title>Running a test with specification in &rspec; format</title>
 <screen>
 <prompt>$</prompt> <userinput><command>rake <option>-f</option> <replaceable>counter_rspecTest_runner.rake</replaceable> <replaceable>ivl</replaceable></command></userinput>
-<computeroutput>
-A resetted counter's value
+<computeroutput>A resetted counter's value
 - should be zero
 - should increment by one count upon each rising clock edge
 
@@ -1206,8 +1218,7 @@ Finished in 0.005628 seconds
 					<title>Running a test with specification in unit test format</title>
 <screen>
 <prompt>$</prompt> <userinput><command>rake <option>-f</option> <replaceable>counter_unitTest_runner.rake</replaceable> <replaceable>ivl</replaceable></command></userinput>
-<computeroutput>
-Loaded suite counter_unitTest_bench
+<computeroutput>Loaded suite counter_unitTest_bench
 Started
 ...
 Finished in 0.006766 seconds.
