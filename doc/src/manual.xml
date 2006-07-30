@@ -1051,7 +1051,7 @@ Parsed module: counter
 
 				<para>So far, the test generation tool has created a basic foundation for our test. Now we must build upon this foundation by identifying our expectations of the design. That is, how do we expect the design to <emphasis>behave</emphasis> under certain conditions?</para>
 
-				<para>The following is a reaonable set of expectations for our simple counter:
+				<para>The following is a reasonable set of expectations for our simple counter:
 					<itemizedlist>
 						<listitem>
 							<para>A resetted counter's value should be zero.</para>
