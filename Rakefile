@@ -137,7 +137,7 @@ task :default => :build
 
 
 	desc "Prepare for distribution."
-	task :dist => [:clobber, :swig, :doc, *distDocs]
+	task :dist => [:swig, :doc, *distDocs]
 
 
 	desc 'Publish documentation to website.'

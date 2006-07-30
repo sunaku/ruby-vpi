@@ -3,11 +3,33 @@
 This document is a record of important changes that have occurred with each release of Ruby-VPI.
 
 
-= Version 0.8 (not yet released)
+= Version 0.8 (2006-07-29)
 
 == Summary
 
+This release adds a tutorial to the user manual, and improves the tools and examples.
+
 == Details
+
+=== User manual
+
+* A tutorial, based on the counter example, has been added to the user manual.
+
+* The user manual's appearance has been dramatically improved with syntax coloring for source code, and {graphics for admonitions and navigation}[http://tango.freedesktop.org].
+
+* The examples' <tt>Rakefile</tt>s now invoke all tests present in the directory.
+
+=== Examples
+
+* A specification, expressed in unit test format, has been added to the counter example.
+
+* A <b>--name</b> or <b>-n</b> option, which lets you specify an identifier for a generated test, has been added to the <tt>generate_test.rb</tt> tool.
+
+* Running <code>rake clobber</code> in an example directory no longer destroys documentation in the Ruby-VPI directory.
+
+=== VPI utility layer
+
+* The value of a handle's boolean VPI property is treated as +false+ if it is zero, because zero is +false+ in the C language.
 
 == Acknowledgment
 
