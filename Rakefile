@@ -124,7 +124,7 @@ task :default => :build
 	end
 
 # distribution
-	distDocs = ['HISTORY', 'README'].map do |src|
+	distDocs = ['HISTORY', 'README', 'MEMO'].map do |src|
 		dst = src.downcase << '.html'
 
 		file dst => src do |t|

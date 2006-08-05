@@ -1,0 +1,12 @@
+h1. Memorandum
+
+* integrate RCov for coverage statistics
+
+* define handled methods in Vpi::method_missing for faster response
+
+* file bug report for Icarus 0.8
+
+* GHDL
+** need way to invoke VPI tasks from VHDL, like @$ruby_init();@
+
+* add support for ESL prototyping (like SystemC) via callback for clock posedge
