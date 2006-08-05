@@ -13,7 +13,7 @@ h2. Details
 
 * Source code comments in the user manual are now readable.
 
-* The @README@ and @HISTORY@ files have been converted to textile format.
+* The @README@ and @HISTORY@ files have been converted to "textile":http://www.textism.com/tools/textile/ format.
 
 h2. Acknowledgment
 
