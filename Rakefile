@@ -128,7 +128,7 @@ task :default => :build
 		dst = src.downcase << '.html'
 
 		file dst => src do |t|
-			sh "rdoc1.8 -t 'Ruby-VPI: Ruby interface to Verilog VPI' -1 #{t.prerequisites[0]} | grep -v '^$' | sed '/h2>Classes/,$d' | sed '$a</body></html>' > #{t.name}"
+			sh "redcloth < #{t.prerequisites[0]} > #{t.name}"
 		end
 
 		CLOBBER.include dst

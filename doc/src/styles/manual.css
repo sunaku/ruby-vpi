@@ -1,3 +1,7 @@
+body {
+	font-family: sans-serif;
+}
+
 /* admonitions */
 	.tip, .note, .important, .caution, .warning {
 		/* border: thin solid lightgreen;
@@ -13,7 +17,7 @@
 	}
 
 /* source code */
-	.screen {
+	.screen, .filename {
 		background-color: whitesmoke;
 	}
 
@@ -64,10 +68,6 @@
 
 	.command {
 		background-color: bisque;
-	}
-
-	.filename {
-		background-color: whitesmoke;
 	}
 
 /* tables */

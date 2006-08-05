@@ -1,102 +1,101 @@
-= Release history
+h1. Release history
 
-This document is a record of important changes that have occurred with each release of Ruby-VPI.
+This document is a record of important changes that have occurred with each release of "Ruby-VPI":http://ruby-vpi.rubyforge.org.
 
 
-= Version 0.8 (2006-07-29)
+h1. Version 0.8 (2006-07-29)
 
-== Summary
+h2. Summary
 
 This release adds a tutorial to the user manual, and improves the tools and examples.
 
-== Details
+h2. Details
 
-=== User manual
+h3. User manual
 
 * A tutorial, based on the counter example, has been added to the user manual.
 
-* The user manual's appearance has been dramatically improved with syntax coloring for source code, and {graphics for admonitions and navigation}[http://tango.freedesktop.org].
+* The user manual's appearance has been dramatically improved with syntax coloring for source code, and "graphics for admonitions and navigation":http://tango.freedesktop.org.
 
-* The examples' <tt>Rakefile</tt>s now invoke all tests present in the directory.
-
-=== Examples
+h3. Examples
 
 * A specification, expressed in unit test format, has been added to the counter example.
 
-* A <b>--name</b> or <b>-n</b> option, which lets you specify an identifier for a generated test, has been added to the <tt>generate_test.rb</tt> tool.
+* The @--name@ and @-n@ options, which lets you specify an identifier for a generated test, have been added to the @generate_test.rb@ tool.
 
-* Running <code>rake clobber</code> in an example directory no longer destroys documentation in the Ruby-VPI directory.
+* Running @rake clobber@ in an example directory no longer destroys documentation in the Ruby-VPI directory.
 
-=== VPI utility layer
+* The examples' Rakefiles now invoke all tests present in the directory via the @launcher_template.rake@ template.
 
-* The value of a handle's boolean VPI property is treated as +false+ if it is zero, because zero is +false+ in the C language.
+h3. VPI utility layer
 
-== Acknowledgment
+* The value of a handle's boolean VPI property is treated as @false@ if it is zero, because zero is @false@ in the C language.
+
+h2. Acknowledgment
 
 * Thanks to Phil Tomson for correcting the URL of the RHDL website, in the user manual.
 
 
-= Version 0.7 (2006-07-22)
+h1. Version 0.7 (2006-07-22)
 
-== Summary
+h2. Summary
 
 This release enhances the VPI utility layer and adds new content to the user manual.
 
-== Details
+h2. Details
 
 * SWIG is no longer required for users because its output is included in the release package.
 
-* The VPI utility layer provides access to VPI properties of handles in a {simpler, more powerful way}[http://ruby-vpi.rubyforge.org/doc/manual.html#organization.vpi.util].
+* The VPI utility layer provides access to VPI properties of handles in a "simpler, more powerful way":http://ruby-vpi.rubyforge.org/doc/background.organization.html#organization.vpi.
 
-  * All VPI properties, except delay values, are now accessible from a handle.
+** All VPI properties, except delay values, are now accessible from a handle.
 
-  * The <tt>handle.value</tt> and <tt>handle.value=</tt> methods have been removed.
+** The @handle.value@ and @handle.value=@ methods have been removed.
 
 * The user manual has been revised and new content in the organization and usage sections has been added.
 
 * This release was tested and developed using:
-  * Ruby 1.8.4 and Icarus Verilog 0.8 on i686 GNU/Linux
-  * Ruby 1.8.4 and Mentor Modelsim 6.1d on x86_64 GNU/Linux
+** Ruby 1.8.4 and Icarus Verilog 0.8 on i686 GNU/Linux
+** Ruby 1.8.4 and Mentor Modelsim 6.1d on x86_64 GNU/Linux
 
-== Acknowledgment
+h2. Acknowledgment
 
 * Thanks to Jan Decaluwe for correcting the description of MyHDL in the user manual.
 
 
-= Version 0.6 (2006-05-25)
+h1. Version 0.6 (2006-05-25)
 
-== Summary
+h2. Summary
 
-This major release adds a comprehensive user manual, upgrades from make to Rake[http://rake.rubyforge.org], and improves the test generation tool.
+This major release adds a comprehensive user manual, upgrades from make to "Rake":http://rake.rubyforge.org, and improves the test generation tool.
 
-== Details
+h2. Details
 
 * A comprehensive user manual, written in DocBook-XML, has been added.
 
-* Rake has replaced the role of +make+. All makefiles have been converted accordingly.
+* Rake has replaced the role of *make*. All makefiles have been converted accordingly.
 
 * The test generation tool now generates multiple files (runner, bench, design, spec) and makes backups of existing files. See its help information for details.
 
 * Support for RSpec 0.5.4 has been added.
-
-* The counter example now makes use of RSpec.
+** The counter example now makes use of RSpec.
 
 * This release was tested and developed using:
-  * Ruby 1.8.4 and Icarus Verilog 0.8 on i686 GNU/Linux
-  * Ruby 1.8.4 and Mentor Modelsim 6.1d on x86_64 GNU/Linux
+** Ruby 1.8.4 and Icarus Verilog 0.8 on i686 GNU/Linux
+** Ruby 1.8.4 and Mentor Modelsim 6.1d on x86_64 GNU/Linux
 
-== Acknowledgment
+h2. Acknowledgment
 
 * Thanks to Jose Renau for solving the problem of strange delays that occurred whenever a design was reset.
 
 
-= Version 0.5 (2006-05-13)
+h1. Version 0.5 (2006-05-13)
 
-== Summary
+h2. Summary
 
-This release adds a tool which generates test benches, and adds support for {Behavior Driven Development}[http://behaviour-driven.org] via the RSpec[http://rspec.rubyforge.org] library.
+This release adds a tool which generates test benches, and adds support for "Behavior Driven Development":http://behaviour-driven.org via the "RSpec":http://rspec.rubyforge.org library.
 
-== Details
+h2. Details
 
 * A tool, which generates most of a Ruby-VPI test bench from a Verilog 2001 module declaration, has been added.
 
@@ -105,25 +104,25 @@ This release adds a tool which generates test benches, and adds support for {Beh
 * Ability to specify arbitrary command-line arguments to Verilog simulators has been added in the examples' makefile template.
 
 * This release was tested and developed using:
-  * Ruby 1.8.4 and Icarus Verilog 0.8 on i686 GNU/Linux
-  * Ruby 1.8.4 and Mentor Modelsim 6.1d on x86_64 GNU/Linux
+** Ruby 1.8.4 and Icarus Verilog 0.8 on i686 GNU/Linux
+** Ruby 1.8.4 and Mentor Modelsim 6.1d on x86_64 GNU/Linux
 
-== Acknowledgment
+h2. Acknowledgment
 
-* Thanks to Scott L Holmes for helping me {use the RSpec library without its runner}[http://article.gmane.org/gmane.comp.lang.ruby.general/150087] program.
+* Thanks to Scott L Holmes for helping me "use the RSpec library without its runner":http://article.gmane.org/gmane.comp.lang.ruby.general/150087 program.
 
 
-= Version 0.4 (2006-04-28)
+h1. Version 0.4 (2006-04-28)
 
-== Summary
+h2. Summary
 
 This release adds simple ways of reading and writing values to VPI handles, adds documentation for the VPI utility layer, and fixes the pipelined ALU example.
 
-== Details
+h2. Details
 
-* Simple, consistent ways of reading and writing values to handles have been added to the VPI utility layer. These ways are described in the SWIG::TYPE_p_unsigned_int class' documentation.
+* Simple, consistent ways of reading and writing values to handles have been added to the VPI utility layer. These ways are described in the @SWIG::TYPE_p_unsigned_int@ class' documentation.
 
-* The makefiles now use the +rbconfig+ library to determine the default compiler and linker flags for Ruby.
+* The makefiles now use the *rbconfig* library to determine the default compiler and linker flags for Ruby.
 
 * A race condition in the pipelined ALU example has been fixed. This example should now run successfully in all Verilog simulators.
 
@@ -132,119 +131,115 @@ This release adds simple ways of reading and writing values to VPI handles, adds
 * The project website is now generated by RDoc.
 
 * This release was tested and developed using:
-  * Ruby 1.8.4 and Icarus Verilog 0.8 on i686 GNU/Linux
-  * Ruby 1.8.4 and Mentor Modelsim 6.1d on x86_64 GNU/Linux
+** Ruby 1.8.4 and Icarus Verilog 0.8 on i686 GNU/Linux
+** Ruby 1.8.4 and Mentor Modelsim 6.1d on x86_64 GNU/Linux
 
 
-= Version 0.3 (2006-04-23)
+h1. Version 0.3 (2006-04-23)
 
-== Summary
+h2. Summary
 
-This release adds support for the _entire_ IEEE Std. 1364-2005 VPI interface, and updates the examples into unit tests.
+This release adds support for the _entire_ "IEEE Std. 1364-2005":http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945 VPI interface, and updates the examples into unit tests.
 
-== Details
+h2. Details
 
-* The Ruby interface to VPI is now generated by SWIG[http://www.swig.org].
+* The Ruby interface to VPI is now generated by "SWIG":http://www.swig.org.
 
-* The {"final ballot" version}[http://www.boydtechinc.com/ptf/archive/ptf_2005/0737.html] of the <tt>vpi_user.h</tt> header file is now packaged along with and used by Ruby-VPI.
+* The "_final ballot_ version":http://www.boydtechinc.com/ptf/archive/ptf_2005/0737.html of the @vpi_user.h@ header file is now packaged along with and used by Ruby-VPI.
 
-* The VPI module, its sub-classes, and its functionality have been replaced by the VPI utility layer (see <tt>src/vpi_util.rb</tt>).
+* The VPI module, its sub-classes, and its functionality have been replaced by the VPI utility layer (see @src/vpi_util.rb@).
 
-* The examples now make use of the 'test/unit' unit testing framework.
+* The examples now make use of the *test/unit* unit testing framework.
 
 * The makefiles for the examples have been simplified through the use of a common template.
-  * The 'vsim' target for Mentor Modelsim has been renamed to 'msim'.
+** The *vsim* target for Mentor Modelsim has been renamed to *msim*.
 
 * This release was tested and developed using:
-  * Ruby 1.8.4 and Icarus Verilog 0.8 on i686 GNU/Linux
-  * Ruby 1.8.4 and Mentor Modelsim 6.1d on x86_64 GNU/Linux
+** Ruby 1.8.4 and Icarus Verilog 0.8 on i686 GNU/Linux
+** Ruby 1.8.4 and Mentor Modelsim 6.1d on x86_64 GNU/Linux
 
-== Acknowledgment
+h2. Acknowledgment
 
-* Thanks to the {SWIG developers}[http://www.swig.org/guilty.html] for making this project <em>much</em> easier! ;-)
+* Thanks to the "SWIG developers":http://www.swig.org/guilty.html for making this project _much_ easier! ;-)
 
 
-= Version 0.2 (2006-04-17)
+h1. Version 0.2 (2006-04-17)
 
-== Summary
+h2. Summary
 
-This release fixes major bugs, adds support for Mentor Modelsim, and removes the <tt>$ruby_task</tt> callback.
+This release fixes major bugs, adds support for Mentor Modelsim, and removes the @$ruby_task@ callback.
 
-== Details
+h2. Details
 
-* The "cross-thread violation on rb_gc()" error has been fixed.
-  * The "stack level too deep (SystemStackError)" error has been fixed.
-  * The 'test/unit' library can be used in Ruby test bench.
-  * Mentor Modelsim Verilog simulator works with Ruby-VPI.
+* The *cross-thread violation on rb_gc()* error has been fixed.
+** The *stack level too deep (SystemStackError)* error has been fixed.
+** The *test/unit* library can be used in Ruby test bench.
+** Mentor Modelsim Verilog simulator works with Ruby-VPI.
 
-* Removed <tt>$ruby_task</tt> callback and ability to dynamically register system tasks from Ruby because inter-process communication is complicated at present.
+* Removed @$ruby_task@ callback and ability to dynamically register system tasks from Ruby because inter-process communication is complicated at present.
 
 * Added piplelined ALU example.
 
 * This release was tested and developed using:
-  * Ruby 1.8.4 and Icarus Verilog 0.8 on i686 GNU/Linux
-  * Ruby 1.8.4 and Modelsim 6.1d on x86_64 GNU/Linux
-  * Ruby 1.8.4 and Synopsys VCS-MX X-2005.06-SP1 on SPARC4 SunOS 5.10
+** Ruby 1.8.4 and Icarus Verilog 0.8 on i686 GNU/Linux
+** Ruby 1.8.4 and Modelsim 6.1d on x86_64 GNU/Linux
+** Ruby 1.8.4 and Synopsys VCS-MX X-2005.06-SP1 on SPARC4 SunOS 5.10
 
-== Acknowledgment
+h2. Acknowledgment
 
-* Thanks to Nobu Nakada for explaining the {"cross-thread violation on rb_gc()"}[http://article.gmane.org/gmane.comp.lang.ruby.general/146653] error.
+* Thanks to Nobu Nakada for explaining the "cross-thread violation on rb_gc()":http://article.gmane.org/gmane.comp.lang.ruby.general/146653 error.
 
 
-= Version 0.1 (2006-02-26)
+h1. Version 0.1 (2006-02-26)
 
-== Summary
+h2. Summary
 
 This release adds enough Verilog VPI functionality to make Ruby-VPI usable for simple test benches:
 * access Verilog objects through VPI handles
 * read and change VPI handle values
 * stop, finish, restart the simulation
 
-== Details
+h2. Details
 
 * Implemented some Verilog VPI functionality:
-  * VPI::handle_by_name(string, VPI::Handle) -> VPI::Handle
-  * VPI::handle_by_name(string) -> VPI::Handle
-
-  * VPI::Handle#put_value(integer)
-  * VPI::Handle#value = integer
-
-  * VPI::Handle#get_value -> integer
-  * VPI::Handle#value -> integer
-
-  * VPI::stop
-  * VPI::finish
-  * VPI::reset
+** @VPI::handle_by_name(string, VPI::Handle)@ &rarr; @VPI::Handle@
+** @VPI::handle_by_name(string)@ &rarr; @VPI::Handle@
+** @VPI::Handle#put_value(integer)@
+** @VPI::Handle#value = integer@
+** @VPI::Handle#get_value@ &rarr; @integer@
+** @VPI::Handle#value@ &rarr; @integer@
+** @VPI::stop@
+** @VPI::finish@
+** @VPI::reset@
 
 * Implemented some additional functionality:
-  * VPI::register_task(string, &proc)
+** @VPI::register_task(string, &proc)@
 
-* Added ability to pass arbitrary command-line arguments to the Ruby interpreter (using <tt>$ruby_init</tt>). Now you can invoke any Ruby script you want, instead of <tt>pli_init.rb</tt>.
+* Added ability to pass arbitrary command-line arguments to the Ruby interpreter (using @$ruby_init@). Now you can invoke any Ruby script you want, instead of @pli_init.rb@.
 
-* Added ability to dynamically register system tasks from Ruby, using <tt>VPI::register_task("task name")</tt>, and call them from Verilog, using <tt>$ruby_task("task name")</tt>.
+* Added ability to dynamically register system tasks from Ruby, using @VPI::register_task("task name")@, and call them from Verilog, using @$ruby_task("task name")@.
 
-* Added <tt>VPI::Handle</tt> class which encapsulates a <tt>vpiHandle</tt> VPI object.
+* Added @VPI::Handle@ class which encapsulates a @vpiHandle@ VPI object.
 
 * This release was tested and developed using:
-  * Ruby 1.8.2 and Icarus Verilog 0.8 on i686 GNU/Linux
-  * Ruby 1.8.4, Synopsys VCS X-2005.06, and Mentor Modelsim 6.1b on i686 GNU/Linux
+** Ruby 1.8.2 and Icarus Verilog 0.8 on i686 GNU/Linux
+** Ruby 1.8.4, Synopsys VCS X-2005.06, and Mentor Modelsim 6.1b on i686 GNU/Linux
 
-== Acknowledgment
+h2. Acknowledgment
 
-* Thanks to Jose Renau for helping me debug how Synopsys VCS works with Verilog VPI. The problem was that VCS required calltf signatures to be <tt>void (*)(void)</tt>, whereas the Verilog standard defines a calltf signature as <tt>PLI_INT32 (*)(PLI_BYTE8*)</tt>.
+* Thanks to Jose Renau for helping me debug how Synopsys VCS works with Verilog VPI. The problem was that VCS required calltf signatures to be @void (*)(void)@, whereas the Verilog standard defines a calltf signature as @PLI_INT32 (*)(PLI_BYTE8*)@.
 
-* Thanks to Ross Bamford, Eric Hodel, and Yukihiro Matsumoto for {helping me discover}[http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/180662] why the SystemStackError was happening.
+* Thanks to Ross Bamford, Eric Hodel, and Yukihiro Matsumoto for "helping me discover":http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/180662 why the @SystemStackError@ was happening.
 
 
-= Version 0.0 (1999-10-31)
+h1. Version 0.0 (1999-10-31)
 
-== Summary
+h2. Summary
 
-This is Kazuhiro HIWADA's initial testing release of Ruby-VPI. See the original announcement[http://www.ruby-talk.org/cgi-bin/scat.rb/ruby/ruby-list/18193] and {source code}[http://easter.kuee.kyoto-u.ac.jp/~hiwada/ruby/memo/src/ruby-vpi-test.tgz].
+This is Kazuhiro HIWADA's initial testing release of Ruby-VPI. See its "original announcement":http://www.ruby-talk.org/cgi-bin/scat.rb/ruby/ruby-list/18193 and "source code":http://easter.kuee.kyoto-u.ac.jp/~hiwada/ruby/memo/src/ruby-vpi-test.tgz.
 
-== Details
+h2. Details
 
-* Added ability to relay control from Verilog test bench to Ruby (using <tt>$ruby_callback</tt>) and vice versa (using <tt>PLI::relay_verilog</tt>).
+* Added ability to relay control from Verilog test bench to Ruby (using @$ruby_callback@) and vice versa (using @PLI::relay_verilog@).
 
 * Tested and developed using Ruby 1.4 and Verilog-XL from Cadence systems, on a SPARC machine running Solaris 2.6.
-
