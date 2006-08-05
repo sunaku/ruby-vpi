@@ -39,7 +39,6 @@
 		font-weight: bold;
 	}
 
-
 	.literal {
 		color: darkgreen;
 		background-color: honeydew;
@@ -51,6 +50,7 @@
 	}
 
 	.token {
+		color: dodgerblue;
 		font-weight: bold;
 	}
 
@@ -59,12 +59,7 @@
 	}
 
 	.remark {
-		color: black;
-		background-color: khaki;
-	}
-
-	.remark, .command, .filename {
-		padding: 0.5em;
+		color: gray;
 	}
 
 	.command {
@@ -72,7 +67,7 @@
 	}
 
 	.filename {
-		background-color: palegreen;
+		background-color: whitesmoke;
 	}
 
 /* tables */
