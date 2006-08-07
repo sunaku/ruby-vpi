@@ -116,7 +116,7 @@ desc "Simulate with Synopsys VCS."
 task :vcs => 'vcs:run'
 
 namespace 'vcs' do
-	task :run => [:build, "#{RUBY_VPI_PATH}/examples/synopsys_vcs.tab"].concat(SIMULATOR_SOURCES) do |t|
+	task :run => [:build, "#{RUBY_VPI_PATH}/tpl/synopsys_vcs.tab"].concat(SIMULATOR_SOURCES) do |t|
 		require 'rbconfig'
 
 		sh "vcs #{SIMULATOR_ARGS[:vcs]} -R +v2k +vpi -LDFLAGS '#{File.expand_path(NORMAL_OBJ_PATH)} -L#{Config::CONFIG['libdir']} #{Config::CONFIG['LIBRUBYARG']} -lpthread' -P #{t.prerequisites[1]} #{SIMULATOR_SOURCES_STRING}"
