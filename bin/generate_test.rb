@@ -149,14 +149,14 @@ def generateRubyBench aModuleInfo, aOutputInfo
 	%{
 		require '#{aOutputInfo.specPath}'
 
-		\# service the $ruby_init() callback
+		# service the $ruby_init() callback
 		Vpi::relay_verilog
 
-		\# service the $ruby_relay() callback
+		# service the $ruby_relay() callback
 		#{
 			case aOutputInfo.specFormat
 				when :UnitTest, :RSpec
-					"\# #{aOutputInfo.specFormat} will take control from here."
+					"# #{aOutputInfo.specFormat} will take control from here."
 
 				else
 					aOutputInfo.specClassName + '.new'
@@ -204,6 +204,22 @@ def generateDesign aModuleInfo, aOutputInfo
 	}
 end
 
+# Generates and returns the content of the Ruby prototype file, which is a Ruby prototype of the design under test.
+def generateProto aModuleInfo, aOutputInfo
+	%{
+		require '#{aOutputInfo.designPath}'
+
+		# A prototype of the design under test.
+		class #{aOutputInfo.protoClassName} < #{aOutputInfo.designClassName}
+			def simulate!
+				# read inputs
+				# simulate design's behavior
+				# produce outputs
+			end
+		end
+	}
+end
+
 # Generates and returns the content of the Ruby specification file, which verifies the design under test.
 def generateSpec aModuleInfo, aOutputInfo
 	accessorTestDecl = aModuleInfo.portNames.inject('') do |acc, param|
@@ -211,7 +227,7 @@ def generateSpec aModuleInfo, aOutputInfo
 	end
 
 	%{
-		\# A specification which verifies the design under test.
+		# A specification which verifies the design under test.
 		require '#{aOutputInfo.designPath}'
 		require 'vpi_util'
 		#{
@@ -223,6 +239,20 @@ def generateSpec aModuleInfo, aOutputInfo
 					"require 'rspec'"
 			end
 		}
+
+
+		# replace the design with its prototype
+		if ENV['PROTO']
+			require '#{aOutputInfo.protoPath}'
+
+			module Vpi
+				PROTOTYPE = #{aOutputInfo.protoClassName}.new
+
+				def relay_verilog
+					PROTOTYPE.simulate!
+				end
+			end
+		end
 
 
 		#{
@@ -273,10 +303,14 @@ end
 # Generates and returns the content of the runner, which builds and runs the entire test bench.
 def generateRunner aModuleInfo, aOutputInfo
 	%{
-		RUBY_VPI_PATH = '#{aOutputInfo.rubyVpiPath}'
+		SIMULATOR_SOURCES = [
+			'#{aOutputInfo.verilogBenchPath}',
+			'#{aModuleInfo.name}.v',
+		]
 
-		SIMULATOR_SOURCES = ['#{aOutputInfo.verilogBenchPath}', '#{aModuleInfo.name}.v']
 		SIMULATOR_TARGET = '#{aOutputInfo.verilogBenchName}'
+
+		# command-line arguments for the simulator
 		SIMULATOR_ARGS = {
 			:cver => '',
 			:ivl => '',
@@ -284,7 +318,7 @@ def generateRunner aModuleInfo, aOutputInfo
 			:vsim => '',
 		}
 
-		load "\#{RUBY_VPI_PATH}/#{aOutputInfo.runnerTemplateRelPath}"
+		load '#{aOutputInfo.runnerTmplPath}'
 	}
 end
 
@@ -333,9 +367,9 @@ class OutputInfo
 
 	SPEC_FORMATS = [:RSpec, :UnitTest, :Generic]
 
-	attr_reader :verilogBenchName, :verilogBenchPath, :rubyBenchName, :rubyBenchPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :rubyVpiLibPath, :runnerName, :runnerPath, :runnerTemplateRelPath
+	attr_reader :verilogBenchName, :verilogBenchPath, :rubyBenchName, :rubyBenchPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :rubyVpiLibPath, :runnerName, :runnerPath, :runnerTmplPath, :protoName, :protoPath, :protoClassName
 
-	attr_reader :testName, :suffix, :benchSuffix, :designSuffix, :specSuffix, :runnerSuffix
+	attr_reader :testName, :suffix, :benchSuffix, :designSuffix, :specSuffix, :runnerSuffix, :protoSuffix
 
 	def initialize aModuleName, aSpecFormat, aTestName, aRubyVpiPath
 		raise ArgumentError unless SPEC_FORMATS.include? aSpecFormat
@@ -347,10 +381,11 @@ class OutputInfo
 		@designSuffix = @suffix + '_design'
 		@specSuffix = @suffix + '_spec'
 		@runnerSuffix = @suffix + '_runner'
+		@protoSuffix = @suffix + '_proto'
 
 		@rubyVpiPath = aRubyVpiPath
 		@rubyVpiLibPath = @rubyVpiPath + '/lib'
-		@runnerTemplateRelPath = @rubyVpiPath + '/tpl/runner.rake'
+		@runnerTmplPath = @rubyVpiPath + '/tpl/runner.rake'
 
 		@verilogBenchName = aModuleName + @benchSuffix
 		@verilogBenchPath = @verilogBenchName + VERILOG_EXT
@@ -361,10 +396,14 @@ class OutputInfo
 		@designName = aModuleName + @designSuffix
 		@designPath = @designName + RUBY_EXT
 
+		@protoName = aModuleName + @protoSuffix
+		@protoPath = @protoName + RUBY_EXT
+
 		@specName = aModuleName + @specSuffix
 		@specPath = @specName + RUBY_EXT
 
 		@designClassName = aModuleName.capitalize
+		@protoClassName = @designClassName + 'Proto'
 		@specClassName = @specName.capitalize
 
 		@runnerName = aModuleName + @runnerSuffix
@@ -426,6 +465,9 @@ end
 
 			writeFile o.designPath, generateDesign(m, o)
 			puts "- Generated design:           #{o.designPath}"
+
+			writeFile o.protoPath, generateProto(m, o)
+			puts "- Generated prototype:        #{o.protoPath}"
 
 			writeFile o.specPath, generateSpec(m, o)
 			puts "- Generated specification:    #{o.specPath}"
