@@ -936,54 +936,56 @@
 				<title>Typical way of using &rv;</title>
 
 				<step>
-					<para>Declare a &v; module using &v; 2001 syntax, or work with an existing one.</para>
+					<para><link linkend="usage.tutorial.declare-design">Declare the design</link>, which is a &v; module, using &v; 2001 syntax.</para>
 				</step>
 
 				<step>
-					<para>Generate a test for your design using the <link linkend="usage.tools.generate-test">automated test generator tool</link>.</para>
+					<para><link linkend="usage.tutorial.generate-test">Generate a test</link> for the design using the <link linkend="usage.tools.generate-test">automated test generator</link> tool.</para>
 				</step>
 
 				<step>
-					<para>Specify your expectations in the generated specification template.</para>
+					<para><link linkend="usage.tutorial.specification">Identify your expectations</link> for the design and express them in the specification.</para>
 				</step>
 
 				<step>
-					<para>Run the test to verify your design.</para>
+					<para><link linkend="usage.tutorial.implement-proto">Implement the prototype</link> of the design in &ruby;.</para>
+				</step>
+
+				<step>
+					<para><link linkend="usage.tutorial.test-proto">Run the test</link> to verify the prototype against the specification.</para>
+				</step>
+
+				<step>
+					<para><link linkend="usage.tutorial.implement-design">Implement the design</link> in &v; once the prototype has been verified.</para>
+				</step>
+
+				<step>
+					<para><link linkend="usage.tutorial.test-design">Run the test again</link> to verify the design against the specification.</para>
 				</step>
 			</procedure>
 
-			<section id="usage.tutorial.start-with-a-design">
+			<section id="usage.tutorial.declare-design">
 				<title>Start with a design</title>
 
-				<para>First, we need a design to verify. <xref linkend="fig..counter.v"/> will serve as our design throughout this tutorial.</para>
-
-				<para>The counter's value, accessed through the <varname>count</varname> signal, is restricted by its <constant>Size</constant> parameter, which defines the number of bits used to represent the value. This value is incremented upon each positive edge of the <varname>clock</varname> signal. When it exceeds the maximum value representable by <constant>Size</constant> bits, <varname>count</varname> automatically overflows (becomes zero) upon the next positive edge of the <varname>clock</varname> signal. Likewise, when the <varname>reset</varname> signal is asserted (enabled or activated by being set to a <quote>logic high</quote> value) during a positive edge of the <varname>clock</varname> signal, <varname>count</varname> will become zero during the next positive edge of the <varname>clock</varname>.</para>
+				<para>First, we need a design to verify. In this tutorial, <xref linkend="fig..counter.v_decl"/> will serve as our design.</para>
 
 				<important>
 					<title>Before we continue&hellip;</title>
-					<para>Save the source code shown in <xref linkend="fig..counter.v"/> into a file named <filename>counter.v</filename>.</para>
+					<para>Save the source code shown in <xref linkend="fig..counter.v_decl"/> into a file named <filename>counter.v</filename>.</para>
 				</important>
 
-				<figure id="fig..counter.v">
-					<title>A simple up-counter with synchronous reset</title>
-<programlisting>
-<remark>/**
-  A simple up-counter with synchronous reset.
+				<!-- desc of counter impl -->
+				<para>The counter's value, accessed through the <varname>count</varname> signal, is restricted by its <constant>Size</constant> parameter, which defines the number of bits used to represent the value. This value is incremented upon each positive edge of the <varname>clock</varname> signal. When it exceeds the maximum value representable by <constant>Size</constant> bits, <varname>count</varname> automatically overflows (becomes zero) upon the next positive edge of the <varname>clock</varname> signal. Likewise, when the <varname>reset</varname> signal is asserted (enabled or activated by being set to a <quote>logic high</quote> value) during a positive edge of the <varname>clock</varname> signal, <varname>count</varname> will become zero during the next positive edge of the <varname>clock</varname>.</para>
 
-  @param  Size  Number of bits used to represent the counter's value.
-  @param  clock Increments the counter's value upon each positive edge.
-  @param  reset Zeroes the counter's value when asserted.
-  @param  count The counter's value.
-*/</remark>
-module counter #(parameter <constant>Size</constant> = <literal>5</literal>) (
-  input <varname>clock</varname>,
-  input <varname>reset</varname>,
-  output <type>reg</type> [<constant>Size</constant> - 1 : 0] <varname>count</varname>
+				<figure id="fig..counter.v_decl">
+					<title>Declaration of a simple up-counter with synchronous reset</title>
+<programlisting>
+<token>module</token> counter #(<token>parameter</token> <constant>Size</constant> = <literal>5</literal>) (
+  <token>input</token> <varname>clock</varname>,
+  <token>input</token> <varname>reset</varname>,
+  <token>output</token> <type>reg</type> [<constant>Size</constant> - <literal>1</literal> : <literal>0</literal>] <varname>count</varname>
 );
-  always @(posedge <varname>clock</varname>) begin
-    <varname>count</varname> &lt;= <varname>reset</varname> ? <literal>0</literal> : <varname>count</varname> + <literal>1</literal>;
-  end
-endmodule
+<token>endmodule</token>
 </programlisting>
 				</figure>
 			</section>
@@ -1010,7 +1012,13 @@ endmodule
 						<varlistentry>
 							<term>Design</term>
 							<listitem>
-								<para>Written in Ruby, this file provides an interface to the Verilog module under test.</para>
+								<para>Written in Ruby, this file provides an interface to the design under test.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term>Prototype</term>
+							<listitem>
+								<para>Written in Ruby, this file defines a prototype of the design under test.</para>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
@@ -1036,6 +1044,7 @@ Parsed module: counter
 - Generated bench:            counter_rspecTest_bench.v
 - Generated bench:            counter_rspecTest_bench.rb
 - Generated design:           counter_rspecTest_design.rb
+- Generated prototype:        counter_rspecTest_proto.rb
 - Generated specification:    counter_rspecTest_spec.rb</computeroutput>
 </screen>
 				</figure>
@@ -1052,6 +1061,7 @@ Parsed module: counter
 - Generated bench:            counter_unitTest_bench.v
 - Generated bench:            counter_unitTest_bench.rb
 - Generated design:           counter_unitTest_design.rb
+- Generated prototype:        counter_unitTest_proto.rb
 - Generated specification:    counter_unitTest_spec.rb</computeroutput>
 </screen>
 					</figure>
@@ -1204,7 +1214,49 @@ end
 				</figure>
 			</section>
 
-			<section id="usage.tutorial.testing">
+			<section id="usage.tutorial.implement-proto">
+				<title>Implement the prototype</title>
+				<para/>
+			</section>
+
+			<section id="usage.tutorial.test-proto">
+				<title>Test the prototype</title>
+				<para/>
+			</section>
+
+			<section id="usage.tutorial.implement-design">
+				<title>Implement the design</title>
+
+				<important>
+					<title>Before we continue&hellip;</title>
+					<para>Replace the contents of the file <filename>counter.v</filename> with the source code shown in <xref linkend="fig..counter.v_impl"/>.</para>
+				</important>
+
+				<figure id="fig..counter.v_impl">
+					<title>Implementation of a simple up-counter with synchronous reset</title>
+<programlisting>
+<remark>/**
+  A simple up-counter with synchronous reset.
+
+  @param  Size  Number of bits used to represent the counter's value.
+  @param  clock Increments the counter's value upon each positive edge.
+  @param  reset Zeroes the counter's value when asserted.
+  @param  count The counter's value.
+*/</remark>
+<token>module</token> counter #(<token>parameter</token> <constant>Size</constant> = <literal>5</literal>) (
+  <token>input</token> <varname>clock</varname>,
+  <token>input</token> <varname>reset</varname>,
+  <token>output</token> <type>reg</type> [<constant>Size</constant> - <literal>1</literal> : <literal>0</literal>] <varname>count</varname>
+);
+  <token>always</token> @(<token>posedge</token> <varname>clock</varname>) <token>begin</token>
+    <varname>count</varname> &lt;= <varname>reset</varname> ? <literal>0</literal> : <varname>count</varname> + <literal>1</literal>;
+  <token>end</token>
+<token>endmodule</token>
+</programlisting>
+				</figure>
+			</section>
+
+			<section id="usage.tutorial.test-design">
 				<title>Run the test</title>
 				<para>Now that we have a completed specification for our design, we are ready to verify it by running the test. <xref linkend="fig..run-test.rspec"/> and <xref linkend="fig..run-test.unit-test"/> illustrate this process. Here, the Icarus &v; simulator, denoted by <replaceable>ivl</replaceable>, is used to simulate our design.</para>
 
