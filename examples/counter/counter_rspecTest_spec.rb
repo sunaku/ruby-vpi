@@ -4,6 +4,20 @@ require 'vpi_util'
 require 'rspec'
 
 
+# replace the design with its prototype
+if ENV['PROTO']
+	require 'counter_rspecTest_proto.rb'
+
+	module Vpi
+		PROTOTYPE = CounterProto.new
+
+		def relay_verilog
+			PROTOTYPE.simulate!
+		end
+	end
+end
+
+
 LIMIT = 2 ** Counter::Size # lowest upper bound of counter's value
 MAX = LIMIT - 1 # maximum allowed value for a counter
 
