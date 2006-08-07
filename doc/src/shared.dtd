@@ -36,7 +36,7 @@
 <!ENTITY ruby..ulink "<ulink url='&ruby.url;'>&ruby;</ulink>">
 
 <!ENTITY v "Verilog">
-<!ENTITY vpi "&v; <acronym>VPI</acronym>">
+<!ENTITY vpi "<acronym>VPI</acronym>">
 
 <!ENTITY unix "<acronym>UNIX</acronym>">
 <!ENTITY url "<acronym>URL</acronym>">

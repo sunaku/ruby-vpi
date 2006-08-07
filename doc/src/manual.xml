@@ -113,14 +113,21 @@
 				<varlistentry>
 					<term><filename>src</filename></term>
 					<listitem>
-						<para>This directory contains source code for the <link linkend="background.organization">core of &rv;</link>, which is written in the C language.</para>
+						<para>This directory contains source code, written in the C language, for the <link linkend="background.organization">core of &rv;</link>.</para>
 					</listitem>
 				</varlistentry>
 
 				<varlistentry>
 					<term><filename>lib</filename></term>
 					<listitem>
-						<para>This directory contains libraries for use by specifications written in the Ruby language.</para>
+						<para>This directory contains libraries, written in the Ruby language, for use by specifications.</para>
+					</listitem>
+				</varlistentry>
+
+				<varlistentry>
+					<term><filename>tpl</filename></term>
+					<listitem>
+						<para>This directory contains templates used by tests.</para>
 					</listitem>
 				</varlistentry>
 
@@ -132,7 +139,7 @@
 				</varlistentry>
 
 				<varlistentry>
-					<term><filename>examples</filename></term>
+					<term><filename>samp</filename></term>
 					<listitem>
 						<para>This directory contains example tests. See <xref linkend="usage.examples"/> for more information.</para>
 					</listitem>
@@ -249,7 +256,7 @@
 		<section id="background.methodology">
 			<title>Methodology</title>
 
-			<para>&rv; presents an open-ended interface to &vpi;. Thus, you can use any methodology you wish when writing tests. However, &BDD.gloss; is emphasized in this project&mdash;through use of <application>RSpec</application> in the <link linkend="usage.examples">examples</link>&mdash;because it greatly simplifies thinking about <emphasis>how</emphasis> to verify a design.</para>
+			<para>&rv; presents an open-ended interface to &vpi;. Thus, you can use any methodology you wish when writing tests. However, &BDD.gloss; is emphasized in this project because it greatly simplifies thinking about <emphasis>how</emphasis> to verify a design.</para>
 		</section>
 
 		<section id="background.terminology">
@@ -263,7 +270,7 @@
 
 			<para>Defeated, I turned to my inner faculties to determine the answer. <quote>Let's see, the term <emphasis>test bench</emphasis> has the word <emphasis>test</emphasis>&mdash;so it has something to do with testing&mdash;and it has the word <emphasis>bench</emphasis>&mdash;so maybe it's referring to a table where the testing should occur</quote>. This reasoning grew increasingly familiar as my mind rummaged through towering stores of obsolescence and ultimately revealed dreaded memories of sleepless anguish: debugging electronics in the robotics laboratory.</para>
 
-			<para><quote>Aha!</quote>, I exclaimed hesitantly, trying to forget the past. The term has its roots in the testing of electronic devices, where an engineer would sit at a bench in an electronics laboratory and verify that an electronic component satisfies some criteria. The bench would be furnished with tools of measurement and manipulation&mdash;such as oscilloscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.</para>
+			<para><quote>Aha!</quote>, I exclaimed hesitantly, trying to dismiss the past. The term has its roots in the testing of electronic devices, where an engineer would sit at a bench in an electronics laboratory and verify that an electronic component satisfies some criteria. The bench would be furnished with tools of measurement and manipulation&mdash;such as oscilloscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.</para>
 
 			<para>Alright, now I remember what a laboratory bench is, but how does that compare with the term test bench? Surely they cannot have the same meaning, because it doesn't make sense to <emphasis>run</emphasis> a laboratory bench or to <emphasis>write</emphasis> one. Thus, to avoid propagating such confusion into this manual, I have attempted to clarify the terminology by <link linkend="glossary">simplifying and reintroducing it in a new light</link>.</para>
 		</section>
@@ -810,7 +817,7 @@
 				<varlistentry>
 					<term>&v; simulator</term>
 					<listitem>
-						<para>&rv; is known to work with the following simulators. Nevertheless, you should be able to use &rv; with any &v; simulator that supports &vpi;.</para>
+						<para>&rv; is known to work with the following simulators. Nevertheless, you should be able to use it with any &v; simulator that supports &vpi;.</para>
 
 						<variablelist>
 							<varlistentry>
@@ -900,7 +907,7 @@
 				<step><para>Install Ruby.</para></step>
 				<step><para>Install RubyGems.</para></step>
 				<step><para>Install <application>Rake</application> and <application>RSpec</application> by running the command <command>gem <action>install</action> <option>--remote</option> <replaceable>rake</replaceable> <replaceable>rspec</replaceable></command>.</para></step>
-				<step><para>Build &rv; by running the command <command>rake <action>build</action></command> inside the directory in which you extracted the release package.</para></step>
+				<step><para>Ensure that you can build &rv; by running the command <command>rake <action>build</action> <action>clean</action></command> inside the directory in which you extracted the release package.</para></step>
 			</procedure>
 		</section>
 
@@ -917,7 +924,7 @@
 
 		<section id="usage.examples">
 			<title>Examples</title>
-			<para>The <filename>examples</filename> directory contains several example tests which illustrate how &rv; can be used. Each example has an associated <filename>Rakefile</filename> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the command <command>rake</command> to get started.</para>
+			<para>The <filename>samp</filename> directory contains several example tests which illustrate how &rv; can be used. Each example has an associated <filename>Rakefile</filename> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the command <command>rake</command> to get started.</para>
 
 			<para>Also, some example specifications make use of BDD through the <application>RSpec</application> library. See the <xref linkend="background.methodology"/> for a discussion of <application>RSpec</application>.</para>
 		</section>
