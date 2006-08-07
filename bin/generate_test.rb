@@ -303,6 +303,8 @@ end
 # Generates and returns the content of the runner, which builds and runs the entire test bench.
 def generateRunner aModuleInfo, aOutputInfo
 	%{
+		RUBY_VPI_PATH = '#{aOutputInfo.rubyVpiPath}'
+
 		SIMULATOR_SOURCES = [
 			'#{aOutputInfo.verilogBenchPath}',
 			'#{aModuleInfo.name}.v',
@@ -318,7 +320,7 @@ def generateRunner aModuleInfo, aOutputInfo
 			:vsim => '',
 		}
 
-		load '#{aOutputInfo.runnerTmplPath}'
+		load "\#{RUBY_VPI_PATH}#{OutputInfo::RUNNER_TMPL_REL_PATH}"
 	}
 end
 
@@ -365,9 +367,11 @@ class OutputInfo
 	VERILOG_EXT = '.v'
 	RUNNER_EXT = '.rake'
 
+	RUNNER_TMPL_REL_PATH = '/tpl/runner.rake'
+
 	SPEC_FORMATS = [:RSpec, :UnitTest, :Generic]
 
-	attr_reader :verilogBenchName, :verilogBenchPath, :rubyBenchName, :rubyBenchPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :rubyVpiLibPath, :runnerName, :runnerPath, :runnerTmplPath, :protoName, :protoPath, :protoClassName
+	attr_reader :verilogBenchName, :verilogBenchPath, :rubyBenchName, :rubyBenchPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :rubyVpiLibPath, :runnerName, :runnerPath, :protoName, :protoPath, :protoClassName
 
 	attr_reader :testName, :suffix, :benchSuffix, :designSuffix, :specSuffix, :runnerSuffix, :protoSuffix
 
@@ -385,7 +389,6 @@ class OutputInfo
 
 		@rubyVpiPath = aRubyVpiPath
 		@rubyVpiLibPath = @rubyVpiPath + '/lib'
-		@runnerTmplPath = @rubyVpiPath + '/tpl/runner.rake'
 
 		@verilogBenchName = aModuleName + @benchSuffix
 		@verilogBenchPath = @verilogBenchName + VERILOG_EXT
