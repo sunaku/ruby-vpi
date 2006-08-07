@@ -1,1 +1,1 @@
-load 'hw5_unit_runner.rake'
+load '../../tpl/launcher.rake'

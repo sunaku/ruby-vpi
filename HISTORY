@@ -3,6 +3,24 @@ h1. Release history
 This document is a record of important changes that have occurred with each release of "Ruby-VPI":http://ruby-vpi.rubyforge.org.
 
 
+h1. Version 0.9 (not yet released)
+
+h2. Summary
+
+h2. Details
+
+* The directory structure has been reorganized as follows:
+** ext &rarr; src
+** tools &rarr; bin
+** examples &rarr; samp
+
+* The @README@ and @HISTORY@ files have been converted to "textile":http://www.textism.com/tools/textile/ format.
+
+h2. Acknowledgment
+
+* Thanks to Todd Nagengast and Matt Fischler for notifying me about unreadable text in the user manual.
+
+
 h1. Version 0.8.1 (2006-08-04)
 
 h2. Summary

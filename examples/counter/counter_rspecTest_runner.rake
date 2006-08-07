@@ -9,4 +9,4 @@ SIMULATOR_ARGS = {
 	:vsim => '',
 }
 
-load "#{RUBY_VPI_PATH}/examples/runner_template.rake"
+load "#{RUBY_VPI_PATH}/tpl/runner.rake"

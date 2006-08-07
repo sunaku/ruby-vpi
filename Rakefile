@@ -58,21 +58,21 @@ task :default => :build
 
 	CLEAN.include 'Makefile', 'mkmf.log', '*.o', '*.so'
 
-	file 'Makefile' => [:swig, 'ext/extconf.rb'] do |t|
+	file 'Makefile' => [:swig, 'src/extconf.rb'] do |t|
 		ruby "#{t.prerequisites[1]} --with-cflags='#{CFLAGS}' --with-ldflags='#{LDFLAGS}'"
 	end
 
 
 	desc 'Generate Ruby wrapper for VPI.'
-	task :swig => 'ext/swig_wrap.cin'
+	task :swig => 'src/swig_wrap.cin'
 
-	file 'ext/swig_wrap.cin' => 'ext/swig_vpi.i' do |t|
+	file 'src/swig_wrap.cin' => 'src/swig_vpi.i' do |t|
 		sh "swig -ruby -o #{t.name} #{t.prerequisites[0]}"
 	end
 
-	file 'ext/swig_vpi.i' => 'ext/swig_vpi.h'
+	file 'src/swig_vpi.i' => 'src/swig_vpi.h'
 
-	file 'ext/swig_vpi.h' => 'ext/vpi_user.h' do |t|
+	file 'src/swig_vpi.h' => 'src/vpi_user.h' do |t|
 		# avoid problems with SWIG-generated wrapper for VPI vprintf functions which use va_list
 		ruby %{-pe 'gsub /\\bva_list\\b/, "int"' #{t.prerequisites[0]} > #{t.name}}
 	end
@@ -113,7 +113,7 @@ task :default => :build
 	desc 'Generate reference for C.'
 	file 'ref/c' do |t|
 		# doxygen outputs to this temporary destination
-		tempDest = 'ext/html'
+		tempDest = 'src/html'
 
 		cd File.dirname(tempDest) do
 			sh "doxygen"

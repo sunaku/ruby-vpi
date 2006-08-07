@@ -111,7 +111,7 @@
 				</varlistentry>
 
 				<varlistentry>
-					<term><filename>ext</filename></term>
+					<term><filename>src</filename></term>
 					<listitem>
 						<para>This directory contains source code for the <link linkend="background.organization">core of &rv;</link>, which is written in the C language.</para>
 					</listitem>
@@ -125,7 +125,7 @@
 				</varlistentry>
 
 				<varlistentry>
-					<term><filename>tools</filename></term>
+					<term><filename>bin</filename></term>
 					<listitem>
 						<para>This directory contains various tools. See <xref linkend="usage.tools"/> for more information.</para>
 					</listitem>
@@ -911,7 +911,7 @@
 			<section id="usage.tools.generate-test">
 				<title>Automated test generation</title>
 
-				<para>The <filename>tools/generate_test.rb</filename> tool can be used to automatically generate tests from &v; 2001 module declarations. You can try it by running the command <command>ruby <replaceable>tools/generate_test.rb</replaceable> <option>--help</option></command>.</para>
+				<para>The <filename>bin/generate_test.rb</filename> tool can be used to automatically generate tests from &v; 2001 module declarations. You can try it by running the command <command>ruby <replaceable>bin/generate_test.rb</replaceable> <option>--help</option></command>.</para>
 			</section>
 		</section>
 
@@ -1020,7 +1020,7 @@ endmodule
 				<figure id="fig..generate-test.rspec">
 					<title>Generating a test with specification in &rspec; format</title>
 <screen>
-<prompt>$</prompt> <userinput><command>ruby <replaceable>tools/generate_test.rb</replaceable> <replaceable>counter.v</replaceable> <option>--rspec</option> <option>--name</option> <replaceable>rspecTest</replaceable></command></userinput>
+<prompt>$</prompt> <userinput><command>ruby <replaceable>bin/generate_test.rb</replaceable> <replaceable>counter.v</replaceable> <option>--rspec</option> <option>--name</option> <replaceable>rspecTest</replaceable></command></userinput>
 <computeroutput>Using name `rspecTest' for generated test.
 Using RSpec specification format.
 
@@ -1036,7 +1036,7 @@ Parsed module: counter
 				<figure id="fig..generate-test.unit-test">
 					<title>Generating a test with specification in unit test format</title>
 <screen>
-<prompt>$</prompt> <userinput><command>ruby <replaceable>tools/generate_test.rb</replaceable> <replaceable>counter.v</replaceable> <option>--unit</option> <option>--name</option> <replaceable>unitTest</replaceable></command></userinput>
+<prompt>$</prompt> <userinput><command>ruby <replaceable>bin/generate_test.rb</replaceable> <replaceable>counter.v</replaceable> <option>--unit</option> <option>--name</option> <replaceable>unitTest</replaceable></command></userinput>
 <computeroutput>Using name `unitTest' for generated test.
 Using UnitTest specification format.
 

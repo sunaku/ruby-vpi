@@ -1,1 +1,1 @@
-load '../launcher_template.rake'
+load '../../tpl/launcher.rake'
