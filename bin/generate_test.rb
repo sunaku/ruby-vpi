@@ -350,7 +350,7 @@ class OutputInfo
 
 		@rubyVpiPath = aRubyVpiPath
 		@rubyVpiLibPath = @rubyVpiPath + '/lib'
-		@runnerTemplateRelPath = 'examples/runner_template.rake'
+		@runnerTemplateRelPath = @rubyVpiPath + '/tpl/runner.rake'
 
 		@verilogBenchName = aModuleName + @benchSuffix
 		@verilogBenchPath = @verilogBenchName + VERILOG_EXT

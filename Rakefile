@@ -36,7 +36,7 @@ task :default => :build
 
 # cleaning
 	task :clobber do |t|
-		FileList['examples/*/', 'doc'].each do |dir|
+		FileList['samp/*/', 'doc'].each do |dir|
 			cd dir do
 				sh 'rake', t.name
 			end
