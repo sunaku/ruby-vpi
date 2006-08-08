@@ -1113,7 +1113,7 @@ Parsed module: counter
 					<title>Before we continue&hellip;</title>
 					<itemizedlist>
 						<listitem>
-							<para>Append the following code to the files named <filename>counter_rspecTest_design.rb</filename> and <filename>counter_unitTest_design.rb</filename>. This code adds a convenient <function>reset!</function> method, which resets the counter's value to zero, to the <constant>Counter</constant> class.</para>
+							<para>Append the following code to the files named <filename>counter_rspecTest_design.rb</filename> and <filename>counter_unitTest_design.rb</filename>. This code adds a convenient <function>reset!</function> method&mdash;which resets the counter's value to zero&mdash;to the <constant>Counter</constant> class.</para>
 
 <programlisting>
 <token>class</token> <constant>Counter</constant>
@@ -1279,7 +1279,6 @@ Parsed module: counter
 					</itemizedlist>
 				</important>
 
-
 				<figure id="fig..counter_rspecTest_proto.rb">
 					<title>Prototype of our design, for use with the &rspec; specification</title>
 <programlisting>
@@ -1320,7 +1319,44 @@ Parsed module: counter
 
 			<section id="usage.tutorial.test-proto">
 				<title>Test the prototype</title>
-				<para/>
+				<para>Now that we have implemented our prototype, we are ready to verify it against our specification by running the test. <xref linkend="fig..test-proto.rspec"/> and <xref linkend="fig..test-proto.unit-test"/> illustrate this process.</para>
+
+				<para>Here, the <varname>PROTO</varname> environment variable is set&mdash;any value is fine&mdash;before running the test in order to replace the design with the prototype in the simulation. Otherwise, our design will be verified&mdash;instead of our prototype&mdash;against our specification. Furthermore, the manner in which the <varname>PROTO</varname> environment variable is set in these figures follows the syntax of the &bash; shell. If you use a different shell, you may have to use different syntax&mdash;or a different command altogether&mdash;in order to set this variable. Finally, the Icarus &v; simulator, denoted by <replaceable>ivl</replaceable>, is used to simulate our design.</para>
+
+				<tip>
+					<title>Changing &v; simulators</title>
+					<para>Run the command <command>rake <replaceable>clobber</replaceable></command> when changing from one &v; simulator to another. This command ensures that &rv; will be recompiled to accomodate the new simulator before the test is run.</para>
+				</tip>
+
+				<figure id="fig..test-proto.rspec">
+					<title>Running a test with specification in &rspec; format</title>
+<screen>
+<prompt>&bash;$</prompt> <userinput><command>PROTO= rake <option>-f</option> <replaceable>counter_rspecTest_runner.rake</replaceable> <replaceable>ivl</replaceable></command></userinput>
+<computeroutput>A resetted counter's value
+- should be zero
+- should increment by one count upon each rising clock edge
+
+A counter with the maximum value
+- should overflow upon increment
+
+Finished in 0.023901 seconds
+
+3 specifications, 0 failures</computeroutput>
+</screen>
+				</figure>
+
+				<figure id="fig..test-proto.unit-test">
+					<title>Running a test with specification in unit test format</title>
+<screen>
+<prompt>&bash;$</prompt> <userinput><command>PROTO= rake <option>-f</option> <replaceable>counter_unitTest_runner.rake</replaceable> <replaceable>ivl</replaceable></command></userinput>
+<computeroutput>Loaded suite counter_unitTest_bench
+Started
+...
+Finished in 0.028341 seconds.
+
+3 tests, 35 assertions, 0 failures, 0 errors</computeroutput>
+</screen>
+				</figure>
 			</section>
 
 			<section id="usage.tutorial.implement-design">
@@ -1349,14 +1385,14 @@ Parsed module: counter
 
 			<section id="usage.tutorial.test-design">
 				<title>Run the test</title>
-				<para>Now that we have a completed specification for our design, we are ready to verify it by running the test. <xref linkend="fig..run-test.rspec"/> and <xref linkend="fig..run-test.unit-test"/> illustrate this process. Here, the Icarus &v; simulator, denoted by <replaceable>ivl</replaceable>, is used to simulate our design.</para>
+				<para>Now that we have a completed specification for our design, we are ready to verify it against our specification by running the test. <xref linkend="fig..test-design.rspec"/> and <xref linkend="fig..test-design.unit-test"/> illustrate this process. Here, the Icarus &v; simulator, denoted by <replaceable>ivl</replaceable>, is used to simulate our design.</para>
 
 				<tip>
 					<title>Changing &v; simulators</title>
-					<para>Run the command <command>rake <replaceable>clobber</replaceable></command> when changing from one &v; simulator to another. This command ensures that &rv; will be recompiled to accomodate the new simulator when the test is run.</para>
+					<para>Run the command <command>rake <replaceable>clobber</replaceable></command> when changing from one &v; simulator to another. This command ensures that &rv; will be recompiled to accomodate the new simulator before the test is run.</para>
 				</tip>
 
-				<figure id="fig..run-test.rspec">
+				<figure id="fig..test-design.rspec">
 					<title>Running a test with specification in &rspec; format</title>
 <screen>
 <prompt>$</prompt> <userinput><command>rake <option>-f</option> <replaceable>counter_rspecTest_runner.rake</replaceable> <replaceable>ivl</replaceable></command></userinput>
@@ -1373,7 +1409,7 @@ Finished in 0.005628 seconds
 </screen>
 				</figure>
 
-				<figure id="fig..run-test.unit-test">
+				<figure id="fig..test-design.unit-test">
 					<title>Running a test with specification in unit test format</title>
 <screen>
 <prompt>$</prompt> <userinput><command>rake <option>-f</option> <replaceable>counter_unitTest_runner.rake</replaceable> <replaceable>ivl</replaceable></command></userinput>
