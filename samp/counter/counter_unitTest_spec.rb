@@ -15,6 +15,8 @@ if ENV['PROTO']
 			PROTOTYPE.simulate!
 		end
 	end
+
+	puts 'Replaced design with prototype.'
 end
 
 

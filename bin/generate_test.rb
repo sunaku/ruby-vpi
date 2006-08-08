@@ -251,6 +251,8 @@ def generateSpec aModuleInfo, aOutputInfo
 				def relay_verilog
 					PROTOTYPE.simulate!
 				end
+
+				puts 'Replaced design with prototype.'
 			end
 		end
 
