@@ -30,7 +30,7 @@ body {
 	.screen, .programlisting {
 		border: thin solid silver;
 		padding: 1em;
-
+		line-height: normal;
 		display: block;
 		overflow: auto;
 	}
