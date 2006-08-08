@@ -3,22 +3,27 @@ h1. Release history
 This document is a record of important changes that have occurred with each release of "Ruby-VPI":http://ruby-vpi.rubyforge.org.
 
 
-h1. Version 0.9 (not yet released)
+h1. Version 0.9 (2006-08-07)
 
 h2. Summary
 
+This release adds support and documentation for rapid prototyping of Verilog designs in Ruby.
+
 h2. Details
 
+* Support for prototyping designs in Ruby, before they are implemented in Verilog, has been added.
+** The _same_ specification can be used to verify both prototype _and_ design! :-)
+** The tutorial in the user manual has been updated to discuss prototyping.
+*** Prototypes have been added to the counter example.
+
 * The directory structure has been reorganized as follows:
-** ext &rarr; src
-** tools &rarr; bin
-** examples &rarr; samp
+** @ext@ &rarr; @src@
+** @tools@ &rarr; @bin@
+** @examples@ &rarr; @samp@
 
-* The @README@ and @HISTORY@ files have been converted to "textile":http://www.textism.com/tools/textile/ format.
+* All template files have been moved into the @tpl@ directory.
 
-h2. Acknowledgment
-
-* Thanks to Todd Nagengast and Matt Fischler for notifying me about unreadable text in the user manual.
+* The user manual has been revised for consistency.
 
 
 h1. Version 0.8.1 (2006-08-04)

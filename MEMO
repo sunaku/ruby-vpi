@@ -9,4 +9,12 @@ h1. Pending tasks
 * GHDL
 ** need way to invoke VPI tasks from VHDL, like @$ruby_init();@
 
-* add support for ESL prototyping (like SystemC) via callback for clock posedge
+* add support for GPL CVer in the test runner template
+
+
+h1. Finished tasks
+
+* add support for ESL prototyping (like SystemC)
+
+
+h1. Obsolete tasks
