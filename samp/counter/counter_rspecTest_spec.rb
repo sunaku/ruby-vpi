@@ -47,7 +47,7 @@ context "A counter with the maximum value" do
 		@design = Counter.new
 		@design.reset!
 
-		# increment to maximum value
+		# increment the counter to maximum value
 		MAX.times do relay_verilog end
 		@design.count.intVal.should_be MAX
 	end

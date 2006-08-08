@@ -49,7 +49,7 @@ class MaximumCounterValue < Test::Unit::TestCase
 		@design = Counter.new
 		@design.reset!
 
-		# increment to maximum value
+		# increment the counter to maximum value
 		MAX.times do relay_verilog end
 		assert_equal MAX, @design.count.intVal
 	end
