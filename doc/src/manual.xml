@@ -1471,7 +1471,7 @@ Finished in 0.006766 seconds.
 				<section id="problems.ivl.vpi_handle_by_name.absolute-paths">
 					<title>Give full paths to &v; objects</title>
 
-					<para>In version 0.8, the <function>vpi_handle_by_name</function> function requires an <emphasis>absolute</emphasis> path (including the name of the bench which instantiates the design) to a &v; object.</para>
+					<para>In version 0.8 of Icarus &v;, the <function>vpi_handle_by_name</function> function requires an <emphasis>absolute</emphasis> path (including the name of the bench which instantiates the design) to a &v; object.</para>
 
 					<para>For example, consider <xref linkend="ex..TestFoo"/>. Here, one needs to specify <code>TestFoo.my_foo.clk</code> instead of <code>my_foo.clk</code> in order to access the <varname>clk</varname> input of the <varname>my_foo</varname> module instance.</para>
 
@@ -1479,8 +1479,8 @@ Finished in 0.006766 seconds.
 						<title>Part of a bench which instantiates a &v; design</title>
 <programlisting>
 module TestFoo;
-	<type>reg</type> <varname>clk_reg</varname>;
-	Foo <varname>my_foo</varname>(<parameter>.clk</parameter>(<varname>clk_reg</varname>));
+  <type>reg</type> <varname>clk_reg</varname>;
+  Foo <varname>my_foo</varname>(<parameter>.clk</parameter>(<varname>clk_reg</varname>));
 endmodule
 </programlisting>
 					</example>
@@ -1489,7 +1489,7 @@ endmodule
 				<section id="problems.ivl.vpi_handle_by_name.connect-registers">
 					<title>Registers must be connected</title>
 
-					<para>In version 0.8, if you want to access a register in a design, then it must be connected to something (either assigned to a wire or passed as a parameter to a module instantiation). Otherwise, Icarus will give you a <literal>nil</literal> value as the result of <function>vpi_handle_by_name</function> method.</para>
+					<para>In version 0.8 of Icarus &v;, if you want to access a register in a design, then it must be connected to something (either assigned to a wire or passed as a parameter to a module instantiation). Otherwise, you will get a <literal>nil</literal> value as the result of <function>vpi_handle_by_name</function> method.</para>
 
 					<para>For example, suppose you wanted to access the <varname>clk_reg</varname> register, from the bench shown in <xref linkend="ex..TestFoo_bad"/>. If you execute the statement <code><varname>clk_reg</varname> = <function>vpi_handle_by_name</function>(<parameter><literal>"TestFoo.clk_reg"</literal></parameter>, <parameter><literal>nil</literal></parameter>)</code> in a specification, then you will discover that the <function>vpi_handle_by_name</function> method returns <literal>nil</literal> instead of a handle to the <varname>clk_reg</varname> register.</para>
 
@@ -1502,7 +1502,7 @@ endmodule
 
 <programlisting>
 module TestFoo;
-	<type>reg</type> <varname>clk_reg</varname>;
+  <type>reg</type> <varname>clk_reg</varname>;
 endmodule
 </programlisting>
 					</example>
@@ -1530,7 +1530,7 @@ endmodule
 					<para>This method was removed in release 0.3 of &rv;, and is deprecated. Please use <code><constant>Vpi</constant>::<function>vpi_control</function>(<parameter><constant>VpiReset</constant></parameter>)</code> instead.</para>
 				</note>
 
-				<para>In version 0.8, the <code><function>vpi_control</function>(<parameter><constant>vpiReset</constant></parameter>)</code> &vpi; function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.</para>
+				<para>In version 0.8 of Icarus &v;, the <code><function>vpi_control</function>(<parameter><constant>vpiReset</constant></parameter>)</code> &vpi; function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.</para>
 			</section>
 		</section>
 
@@ -1542,7 +1542,7 @@ endmodule
 
 				&fixed-0.2;
 
-				<para>Version 6.1b doesn't play nicely with either an embedded Ruby interpreter or POSIX threads in a PLI application. When &rv; invokes the <function>ruby_run</function> function (which starts the Ruby interpreter), the simulator terminates immediately with an exit status of 0.</para>
+				<para>Version 6.1b of Mentor Modelsim doesn't play nicely with either an embedded Ruby interpreter or POSIX threads in a PLI application. When &rv; invokes the <function>ruby_run</function> function (which starts the Ruby interpreter), the simulator terminates immediately with an exit status of 0.</para>
 			</section>
 		</section>
 	</chapter>
