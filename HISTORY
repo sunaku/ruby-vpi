@@ -3,6 +3,21 @@ h1. Release history
 This document is a record of important changes that have occurred with each release of "Ruby-VPI":http://ruby-vpi.rubyforge.org.
 
 
+h1. Version 0.9.1 (2006-08-09)
+
+h2. Summary
+
+This release simplifies generated tests and fixes a bug.
+
+h2. Details
+
+* The test generator now produces simpler Ruby benches and specifications.
+** A template used by generated specifications has been added.
+** The counter example and tutorial have also been simplified accordingly.
+
+* Boolean VPI property values are now correctly converted into Ruby truth values.
+
+
 h1. Version 0.9 (2006-08-07)
 
 h2. Summary
