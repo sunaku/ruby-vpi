@@ -1117,7 +1117,11 @@ Parsed module: counter
 
 <programlisting>
 <token>class</token> <constant>Counter</constant>
+  <token>alias</token> <literal>:old_reset!</literal> <literal>:reset!</literal>
+
   <token>def</token> <function>reset!</function>
+    <function>old_reset!</function>
+
     <varname>@reset</varname>.<function>intVal</function> = <literal>1</literal>
     <function>relay_verilog</function> <remark># advance the clock</remark>
     <varname>@reset</varname>.<function>intVal</function> = <literal>0</literal>

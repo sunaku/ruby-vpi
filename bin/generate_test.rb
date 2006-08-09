@@ -125,7 +125,6 @@ def generateVerilogBench aModuleInfo, aOutputInfo
 			// instantiate the design under test
 			#{instDecl}
 
-
 			// interface to Ruby-VPI
 			initial begin
 				#{clockSignal} = 0;
@@ -187,7 +186,7 @@ def generateRubyBench aModuleInfo, aOutputInfo
 		#{
 			case aOutputInfo.specFormat
 				when :UnitTest, :RSpec
-					"# #{aOutputInfo.specFormat} will take control from here."
+					"# ... #{aOutputInfo.specFormat} will take control from here."
 
 				else
 					aOutputInfo.specClassName + '.new'
@@ -255,9 +254,7 @@ def generateSpec aModuleInfo, aOutputInfo
 		acc << "def test_#{param}\nend\n\n"
 	end
 
-	%{
-		# A specification which verifies the design under test.
-
+	%{# A specification which verifies the design under test.
 		#{
 			case aOutputInfo.specFormat
 				when :UnitTest
