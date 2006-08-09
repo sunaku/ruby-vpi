@@ -12,6 +12,9 @@ module counter #(parameter Size = 5) (
 	output reg [Size - 1 : 0] count
 );
 	always @(posedge clock) begin
-		count <= reset ? 0 : count + 1;
+		if (reset)
+			count <= 0;
+		else
+			count <= count + 1;
 	end
 endmodule

@@ -1,5 +1,3 @@
-require 'counter_rspecTest_design.rb'
-
 # A prototype of the design under test.
 class CounterProto < Counter
 	def simulate!

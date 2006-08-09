@@ -238,8 +238,6 @@ end
 # Generates and returns the content of the Ruby prototype file, which is a Ruby prototype of the design under test.
 def generateProto aModuleInfo, aOutputInfo
 	%{
-		require '#{aOutputInfo.designPath}'
-
 		# A prototype of the design under test.
 		class #{aOutputInfo.protoClassName} < #{aOutputInfo.designClassName}
 			def simulate!
