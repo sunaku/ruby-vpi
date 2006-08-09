@@ -200,7 +200,7 @@ module SWIG
 									return get_value(prop)
 								end
 
-							when 'i', 'b'	# integer values
+							when 'i'	# integer values
 								return vpi_get(prop, self) unless isAssign
 
 							when 'b'	# boolean values
