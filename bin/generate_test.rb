@@ -128,7 +128,7 @@ def generateVerilogBench aModuleInfo, aOutputInfo
 			// interface to Ruby-VPI
 			initial begin
 				#{clockSignal} = 0;
-				$ruby_init("ruby", "-w", "-I", "#{aOutputInfo.rubyVpiLibPath}", "#{aOutputInfo.rubyBenchPath}"#{%{, "-f", "s"} if aOutputInfo.specFormat == :RSpec});
+				$ruby_init("ruby", "-w", "-I", "#{aOutputInfo.rubyVpiLibPath}", "-I", "#{aOutputInfo.rubyVpiTplPath}", "#{aOutputInfo.rubyBenchPath}"#{%{, "-f", "s"} if aOutputInfo.specFormat == :RSpec});
 			end
 
 			// generate a 50% duty-cycle clock for the design under test
@@ -148,7 +148,6 @@ end
 # Generates and returns the content of the Ruby bench file, which cooperates with the Verilog bench file to run the test bench.
 def generateRubyBench aModuleInfo, aOutputInfo
 	%{
-		require 'vpi_util'
 		#{
 			case aOutputInfo.specFormat
 				when :UnitTest
@@ -159,28 +158,9 @@ def generateRubyBench aModuleInfo, aOutputInfo
 			end
 		}
 
-		# load the design under test
-		require '#{aOutputInfo.designPath}'
-
-		if ENV['PROTO']
-			require '#{aOutputInfo.protoPath}'
-
-			module Vpi
-				PROTOTYPE = #{aOutputInfo.protoClassName}.new
-
-				def relay_verilog
-					PROTOTYPE.simulate!
-				end
-
-				puts "\#{__FILE__}: verifying prototype instead of design"
-			end
-		end
-
-		# load the specification
-		require '#{aOutputInfo.specPath}'
-
-		# service the $ruby_init() callback
-		Vpi::relay_verilog
+		# initalize the bench
+		require 'bench'
+		setup_bench '#{aModuleInfo.name + aOutputInfo.suffix}', :#{aOutputInfo.protoClassName}
 
 		# service the $ruby_relay() callback
 		#{
@@ -228,7 +208,7 @@ def generateDesign aModuleInfo, aOutputInfo
 			end
 
 			def reset!
-				#{portResetCode}=
+				#{portResetCode}
 			end
 		end
 	}
@@ -371,7 +351,7 @@ class OutputInfo
 
 	SPEC_FORMATS = [:RSpec, :UnitTest, :Generic]
 
-	attr_reader :verilogBenchName, :verilogBenchPath, :rubyBenchName, :rubyBenchPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :rubyVpiLibPath, :runnerName, :runnerPath, :protoName, :protoPath, :protoClassName
+	attr_reader :verilogBenchName, :verilogBenchPath, :rubyBenchName, :rubyBenchPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :rubyVpiLibPath, :rubyVpiTplPath, :runnerName, :runnerPath, :protoName, :protoPath, :protoClassName
 
 	attr_reader :testName, :suffix, :benchSuffix, :designSuffix, :specSuffix, :runnerSuffix, :protoSuffix
 
@@ -389,6 +369,7 @@ class OutputInfo
 
 		@rubyVpiPath = aRubyVpiPath
 		@rubyVpiLibPath = @rubyVpiPath + '/lib'
+		@rubyVpiTplPath = @rubyVpiPath + '/tpl'
 
 		@verilogBenchName = aModuleName + @benchSuffix
 		@verilogBenchPath = @verilogBenchName + VERILOG_EXT
