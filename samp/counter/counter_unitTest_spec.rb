@@ -1,28 +1,5 @@
-# A specification which verifies the design under test.
-require 'counter_unitTest_design.rb'
-require 'vpi_util'
-require 'test/unit'
-
-
-# replace the design with its prototype
-if ENV['PROTO']
-	require 'counter_unitTest_proto.rb'
-
-	module Vpi
-		PROTOTYPE = CounterProto.new
-
-		def relay_verilog
-			PROTOTYPE.simulate!
-		end
-	end
-
-	puts 'Replaced design with prototype.'
-end
-
-
 LIMIT = 2 ** Counter::Size # lowest upper bound of counter's value
 MAX = LIMIT - 1 # maximum allowed value for a counter
-
 
 class ResettedCounterValue < Test::Unit::TestCase
 	include Vpi

@@ -149,6 +149,35 @@ end
 # Generates and returns the content of the Ruby bench file, which cooperates with the Verilog bench file to run the test bench.
 def generateRubyBench aModuleInfo, aOutputInfo
 	%{
+		require 'vpi_util'
+		#{
+			case aOutputInfo.specFormat
+				when :UnitTest
+					"require 'test/unit'"
+
+				when :RSpec
+					"require 'rspec'"
+			end
+		}
+
+		# load the design under test
+		require '#{aOutputInfo.designPath}'
+
+		if ENV['PROTO']
+			require '#{aOutputInfo.protoPath}'
+
+			module Vpi
+				PROTOTYPE = #{aOutputInfo.protoClassName}.new
+
+				def relay_verilog
+					PROTOTYPE.simulate!
+				end
+
+				puts "\#{__FILE__}: verifying prototype instead of design"
+			end
+		end
+
+		# load the specification
 		require '#{aOutputInfo.specPath}'
 
 		# service the $ruby_init() callback
@@ -196,11 +225,11 @@ def generateDesign aModuleInfo, aOutputInfo
 			attr_reader #{accessorDecl}
 
 			def initialize
-				# assimilate design's interface
 				#{portInitDecl}
+			end
 
-				# unset all inputs
-				#{portResetCode}
+			def reset!
+				#{portResetCode}=
 			end
 		end
 	}
@@ -230,34 +259,6 @@ def generateSpec aModuleInfo, aOutputInfo
 
 	%{
 		# A specification which verifies the design under test.
-		require '#{aOutputInfo.designPath}'
-		require 'vpi_util'
-		#{
-			case aOutputInfo.specFormat
-				when :UnitTest
-					"require 'test/unit'"
-
-				when :RSpec
-					"require 'rspec'"
-			end
-		}
-
-
-		# replace the design with its prototype
-		if ENV['PROTO']
-			require '#{aOutputInfo.protoPath}'
-
-			module Vpi
-				PROTOTYPE = #{aOutputInfo.protoClassName}.new
-
-				def relay_verilog
-					PROTOTYPE.simulate!
-				end
-
-				puts 'Replaced design with prototype.'
-			end
-		end
-
 
 		#{
 			case aOutputInfo.specFormat
