@@ -1514,9 +1514,9 @@ endmodule
 
 <programlisting>
 module TestFoo;
-	<type>reg</type> <varname>clk_reg</varname>;
-	<type>wire</type> <varname>clk_wire</varname>;
-	assign <varname>clk_wire</varname> = <varname>clk_reg</varname>;
+  <type>reg</type> <varname>clk_reg</varname>;
+  <type>wire</type> <varname>clk_wire</varname>;
+  assign <varname>clk_wire</varname> = <varname>clk_reg</varname>;
 endmodule
 </programlisting>
 					</example>

@@ -2,7 +2,7 @@ h1. Welcome to Ruby-VPI
 
 Ruby-VPI is a Ruby interface to Verilog VPI. It lets you create complex Verilog test benches easily and wholly in Ruby.
 
-* See the "user manual":./doc/manual.html to begin using Ruby-VPI.
+* See the "user manual":./doc/ to begin using Ruby-VPI.
 
 * See the "release history":./history.html to see what is new in this release.
 

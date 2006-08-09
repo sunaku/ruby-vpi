@@ -167,6 +167,7 @@ task :default => :build
 			uploadWithoutSvn SSH_URL, *t.prerequisites
 		end
 
+		desc "Publish user documentation."
 		task :web_doc => :doc do |t|
 			uploadWithoutSvn "#{SSH_URL}/doc/", *FileList['doc/xhtml/*']
 		end
