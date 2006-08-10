@@ -34,6 +34,33 @@ SSH_URL = 'snk@rubyforge.org:/var/www/gforge-projects/ruby-vpi'
 task :default => :build
 
 
+# utility methods
+	# Returns a temporary, unique path ready for use. No file exists at the returned path.
+	def generateTempPath
+		rm_f path = Tempfile.new($$).path
+		path
+	end
+
+	# uploads the given sources without their SVN meta-data to the given destination URL
+	def uploadWithoutSvn aDestUrl, *aSources
+		tmpDir = generateTempPath
+		mkdir tmpDir
+
+		tmpSources = aSources.map do |src|
+			cp_r src, tmpDir, :preserve => true
+			File.join(tmpDir, File.basename(src))
+		end
+
+		# remove SVN meta-data from sources
+			sh "find #{tmpDir} -name .svn | xargs rm -rf"
+
+		# upload sources
+			sh 'scp', '-Cr', *(tmpSources + [aDestUrl])
+
+		rm_rf tmpDir
+	end
+
+
 # cleaning
 	task :clobber do |t|
 		FileList['samp/*/', 'doc'].each do |dir|
@@ -140,26 +167,6 @@ task :default => :build
 	task :dist => [:swig, :doc, *distDocs]
 
 	# website publishing
-		# uploads the given sources without their SVN meta-data to the given destination URL
-		def uploadWithoutSvn aDestUrl, *aSources
-			tmpDir = Tempfile.new($$).path
-			rm_f tmpDir
-			mkdir tmpDir
-
-			tmpSources = aSources.map do |src|
-				cp_r src, tmpDir, :preserve => true
-				File.join(tmpDir, File.basename(src))
-			end
-
-			# remove SVN meta-data from sources
-				sh "find #{tmpDir} -name .svn | xargs rm -rf"
-
-			# upload sources
-				sh 'scp', '-Cr', *(tmpSources + [aDestUrl])
-
-			rm_rf tmpDir
-		end
-
 		desc 'Publish documentation to website.'
 		task :web => [:web_dist, :web_doc]
 
@@ -171,3 +178,43 @@ task :default => :build
 		task :web_doc => :doc do |t|
 			uploadWithoutSvn "#{SSH_URL}/doc/", *FileList['doc/xhtml/*']
 		end
+
+# release
+	desc "Prepare release packages."
+	task :pkg => ['HISTORY'] do |t|
+		# determine release version
+			File.read(t.prerequisites[0]) =~ /Version\s+([\d\.]+)/
+			version = $1
+
+			# print "Please input the release version (#{version}): "
+			# input = STDIN.gets.chomp
+			# version = input unless input.empty?
+
+			puts "- Release version is: #{version}"
+
+		mkdir tmpDir = generateTempPath
+
+		pkgName = "ruby-vpi-#{version}"
+		pkgDir = File.join(tmpDir, pkgName)
+
+		cp_r '.', pkgDir
+
+		cd pkgDir do |dir|
+			# clean up
+				sh "svn st | awk '{print $2}' | xargs rm -rf"
+				sh "svn up"
+				sh "find -name .svn | xargs rm -rf"
+
+			# make release packages
+				sh "rake dist"
+
+				src = File.join('..', File.basename(dir))
+				dst = File.join(File.dirname(__FILE__), pkgName)
+
+				sh '7z', 'a', dst + '.7z', src
+				sh 'tar', 'zcf', dst + '.tgz', src
+		end
+
+		rm_r tmpDir
+	end
+
