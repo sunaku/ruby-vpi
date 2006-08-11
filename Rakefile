@@ -218,3 +218,12 @@ task :default => :build
 		rm_r tmpDir
 	end
 
+# testing
+	desc "Ensure that examples work with $SIMULATOR"
+	task :test => FileList['samp/*/'] do |t|
+		t.prerequisites.each do |s|
+			cd s do
+				sh 'rake', ENV['SIMULATOR'] || 'ivl'
+			end
+		end
+	end
