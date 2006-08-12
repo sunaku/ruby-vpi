@@ -31,23 +31,23 @@
 # * Existing output files will be backed-up before being over-written. A backed-up file has a tilde (~) appended to its name.
 
 =begin
-	Copyright 2006 Suraj N. Kurapati
+  Copyright 2006 Suraj N. Kurapati
 
-	This file is part of Ruby-VPI.
+  This file is part of Ruby-VPI.
 
-	Ruby-VPI is free software; you can redistribute it and/or
-	modify it under the terms of the GNU General Public License
-	as published by the Free Software Foundation; either version 2
-	of the License, or (at your option) any later version.
+  Ruby-VPI is free software; you can redistribute it and/or
+  modify it under the terms of the GNU General Public License
+  as published by the Free Software Foundation; either version 2
+  of the License, or (at your option) any later version.
 
-	Ruby-VPI is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+  Ruby-VPI is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with Ruby-VPI; if not, write to the Free Software Foundation,
-	Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  You should have received a copy of the GNU General Public License
+  along with Ruby-VPI; if not, write to the Free Software Foundation,
+  Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
 require 'optparse'
@@ -57,402 +57,403 @@ require 'fileutils'
 
 # Writes the given contents to the file at the given path. If the given path already exists, then a backup is created before proceeding.
 def writeFile aPath, aContent
-	# create a backup
-	if File.exist? aPath
-		backupPath = aPath.dup
+  # create a backup
+  if File.exist? aPath
+    backupPath = aPath.dup
 
-		while File.exist? backupPath
-			backupPath << '~'
-		end
+    while File.exist? backupPath
+      backupPath << '~'
+    end
 
-		FileUtils.cp aPath, backupPath, :preserve => true
-	end
+    FileUtils.cp aPath, backupPath, :preserve => true
+  end
 
 
-	# write the file
-	File.open(aPath, 'w') {|f| f << aContent}
+  # write the file
+  File.open(aPath, 'w') {|f| f << aContent}
 end
 
 # Returns a comma-separated string of parameter declarations in Verilog module instantiation format.
 def makeInstParamDecl(paramNames)
-	paramNames.inject([]) {|acc, param| acc << ".#{param}(#{param})"}.join(', ')
+  paramNames.inject([]) {|acc, param| acc << ".#{param}(#{param})"}.join(', ')
 end
 
 # Generates and returns the content of the Verilog bench file, which cooperates with the Ruby bench file to run the test bench.
 def generateVerilogBench aModuleInfo, aOutputInfo
 
-	# configuration parameters for design under test
-	configDecl = aModuleInfo.paramDecls.inject('') do |acc, decl|
-		acc << "parameter #{decl};\n"
-	end
+  # configuration parameters for design under test
+  configDecl = aModuleInfo.paramDecls.inject('') do |acc, decl|
+    acc << "parameter #{decl};\n"
+  end
 
 
-	# accessors for design under test interface
-	portInitDecl = aModuleInfo.portDecls.inject('') do |acc, decl|
-		{ 'input' => 'reg', 'output' => 'wire' }.each_pair do |key, val|
-			decl.sub! %r{\b#{key}\b(.*?)$}, "#{val}\\1;"
-		end
+  # accessors for design under test interface
+  portInitDecl = aModuleInfo.portDecls.inject('') do |acc, decl|
+    { 'input' => 'reg', 'output' => 'wire' }.each_pair do |key, val|
+      decl.sub! %r{\b#{key}\b(.*?)$}, "#{val}\\1;"
+    end
 
-		decl.strip!
-		acc << decl << "\n"
-	end
-
-
-	# instantiation for the design under test
-	instConfigDecl = makeInstParamDecl(aModuleInfo.paramNames)
-	instParamDecl = makeInstParamDecl(aModuleInfo.portNames)
-
-	instDecl = "#{aModuleInfo.name} " << (
-		unless instConfigDecl.empty?
-			'#(' << instConfigDecl << ')'
-		else
-			''
-		end
-	) << " #{aOutputInfo.verilogBenchName}#{aOutputInfo.designSuffix} (#{instParamDecl});"
+    decl.strip!
+    acc << decl << "\n"
+  end
 
 
-	clockSignal = aModuleInfo.portNames.first
+  # instantiation for the design under test
+  instConfigDecl = makeInstParamDecl(aModuleInfo.paramNames)
+  instParamDecl = makeInstParamDecl(aModuleInfo.portNames)
 
-	%{
-		module #{aOutputInfo.verilogBenchName};
+  instDecl = "#{aModuleInfo.name} " << (
+    unless instConfigDecl.empty?
+      '#(' << instConfigDecl << ')'
+    else
+      ''
+    end
+  ) << " #{aOutputInfo.verilogBenchName}#{aOutputInfo.designSuffix} (#{instParamDecl});"
 
-			// configuration for the design under test
-			#{configDecl}
 
-			// accessors for the design under test
-			#{portInitDecl}
+  clockSignal = aModuleInfo.portNames.first
 
-			// instantiate the design under test
-			#{instDecl}
+  %{
+    module #{aOutputInfo.verilogBenchName};
 
-			// interface to Ruby-VPI
-			initial begin
-				#{clockSignal} = 0;
-				$ruby_init("ruby", "-w", "-I", "#{aOutputInfo.rubyVpiLibPath}", "-I", "#{aOutputInfo.rubyVpiTplPath}", "#{aOutputInfo.rubyBenchPath}"#{%{, "-f", "s"} if aOutputInfo.specFormat == :RSpec});
-			end
+      // configuration for the design under test
+      #{configDecl}
 
-			// generate a 50% duty-cycle clock for the design under test
-			always begin
-				#5 #{clockSignal} = ~#{clockSignal};
-			end
+      // accessors for the design under test
+      #{portInitDecl}
 
-			// transfer control to Ruby-VPI every clock cycle
-			always @(posedge #{clockSignal}) begin
-				#1 $ruby_relay();
-			end
+      // instantiate the design under test
+      #{instDecl}
 
-		endmodule
-	}
+      // interface to Ruby-VPI
+      initial begin
+        #{clockSignal} = 0;
+        $ruby_init("ruby", "-w", "-I", "#{aOutputInfo.rubyVpiLibPath}", "-I", "#{aOutputInfo.rubyVpiTplPath}", "#{aOutputInfo.rubyBenchPath}"#{%{, "-f", "s"} if aOutputInfo.specFormat == :RSpec});
+      end
+
+      // generate a 50% duty-cycle clock for the design under test
+      always begin
+        #5 #{clockSignal} = ~#{clockSignal};
+      end
+
+      // transfer control to Ruby-VPI every clock cycle
+      always @(posedge #{clockSignal}) begin
+        #1 $ruby_relay();
+      end
+
+    endmodule
+  }
 end
 
 # Generates and returns the content of the Ruby bench file, which cooperates with the Verilog bench file to run the test bench.
 def generateRubyBench aModuleInfo, aOutputInfo
-	%{
-		#{
-			case aOutputInfo.specFormat
-				when :UnitTest
-					"require 'test/unit'"
+  %{
+    #{
+      case aOutputInfo.specFormat
+        when :UnitTest
+          "require 'test/unit'"
 
-				when :RSpec
-					"require 'rspec'"
-			end
-		}
+        when :RSpec
+          "require 'rspec'"
+      end
+    }
 
-		# initalize the bench
-		require 'bench'
-		setup_bench '#{aModuleInfo.name + aOutputInfo.suffix}', :#{aOutputInfo.protoClassName}
+    # initalize the bench
+    require 'bench'
+    setup_bench '#{aModuleInfo.name + aOutputInfo.suffix}', :#{aOutputInfo.protoClassName}
 
-		# service the $ruby_relay() callback
-		#{
-			case aOutputInfo.specFormat
-				when :UnitTest, :RSpec
-					"# ... #{aOutputInfo.specFormat} will take control from here."
+    # service the $ruby_relay() callback
+    #{
+      case aOutputInfo.specFormat
+        when :UnitTest, :RSpec
+          "# ... #{aOutputInfo.specFormat} will take control from here."
 
-				else
-					aOutputInfo.specClassName + '.new'
-			end
-		}
-	}
+        else
+          aOutputInfo.specClassName + '.new'
+      end
+    }
+  }
 end
 
 # Generates and returns the content of the Ruby design file, which is a Ruby abstraction of the Verilog module's interface.
 def generateDesign aModuleInfo, aOutputInfo
-	accessorDecl = aModuleInfo.portNames.inject([]) do |acc, port|
-		acc << ":#{port}"
-	end.join(', ')
+  accessorDecl = aModuleInfo.portNames.inject([]) do |acc, port|
+    acc << ":#{port}"
+  end.join(', ')
 
-	portInitDecl = aModuleInfo.portNames.inject('') do |acc, port|
-		acc << %{@#{port} = vpi_handle_by_name("#{aOutputInfo.verilogBenchName}.#{port}", nil)\n}
-	end
+  portInitDecl = aModuleInfo.portNames.inject('') do |acc, port|
+    acc << %{@#{port} = vpi_handle_by_name("#{aOutputInfo.verilogBenchName}.#{port}", nil)\n}
+  end
 
 
-	# make module parameters as class constants
-	paramInitDecl = aModuleInfo.paramDecls.inject('') do |acc, decl|
-		acc << decl.strip.capitalize
-	end
+  # make module parameters as class constants
+  paramInitDecl = aModuleInfo.paramDecls.inject('') do |acc, decl|
+    acc << decl.strip.capitalize
+  end
 
-	portResetCode = aModuleInfo.inputPortNames[1..-1].inject('') do |acc, port|
-		acc << %{@#{port}.hexStrVal = 'x'\n}
-	end
+  portResetCode = aModuleInfo.inputPortNames[1..-1].inject('') do |acc, port|
+    acc << %{@#{port}.hexStrVal = 'x'\n}
+  end
 
-	%{
-		# An interface to the design under test.
-		class #{aOutputInfo.designClassName}
-			include Vpi
+  %{
+    # An interface to the design under test.
+    class #{aOutputInfo.designClassName}
+      include Vpi
 
-			#{paramInitDecl}
-			attr_reader #{accessorDecl}
+      #{paramInitDecl}
+      attr_reader #{accessorDecl}
 
-			def initialize
-				#{portInitDecl}
-			end
+      def initialize
+        #{portInitDecl}
+      end
 
-			def reset!
-				#{portResetCode}
-			end
-		end
-	}
+      def reset!
+        #{portResetCode}
+      end
+    end
+  }
 end
 
 # Generates and returns the content of the Ruby prototype file, which is a Ruby prototype of the design under test.
 def generateProto aModuleInfo, aOutputInfo
-	%{
-		# A prototype of the design under test.
-		class #{aOutputInfo.protoClassName} < #{aOutputInfo.designClassName}
-			def simulate!
-				# read inputs
-				# simulate design's behavior
-				# produce outputs
-			end
-		end
-	}
+  %{
+    # A prototype of the design under test.
+    class #{aOutputInfo.protoClassName} < #{aOutputInfo.designClassName}
+      def simulate!
+        # read inputs
+        # simulate design's behavior
+        # produce outputs
+      end
+    end
+  }
 end
 
 # Generates and returns the content of the Ruby specification file, which verifies the design under test.
 def generateSpec aModuleInfo, aOutputInfo
-	accessorTestDecl = aModuleInfo.portNames.inject('') do |acc, param|
-		acc << "def test_#{param}\nend\n\n"
-	end
+  accessorTestDecl = aModuleInfo.portNames.inject('') do |acc, param|
+    acc << "def test_#{param}\nend\n\n"
+  end
 
-	%{# A specification which verifies the design under test.
-		#{
-			case aOutputInfo.specFormat
-				when :UnitTest
-					%{
-						class #{aOutputInfo.specClassName} < Test::Unit::TestCase
-							include Vpi
+  %{# A specification which verifies the design under test.
+    #{
+      case aOutputInfo.specFormat
+        when :UnitTest
+          %{
+            class #{aOutputInfo.specClassName} < Test::Unit::TestCase
+              include Vpi
 
-							def setup
-								@design = #{aOutputInfo.designClassName}.new
-							end
+              def setup
+                @design = #{aOutputInfo.designClassName}.new
+              end
 
-							#{accessorTestDecl}
-						end
-					}
+              #{accessorTestDecl}
+            end
+          }
 
-				when :RSpec
-					%{
-						include Vpi
+        when :RSpec
+          %{
+            include Vpi
 
-						context "A new #{aOutputInfo.designClassName}" do
-							setup do
-								@design = #{aOutputInfo.designClassName}.new
-							end
+            context "A new #{aOutputInfo.designClassName}" do
+              setup do
+                @design = #{aOutputInfo.designClassName}.new
+                @design.reset!
+              end
 
-							specify "should ..." do
-								# @design.should ...
-							end
-						end
-					}
+              specify "should ..." do
+                # @design.should ...
+              end
+            end
+          }
 
-				else
-					%{
-						class #{aOutputInfo.specClassName}
-							include Vpi
+        else
+          %{
+            class #{aOutputInfo.specClassName}
+              include Vpi
 
-							def initialize
-								@design = #{aOutputInfo.designClassName}.new
-							end
-						end
-					}
-			end
-		}
-	}
+              def initialize
+                @design = #{aOutputInfo.designClassName}.new
+              end
+            end
+          }
+      end
+    }
+  }
 end
 
 # Generates and returns the content of the runner, which builds and runs the entire test bench.
 def generateRunner aModuleInfo, aOutputInfo
-	%{
-		RUBY_VPI_PATH = '#{aOutputInfo.rubyVpiPath}'
+  %{
+    RUBY_VPI_PATH = '#{aOutputInfo.rubyVpiPath}'
 
-		SIMULATOR_SOURCES = [
-			'#{aOutputInfo.verilogBenchPath}',
-			'#{aModuleInfo.name}.v',
-		]
+    SIMULATOR_SOURCES = [
+      '#{aOutputInfo.verilogBenchPath}',
+      '#{aModuleInfo.name}.v',
+    ]
 
-		SIMULATOR_TARGET = '#{aOutputInfo.verilogBenchName}'
+    SIMULATOR_TARGET = '#{aOutputInfo.verilogBenchName}'
 
-		# command-line arguments for the simulator
-		SIMULATOR_ARGS = {
-			:cver => '',
-			:ivl => '',
-			:vcs => '',
-			:vsim => '',
-		}
+    # command-line arguments for the simulator
+    SIMULATOR_ARGS = {
+      :cver => '',
+      :ivl => '',
+      :vcs => '',
+      :vsim => '',
+    }
 
-		load "\#{RUBY_VPI_PATH}#{OutputInfo::RUNNER_TMPL_REL_PATH}"
-	}
+    load "\#{RUBY_VPI_PATH}#{OutputInfo::RUNNER_TMPL_REL_PATH}"
+  }
 end
 
 # Holds information about a parsed Verilog module.
 class ModuleInfo
-	attr_reader :name, :portNames, :paramNames, :portDecls, :paramDecls, :inputPortNames
+  attr_reader :name, :portNames, :paramNames, :portDecls, :paramDecls, :inputPortNames
 
-	def initialize aDecl
-		aDecl =~ %r{module\s+(\w+)\s*(\#\((.*?)\))?\s*\((.*?)\)\s*;}
-		@name, paramDecl, portDecl = $1, $3 || '', $4
-
-
-		# parse configuration parameters
-		paramDecl.gsub! %r{\bparameter\b}, ''
-		paramDecl.strip!
-
-		@paramDecls = paramDecl.split(/,/)
-
-		@paramNames = paramDecls.inject([]) do |acc, decl|
-			acc << decl.scan(%r{\w+}).first
-		end
+  def initialize aDecl
+    aDecl =~ %r{module\s+(\w+)\s*(\#\((.*?)\))?\s*\((.*?)\)\s*;}
+    @name, paramDecl, portDecl = $1, $3 || '', $4
 
 
-		# parse signal parameters
-		portDecl.gsub! %r{\breg\b}, ''
-		portDecl.strip!
+    # parse configuration parameters
+    paramDecl.gsub! %r{\bparameter\b}, ''
+    paramDecl.strip!
 
-		@portDecls = portDecl.split(/,/)
+    @paramDecls = paramDecl.split(/,/)
 
-		@inputPortNames = []
+    @paramNames = paramDecls.inject([]) do |acc, decl|
+      acc << decl.scan(%r{\w+}).first
+    end
 
-		@portNames = portDecls.inject([]) do |acc, decl|
-			name = decl.scan(%r{\w+}).last
-			@inputPortNames << name if decl =~ /\binput\b/
 
-			acc << name
-		end
-	end
+    # parse signal parameters
+    portDecl.gsub! %r{\breg\b}, ''
+    portDecl.strip!
+
+    @portDecls = portDecl.split(/,/)
+
+    @inputPortNames = []
+
+    @portNames = portDecls.inject([]) do |acc, decl|
+      name = decl.scan(%r{\w+}).last
+      @inputPortNames << name if decl =~ /\binput\b/
+
+      acc << name
+    end
+  end
 end
 
 # Holds information about the output destinations of a parsed Verilog module.
 class OutputInfo
-	RUBY_EXT = '.rb'
-	VERILOG_EXT = '.v'
-	RUNNER_EXT = '.rake'
+  RUBY_EXT = '.rb'
+  VERILOG_EXT = '.v'
+  RUNNER_EXT = '.rake'
 
-	RUNNER_TMPL_REL_PATH = '/tpl/runner.rake'
+  RUNNER_TMPL_REL_PATH = '/tpl/runner.rake'
 
-	SPEC_FORMATS = [:RSpec, :UnitTest, :Generic]
+  SPEC_FORMATS = [:RSpec, :UnitTest, :Generic]
 
-	attr_reader :verilogBenchName, :verilogBenchPath, :rubyBenchName, :rubyBenchPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :rubyVpiLibPath, :rubyVpiTplPath, :runnerName, :runnerPath, :protoName, :protoPath, :protoClassName
+  attr_reader :verilogBenchName, :verilogBenchPath, :rubyBenchName, :rubyBenchPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :rubyVpiLibPath, :rubyVpiTplPath, :runnerName, :runnerPath, :protoName, :protoPath, :protoClassName
 
-	attr_reader :testName, :suffix, :benchSuffix, :designSuffix, :specSuffix, :runnerSuffix, :protoSuffix
+  attr_reader :testName, :suffix, :benchSuffix, :designSuffix, :specSuffix, :runnerSuffix, :protoSuffix
 
-	def initialize aModuleName, aSpecFormat, aTestName, aRubyVpiPath
-		raise ArgumentError unless SPEC_FORMATS.include? aSpecFormat
-		@specFormat = aSpecFormat
-		@testName = aTestName
+  def initialize aModuleName, aSpecFormat, aTestName, aRubyVpiPath
+    raise ArgumentError unless SPEC_FORMATS.include? aSpecFormat
+    @specFormat = aSpecFormat
+    @testName = aTestName
 
-		@suffix = '_' + @testName
-		@benchSuffix = @suffix + '_bench'
-		@designSuffix = @suffix + '_design'
-		@specSuffix = @suffix + '_spec'
-		@runnerSuffix = @suffix + '_runner'
-		@protoSuffix = @suffix + '_proto'
+    @suffix = '_' + @testName
+    @benchSuffix = @suffix + '_bench'
+    @designSuffix = @suffix + '_design'
+    @specSuffix = @suffix + '_spec'
+    @runnerSuffix = @suffix + '_runner'
+    @protoSuffix = @suffix + '_proto'
 
-		@rubyVpiPath = aRubyVpiPath
-		@rubyVpiLibPath = @rubyVpiPath + '/lib'
-		@rubyVpiTplPath = @rubyVpiPath + '/tpl'
+    @rubyVpiPath = aRubyVpiPath
+    @rubyVpiLibPath = @rubyVpiPath + '/lib'
+    @rubyVpiTplPath = @rubyVpiPath + '/tpl'
 
-		@verilogBenchName = aModuleName + @benchSuffix
-		@verilogBenchPath = @verilogBenchName + VERILOG_EXT
+    @verilogBenchName = aModuleName + @benchSuffix
+    @verilogBenchPath = @verilogBenchName + VERILOG_EXT
 
-		@rubyBenchName = aModuleName + @benchSuffix
-		@rubyBenchPath = @rubyBenchName + RUBY_EXT
+    @rubyBenchName = aModuleName + @benchSuffix
+    @rubyBenchPath = @rubyBenchName + RUBY_EXT
 
-		@designName = aModuleName + @designSuffix
-		@designPath = @designName + RUBY_EXT
+    @designName = aModuleName + @designSuffix
+    @designPath = @designName + RUBY_EXT
 
-		@protoName = aModuleName + @protoSuffix
-		@protoPath = @protoName + RUBY_EXT
+    @protoName = aModuleName + @protoSuffix
+    @protoPath = @protoName + RUBY_EXT
 
-		@specName = aModuleName + @specSuffix
-		@specPath = @specName + RUBY_EXT
+    @specName = aModuleName + @specSuffix
+    @specPath = @specName + RUBY_EXT
 
-		@designClassName = aModuleName.capitalize
-		@protoClassName = @designClassName + 'Proto'
-		@specClassName = @specName.capitalize
+    @designClassName = aModuleName.capitalize
+    @protoClassName = @designClassName + 'Proto'
+    @specClassName = @specName.capitalize
 
-		@runnerName = aModuleName + @runnerSuffix
-		@runnerPath = @runnerName + RUNNER_EXT
-	end
+    @runnerName = aModuleName + @runnerSuffix
+    @runnerPath = @runnerName + RUNNER_EXT
+  end
 end
 
 
 # parse command-line options
-	optSpecFmt = :Generic
-	optTestName = 'test'
+  optSpecFmt = :Generic
+  optTestName = 'test'
 
-	optsParser = OptionParser.new
-	optsParser.on('-h', '--help', 'show this help message') {raise}
-	optsParser.on('-u', '--unit', 'use Test::Unit specification format') {|val| optSpecFmt = :UnitTest if val}
-	optsParser.on('-r', '--rspec', 'use RSpec specification format') {|val| optSpecFmt = :RSpec if val}
-	optsParser.on('-n', '--name NAME', 'specify name of generated test') {|val| optTestName = val}
+  optsParser = OptionParser.new
+  optsParser.on('-h', '--help', 'show this help message') {raise}
+  optsParser.on('-u', '--unit', 'use Test::Unit specification format') {|val| optSpecFmt = :UnitTest if val}
+  optsParser.on('-r', '--rspec', 'use RSpec specification format') {|val| optSpecFmt = :RSpec if val}
+  optsParser.on('-n', '--name NAME', 'specify name of generated test') {|val| optTestName = val}
 
-	begin
-		optsParser.parse!(ARGV)
-	rescue
-		at_exit {puts optsParser}
-		RDoc::usage	# NOTE: this terminates the program
-	end
+  begin
+    optsParser.parse!(ARGV)
+  rescue
+    at_exit {puts optsParser}
+    RDoc::usage	# NOTE: this terminates the program
+  end
 
-	puts "Using name `#{optTestName}' for generated test."
-	puts "Using #{optSpecFmt} specification format."
+  puts "Using name `#{optTestName}' for generated test."
+  puts "Using #{optSpecFmt} specification format."
 
 # sanitize the input
-	input = ARGF.read
+  input = ARGF.read
 
-	# remove single-line comments
-		input.gsub! %r{//.*$}, ''
+  # remove single-line comments
+    input.gsub! %r{//.*$}, ''
 
-	# collapse the input into a single line
-		input.tr! "\n", ''
+  # collapse the input into a single line
+    input.tr! "\n", ''
 
-	# remove multi-line comments
-		input.gsub! %r{/\*.*?\*/}, ''
+  # remove multi-line comments
+    input.gsub! %r{/\*.*?\*/}, ''
 
 # parse the input
-	input.scan(%r{module.*?;}).each do |moduleDecl|
-		puts
+  input.scan(%r{module.*?;}).each do |moduleDecl|
+    puts
 
-		m = ModuleInfo.new(moduleDecl).freeze
-		puts "Parsed module: #{m.name}"
+    m = ModuleInfo.new(moduleDecl).freeze
+    puts "Parsed module: #{m.name}"
 
-		# generate output
-			o = OutputInfo.new(m.name, optSpecFmt, optTestName, File.dirname(File.dirname(__FILE__))).freeze
+    # generate output
+      o = OutputInfo.new(m.name, optSpecFmt, optTestName, File.dirname(File.dirname(__FILE__))).freeze
 
-			writeFile o.runnerPath, generateRunner(m, o)
-			puts "- Generated runner:           #{o.runnerPath}"
+      writeFile o.runnerPath, generateRunner(m, o)
+      puts "- Generated runner:           #{o.runnerPath}"
 
-			writeFile o.verilogBenchPath, generateVerilogBench(m, o)
-			puts "- Generated bench:            #{o.verilogBenchPath}"
+      writeFile o.verilogBenchPath, generateVerilogBench(m, o)
+      puts "- Generated bench:            #{o.verilogBenchPath}"
 
-			writeFile o.rubyBenchPath, generateRubyBench(m, o)
-			puts "- Generated bench:            #{o.rubyBenchPath}"
+      writeFile o.rubyBenchPath, generateRubyBench(m, o)
+      puts "- Generated bench:            #{o.rubyBenchPath}"
 
-			writeFile o.designPath, generateDesign(m, o)
-			puts "- Generated design:           #{o.designPath}"
+      writeFile o.designPath, generateDesign(m, o)
+      puts "- Generated design:           #{o.designPath}"
 
-			writeFile o.protoPath, generateProto(m, o)
-			puts "- Generated prototype:        #{o.protoPath}"
+      writeFile o.protoPath, generateProto(m, o)
+      puts "- Generated prototype:        #{o.protoPath}"
 
-			writeFile o.specPath, generateSpec(m, o)
-			puts "- Generated specification:    #{o.specPath}"
-	end
+      writeFile o.specPath, generateSpec(m, o)
+      puts "- Generated specification:    #{o.specPath}"
+  end
