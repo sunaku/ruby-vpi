@@ -115,7 +115,7 @@ module SWIG
 
         when VpiIntVal
           newVal.format = VpiHexStrVal
-          newVal.value.str = aValue.to_s(16)
+          newVal.value.str = aValue.to_i.to_s(16)
 
         when VpiRealVal
           newVal.value.real = aValue
