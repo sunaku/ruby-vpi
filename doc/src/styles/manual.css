@@ -1,87 +1,87 @@
 body {
-	font-family: sans-serif;
-	line-height: 2em;
+  font-family: sans-serif;
+  line-height: 2em;
 }
 
 /* admonitions */
-	.tip, .note, .important, .caution, .warning {
-		/* border: thin solid lightgreen;
-		background-color: honeydew; */
-		border: thin solid steelblue;
-		background-color: aliceblue;
-		padding: 1em;
-	}
+  .tip, .note, .important, .caution, .warning {
+    /* border: thin solid lightgreen;
+    background-color: honeydew; */
+    border: thin solid steelblue;
+    background-color: aliceblue;
+    padding: 1em;
+  }
 
 /* headings */
-	.title, th {
-		font-family: serif;
-	}
+  .title, th {
+    font-family: serif;
+  }
 
 /* source code */
-	.screen, .filename {
-		background-color: whitesmoke;
-	}
+  .screen, .filename {
+    background-color: whitesmoke;
+  }
 
-	.code, .programlisting, .function, .constant, .literal, .varname, .token, .type, .remark {
-		font-family: monospace;
-		background-color: ivory;
-	}
+  .code, .programlisting, .function, .constant, .literal, .varname, .token, .type, .remark {
+    font-family: monospace;
+    background-color: ivory;
+  }
 
-	.screen, .programlisting {
-		border: thin solid silver;
-		padding: 1em;
-		line-height: normal;
-		display: block;
-		overflow: auto;
-	}
+  .screen, .programlisting {
+    border: thin solid silver;
+    padding: 1em;
+    line-height: normal;
+    display: block;
+    overflow: auto;
+  }
 
-	.function {
-		color: orangered;
-	}
+  .function {
+    color: orangered;
+  }
 
-	.constant {
-		color: brown;
-		font-weight: bold;
-	}
+  .constant {
+    color: brown;
+    font-weight: bold;
+  }
 
-	.literal {
-		color: darkgreen;
-		background-color: honeydew;
-	}
+  .literal {
+    color: darkgreen;
+    background-color: honeydew;
+  }
 
-	.varname {
-		color: magenta;
-		/*background-color: ghostwhite;*/
-	}
+  .varname {
+    color: magenta;
+    /*background-color: ghostwhite;*/
+  }
 
-	.token {
-		color: midnightblue;
-	}
+  .token {
+    color: midnightblue;
+  }
 
-	.type {
-		color: royalblue;
-	}
+  .type {
+    color: royalblue;
+  }
 
-	.remark {
-		color: gray;
-	}
+  .remark {
+    color: gray;
+  }
 
-	.command {
-		background-color: bisque;
-	}
+  .command {
+    background-color: bisque;
+  }
 
 /* tables */
-	table[border="1"] {
-		border: none;
-	}
+  table[border="1"] {
+    border: none;
+  }
 
-	table[border="1"] th {
-		border: none;
-		background-color: whitesmoke;
-	}
+  table[border="1"] th {
+    border: none;
+    background-color: whitesmoke;
+  }
 
-	table[border="1"] th,
-	table[border="1"] td {
-		border: thin solid silver;
-		padding: 1em;
-	}
+  table[border="1"] th,
+  table[border="1"] td {
+    border: thin solid silver;
+    padding: 1em;
+  }

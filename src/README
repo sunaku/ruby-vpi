@@ -2,123 +2,123 @@ Class|Module Naming Convention
 ------------------------------
 
 FooBar
-	C module named "FooBar".
+  C module named "FooBar".
 
 RFooBar
-	Ruby class or module named "FooBar".
+  Ruby class or module named "FooBar".
 
 RFooBar_rb_do_stuff
-	Ruby function named "do_stuff" which is callable from Ruby like this: "FooBar.new.do_stuff" or "FooBar::do_stuff" or ...
+  Ruby function named "do_stuff" which is callable from Ruby like this: "FooBar.new.do_stuff" or "FooBar::do_stuff" or ...
 
 RFooBar_doStuff
-	Service function named "doStuff" which is callable from C only.
+  Service function named "doStuff" which is callable from C only.
 
 RFooBar__someStuff
-	Something named "someStuff", which is neither a Ruby function nor a service function, that belongs to "FooBar". Think of the two underscores "__" as being two colons "::" in Ruby.
+  Something named "someStuff", which is neither a Ruby function nor a service function, that belongs to "FooBar". Think of the two underscores "__" as being two colons "::" in Ruby.
 
 
 Variable Naming Convention
 --------------------------
 
 fooBar
-	Ordinary variable named "fooBar".
+  Ordinary variable named "fooBar".
 
 a?p?(r|v)?FooBar
-	Variable named "FooBar" which has additional properties denoted by the optional prefixes.
+  Variable named "FooBar" which has additional properties denoted by the optional prefixes.
 
 aFooBar
-	Function argument named named "FooBar". For example: "int divide(int aDividend, aDivisor);".
+  Function argument named named "FooBar". For example: "int divide(int aDividend, aDivisor);".
 
 pFooBar
-	Pointer named "FooBar".
+  Pointer named "FooBar".
 
 rFooBar
-	Ruby object (instance of a Ruby class) named "FooBar".
+  Ruby object (instance of a Ruby class) named "FooBar".
 
 vFooBar
-	Verilog object named "FooBar".
+  Verilog object named "FooBar".
 
 
 Code Formatting Convention
 --------------------------
 
 Indenting
-	Use a single tab character to indent by one level. If you feel that tab characters occupy too much space or indent too deeply, then configure your text editor to *visually* display tab characters using less space. This is similar to the output produced by the filter "expand -t 2" in UNIX.
+  Use a single tab character to indent by one level. If you feel that tab characters occupy too much space or indent too deeply, then configure your text editor to *visually* display tab characters using less space. This is similar to the output produced by the filter "expand -t 2" in UNIX.
 
-	level 1
-		level 2
-			level 3
-				... and so on ...
-		level 2
-	level 1
+  level 1
+    level 2
+      level 3
+        ... and so on ...
+    level 2
+  level 1
 
 Line breaking
-	Do not break a long line into multiple lines. Let it be as long as it wants and configure your text editor to *visually* wrap long lines and indent them so they are easy to read. This is similar to the output produced by the filter "fmt -cs" in UNIX.
+  Do not break a long line into multiple lines. Let it be as long as it wants and configure your text editor to *visually* wrap long lines and indent them so they are easy to read. This is similar to the output produced by the filter "fmt -cs" in UNIX.
 
-	For example:
+  For example:
 
-	/**
-		Foo is a fantastic bar which can be seen from atop the majestic peaks of baz. However, let us not forget the beauty of sparkling rubies beneath its rugged, earthy exterior. Yes, this line is very long, and that is the point.
-	*/
+  /**
+    Foo is a fantastic bar which can be seen from atop the majestic peaks of baz. However, let us not forget the beauty of sparkling rubies beneath its rugged, earthy exterior. Yes, this line is very long, and that is the point.
+  */
 
 Vertical spacing
-	Use 1 line comment before the start of a group of related statements if necessary.
+  Use 1 line comment before the start of a group of related statements if necessary.
 
-	Use 1 line within a group of related statements.
+  Use 1 line within a group of related statements.
 
-	Use 2 lines to mark the boundary between groups of related statements.
+  Use 2 lines to mark the boundary between groups of related statements.
 
-	Use 3 lines to mark the boundary of a completely disjoint block of code, which has its own groups of related statements.
+  Use 3 lines to mark the boundary of a completely disjoint block of code, which has its own groups of related statements.
 
 Braces alignment
-	Put an open brace on same line as the start of the block statement. For example:
+  Put an open brace on same line as the start of the block statement. For example:
 
-	if(foo) {
-		doFoo();
+  if(foo) {
+    doFoo();
 
-		if(bar) {
-			doBar();
-		}
-	}
-	else {
-		doRuby();
-	}
+    if(bar) {
+      doBar();
+    }
+  }
+  else {
+    doRuby();
+  }
 
 Delimiting operators
-	When there are many operators in a single statement, indent the first element beneath the block-starter and put the operator at the start of subsequent elements. For example:
+  When there are many operators in a single statement, indent the first element beneath the block-starter and put the operator at the start of subsequent elements. For example:
 
-	static unsigned long int
-		foo
-		, bar
-		, baz
-	;
+  static unsigned long int
+    foo
+    , bar
+    , baz
+  ;
 
-	doStuff(
-		foo
-		, bar
-		, baz
-	);
+  doStuff(
+    foo
+    , bar
+    , baz
+  );
 
-	if(
-		foo
-		&& bar
-		|| baz
-	) {
-		doStuff();
-	}
+  if(
+    foo
+    && bar
+    || baz
+  ) {
+    doStuff();
+  }
 
 
 Code Documenting Convention
 ---------------------------
 
 Doxygen
-	Use Javadoc style (at "@" to start a documenting command) instead of LaTeX style (backslash "\" to start a documenting command) whenever possible. All public functions, variables, etc. must have such comments. For example:
+  Use Javadoc style (at "@" to start a documenting command) instead of LaTeX style (backslash "\" to start a documenting command) whenever possible. All public functions, variables, etc. must have such comments. For example:
 
-	/**
-		Writes out a foo and returns a bar.
+  /**
+    Writes out a foo and returns a bar.
 
-		@param	aFoo	The foo to write out.
-		@return	A bar.
-	*/
-	bar doStuff(foo aFoo);
+    @param	aFoo	The foo to write out.
+    @return	A bar.
+  */
+  bar doStuff(foo aFoo);
 

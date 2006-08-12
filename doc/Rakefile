@@ -1,55 +1,55 @@
 =begin
-	Copyright 2006 Suraj N. Kurapati
+  Copyright 2006 Suraj N. Kurapati
 
-	This file is part of Ruby-VPI.
+  This file is part of Ruby-VPI.
 
-	Ruby-VPI is free software; you can redistribute it and/or
-	modify it under the terms of the GNU General Public License
-	as published by the Free Software Foundation; either version 2
-	of the License, or (at your option) any later version.
+  Ruby-VPI is free software; you can redistribute it and/or
+  modify it under the terms of the GNU General Public License
+  as published by the Free Software Foundation; either version 2
+  of the License, or (at your option) any later version.
 
-	Ruby-VPI is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+  Ruby-VPI is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with Ruby-VPI; if not, write to the Free Software Foundation,
-	Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  You should have received a copy of the GNU General Public License
+  along with Ruby-VPI; if not, write to the Free Software Foundation,
+  Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
 require 'rake/clean'
 
 FORMATS = {
-	# task name => [xsltproc flag, needs resources?]
-	'html' => ['xhtml', true],
-	'text' => ['txt', false],
+  # task name => [xsltproc flag, needs resources?]
+  'html' => ['xhtml', true],
+  'text' => ['txt', false],
 }
 
 task :default => FORMATS.keys
 
 FORMATS.each_pair do |fmtName, (fmtFlag, needsResources)|
-	desc "Generate documentation in #{fmtName} format."
-	file fmtFlag => ['src/manual.xml', 'src/manual.xsl'] do |t|
-		sh %{xmlto #{fmtFlag} -o #{fmtFlag} -m #{t.prerequisites[1]} #{t.prerequisites[0]}}
-	end
+  desc "Generate documentation in #{fmtName} format."
+  file fmtFlag => ['src/manual.xml', 'src/manual.xsl'] do |t|
+    sh %{xmlto #{fmtFlag} -o #{fmtFlag} -m #{t.prerequisites[1]} #{t.prerequisites[0]}}
+  end
 
-	CLOBBER.include fmtFlag
+  CLOBBER.include fmtFlag
 
-	task fmtName => fmtFlag
+  task fmtName => fmtFlag
 
-	# copy additional resources to output directory
-		if needsResources
-			FileList['src/*/'].each do |path|
-				dst = File.join(fmtFlag, File.basename(path))
+  # copy additional resources to output directory
+    if needsResources
+      FileList['src/*/'].each do |path|
+        dst = File.join(fmtFlag, File.basename(path))
 
-				file dst => [path, fmtFlag] do
-					cp_r path, dst
-				end
+        file dst => [path, fmtFlag] do
+          cp_r path, dst
+        end
 
-				CLEAN.include dst
+        CLEAN.include dst
 
-				task fmtName => dst
-			end
-		end
+        task fmtName => dst
+      end
+    end
 end

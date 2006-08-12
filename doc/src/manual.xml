@@ -1,1001 +1,1001 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-	Copyright 2006 Suraj N. Kurapati.
+  Copyright 2006 Suraj N. Kurapati.
 
-	Permission is granted to copy, distribute and/or modify this
-	document under the terms of the GNU Free Documentation License,
-	Version 1.1 or any later version published by the Free Software
-	Foundation; with no Invariant Sections, no Front-Cover Texts and
-	no Back-Cover Texts.  A copy of the license is included in the
-	the file named "LICENSE".
+  Permission is granted to copy, distribute and/or modify this
+  document under the terms of the GNU Free Documentation License,
+  Version 1.1 or any later version published by the Free Software
+  Foundation; with no Invariant Sections, no Front-Cover Texts and
+  no Back-Cover Texts.  A copy of the license is included in the
+  the file named "LICENSE".
 
-	Source code formatting rules:
-		 is a reserved keyword
-		<type> is structure, class, variable type, etc.
-		<varname> is a variable name
-		<function> is function or method name
-		<literal> is for strings, numbers, etc. anything literal
-		<constant> is a constant variable name
-		<remark> is a comment
+  Source code formatting rules:
+     is a reserved keyword
+    <type> is structure, class, variable type, etc.
+    <varname> is a variable name
+    <function> is function or method name
+    <literal> is for strings, numbers, etc. anything literal
+    <constant> is a constant variable name
+    <remark> is a comment
 -->
 
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd" [
-	<!-- imports -->
-	<!ENTITY % sharedDTD SYSTEM "shared.dtd"> %sharedDTD;
-	<!ENTITY license SYSTEM "license.xml">
+  <!-- imports -->
+  <!ENTITY % sharedDTD SYSTEM "shared.dtd"> %sharedDTD;
+  <!ENTITY license SYSTEM "license.xml">
 
 
-	<!-- content -->
-	<!ENTITY background.step3 "<para>When the Ruby interpreter invokes the <code><constant>Vpi</constant>::<function>relay_verilog</function></code> method, it is paused and the &v; simulator is given control.</para>">
+  <!-- content -->
+  <!ENTITY background.step3 "<para>When the Ruby interpreter invokes the <code><constant>Vpi</constant>::<function>relay_verilog</function></code> method, it is paused and the &v; simulator is given control.</para>">
 
-	<!ENTITY fixed-0.2 "<note>
-		<title>Fixed in &rv; 0.2</title>
-		<para>This problem was fixed in release 0.2 of &rv;. If it still occurs, then <link linkend='introduction.resources'>please report it</link>.</para>
-	</note>">
+  <!ENTITY fixed-0.2 "<note>
+    <title>Fixed in &rv; 0.2</title>
+    <para>This problem was fixed in release 0.2 of &rv;. If it still occurs, then <link linkend='introduction.resources'>please report it</link>.</para>
+  </note>">
 
-	<!ENTITY test-bench.gloss "<glossterm linkend='term..test-bench'>test bench</glossterm>">
-	<!ENTITY test.gloss "<glossterm linkend='term..test'>test</glossterm>">
-	<!ENTITY design.gloss "<glossterm linkend='term..design'>design</glossterm>">
-	<!ENTITY specification.gloss "<glossterm linkend='term..specification'>specification</glossterm>">
-	<!ENTITY bench.gloss "<glossterm linkend='term..bench'>bench</glossterm>">
-	<!ENTITY BDD.gloss "<glossterm linkend='term..BDD'>BDD</glossterm>">
-	<!ENTITY TDD.gloss "<glossterm linkend='term..TDD'>TDD</glossterm>">
-	<!ENTITY rspec.gloss "<glossterm linkend='term..rspec'>&rspec;</glossterm>">
-	<!ENTITY rake.gloss "<glossterm linkend='term..rake'>&rake;</glossterm>">
-	<!ENTITY handle.gloss "<glossterm linkend='term..handle'>handle</glossterm>">
+  <!ENTITY test-bench.gloss "<glossterm linkend='term..test-bench'>test bench</glossterm>">
+  <!ENTITY test.gloss "<glossterm linkend='term..test'>test</glossterm>">
+  <!ENTITY design.gloss "<glossterm linkend='term..design'>design</glossterm>">
+  <!ENTITY specification.gloss "<glossterm linkend='term..specification'>specification</glossterm>">
+  <!ENTITY bench.gloss "<glossterm linkend='term..bench'>bench</glossterm>">
+  <!ENTITY BDD.gloss "<glossterm linkend='term..BDD'>BDD</glossterm>">
+  <!ENTITY TDD.gloss "<glossterm linkend='term..TDD'>TDD</glossterm>">
+  <!ENTITY rspec.gloss "<glossterm linkend='term..rspec'>&rspec;</glossterm>">
+  <!ENTITY rake.gloss "<glossterm linkend='term..rake'>&rake;</glossterm>">
+  <!ENTITY handle.gloss "<glossterm linkend='term..handle'>handle</glossterm>">
 
-	<!ENTITY rake "Rake">
-	<!ENTITY rake.url "http://rake.rubyforge.org/">
-	<!ENTITY rake-doc.url "http://docs.rubyrake.org/">
+  <!ENTITY rake "Rake">
+  <!ENTITY rake.url "http://rake.rubyforge.org/">
+  <!ENTITY rake-doc.url "http://docs.rubyrake.org/">
 
-	<!ENTITY rspec "RSpec">
-	<!ENTITY rspec.url "http://rspec.rubyforge.org">
-	<!ENTITY rspec..ulink "<ulink url='&rspec.url;'>&rspec;</ulink>">
-	<!ENTITY rspec-tutorial.url "http://rspec.rubyforge.org/tutorials/index.html">
-	<!ENTITY rspec-tutorial..ulink "<ulink url='&rspec-tutorial.url;'>&rspec; tutorial</ulink>">
+  <!ENTITY rspec "RSpec">
+  <!ENTITY rspec.url "http://rspec.rubyforge.org">
+  <!ENTITY rspec..ulink "<ulink url='&rspec.url;'>&rspec;</ulink>">
+  <!ENTITY rspec-tutorial.url "http://rspec.rubyforge.org/tutorials/index.html">
+  <!ENTITY rspec-tutorial..ulink "<ulink url='&rspec-tutorial.url;'>&rspec; tutorial</ulink>">
 ]>
 <book lang="en">
-	<bookinfo>
-		<title>&rv; user manual</title>
+  <bookinfo>
+    <title>&rv; user manual</title>
 
-		&snk..copyright;
+    &snk..copyright;
 
-		<copyright>
-			<year>2005</year>
-			<year>2006</year>
-			<holder><ulink url="http://tango.freedesktop.org">Tango Desktop Project</ulink> <remark>for admonition and navigation graphics released under <ulink url="images/COPYING">this license</ulink>.</remark></holder>
-		</copyright>
+    <copyright>
+      <year>2005</year>
+      <year>2006</year>
+      <holder><ulink url="http://tango.freedesktop.org">Tango Desktop Project</ulink> <remark>for admonition and navigation graphics released under <ulink url="images/COPYING">this license</ulink>.</remark></holder>
+    </copyright>
 
-		<copyright>
-			<year>1999</year>
-			<year>2000</year>
-			<year>2001</year>
-			<holder>Norman Walsh <remark>for DocBook graphics released under <ulink url="images/copyright">this license</ulink>.</remark></holder>
-		</copyright>
+    <copyright>
+      <year>1999</year>
+      <year>2000</year>
+      <year>2001</year>
+      <holder>Norman Walsh <remark>for DocBook graphics released under <ulink url="images/copyright">this license</ulink>.</remark></holder>
+    </copyright>
 
-		<abstract>
-			<para>This manual explains how to use &rv;. You can find the newest version of this manual at the <ulink url="&rv.url;">&rv; website</ulink>.</para>
-		</abstract>
+    <abstract>
+      <para>This manual explains how to use &rv;. You can find the newest version of this manual at the <ulink url="&rv.url;">&rv; website</ulink>.</para>
+    </abstract>
 
-		<legalnotice>
-			<para>Permission is granted to copy, distribute and/or modify this document under the terms of the &gnu; Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A copy of the license is included in the section entitled "&gnu; Free Documentation License".</para>
-		</legalnotice>
-	</bookinfo>
+    <legalnotice>
+      <para>Permission is granted to copy, distribute and/or modify this document under the terms of the &gnu; Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A copy of the license is included in the section entitled "&gnu; Free Documentation License".</para>
+    </legalnotice>
+  </bookinfo>
 
-	<chapter id="introduction">
-		<title>Introduction</title>
-		<para>&rv; is a &ruby..ulink; interface to <ulink url="http://en.wikipedia.org/wiki/Verilog">&vpi;</ulink>. It lets you create complex &v; test benches easily and wholly in Ruby.</para>
+  <chapter id="introduction">
+    <title>Introduction</title>
+    <para>&rv; is a &ruby..ulink; interface to <ulink url="http://en.wikipedia.org/wiki/Verilog">&vpi;</ulink>. It lets you create complex &v; test benches easily and wholly in Ruby.</para>
 
-		<section id="introduction.license">
-			<title>License</title>
-			<para>&rv; is <ulink url="http://en.wikipedia.org/wiki/Free_software">free software</ulink>; you can redistribute it and/or modify it under the terms of the <ulink url="http://www.gnu.org/copyleft/gpl.html">&gnu; General Public License</ulink> as published by the <ulink url="http://www.fsf.org">Free Software Foundation</ulink>; either version 2 of the License, or (at your option) any later version.</para>
-		</section>
+    <section id="introduction.license">
+      <title>License</title>
+      <para>&rv; is <ulink url="http://en.wikipedia.org/wiki/Free_software">free software</ulink>; you can redistribute it and/or modify it under the terms of the <ulink url="http://www.gnu.org/copyleft/gpl.html">&gnu; General Public License</ulink> as published by the <ulink url="http://www.fsf.org">Free Software Foundation</ulink>; either version 2 of the License, or (at your option) any later version.</para>
+    </section>
 
-		<section id="introduction.manifest">
-			<title>Manifest</title>
+    <section id="introduction.manifest">
+      <title>Manifest</title>
 
-			<para>When you extract a &rv; release package, the following is what you would expect to find.</para>
+      <para>When you extract a &rv; release package, the following is what you would expect to find.</para>
 
-			<variablelist>
-				<varlistentry>
-					<term><filename>doc</filename></term>
-					<listitem>
-						<para>This directory contains user documentation in various formats.</para>
-					</listitem>
-				</varlistentry>
+      <variablelist>
+        <varlistentry>
+          <term><filename>doc</filename></term>
+          <listitem>
+            <para>This directory contains user documentation in various formats.</para>
+          </listitem>
+        </varlistentry>
 
-				<varlistentry>
-					<term><filename>ref</filename></term>
-					<listitem>
-						<para>This directory contains reference <acronym>API</acronym> documentation in &html; format.</para>
-					</listitem>
-				</varlistentry>
+        <varlistentry>
+          <term><filename>ref</filename></term>
+          <listitem>
+            <para>This directory contains reference <acronym>API</acronym> documentation in &html; format.</para>
+          </listitem>
+        </varlistentry>
 
-				<varlistentry>
-					<term><filename>src</filename></term>
-					<listitem>
-						<para>This directory contains source code, written in the C language, for the <link linkend="background.organization">core of &rv;</link>.</para>
-					</listitem>
-				</varlistentry>
+        <varlistentry>
+          <term><filename>src</filename></term>
+          <listitem>
+            <para>This directory contains source code, written in the C language, for the <link linkend="background.organization">core of &rv;</link>.</para>
+          </listitem>
+        </varlistentry>
 
-				<varlistentry>
-					<term><filename>lib</filename></term>
-					<listitem>
-						<para>This directory contains libraries, written in the Ruby language, for use by specifications.</para>
-					</listitem>
-				</varlistentry>
+        <varlistentry>
+          <term><filename>lib</filename></term>
+          <listitem>
+            <para>This directory contains libraries, written in the Ruby language, for use by specifications.</para>
+          </listitem>
+        </varlistentry>
 
-				<varlistentry>
-					<term><filename>tpl</filename></term>
-					<listitem>
-						<para>This directory contains templates used by tests.</para>
-					</listitem>
-				</varlistentry>
+        <varlistentry>
+          <term><filename>tpl</filename></term>
+          <listitem>
+            <para>This directory contains templates used by tests.</para>
+          </listitem>
+        </varlistentry>
 
-				<varlistentry>
-					<term><filename>bin</filename></term>
-					<listitem>
-						<para>This directory contains various tools. See <xref linkend="usage.tools"/> for more information.</para>
-					</listitem>
-				</varlistentry>
+        <varlistentry>
+          <term><filename>bin</filename></term>
+          <listitem>
+            <para>This directory contains various tools. See <xref linkend="usage.tools"/> for more information.</para>
+          </listitem>
+        </varlistentry>
 
-				<varlistentry>
-					<term><filename>samp</filename></term>
-					<listitem>
-						<para>This directory contains example tests. See <xref linkend="usage.examples"/> for more information.</para>
-					</listitem>
-				</varlistentry>
-			</variablelist>
-		</section>
+        <varlistentry>
+          <term><filename>samp</filename></term>
+          <listitem>
+            <para>This directory contains example tests. See <xref linkend="usage.examples"/> for more information.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
 
-		<section id="introduction.resources">
-			<title>Resources</title>
+    <section id="introduction.resources">
+      <title>Resources</title>
 
-			<variablelist>
-				<varlistentry>
-					<term><ulink url="&rv.url-project;">Project portal</ulink></term>
-					<listitem>
-						<para>Access project facilities, hosted generously by <ulink url="http://rubyforge.org">RubyForge</ulink>.</para>
-					</listitem>
-				</varlistentry>
+      <variablelist>
+        <varlistentry>
+          <term><ulink url="&rv.url-project;">Project portal</ulink></term>
+          <listitem>
+            <para>Access project facilities, hosted generously by <ulink url="http://rubyforge.org">RubyForge</ulink>.</para>
+          </listitem>
+        </varlistentry>
 
-				<varlistentry>
-					<term><ulink url="&rv.url-project;">Project tracker</ulink></term>
-					<listitem>
-						<para>Report problems, contribute patches, and more.</para>
-					</listitem>
-				</varlistentry>
+        <varlistentry>
+          <term><ulink url="&rv.url-project;">Project tracker</ulink></term>
+          <listitem>
+            <para>Report problems, contribute patches, and more.</para>
+          </listitem>
+        </varlistentry>
 
-				<varlistentry>
-					<term><ulink url="&rv.url-download;">File releases</ulink></term>
-					<listitem>
-						<para>Get the newest release package.</para>
-					</listitem>
-				</varlistentry>
+        <varlistentry>
+          <term><ulink url="&rv.url-download;">File releases</ulink></term>
+          <listitem>
+            <para>Get the newest release package.</para>
+          </listitem>
+        </varlistentry>
 
-				<varlistentry>
-					<term><ulink url="&rv.url-source;">Source repository</ulink></term>
-					<listitem>
-						<para>Get the newest source code.</para>
-					</listitem>
-				</varlistentry>
+        <varlistentry>
+          <term><ulink url="&rv.url-source;">Source repository</ulink></term>
+          <listitem>
+            <para>Get the newest source code.</para>
+          </listitem>
+        </varlistentry>
 
-				<varlistentry>
-					<term><ulink url="&rv.url-forum;">Online forums</ulink></term>
-					<listitem>
-						<para>Ask for help, give feedback, or discuss.</para>
-					</listitem>
-				</varlistentry>
-			</variablelist>
-		</section>
+        <varlistentry>
+          <term><ulink url="&rv.url-forum;">Online forums</ulink></term>
+          <listitem>
+            <para>Ask for help, give feedback, or discuss.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
 
-		<section id="introduction.related-works">
-			<title>Related works</title>
+    <section id="introduction.related-works">
+      <title>Related works</title>
 
-			<para>You may wish to consider the following projects, which are similar to &rv;.</para>
+      <para>You may wish to consider the following projects, which are similar to &rv;.</para>
 
-			<variablelist>
-				<varlistentry>
-					<term><ulink url="http://rhdl.rubyforge.org">RHDL</ulink></term>
-					<listitem>
-						<para>Hardware description and verification language based on Ruby.</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term><ulink url="http://myhdl.jandecaluwe.com">MyHDL</ulink></term>
-					<listitem>
-						<para>Hardware description and verification language based on Python, which features conversion to &v; and co-simulation.</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term><ulink url="http://jove.sourceforge.net">JOVE</ulink></term>
-					<listitem>
-						<para>Java interface to &vpi;.</para>
-					</listitem>
-				</varlistentry>
-				<varlistentry>
-					<term><ulink url="http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/">ScriptEDA</ulink></term>
-					<listitem>
-						<para>Perl, Python, and Tcl interface to &vpi;.</para>
-					</listitem>
-				</varlistentry>
-			</variablelist>
+      <variablelist>
+        <varlistentry>
+          <term><ulink url="http://rhdl.rubyforge.org">RHDL</ulink></term>
+          <listitem>
+            <para>Hardware description and verification language based on Ruby.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><ulink url="http://myhdl.jandecaluwe.com">MyHDL</ulink></term>
+          <listitem>
+            <para>Hardware description and verification language based on Python, which features conversion to &v; and co-simulation.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><ulink url="http://jove.sourceforge.net">JOVE</ulink></term>
+          <listitem>
+            <para>Java interface to &vpi;.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><ulink url="http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/">ScriptEDA</ulink></term>
+          <listitem>
+            <para>Perl, Python, and Tcl interface to &vpi;.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
 
-			<section id="introduction.related-works.pli">
-				<title>Ye olde PLI</title>
-				<para>The following projects utilize the archaic <acronym>tf</acronym> and <abbrev>acc</abbrev> PLI interfaces, which have been officially deprecated in IEEE Std 1364-2005.</para>
+      <section id="introduction.related-works.pli">
+        <title>Ye olde PLI</title>
+        <para>The following projects utilize the archaic <acronym>tf</acronym> and <abbrev>acc</abbrev> PLI interfaces, which have been officially deprecated in IEEE Std 1364-2005.</para>
 
-				<variablelist>
-					<varlistentry>
-						<term><ulink url="http://www.nelsim.com">ScriptSim</ulink></term>
-						<listitem>
-							<para>Perl, Python, and Tcl/Tk interface to PLI.</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term><ulink url="http://www.veripool.com/verilog-pli.html">&v;::Pli</ulink></term>
-						<listitem>
-							<para>Perl interface to PLI.</para>
-						</listitem>
-					</varlistentry>
-					<varlistentry>
-						<term><ulink url="http://www.time-rover.com/jpli/">JPLI</ulink></term>
-						<listitem>
-							<para>Java interface to PLI.</para>
-						</listitem>
-					</varlistentry>
-				</variablelist>
-			</section>
-		</section>
-	</chapter>
+        <variablelist>
+          <varlistentry>
+            <term><ulink url="http://www.nelsim.com">ScriptSim</ulink></term>
+            <listitem>
+              <para>Perl, Python, and Tcl/Tk interface to PLI.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><ulink url="http://www.veripool.com/verilog-pli.html">&v;::Pli</ulink></term>
+            <listitem>
+              <para>Perl interface to PLI.</para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><ulink url="http://www.time-rover.com/jpli/">JPLI</ulink></term>
+            <listitem>
+              <para>Java interface to PLI.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </section>
+    </section>
+  </chapter>
 
-	<chapter id="background">
-		<title>Background</title>
+  <chapter id="background">
+    <title>Background</title>
 
-		<para>&rv; is a &bench.gloss; which lets you &test.gloss; &v; modules using the Ruby language.</para>
+    <para>&rv; is a &bench.gloss; which lets you &test.gloss; &v; modules using the Ruby language.</para>
 
-		<section id="background.methodology">
-			<title>Methodology</title>
+    <section id="background.methodology">
+      <title>Methodology</title>
 
-			<para>&rv; presents an open-ended interface to &vpi;. Thus, you can use any methodology you wish when writing tests. However, &BDD.gloss; is emphasized in this project because it greatly simplifies thinking about <emphasis>how</emphasis> to verify a design.</para>
-		</section>
+      <para>&rv; presents an open-ended interface to &vpi;. Thus, you can use any methodology you wish when writing tests. However, &BDD.gloss; is emphasized in this project because it greatly simplifies thinking about <emphasis>how</emphasis> to verify a design.</para>
+    </section>
 
-		<section id="background.terminology">
-			<title>Terminology</title>
+    <section id="background.terminology">
+      <title>Terminology</title>
 
-			<tip>
-				<para>Have a look at the <xref linkend="glossary"/> for definitions of terms used in this manual.</para>
-			</tip>
+      <tip>
+        <para>Have a look at the <xref linkend="glossary"/> for definitions of terms used in this manual.</para>
+      </tip>
 
-			<para>As a newcomer into the world of &v;, I often heard the term <emphasis>test bench</emphasis>: <quote>I ran the test bench, but it didn't work!</quote> or <quote>Are you crazy?!! You <emphasis>still</emphasis> haven't written the test bench? o_O</quote>, for example. I flipped through my textbook and surfed the Internet for a definition of the term, but it was to no avail. Instead, both resources nonchalantly employed the term <emphasis>throughout</emphasis> their being, as if mocking my ignorance of what seems to be universal knowledge.</para>
+      <para>As a newcomer into the world of &v;, I often heard the term <emphasis>test bench</emphasis>: <quote>I ran the test bench, but it didn't work!</quote> or <quote>Are you crazy?!! You <emphasis>still</emphasis> haven't written the test bench? o_O</quote>, for example. I flipped through my textbook and surfed the Internet for a definition of the term, but it was to no avail. Instead, both resources nonchalantly employed the term <emphasis>throughout</emphasis> their being, as if mocking my ignorance of what seems to be universal knowledge.</para>
 
-			<para>Defeated, I turned to my inner faculties to determine the answer. <quote>Let's see, the term <emphasis>test bench</emphasis> has the word <emphasis>test</emphasis>&mdash;so it has something to do with testing&mdash;and it has the word <emphasis>bench</emphasis>&mdash;so maybe it's referring to a table where the testing should occur</quote>. This reasoning grew increasingly familiar as my mind rummaged through towering stores of obsolescence and ultimately revealed dreaded memories of sleepless anguish: debugging electronics in the robotics laboratory.</para>
+      <para>Defeated, I turned to my inner faculties to determine the answer. <quote>Let's see, the term <emphasis>test bench</emphasis> has the word <emphasis>test</emphasis>&mdash;so it has something to do with testing&mdash;and it has the word <emphasis>bench</emphasis>&mdash;so maybe it's referring to a table where the testing should occur</quote>. This reasoning grew increasingly familiar as my mind rummaged through towering stores of obsolescence and ultimately revealed dreaded memories of sleepless anguish: debugging electronics in the robotics laboratory.</para>
 
-			<para><quote>Aha!</quote>, I exclaimed hesitantly, trying to dismiss the past. The term has its roots in the testing of electronic devices, where an engineer would sit at a bench in an electronics laboratory and verify that an electronic component satisfies some criteria. The bench would be furnished with tools of measurement and manipulation&mdash;such as oscilloscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.</para>
+      <para><quote>Aha!</quote>, I exclaimed hesitantly, trying to dismiss the past. The term has its roots in the testing of electronic devices, where an engineer would sit at a bench in an electronics laboratory and verify that an electronic component satisfies some criteria. The bench would be furnished with tools of measurement and manipulation&mdash;such as oscilloscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.</para>
 
-			<para>Alright, now I remember what a laboratory bench is, but how does that compare with the term test bench? Surely they cannot have the same meaning, because it doesn't make sense to <emphasis>run</emphasis> a laboratory bench or to <emphasis>write</emphasis> one. Thus, to avoid propagating such confusion into this manual, I have attempted to clarify the terminology by <link linkend="glossary">simplifying and reintroducing it in a new light</link>.</para>
-		</section>
+      <para>Alright, now I remember what a laboratory bench is, but how does that compare with the term test bench? Surely they cannot have the same meaning, because it doesn't make sense to <emphasis>run</emphasis> a laboratory bench or to <emphasis>write</emphasis> one. Thus, to avoid propagating such confusion into this manual, I have attempted to clarify the terminology by <link linkend="glossary">simplifying and reintroducing it in a new light</link>.</para>
+    </section>
 
-		<section id="background.organization">
-			<title>Organization</title>
+    <section id="background.organization">
+      <title>Organization</title>
 
-			<figure id="fig..organization">
-				<title>Overall organization of a test</title>
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="figures/organization.png"/>
-					</imageobject>
-				</mediaobject>
-			</figure>
+      <figure id="fig..organization">
+        <title>Overall organization of a test</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="figures/organization.png"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
 
-			<para>As <xref linkend="fig..organization"/> shows, a test is composed of a bench, a design, and a specification. To extend the <link linkend="background.terminology">analogy of an electronics laboratory</link>, the first acts as the laboratory bench which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. And the third acts as the engineer who measures, manipulates, and verifies the electronic component.</para>
+      <para>As <xref linkend="fig..organization"/> shows, a test is composed of a bench, a design, and a specification. To extend the <link linkend="background.terminology">analogy of an electronics laboratory</link>, the first acts as the laboratory bench which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. And the third acts as the engineer who measures, manipulates, and verifies the electronic component.</para>
 
-			<section id="organization.vpi">
-				<title>Interface to &vpi;</title>
+      <section id="organization.vpi">
+        <title>Interface to &vpi;</title>
 
-				<figure id="fig..organization.detail">
-					<title>Detailed organization of a test</title>
-					<mediaobject>
-						<imageobject>
-							<imagedata fileref="figures/organization_detailed.png"/>
-						</imageobject>
-					</mediaobject>
-				</figure>
+        <figure id="fig..organization.detail">
+          <title>Detailed organization of a test</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figures/organization_detailed.png"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
 
-				<para>In <xref linkend="fig..organization.detail"/>, &rv; acts as the bench, a &v; simulator encapsulates the design, and a Ruby interpreter encapsulates the specification. Notice that &rv; encapsulates all communication between the Ruby interpreter and &vpi;. This allows the specification, or any Ruby program in general, to access &vpi; using nothing more than the Ruby language! Thus, &rv; removes the burden of having to write C programs in order to access &vpi;.</para>
+        <para>In <xref linkend="fig..organization.detail"/>, &rv; acts as the bench, a &v; simulator encapsulates the design, and a Ruby interpreter encapsulates the specification. Notice that &rv; encapsulates all communication between the Ruby interpreter and &vpi;. This allows the specification, or any Ruby program in general, to access &vpi; using nothing more than the Ruby language! Thus, &rv; removes the burden of having to write C programs in order to access &vpi;.</para>
 
-				<para>Furthermore, &rv; presents the <emphasis>entire</emphasis> IEEE Std 1364-2005 &vpi; interface to the Ruby interpreter, but with the following minor changes.
+        <para>Furthermore, &rv; presents the <emphasis>entire</emphasis> IEEE Std 1364-2005 &vpi; interface to the Ruby interpreter, but with the following minor changes.
 
-					<itemizedlist>
-						<listitem>
-							<para>The first letter in the name of every function, type, structure, and constant becomes capitalized.</para>
+          <itemizedlist>
+            <listitem>
+              <para>The first letter in the name of every function, type, structure, and constant becomes capitalized.</para>
 
-							<para>For example, the <type>s_vpi_value</type> structure in C becomes the <type>S_vpi_value</type> class in Ruby. Likewise, the <constant>vpiIntVal</constant> constant in C becomes the <constant>VpiIntVal</constant> constant in Ruby.</para>
-						</listitem>
+              <para>For example, the <type>s_vpi_value</type> structure in C becomes the <type>S_vpi_value</type> class in Ruby. Likewise, the <constant>vpiIntVal</constant> constant in C becomes the <constant>VpiIntVal</constant> constant in Ruby.</para>
+            </listitem>
 
-						<listitem>
-							<para>The &vpi; functions <function>vpi_vprintf</function> and <function>vpi_mcd_vprintf</function> are not made accessible to Ruby. However, this isn't a big problem because you can use Ruby's <function>printf</function> method instead.</para>
+            <listitem>
+              <para>The &vpi; functions <function>vpi_vprintf</function> and <function>vpi_mcd_vprintf</function> are not made accessible to Ruby. However, this isn't a big problem because you can use Ruby's <function>printf</function> method instead.</para>
 
-							<para>The reason for this limitation is that some C compilers have trouble with pointers to the <type>va_list</type> type. For these compilers, the second line in the code shown below causes a <quote>type mismatch</quote> error.</para>
+              <para>The reason for this limitation is that some C compilers have trouble with pointers to the <type>va_list</type> type. For these compilers, the second line in the code shown below causes a <quote>type mismatch</quote> error.</para>
 
-	<programlisting>
+  <programlisting>
 <type>void</type> <function>foo</function>(<parameter><type>va_list</type> <varname>ap</varname></parameter>) {
-	<type>va_list</type> *<varname>p</varname> = &amp;<varname>ap</varname>;
+  <type>va_list</type> *<varname>p</varname> = &amp;<varname>ap</varname>;
 }
 </programlisting>
-						</listitem>
-					</itemizedlist>
-				</para>
-
-				<section id="organization.vpi.util">
-					<title>&vpi; utility layer</title>
-					<para>From a user's perspective, the &vpi; utility layer greatly enhances the ability to interact with handles. One simply invokes a handle's methods, which are carefully named in the following manner, to access its &vpi; properties.</para>
-
-					<table id="table..handle-property-accessor-naming-format" frame='all'>
-						<title>Naming format for accessing a handle's &vpi; properties</title>
-						<tgroup cols='6'>
-							<colspec colname='c1'/>
-							<colspec colname='c2'/>
-							<colspec colname='c3'/>
-							<colspec colname='c4'/>
-							<colspec colname='c5'/>
-							<colspec colname='c6'/>
-							<thead>
-								<row>
-									<entry>Operation</entry>
-									<entry>_</entry>
-									<entry>Property</entry>
-									<entry>_</entry>
-									<entry>Accessor</entry>
-									<entry>Addendum</entry>
-								</row>
-							</thead>
-							<tbody>
-								<row>
-									<entry namest="c1" nameend="c2">optional</entry>
-									<entry>required</entry>
-									<entry namest="c4" nameend="c5">optional</entry>
-									<entry>optional</entry>
-								</row>
-							</tbody>
-						</tgroup>
-					</table>
-
-					<variablelist>
-						<varlistentry>
-							<term>Operation</term>
-							<listitem>
-								<para>This parameter suggests a method that should be invoked in the context of the Property parameter.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term>Property</term>
-							<listitem>
-								<para>This parameter suggests which &vpi; property should be accessed. The first letter of this parameter's value should be lower case, and the <emphasis>vpi</emphasis> prefix&mdash;common to all &vpi; properties&mdash;can be omitted.</para>
-
-								<para>For example, the &vpi; property <emphasis>vpiFullName</emphasis> is considered equivalent to <emphasis>fullName</emphasis> but not equivalent to either <emphasis>FullName</emphasis> or <emphasis>full_name</emphasis>.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term>Accessor</term>
-							<listitem>
-								<para>This parameter suggests which &vpi; function should be used to access the &vpi; property. When this parameter is not specified, the &vpi; utility layer will attempt to <emphasis>guess</emphasis> the value of this parameter (<ulink url="../../ref/ruby/classes/SWIG/TYPE_p_unsigned_int.html">see the source code</ulink> of the <code><constant>SWIG</constant>::<constant>TYPE_p_unsigned_int</constant>#<function>method_missing</function></code> method for details).</para>
-
-								<table frame='all'>
-									<title>Possible accessors and their implications</title>
-									<tgroup cols='0'>
-										<thead>
-											<row>
-												<entry>Accessor</entry>
-												<entry>Kind of value accessed</entry>
-												<entry>&vpi; functions used to access the value</entry>
-											</row>
-										</thead>
-										<tbody>
-											<row>
-												<entry>d</entry>
-												<entry>delay</entry>
-												<entry><function>vpi_get_delays</function>, <function>vpi_put_delays</function></entry>
-											</row>
-											<row>
-												<entry>l</entry>
-												<entry>logic</entry>
-												<entry><function>vpi_get_value</function>, <function>vpi_put_value</function></entry>
-											</row>
-											<row>
-												<entry>i</entry>
-												<entry>integer</entry>
-												<entry><function>vpi_get</function></entry>
-											</row>
-											<row>
-												<entry>b</entry>
-												<entry>boolean</entry>
-												<entry><function>vpi_get</function></entry>
-											</row>
-											<row>
-												<entry>s</entry>
-												<entry>string</entry>
-												<entry><function>vpi_get_str</function></entry>
-											</row>
-											<row>
-												<entry>h</entry>
-												<entry>handle</entry>
-												<entry><function>vpi_handle</function></entry>
-											</row>
-										</tbody>
-									</tgroup>
-								</table>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term>Addendum</term>
-							<listitem>
-								<para>When this parameter is a question mark (<emphasis>?</emphasis>), it suggests that the specified &vpi; property should be queried as a boolean value. This produces the same effect as specifying <emphasis>b</emphasis> for the Accessor parameter.</para>
-
-								<para>When this parameter is an equal sign (<emphasis>=</emphasis>), it suggests that the specified &vpi; property should be written to.</para>
-							</listitem>
-						</varlistentry>
-					</variablelist>
-
-					<example id="ex..handle-property-accessor-naming-format">
-						<title>Accessing a handle's &vpi; properties</title>
-
-						<informaltable frame='all'>
-							<tgroup cols='6'>
-								<colspec colname='c1'/>
-								<colspec colname='c2'/>
-								<colspec colname='c3'/>
-								<colspec colname='c4'/>
-								<colspec colname='c5'/>
-								<colspec colname='c6'/>
-								<colspec colname='c7'/>
-								<colspec colname='c8'/>
-								<thead>
-									<row>
-										<entry morerows="1">Ruby expression</entry>
-										<entry namest="c2" nameend="c7">Naming format</entry>
-										<entry morerows="1">Description</entry>
-									</row>
-									<row>
-										<entry namest="c2">Operation</entry>
-										<entry>_</entry>
-										<entry>Property</entry>
-										<entry>_</entry>
-										<entry>Accessor</entry>
-										<entry>Addendum</entry>
-									</row>
-								</thead>
-								<tbody>
-									<row>
-										<entry><code><varname>handle</varname>.<function>each_vpiNet</function> {|<varname>net</varname>| <function>puts</function> <varname>net</varname>.<function>fullName</function>}</code></entry>
-										<entry>each</entry>
-										<entry>_</entry>
-										<entry>vpiNet</entry>
-										<entry></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry morerows="1">These expressions print the full name of each <constant>vpiNet</constant> object associated with the handle.</entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>each_net</function> {|<varname>net</varname>| <function>puts</function> <varname>net</varname>.<function>fullName</function>}</code></entry>
-										<entry>each</entry>
-										<entry>_</entry>
-										<entry>net</entry>
-										<entry></entry>
-										<entry></entry>
-										<entry></entry>
-									</row>
-
-									<row>
-										<entry><code><varname>handle</varname>.<function>vpiIntVal</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>vpiIntVal</entry>
-										<entry></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry morerows="3">These expressions access the logic value of the handle's <constant>vpiIntVal</constant> property.</entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>vpiIntVal_l</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>vpiIntVal</entry>
-										<entry>_</entry>
-										<entry>l</entry>
-										<entry></entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>intVal</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>intVal</entry>
-										<entry></entry>
-										<entry></entry>
-										<entry></entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>intVal_l</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>intVal</entry>
-										<entry>_</entry>
-										<entry>l</entry>
-										<entry></entry>
-									</row>
-
-									<row>
-										<entry><code><varname>handle</varname>.<function>vpiIntVal</function> = <literal>15</literal></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>vpiIntVal</entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>=</entry>
-										<entry morerows="3">These expressions assign the number 15 to the logic value of the handle's <constant>vpiIntVal</constant> property.</entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>vpiIntVal_l</function> = <literal>15</literal></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>vpiIntVal</entry>
-										<entry>_</entry>
-										<entry>l</entry>
-										<entry>=</entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>intVal</function> = <literal>15</literal></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>intVal</entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>=</entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>intVal</function>_l = <literal>15</literal></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>intVal</entry>
-										<entry>_</entry>
-										<entry>l</entry>
-										<entry>=</entry>
-									</row>
-
-									<row>
-										<entry><code><varname>handle</varname>.<function>vpiType</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>vpiType</entry>
-										<entry></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry morerows="3">These expressions access the integer value of the handle's <constant>vpiType</constant> property.</entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>vpiType_i</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>vpiType</entry>
-										<entry>_</entry>
-										<entry>i</entry>
-										<entry></entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>type</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>type</entry>
-										<entry></entry>
-										<entry></entry>
-										<entry></entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>type_i</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>type</entry>
-										<entry>_</entry>
-										<entry>i</entry>
-										<entry></entry>
-									</row>
-
-									<row>
-										<entry><code><varname>handle</varname>.<function>vpiProtected</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>vpiProtected</entry>
-										<entry></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry morerows="5">These expressions access the boolean value of the handle's <constant>vpiProtected</constant> property.</entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>vpiProtected_b</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>vpiProtected</entry>
-										<entry>_</entry>
-										<entry>b</entry>
-										<entry></entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>vpiProtected?</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>vpiProtected</entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>?</entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>protected</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>protected</entry>
-										<entry></entry>
-										<entry></entry>
-										<entry></entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>protected_b</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>protected</entry>
-										<entry>_</entry>
-										<entry>b</entry>
-										<entry></entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>protected?</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>protected</entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>?</entry>
-									</row>
-
-									<row>
-										<entry><code><varname>handle</varname>.<function>vpiFullName</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>vpiFullName</entry>
-										<entry></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry morerows="3">These expressions access the string value of the handle's <constant>vpiFullName</constant> property.</entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>vpiFullName_s</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>vpiFullName</entry>
-										<entry>_</entry>
-										<entry>s</entry>
-										<entry></entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>fullName</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>fullName</entry>
-										<entry></entry>
-										<entry></entry>
-										<entry></entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>fullName_s</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>fullName</entry>
-										<entry>_</entry>
-										<entry>s</entry>
-										<entry></entry>
-									</row>
-
-									<row>
-										<entry><code><varname>handle</varname>.<function>vpiParent</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>vpiParent</entry>
-										<entry></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry morerows="3">These expressions access the handle value of the handle's <constant>vpiParent</constant> property.</entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>vpiParent_h</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>vpiParent</entry>
-										<entry>_</entry>
-										<entry>h</entry>
-										<entry></entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>parent</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>parent</entry>
-										<entry></entry>
-										<entry></entry>
-										<entry></entry>
-									</row>
-									<row>
-										<entry><code><varname>handle</varname>.<function>parent_h</function></code></entry>
-										<entry></entry>
-										<entry></entry>
-										<entry>parent</entry>
-										<entry>_</entry>
-										<entry>h</entry>
-										<entry></entry>
-									</row>
-
-								</tbody>
-							</tgroup>
-						</informaltable>
-					</example>
-				</section>
-			</section>
-		</section>
-
-		<section id="background.running-tests">
-			<title>Running a test</title>
-
-			<para>Unlike an engineer who can verify an electronic component in real-time, the &v; simulator and the Ruby interpreter (see <xref linkend="fig..organization.detail"/>) take turns working with objects in a simulation when a test is run. In particular, they take turns manipulating the design and transfer control to each other when appropriate.</para>
-
-			<para>The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Either is able to inspect and modify the ball, but only when it is in hand.</para>
-
-			<section id="background.running-tests.init">
-				<title>Initialization</title>
-
-				<para>A test is first initialized before it is <link linkend="background.running-tests.exec">executed</link>. <xref linkend="fig..ruby_init"/> illustrates the initialization process <link linkend="proc..ruby_init">described below</link>.</para>
-
-				<figure id="fig..ruby_init">
-					<title>Initialization of a test</title>
-					<mediaobject>
-						<imageobject>
-							<imagedata fileref="figures/ruby_init.png"/>
-						</imageobject>
-					</mediaobject>
-				</figure>
-
-				<procedure id="proc..ruby_init">
-					<title>Initialization of a test</title>
-
-					<step>
-						<para>The &v; simulator initializes the Ruby interpreter by invoking the <code><function>$ruby_init</function>();</code> system task/function, whose parameters represent the command-line invocation of the Ruby interpreter. For example, one would specify <code><function>$ruby_init</function>(<parameter><literal>"ruby"</literal></parameter>, <parameter><literal>"-w"</literal></parameter>);</code> in &v; to achieve the same effect as specifying <command>ruby <option>-w</option></command> at a command-prompt.</para>
-					</step>
-
-					<step>
-						<para>The &v; simulator is paused and the Ruby interpreter is initialized with the arguments of the <code><function>$ruby_init</function>();</code> system task/function.</para>
-					</step>
-
-					<step>&background.step3;</step>
-				</procedure>
-			</section>
-
-			<section id="background.running-tests.exec">
-				<title>Execution</title>
-
-				<para>After a test is <link linkend="background.running-tests.init">initialized</link>, it is executed such that the design is verified against the specification. <xref linkend="fig..ruby_relay"/> illustrates the execution process <link linkend="proc..ruby_relay">described below</link>.</para>
-
-				<figure id="fig..ruby_relay">
-					<title>Execution of a test</title>
-					<mediaobject>
-						<imageobject>
-							<imagedata fileref="figures/ruby_relay.png"/>
-						</imageobject>
-					</mediaobject>
-				</figure>
-
-				<procedure id="proc..ruby_relay">
-					<title>Execution of a test</title>
-
-					<step>
-						<para>The &v; simulator transfers control to the Ruby interpreter by invoking the <code><function>$ruby_relay</function>();</code> system task/function.</para>
-					</step>
-
-					<step>
-						<para>The &v; simulator is paused and the Ruby interpreter is given control.</para>
-					</step>
-
-					<step>&background.step3;</step>
-				</procedure>
-			</section>
-		</section>
-	</chapter>
-
-	<chapter id="usage">
-		<title>Usage</title>
-
-		<section id="usage.requirements">
-			<title>Requirements</title>
-			<para>The following software is necessary in order to use &rv;. Once you have obtained them, proceed to <xref linkend="usage.requirements.install"/>.</para>
-
-			<variablelist>
-				<varlistentry>
-					<term>&v; simulator</term>
-					<listitem>
-						<para>&rv; is known to work with the following simulators. Nevertheless, you should be able to use it with any &v; simulator that supports &vpi;.</para>
-
-						<variablelist>
-							<varlistentry>
-								<term><ulink url="http://www.icarus.com/eda/&v;/">Icarus &v;</ulink></term>
-								<listitem>
-									<para>Version 0.8 or newer is acceptable.</para>
-								</listitem>
-							</varlistentry>
-
-							<varlistentry>
-								<term><ulink url="http://www.pragmatic-c.com/gpl-cVer/">GPL CVer</ulink></term>
-								<listitem>
-									<para>Version 2.11a is not yet acceptable.</para>
-								</listitem>
-							</varlistentry>
-
-							<varlistentry>
-								<term><ulink url="http://www.synopsys.com/products/simulation/simulation.html">Synopsys VCS</ulink></term>
-								<listitem>
-									<para>Version X-2005.06 or newer is acceptable.</para>
-								</listitem>
-							</varlistentry>
-
-							<varlistentry>
-								<term><ulink url="http://www.model.com">Mentor Modelsim</ulink></term>
-								<listitem>
-									<para>Version 6.1b or newer is acceptable.</para>
-								</listitem>
-							</varlistentry>
-						</variablelist>
-					</listitem>
-				</varlistentry>
-
-				<varlistentry>
-					<term><command>make</command></term>
-					<listitem>
-						<para><ulink url="http://www.gnu.org/software/make/">&gnu; make</ulink> is preferred but any distribution of <command>make</command> should be acceptable.</para>
-					</listitem>
-				</varlistentry>
-
-				<varlistentry>
-					<term>C compiler</term>
-					<listitem>
-						<para><ulink url="http://www.gnu.org/software/gcc/">&gnu; Compiler Collection (<acronym>GCC</acronym>)</ulink> is preferred but any C compiler should be acceptable.</para>
-					</listitem>
-				</varlistentry>
-
-				<varlistentry>
-					<term><ulink url="http://en.wikipedia.org/wiki/Pthreads"><acronym>POSIX</acronym> threads (pthreads)</ulink></term>
-					<listitem>
-						<para>Header and linkable object files, and operating system support for this library are necessary.</para>
-					</listitem>
-				</varlistentry>
-
-				<varlistentry>
-					<term><ulink url="http://www.ruby-lang.org">Ruby</ulink></term>
-					<listitem>
-						<para>Version 1.8 or newer, including header and linkable object files for building extensions, is necessary.</para>
-					</listitem>
-				</varlistentry>
-
-				<varlistentry>
-					<term><ulink url="http://rubyforge.org/frs/?group_id=126">RubyGems</ulink></term>
-					<listitem>
-						<para>Any recent version should be acceptable.</para>
-					</listitem>
-				</varlistentry>
-
-				<varlistentry>
-					<term><ulink url="http://rubyforge.org/frs/?group_id=50">&rake;</ulink></term>
-					<listitem>
-						<para>Version 0.7.0 or newer is necessary.</para>
-					</listitem>
-				</varlistentry>
-
-				<varlistentry>
-					<term><ulink url="http://rubyforge.org/frs/?group_id=797">&rspec;</ulink></term>
-					<listitem>
-						<para>Version 0.5.4 or newer is necessary.</para>
-					</listitem>
-				</varlistentry>
-			</variablelist>
-
-			<procedure id="usage.requirements.install">
-				<title>Installing the required software</title>
-
-				<step><para>Install Ruby.</para></step>
-				<step><para>Install RubyGems.</para></step>
-				<step><para>Install <application>Rake</application> and <application>RSpec</application> by running the command <command>gem <action>install</action> <option>--remote</option> <replaceable>rake</replaceable> <replaceable>rspec</replaceable></command>.</para></step>
-				<step><para>Ensure that you can build &rv; by running the command <command>rake <action>build</action> <action>clean</action></command> inside the directory in which you extracted the release package.</para></step>
-			</procedure>
-		</section>
-
-		<section id="usage.tools">
-			<title>Tools</title>
-			<para>The <filename>tools</filename> directory contains tools which ease the process of writing tests. Each tool provides help and usage information invoked with the <option>--help</option> option.</para>
-
-			<section id="usage.tools.generate-test">
-				<title>Automated test generation</title>
-
-				<para>The <filename>bin/generate_test.rb</filename> tool can be used to automatically generate tests from &v; 2001 module declarations. You can try it by running the command <command>ruby <replaceable>bin/generate_test.rb</replaceable> <option>--help</option></command>.</para>
-			</section>
-		</section>
-
-		<section id="usage.examples">
-			<title>Examples</title>
-			<para>The <filename>samp</filename> directory contains several example tests which illustrate how &rv; can be used. Each example has an associated <filename>Rakefile</filename> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the command <command>rake</command> to get started.</para>
-
-			<para>Also, some example specifications make use of BDD through the <application>RSpec</application> library. See the <xref linkend="background.methodology"/> for a discussion of <application>RSpec</application>.</para>
-		</section>
-
-		<section id="usage.tutorial">
-			<title>Tutorial</title>
-
-			<procedure>
-				<title>Typical way of using &rv;</title>
-
-				<step>
-					<para><link linkend="usage.tutorial.declare-design">Declare the design</link>, which is a &v; module, using &v; 2001 syntax.</para>
-				</step>
-
-				<step>
-					<para><link linkend="usage.tutorial.generate-test">Generate a test</link> for the design using the <link linkend="usage.tools.generate-test">automated test generator</link> tool.</para>
-				</step>
-
-				<step>
-					<para><link linkend="usage.tutorial.specification">Identify your expectations</link> for the design and implement them in the specification.</para>
-				</step>
-
-				<step>
-					<para><link linkend="usage.tutorial.implement-proto">Implement the prototype</link> of the design in &ruby;.</para>
-				</step>
-
-				<step>
-					<para><link linkend="usage.tutorial.test-proto">Verify the prototype</link> against the specification.</para>
-				</step>
-
-				<step>
-					<para><link linkend="usage.tutorial.implement-design">Implement the design</link> in &v; once the prototype has been verified.</para>
-				</step>
-
-				<step>
-					<para><link linkend="usage.tutorial.test-design">Verify the design</link> against the specification.</para>
-				</step>
-			</procedure>
-
-			<section id="usage.tutorial.declare-design">
-				<title>Start with a design</title>
-
-				<para>First, we need a design to verify. In this tutorial, <xref linkend="fig..counter.v_decl"/> will serve as our design. Its interface is composed of the following parts:
-					<variablelist>
-						<varlistentry>
-							<term><constant>Size</constant></term>
-							<listitem><para>This parameter defines the number of bits used to represent the counter's value.</para></listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><varname>clock</varname></term>
-							<listitem><para>Each positive edge of this signal causes the <varname>count</varname> register to increment.</para></listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><varname>reset</varname></term>
-							<listitem><para>Assertion of this signal causes the <varname>count</varname> register to become zero.</para></listitem>
-						</varlistentry>
-						<varlistentry>
-							<term><varname>count</varname></term>
-							<listitem><para>This register contains the counter's value.</para></listitem>
-						</varlistentry>
-					</variablelist>
-				</para>
-
-				<important>
-					<title>Before we continue&hellip;</title>
-					<para>Save the source code shown in <xref linkend="fig..counter.v_decl"/> into a file named <filename>counter.v</filename>.</para>
-				</important>
-
-				<figure id="fig..counter.v_decl">
-					<title>Declaration of a simple up-counter with synchronous reset</title>
+            </listitem>
+          </itemizedlist>
+        </para>
+
+        <section id="organization.vpi.util">
+          <title>&vpi; utility layer</title>
+          <para>From a user's perspective, the &vpi; utility layer greatly enhances the ability to interact with handles. One simply invokes a handle's methods, which are carefully named in the following manner, to access its &vpi; properties.</para>
+
+          <table id="table..handle-property-accessor-naming-format" frame='all'>
+            <title>Naming format for accessing a handle's &vpi; properties</title>
+            <tgroup cols='6'>
+              <colspec colname='c1'/>
+              <colspec colname='c2'/>
+              <colspec colname='c3'/>
+              <colspec colname='c4'/>
+              <colspec colname='c5'/>
+              <colspec colname='c6'/>
+              <thead>
+                <row>
+                  <entry>Operation</entry>
+                  <entry>_</entry>
+                  <entry>Property</entry>
+                  <entry>_</entry>
+                  <entry>Accessor</entry>
+                  <entry>Addendum</entry>
+                </row>
+              </thead>
+              <tbody>
+                <row>
+                  <entry namest="c1" nameend="c2">optional</entry>
+                  <entry>required</entry>
+                  <entry namest="c4" nameend="c5">optional</entry>
+                  <entry>optional</entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
+
+          <variablelist>
+            <varlistentry>
+              <term>Operation</term>
+              <listitem>
+                <para>This parameter suggests a method that should be invoked in the context of the Property parameter.</para>
+              </listitem>
+            </varlistentry>
+            <varlistentry>
+              <term>Property</term>
+              <listitem>
+                <para>This parameter suggests which &vpi; property should be accessed. The first letter of this parameter's value should be lower case, and the <emphasis>vpi</emphasis> prefix&mdash;common to all &vpi; properties&mdash;can be omitted.</para>
+
+                <para>For example, the &vpi; property <emphasis>vpiFullName</emphasis> is considered equivalent to <emphasis>fullName</emphasis> but not equivalent to either <emphasis>FullName</emphasis> or <emphasis>full_name</emphasis>.</para>
+              </listitem>
+            </varlistentry>
+            <varlistentry>
+              <term>Accessor</term>
+              <listitem>
+                <para>This parameter suggests which &vpi; function should be used to access the &vpi; property. When this parameter is not specified, the &vpi; utility layer will attempt to <emphasis>guess</emphasis> the value of this parameter (<ulink url="../../ref/ruby/classes/SWIG/TYPE_p_unsigned_int.html">see the source code</ulink> of the <code><constant>SWIG</constant>::<constant>TYPE_p_unsigned_int</constant>#<function>method_missing</function></code> method for details).</para>
+
+                <table frame='all'>
+                  <title>Possible accessors and their implications</title>
+                  <tgroup cols='0'>
+                    <thead>
+                      <row>
+                        <entry>Accessor</entry>
+                        <entry>Kind of value accessed</entry>
+                        <entry>&vpi; functions used to access the value</entry>
+                      </row>
+                    </thead>
+                    <tbody>
+                      <row>
+                        <entry>d</entry>
+                        <entry>delay</entry>
+                        <entry><function>vpi_get_delays</function>, <function>vpi_put_delays</function></entry>
+                      </row>
+                      <row>
+                        <entry>l</entry>
+                        <entry>logic</entry>
+                        <entry><function>vpi_get_value</function>, <function>vpi_put_value</function></entry>
+                      </row>
+                      <row>
+                        <entry>i</entry>
+                        <entry>integer</entry>
+                        <entry><function>vpi_get</function></entry>
+                      </row>
+                      <row>
+                        <entry>b</entry>
+                        <entry>boolean</entry>
+                        <entry><function>vpi_get</function></entry>
+                      </row>
+                      <row>
+                        <entry>s</entry>
+                        <entry>string</entry>
+                        <entry><function>vpi_get_str</function></entry>
+                      </row>
+                      <row>
+                        <entry>h</entry>
+                        <entry>handle</entry>
+                        <entry><function>vpi_handle</function></entry>
+                      </row>
+                    </tbody>
+                  </tgroup>
+                </table>
+              </listitem>
+            </varlistentry>
+            <varlistentry>
+              <term>Addendum</term>
+              <listitem>
+                <para>When this parameter is a question mark (<emphasis>?</emphasis>), it suggests that the specified &vpi; property should be queried as a boolean value. This produces the same effect as specifying <emphasis>b</emphasis> for the Accessor parameter.</para>
+
+                <para>When this parameter is an equal sign (<emphasis>=</emphasis>), it suggests that the specified &vpi; property should be written to.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+
+          <example id="ex..handle-property-accessor-naming-format">
+            <title>Accessing a handle's &vpi; properties</title>
+
+            <informaltable frame='all'>
+              <tgroup cols='6'>
+                <colspec colname='c1'/>
+                <colspec colname='c2'/>
+                <colspec colname='c3'/>
+                <colspec colname='c4'/>
+                <colspec colname='c5'/>
+                <colspec colname='c6'/>
+                <colspec colname='c7'/>
+                <colspec colname='c8'/>
+                <thead>
+                  <row>
+                    <entry morerows="1">Ruby expression</entry>
+                    <entry namest="c2" nameend="c7">Naming format</entry>
+                    <entry morerows="1">Description</entry>
+                  </row>
+                  <row>
+                    <entry namest="c2">Operation</entry>
+                    <entry>_</entry>
+                    <entry>Property</entry>
+                    <entry>_</entry>
+                    <entry>Accessor</entry>
+                    <entry>Addendum</entry>
+                  </row>
+                </thead>
+                <tbody>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>each_vpiNet</function> {|<varname>net</varname>| <function>puts</function> <varname>net</varname>.<function>fullName</function>}</code></entry>
+                    <entry>each</entry>
+                    <entry>_</entry>
+                    <entry>vpiNet</entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry morerows="1">These expressions print the full name of each <constant>vpiNet</constant> object associated with the handle.</entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>each_net</function> {|<varname>net</varname>| <function>puts</function> <varname>net</varname>.<function>fullName</function>}</code></entry>
+                    <entry>each</entry>
+                    <entry>_</entry>
+                    <entry>net</entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry></entry>
+                  </row>
+
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>vpiIntVal</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>vpiIntVal</entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry morerows="3">These expressions access the logic value of the handle's <constant>vpiIntVal</constant> property.</entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>vpiIntVal_l</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>vpiIntVal</entry>
+                    <entry>_</entry>
+                    <entry>l</entry>
+                    <entry></entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>intVal</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>intVal</entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry></entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>intVal_l</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>intVal</entry>
+                    <entry>_</entry>
+                    <entry>l</entry>
+                    <entry></entry>
+                  </row>
+
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>vpiIntVal</function> = <literal>15</literal></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>vpiIntVal</entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>=</entry>
+                    <entry morerows="3">These expressions assign the number 15 to the logic value of the handle's <constant>vpiIntVal</constant> property.</entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>vpiIntVal_l</function> = <literal>15</literal></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>vpiIntVal</entry>
+                    <entry>_</entry>
+                    <entry>l</entry>
+                    <entry>=</entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>intVal</function> = <literal>15</literal></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>intVal</entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>=</entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>intVal</function>_l = <literal>15</literal></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>intVal</entry>
+                    <entry>_</entry>
+                    <entry>l</entry>
+                    <entry>=</entry>
+                  </row>
+
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>vpiType</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>vpiType</entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry morerows="3">These expressions access the integer value of the handle's <constant>vpiType</constant> property.</entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>vpiType_i</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>vpiType</entry>
+                    <entry>_</entry>
+                    <entry>i</entry>
+                    <entry></entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>type</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>type</entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry></entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>type_i</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>type</entry>
+                    <entry>_</entry>
+                    <entry>i</entry>
+                    <entry></entry>
+                  </row>
+
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>vpiProtected</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>vpiProtected</entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry morerows="5">These expressions access the boolean value of the handle's <constant>vpiProtected</constant> property.</entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>vpiProtected_b</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>vpiProtected</entry>
+                    <entry>_</entry>
+                    <entry>b</entry>
+                    <entry></entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>vpiProtected?</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>vpiProtected</entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>?</entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>protected</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>protected</entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry></entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>protected_b</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>protected</entry>
+                    <entry>_</entry>
+                    <entry>b</entry>
+                    <entry></entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>protected?</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>protected</entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>?</entry>
+                  </row>
+
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>vpiFullName</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>vpiFullName</entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry morerows="3">These expressions access the string value of the handle's <constant>vpiFullName</constant> property.</entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>vpiFullName_s</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>vpiFullName</entry>
+                    <entry>_</entry>
+                    <entry>s</entry>
+                    <entry></entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>fullName</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>fullName</entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry></entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>fullName_s</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>fullName</entry>
+                    <entry>_</entry>
+                    <entry>s</entry>
+                    <entry></entry>
+                  </row>
+
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>vpiParent</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>vpiParent</entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry morerows="3">These expressions access the handle value of the handle's <constant>vpiParent</constant> property.</entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>vpiParent_h</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>vpiParent</entry>
+                    <entry>_</entry>
+                    <entry>h</entry>
+                    <entry></entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>parent</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>parent</entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry></entry>
+                  </row>
+                  <row>
+                    <entry><code><varname>handle</varname>.<function>parent_h</function></code></entry>
+                    <entry></entry>
+                    <entry></entry>
+                    <entry>parent</entry>
+                    <entry>_</entry>
+                    <entry>h</entry>
+                    <entry></entry>
+                  </row>
+
+                </tbody>
+              </tgroup>
+            </informaltable>
+          </example>
+        </section>
+      </section>
+    </section>
+
+    <section id="background.running-tests">
+      <title>Running a test</title>
+
+      <para>Unlike an engineer who can verify an electronic component in real-time, the &v; simulator and the Ruby interpreter (see <xref linkend="fig..organization.detail"/>) take turns working with objects in a simulation when a test is run. In particular, they take turns manipulating the design and transfer control to each other when appropriate.</para>
+
+      <para>The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Either is able to inspect and modify the ball, but only when it is in hand.</para>
+
+      <section id="background.running-tests.init">
+        <title>Initialization</title>
+
+        <para>A test is first initialized before it is <link linkend="background.running-tests.exec">executed</link>. <xref linkend="fig..ruby_init"/> illustrates the initialization process <link linkend="proc..ruby_init">described below</link>.</para>
+
+        <figure id="fig..ruby_init">
+          <title>Initialization of a test</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figures/ruby_init.png"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <procedure id="proc..ruby_init">
+          <title>Initialization of a test</title>
+
+          <step>
+            <para>The &v; simulator initializes the Ruby interpreter by invoking the <code><function>$ruby_init</function>();</code> system task/function, whose parameters represent the command-line invocation of the Ruby interpreter. For example, one would specify <code><function>$ruby_init</function>(<parameter><literal>"ruby"</literal></parameter>, <parameter><literal>"-w"</literal></parameter>);</code> in &v; to achieve the same effect as specifying <command>ruby <option>-w</option></command> at a command-prompt.</para>
+          </step>
+
+          <step>
+            <para>The &v; simulator is paused and the Ruby interpreter is initialized with the arguments of the <code><function>$ruby_init</function>();</code> system task/function.</para>
+          </step>
+
+          <step>&background.step3;</step>
+        </procedure>
+      </section>
+
+      <section id="background.running-tests.exec">
+        <title>Execution</title>
+
+        <para>After a test is <link linkend="background.running-tests.init">initialized</link>, it is executed such that the design is verified against the specification. <xref linkend="fig..ruby_relay"/> illustrates the execution process <link linkend="proc..ruby_relay">described below</link>.</para>
+
+        <figure id="fig..ruby_relay">
+          <title>Execution of a test</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figures/ruby_relay.png"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <procedure id="proc..ruby_relay">
+          <title>Execution of a test</title>
+
+          <step>
+            <para>The &v; simulator transfers control to the Ruby interpreter by invoking the <code><function>$ruby_relay</function>();</code> system task/function.</para>
+          </step>
+
+          <step>
+            <para>The &v; simulator is paused and the Ruby interpreter is given control.</para>
+          </step>
+
+          <step>&background.step3;</step>
+        </procedure>
+      </section>
+    </section>
+  </chapter>
+
+  <chapter id="usage">
+    <title>Usage</title>
+
+    <section id="usage.requirements">
+      <title>Requirements</title>
+      <para>The following software is necessary in order to use &rv;. Once you have obtained them, proceed to <xref linkend="usage.requirements.install"/>.</para>
+
+      <variablelist>
+        <varlistentry>
+          <term>&v; simulator</term>
+          <listitem>
+            <para>&rv; is known to work with the following simulators. Nevertheless, you should be able to use it with any &v; simulator that supports &vpi;.</para>
+
+            <variablelist>
+              <varlistentry>
+                <term><ulink url="http://www.icarus.com/eda/&v;/">Icarus &v;</ulink></term>
+                <listitem>
+                  <para>Version 0.8 or newer is acceptable.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term><ulink url="http://www.pragmatic-c.com/gpl-cVer/">GPL CVer</ulink></term>
+                <listitem>
+                  <para>Version 2.11a is not yet acceptable.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term><ulink url="http://www.synopsys.com/products/simulation/simulation.html">Synopsys VCS</ulink></term>
+                <listitem>
+                  <para>Version X-2005.06 or newer is acceptable.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term><ulink url="http://www.model.com">Mentor Modelsim</ulink></term>
+                <listitem>
+                  <para>Version 6.1b or newer is acceptable.</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><command>make</command></term>
+          <listitem>
+            <para><ulink url="http://www.gnu.org/software/make/">&gnu; make</ulink> is preferred but any distribution of <command>make</command> should be acceptable.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>C compiler</term>
+          <listitem>
+            <para><ulink url="http://www.gnu.org/software/gcc/">&gnu; Compiler Collection (<acronym>GCC</acronym>)</ulink> is preferred but any C compiler should be acceptable.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><ulink url="http://en.wikipedia.org/wiki/Pthreads"><acronym>POSIX</acronym> threads (pthreads)</ulink></term>
+          <listitem>
+            <para>Header and linkable object files, and operating system support for this library are necessary.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><ulink url="http://www.ruby-lang.org">Ruby</ulink></term>
+          <listitem>
+            <para>Version 1.8 or newer, including header and linkable object files for building extensions, is necessary.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><ulink url="http://rubyforge.org/frs/?group_id=126">RubyGems</ulink></term>
+          <listitem>
+            <para>Any recent version should be acceptable.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><ulink url="http://rubyforge.org/frs/?group_id=50">&rake;</ulink></term>
+          <listitem>
+            <para>Version 0.7.0 or newer is necessary.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><ulink url="http://rubyforge.org/frs/?group_id=797">&rspec;</ulink></term>
+          <listitem>
+            <para>Version 0.5.4 or newer is necessary.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+
+      <procedure id="usage.requirements.install">
+        <title>Installing the required software</title>
+
+        <step><para>Install Ruby.</para></step>
+        <step><para>Install RubyGems.</para></step>
+        <step><para>Install <application>Rake</application> and <application>RSpec</application> by running the command <command>gem <action>install</action> <option>--remote</option> <replaceable>rake</replaceable> <replaceable>rspec</replaceable></command>.</para></step>
+        <step><para>Ensure that you can build &rv; by running the command <command>rake <action>build</action> <action>clean</action></command> inside the directory in which you extracted the release package.</para></step>
+      </procedure>
+    </section>
+
+    <section id="usage.tools">
+      <title>Tools</title>
+      <para>The <filename>tools</filename> directory contains tools which ease the process of writing tests. Each tool provides help and usage information invoked with the <option>--help</option> option.</para>
+
+      <section id="usage.tools.generate-test">
+        <title>Automated test generation</title>
+
+        <para>The <filename>bin/generate_test.rb</filename> tool can be used to automatically generate tests from &v; 2001 module declarations. You can try it by running the command <command>ruby <replaceable>bin/generate_test.rb</replaceable> <option>--help</option></command>.</para>
+      </section>
+    </section>
+
+    <section id="usage.examples">
+      <title>Examples</title>
+      <para>The <filename>samp</filename> directory contains several example tests which illustrate how &rv; can be used. Each example has an associated <filename>Rakefile</filename> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the command <command>rake</command> to get started.</para>
+
+      <para>Also, some example specifications make use of BDD through the <application>RSpec</application> library. See the <xref linkend="background.methodology"/> for a discussion of <application>RSpec</application>.</para>
+    </section>
+
+    <section id="usage.tutorial">
+      <title>Tutorial</title>
+
+      <procedure>
+        <title>Typical way of using &rv;</title>
+
+        <step>
+          <para><link linkend="usage.tutorial.declare-design">Declare the design</link>, which is a &v; module, using &v; 2001 syntax.</para>
+        </step>
+
+        <step>
+          <para><link linkend="usage.tutorial.generate-test">Generate a test</link> for the design using the <link linkend="usage.tools.generate-test">automated test generator</link> tool.</para>
+        </step>
+
+        <step>
+          <para><link linkend="usage.tutorial.specification">Identify your expectations</link> for the design and implement them in the specification.</para>
+        </step>
+
+        <step>
+          <para><link linkend="usage.tutorial.implement-proto">Implement the prototype</link> of the design in &ruby;.</para>
+        </step>
+
+        <step>
+          <para><link linkend="usage.tutorial.test-proto">Verify the prototype</link> against the specification.</para>
+        </step>
+
+        <step>
+          <para><link linkend="usage.tutorial.implement-design">Implement the design</link> in &v; once the prototype has been verified.</para>
+        </step>
+
+        <step>
+          <para><link linkend="usage.tutorial.test-design">Verify the design</link> against the specification.</para>
+        </step>
+      </procedure>
+
+      <section id="usage.tutorial.declare-design">
+        <title>Start with a design</title>
+
+        <para>First, we need a design to verify. In this tutorial, <xref linkend="fig..counter.v_decl"/> will serve as our design. Its interface is composed of the following parts:
+          <variablelist>
+            <varlistentry>
+              <term><constant>Size</constant></term>
+              <listitem><para>This parameter defines the number of bits used to represent the counter's value.</para></listitem>
+            </varlistentry>
+            <varlistentry>
+              <term><varname>clock</varname></term>
+              <listitem><para>Each positive edge of this signal causes the <varname>count</varname> register to increment.</para></listitem>
+            </varlistentry>
+            <varlistentry>
+              <term><varname>reset</varname></term>
+              <listitem><para>Assertion of this signal causes the <varname>count</varname> register to become zero.</para></listitem>
+            </varlistentry>
+            <varlistentry>
+              <term><varname>count</varname></term>
+              <listitem><para>This register contains the counter's value.</para></listitem>
+            </varlistentry>
+          </variablelist>
+        </para>
+
+        <important>
+          <title>Before we continue&hellip;</title>
+          <para>Save the source code shown in <xref linkend="fig..counter.v_decl"/> into a file named <filename>counter.v</filename>.</para>
+        </important>
+
+        <figure id="fig..counter.v_decl">
+          <title>Declaration of a simple up-counter with synchronous reset</title>
 <programlisting>
 <token>module</token> counter #(<token>parameter</token> <constant>Size</constant> = <literal>5</literal>) (
   <token>input</token> <varname>clock</varname>,
@@ -1004,57 +1004,57 @@
 );
 <token>endmodule</token>
 </programlisting>
-				</figure>
-			</section>
+        </figure>
+      </section>
 
-			<section id="usage.tutorial.generate-test">
-				<title>Generate a test</title>
+      <section id="usage.tutorial.generate-test">
+        <title>Generate a test</title>
 
-				<para>Now that we have a design to verify, let us generate a test for it using the automated test generator tool. This tool allows us to implement our specification in either &rspec;, unit test, or our very own format. Each format represents a different software development methodology: &rspec; represents &BDD.gloss;, unit testing represents &TDD.gloss;, and our own format can represent another methodology.</para>
+        <para>Now that we have a design to verify, let us generate a test for it using the automated test generator tool. This tool allows us to implement our specification in either &rspec;, unit test, or our very own format. Each format represents a different software development methodology: &rspec; represents &BDD.gloss;, unit testing represents &TDD.gloss;, and our own format can represent another methodology.</para>
 
-				<note>
-					<para>In this tutorial, we will see how to implement our specification in both &rspec; and unit test formats.</para>
-				</note>
+        <note>
+          <para>In this tutorial, we will see how to implement our specification in both &rspec; and unit test formats.</para>
+        </note>
 
-				<para>Once we have decided how we want to implement our specification, we can proceed to generate a test for our design. <xref linkend="fig..generate-test.rspec"/> and <xref linkend="fig..generate-test.unit-test"/> illustrate this process. Here, the test generation tool produces a test composed of the following parts:
-					<variablelist>
-						<varlistentry>
-							<term>Runner</term>
-							<listitem>
-								<para>Written in Rake, this file builds and runs the test bench.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term>Bench</term>
-							<listitem>
-								<para>Written in Verilog and Ruby, these files define the testing environment.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term>Design</term>
-							<listitem>
-								<para>Written in Ruby, this file provides an interface to the design under test.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term>Prototype</term>
-							<listitem>
-								<para>Written in Ruby, this file defines a prototype of the design under test.</para>
-							</listitem>
-						</varlistentry>
-						<varlistentry>
-							<term>Specification</term>
-							<listitem>
-								<para>Written in Ruby, this file verifies the design.</para>
-							</listitem>
-						</varlistentry>
-					</variablelist>
-				</para>
+        <para>Once we have decided how we want to implement our specification, we can proceed to generate a test for our design. <xref linkend="fig..generate-test.rspec"/> and <xref linkend="fig..generate-test.unit-test"/> illustrate this process. Here, the test generation tool produces a test composed of the following parts:
+          <variablelist>
+            <varlistentry>
+              <term>Runner</term>
+              <listitem>
+                <para>Written in Rake, this file builds and runs the test bench.</para>
+              </listitem>
+            </varlistentry>
+            <varlistentry>
+              <term>Bench</term>
+              <listitem>
+                <para>Written in Verilog and Ruby, these files define the testing environment.</para>
+              </listitem>
+            </varlistentry>
+            <varlistentry>
+              <term>Design</term>
+              <listitem>
+                <para>Written in Ruby, this file provides an interface to the design under test.</para>
+              </listitem>
+            </varlistentry>
+            <varlistentry>
+              <term>Prototype</term>
+              <listitem>
+                <para>Written in Ruby, this file defines a prototype of the design under test.</para>
+              </listitem>
+            </varlistentry>
+            <varlistentry>
+              <term>Specification</term>
+              <listitem>
+                <para>Written in Ruby, this file verifies the design.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </para>
 
-				<para>The reason for dividing a single test into these parts is mainly to decouple the design from the specification. This allows you to focus on writing the specification while the remainder is automatically generated by the tool. For example, when the interface of a &v; module changes, you would simply re-run this tool to incorporate those changes into the test without diverting your focus from the specification.</para>
+        <para>The reason for dividing a single test into these parts is mainly to decouple the design from the specification. This allows you to focus on writing the specification while the remainder is automatically generated by the tool. For example, when the interface of a &v; module changes, you would simply re-run this tool to incorporate those changes into the test without diverting your focus from the specification.</para>
 
-				<figure id="fig..generate-test.rspec">
-					<title>Generating a test with specification in &rspec; format</title>
+        <figure id="fig..generate-test.rspec">
+          <title>Generating a test with specification in &rspec; format</title>
 <screen>
 <prompt>$</prompt> <userinput><command>ruby <replaceable>bin/generate_test.rb</replaceable> <replaceable>counter.v</replaceable> <option>--rspec</option> <option>--name</option> <replaceable>rspecTest</replaceable></command></userinput>
 <computeroutput>Using name `rspecTest' for generated test.
@@ -1068,10 +1068,10 @@ Parsed module: counter
 - Generated prototype:        counter_rspecTest_proto.rb
 - Generated specification:    counter_rspecTest_spec.rb</computeroutput>
 </screen>
-				</figure>
+        </figure>
 
-				<figure id="fig..generate-test.unit-test">
-					<title>Generating a test with specification in unit test format</title>
+        <figure id="fig..generate-test.unit-test">
+          <title>Generating a test with specification in unit test format</title>
 <screen>
 <prompt>$</prompt> <userinput><command>ruby <replaceable>bin/generate_test.rb</replaceable> <replaceable>counter.v</replaceable> <option>--unit</option> <option>--name</option> <replaceable>unitTest</replaceable></command></userinput>
 <computeroutput>Using name `unitTest' for generated test.
@@ -1085,35 +1085,35 @@ Parsed module: counter
 - Generated prototype:        counter_unitTest_proto.rb
 - Generated specification:    counter_unitTest_spec.rb</computeroutput>
 </screen>
-					</figure>
-			</section>
+          </figure>
+      </section>
 
-			<section id="usage.tutorial.specification">
-				<title>Specify your expectations</title>
+      <section id="usage.tutorial.specification">
+        <title>Specify your expectations</title>
 
-				<para>So far, the test generation tool has created a basic foundation for our test. Now we must build upon this foundation by identifying our expectations of the design. That is, how do we expect the design to <emphasis>behave</emphasis> under certain conditions?</para>
+        <para>So far, the test generation tool has created a basic foundation for our test. Now we must build upon this foundation by identifying our expectations of the design. That is, how do we expect the design to <emphasis>behave</emphasis> under certain conditions?</para>
 
-				<para>The following is a reasonable set of expectations for our simple counter:
-					<itemizedlist>
-						<listitem>
-							<para>A resetted counter's value should be zero.</para>
-						</listitem>
-						<listitem>
-							<para>A resetted counter's value should increment by one count upon each rising clock edge.</para>
-						</listitem>
-						<listitem>
-							<para>A counter with the maximum value should overflow upon increment.</para>
-						</listitem>
-					</itemizedlist>
-				</para>
+        <para>The following is a reasonable set of expectations for our simple counter:
+          <itemizedlist>
+            <listitem>
+              <para>A resetted counter's value should be zero.</para>
+            </listitem>
+            <listitem>
+              <para>A resetted counter's value should increment by one count upon each rising clock edge.</para>
+            </listitem>
+            <listitem>
+              <para>A counter with the maximum value should overflow upon increment.</para>
+            </listitem>
+          </itemizedlist>
+        </para>
 
-				<para>Now that we have identified a set of expectations for our design, we are ready to implement them in our specification. <xref linkend="fig..counter_rspecTest_spec.rb"/> and <xref linkend="fig..counter_unitTest_spec.rb"/> illustrate this process. Note the striking similarities between our expectations and their implementation.</para>
+        <para>Now that we have identified a set of expectations for our design, we are ready to implement them in our specification. <xref linkend="fig..counter_rspecTest_spec.rb"/> and <xref linkend="fig..counter_unitTest_spec.rb"/> illustrate this process. Note the striking similarities between our expectations and their implementation.</para>
 
-				<important>
-					<title>Before we continue&hellip;</title>
-					<itemizedlist>
-						<listitem>
-							<para>Append the following code to the files named <filename>counter_rspecTest_design.rb</filename> and <filename>counter_unitTest_design.rb</filename>.</para>
+        <important>
+          <title>Before we continue&hellip;</title>
+          <itemizedlist>
+            <listitem>
+              <para>Append the following code to the files named <filename>counter_rspecTest_design.rb</filename> and <filename>counter_unitTest_design.rb</filename>.</para>
 
 <programlisting>
 <token>class</token> <constant>Counter</constant>
@@ -1124,18 +1124,18 @@ Parsed module: counter
   <token>end</token>
 <token>end</token>
 </programlisting>
-						</listitem>
-						<listitem>
-							<para>Replace the contents of the file named <filename>counter_rspecTest_spec.rb</filename> with the source code shown in <xref linkend="fig..counter_rspecTest_spec.rb"/>.</para>
-						</listitem>
-						<listitem>
-							<para>Replace the contents of the file named <filename>counter_unitTest_spec.rb</filename> with the source code shown in <xref linkend="fig..counter_unitTest_spec.rb"/>.</para>
-						</listitem>
-					</itemizedlist>
-				</important>
+            </listitem>
+            <listitem>
+              <para>Replace the contents of the file named <filename>counter_rspecTest_spec.rb</filename> with the source code shown in <xref linkend="fig..counter_rspecTest_spec.rb"/>.</para>
+            </listitem>
+            <listitem>
+              <para>Replace the contents of the file named <filename>counter_unitTest_spec.rb</filename> with the source code shown in <xref linkend="fig..counter_unitTest_spec.rb"/>.</para>
+            </listitem>
+          </itemizedlist>
+        </important>
 
-				<figure id="fig..counter_rspecTest_spec.rb">
-					<title>Specification implemented in &rspec; format</title>
+        <figure id="fig..counter_rspecTest_spec.rb">
+          <title>Specification implemented in &rspec; format</title>
 <programlisting>
 <constant>LIMIT</constant> = <literal>2</literal> ** <constant>Counter</constant>::<constant>Size</constant>  <remark># lowest upper bound of counter's value</remark>
 <constant>MAX</constant> = <constant>LIMIT</constant> - <literal>1</literal>             <remark># maximum allowed value for a counter</remark>
@@ -1176,10 +1176,10 @@ Parsed module: counter
   <token>end</token>
 <token>end</token>
 </programlisting>
-				</figure>
+        </figure>
 
-				<figure id="fig..counter_unitTest_spec.rb">
-					<title>Specification implemented in unit test format</title>
+        <figure id="fig..counter_unitTest_spec.rb">
+          <title>Specification implemented in unit test format</title>
 <programlisting>
 <constant>LIMIT</constant> = <literal>2</literal> ** <constant>Counter</constant>::<constant>Size</constant>  <remark># lowest upper bound of counter's value</remark>
 <constant>MAX</constant> = <constant>LIMIT</constant> - <literal>1</literal>             <remark># maximum allowed value for a counter</remark>
@@ -1222,20 +1222,20 @@ Parsed module: counter
   <token>end</token>
 <token>end</token>
 </programlisting>
-				</figure>
-			</section>
+        </figure>
+      </section>
 
-			<section id="usage.tutorial.implement-proto">
-				<title>Implement the prototype</title>
-				<para>Now that we have a specification against which to verify our design, let us build a prototype of our design. By doing so, we exercise our specification, experience potential problems that may arise when we later implement our design in &v;, and gain confidence in our work. <!--Furthermore, we will use the <emphasis>same</emphasis> specification later when verifying our design!--> <xref linkend="fig..counter_proto.rb"/> shows the completed prototype for our design.</para>
+      <section id="usage.tutorial.implement-proto">
+        <title>Implement the prototype</title>
+        <para>Now that we have a specification against which to verify our design, let us build a prototype of our design. By doing so, we exercise our specification, experience potential problems that may arise when we later implement our design in &v;, and gain confidence in our work. <!--Furthermore, we will use the <emphasis>same</emphasis> specification later when verifying our design!--> <xref linkend="fig..counter_proto.rb"/> shows the completed prototype for our design.</para>
 
-				<important>
-					<title>Before we continue&hellip;</title>
-					<para>Replace the contents of the files named <filename>counter_rspecTest_proto.rb</filename> and <filename>counter_unitTest_proto.rb</filename> with the source code shown in <xref linkend="fig..counter_proto.rb"/>.</para>
-				</important>
+        <important>
+          <title>Before we continue&hellip;</title>
+          <para>Replace the contents of the files named <filename>counter_rspecTest_proto.rb</filename> and <filename>counter_unitTest_proto.rb</filename> with the source code shown in <xref linkend="fig..counter_proto.rb"/>.</para>
+        </important>
 
-				<figure id="fig..counter_proto.rb">
-					<title>Ruby prototype of our &v; design</title>
+        <figure id="fig..counter_proto.rb">
+          <title>Ruby prototype of our &v; design</title>
 <programlisting>
 <token>class</token> <constant>CounterProto</constant> &lt; <constant>Counter</constant>
   <token>def</token> <function>simulate!</function>
@@ -1247,23 +1247,23 @@ Parsed module: counter
   <token>end</token>
 <token>end</token>
 </programlisting>
-				</figure>
+        </figure>
 
-			</section>
+      </section>
 
-			<section id="usage.tutorial.test-proto">
-				<title>Verify the prototype</title>
-				<para>Now that we have implemented our prototype, we are ready to verify it against our specification by running the test. <xref linkend="fig..test-proto.rspec"/> and <xref linkend="fig..test-proto.unit-test"/> illustrate this process.</para>
+      <section id="usage.tutorial.test-proto">
+        <title>Verify the prototype</title>
+        <para>Now that we have implemented our prototype, we are ready to verify it against our specification by running the test. <xref linkend="fig..test-proto.rspec"/> and <xref linkend="fig..test-proto.unit-test"/> illustrate this process.</para>
 
-				<para>Here, the <varname>PROTO</varname> environment variable is set&mdash;any value is fine&mdash;before running the test in order to replace the design with the prototype in the simulation. Otherwise, our design will be verified&mdash;instead of our prototype&mdash;against our specification. Furthermore, the manner in which the <varname>PROTO</varname> environment variable is set in these figures follows the syntax of the &bash; shell. If you use a different shell, you may have to use different syntax&mdash;or a different command altogether&mdash;in order to set this variable. Finally, the Icarus &v; simulator, denoted by <replaceable>ivl</replaceable>, is used to simulate our design.</para>
+        <para>Here, the <varname>PROTO</varname> environment variable is set&mdash;any value is fine&mdash;before running the test in order to replace the design with the prototype in the simulation. Otherwise, our design will be verified&mdash;instead of our prototype&mdash;against our specification. Furthermore, the manner in which the <varname>PROTO</varname> environment variable is set in these figures follows the syntax of the &bash; shell. If you use a different shell, you may have to use different syntax&mdash;or a different command altogether&mdash;in order to set this variable. Finally, the Icarus &v; simulator, denoted by <replaceable>ivl</replaceable>, is used to simulate our design.</para>
 
-				<tip>
-					<title>Changing &v; simulators</title>
-					<para>Run the command <command>rake <replaceable>clobber</replaceable></command> when changing from one &v; simulator to another. This command ensures that &rv; will be recompiled to accomodate the new simulator before the test is run.</para>
-				</tip>
+        <tip>
+          <title>Changing &v; simulators</title>
+          <para>Run the command <command>rake <replaceable>clobber</replaceable></command> when changing from one &v; simulator to another. This command ensures that &rv; will be recompiled to accomodate the new simulator before the test is run.</para>
+        </tip>
 
-				<figure id="fig..test-proto.rspec">
-					<title>Running a test with specification in &rspec; format</title>
+        <figure id="fig..test-proto.rspec">
+          <title>Running a test with specification in &rspec; format</title>
 <screen>
 <prompt>$</prompt> <userinput><command>export <replaceable>PROTO=1</replaceable></command></userinput>
 <prompt>$</prompt> <userinput><command>rake <option>-f</option> <replaceable>counter_rspecTest_runner.rake</replaceable> <replaceable>ivl</replaceable></command></userinput>
@@ -1280,10 +1280,10 @@ Finished in 0.018199 seconds
 
 3 specifications, 0 failures</computeroutput>
 </screen>
-				</figure>
+        </figure>
 
-				<figure id="fig..test-proto.unit-test">
-					<title>Running a test with specification in unit test format</title>
+        <figure id="fig..test-proto.unit-test">
+          <title>Running a test with specification in unit test format</title>
 <screen>
 <prompt>$</prompt> <userinput><command>export <replaceable>PROTO=1</replaceable></command></userinput>
 <prompt>$</prompt> <userinput><command>rake <option>-f</option> <replaceable>counter_unitTest_runner.rake</replaceable> <replaceable>ivl</replaceable></command></userinput>
@@ -1296,21 +1296,21 @@ Finished in 0.040668 seconds.
 
 3 tests, 35 assertions, 0 failures, 0 errors</computeroutput>
 </screen>
-				</figure>
-			</section>
+        </figure>
+      </section>
 
-			<section id="usage.tutorial.implement-design">
-				<title>Implement the design</title>
+      <section id="usage.tutorial.implement-design">
+        <title>Implement the design</title>
 
-				<para>Now that we have implemented and verified our prototype, we are ready to implement our design. This is often quite simple because we translate <emphasis>existing</emphasis> code from &ruby; into &v;. <xref linkend="fig..counter.v_impl"/> illustrates the result of this process.</para>
+        <para>Now that we have implemented and verified our prototype, we are ready to implement our design. This is often quite simple because we translate <emphasis>existing</emphasis> code from &ruby; into &v;. <xref linkend="fig..counter.v_impl"/> illustrates the result of this process.</para>
 
-				<important>
-					<title>Before we continue&hellip;</title>
-					<para>Replace the contents of the file named <filename>counter.v</filename> with the source code shown in <xref linkend="fig..counter.v_impl"/>.</para>
-				</important>
+        <important>
+          <title>Before we continue&hellip;</title>
+          <para>Replace the contents of the file named <filename>counter.v</filename> with the source code shown in <xref linkend="fig..counter.v_impl"/>.</para>
+        </important>
 
-				<figure id="fig..counter.v_impl">
-					<title>Implementation of a simple up-counter with synchronous reset</title>
+        <figure id="fig..counter.v_impl">
+          <title>Implementation of a simple up-counter with synchronous reset</title>
 <programlisting>
 <token>module</token> counter #(<token>parameter</token> <constant>Size</constant> = <literal>5</literal>) (
   <token>input</token> <varname>clock</varname>,
@@ -1325,17 +1325,17 @@ Finished in 0.040668 seconds.
   <token>end</token>
 <token>endmodule</token>
 </programlisting>
-				</figure>
-			</section>
+        </figure>
+      </section>
 
-			<section id="usage.tutorial.test-design">
-				<title>Verify the design</title>
-				<para>Now that we have implemented our design, we are ready to verify it against our specification by running the test. <xref linkend="fig..test-design.rspec"/> and <xref linkend="fig..test-design.unit-test"/> illustrate this process.</para>
+      <section id="usage.tutorial.test-design">
+        <title>Verify the design</title>
+        <para>Now that we have implemented our design, we are ready to verify it against our specification by running the test. <xref linkend="fig..test-design.rspec"/> and <xref linkend="fig..test-design.unit-test"/> illustrate this process.</para>
 
-				<para>Here, the <varname>PROTO</varname> environment variable is unset before the test is run in order to prevent the design from being replaced by the prototype. Otherwise, our prototype will be verified&mdash;instead of our design&mdash;against our specification. Furthermore, the manner in which the <varname>PROTO</varname> environment variable is unset in these figures follows the syntax of the &bash; shell. If you use a different shell, you may have to use different syntax&mdash;or a different command altogether&mdash;in order to set this variable. Finally, the Icarus &v; simulator, denoted by <replaceable>ivl</replaceable>, is used to simulate our design.</para>
+        <para>Here, the <varname>PROTO</varname> environment variable is unset before the test is run in order to prevent the design from being replaced by the prototype. Otherwise, our prototype will be verified&mdash;instead of our design&mdash;against our specification. Furthermore, the manner in which the <varname>PROTO</varname> environment variable is unset in these figures follows the syntax of the &bash; shell. If you use a different shell, you may have to use different syntax&mdash;or a different command altogether&mdash;in order to set this variable. Finally, the Icarus &v; simulator, denoted by <replaceable>ivl</replaceable>, is used to simulate our design.</para>
 
-				<figure id="fig..test-design.rspec">
-					<title>Running a test with specification in &rspec; format</title>
+        <figure id="fig..test-design.rspec">
+          <title>Running a test with specification in &rspec; format</title>
 <screen>
 <prompt>$</prompt> <userinput><command>unset <replaceable>PROTO</replaceable></command></userinput>
 <prompt>$</prompt> <userinput><command>rake <option>-f</option> <replaceable>counter_rspecTest_runner.rake</replaceable> <replaceable>ivl</replaceable></command></userinput>
@@ -1350,10 +1350,10 @@ Finished in 0.005628 seconds
 
 3 specifications, 0 failures</computeroutput>
 </screen>
-				</figure>
+        </figure>
 
-				<figure id="fig..test-design.unit-test">
-					<title>Running a test with specification in unit test format</title>
+        <figure id="fig..test-design.unit-test">
+          <title>Running a test with specification in unit test format</title>
 <screen>
 <prompt>$</prompt> <userinput><command>unset <replaceable>PROTO</replaceable></command></userinput>
 <prompt>$</prompt> <userinput><command>rake <option>-f</option> <replaceable>counter_unitTest_runner.rake</replaceable> <replaceable>ivl</replaceable></command></userinput>
@@ -1364,86 +1364,86 @@ Finished in 0.006766 seconds.
 
 3 tests, 35 assertions, 0 failures, 0 errors</computeroutput>
 </screen>
-				</figure>
-			</section>
+        </figure>
+      </section>
 
-		</section>
-	</chapter>
+    </section>
+  </chapter>
 
-	<chapter id="problems">
-		<title>Known problems</title>
+  <chapter id="problems">
+    <title>Known problems</title>
 
-		<para>This chapter presents known problems and possible solutions.</para>
+    <para>This chapter presents known problems and possible solutions.</para>
 
-		<section id="problems.ruby">
-			<title>Ruby</title>
+    <section id="problems.ruby">
+      <title>Ruby</title>
 
-			<section id="problems.ruby.SystemStackError">
-				<title>SystemStackError</title>
+      <section id="problems.ruby.SystemStackError">
+        <title>SystemStackError</title>
 
-				&fixed-0.2;
+        &fixed-0.2;
 
-				<para>If a <quote>stack level too deep (SystemStackError)</quote> error occurs during the simulation, then increase the system-resource limit for stack-size by running the command <command>ulimit <option>-s</option> <replaceable>unlimited</replaceable></command> before starting the simulation.</para>
-			</section>
+        <para>If a <quote>stack level too deep (SystemStackError)</quote> error occurs during the simulation, then increase the system-resource limit for stack-size by running the command <command>ulimit <option>-s</option> <replaceable>unlimited</replaceable></command> before starting the simulation.</para>
+      </section>
 
-			<section id="problems.ruby.TestUnit">
-				<title>test/unit</title>
+      <section id="problems.ruby.TestUnit">
+        <title>test/unit</title>
 
-				&fixed-0.2;
+        &fixed-0.2;
 
-				<para>If your specification employs Ruby's unit testing framework, then you will encounter the error: <quote>[BUG] cross-thread violation on rb_gc()</quote>.</para>
-			</section>
-		</section>
+        <para>If your specification employs Ruby's unit testing framework, then you will encounter the error: <quote>[BUG] cross-thread violation on rb_gc()</quote>.</para>
+      </section>
+    </section>
 
-		<section id="problem.ivl">
-			<title>Icarus &v;</title>
+    <section id="problem.ivl">
+      <title>Icarus &v;</title>
 
-			<section id="problems.ivl.vpi_handle_by_name">
-				<title>vpi_handle_by_name</title>
+      <section id="problems.ivl.vpi_handle_by_name">
+        <title>vpi_handle_by_name</title>
 
-				<section id="problems.ivl.vpi_handle_by_name.absolute-paths">
-					<title>Give full paths to &v; objects</title>
+        <section id="problems.ivl.vpi_handle_by_name.absolute-paths">
+          <title>Give full paths to &v; objects</title>
 
-					<para>In version 0.8 of Icarus &v;, the <function>vpi_handle_by_name</function> function requires an <emphasis>absolute</emphasis> path (including the name of the bench which instantiates the design) to a &v; object.</para>
+          <para>In version 0.8 of Icarus &v;, the <function>vpi_handle_by_name</function> function requires an <emphasis>absolute</emphasis> path (including the name of the bench which instantiates the design) to a &v; object.</para>
 
-					<para>For example, consider <xref linkend="ex..TestFoo"/>. Here, one needs to specify <code>TestFoo.my_foo.clk</code> instead of <code>my_foo.clk</code> in order to access the <varname>clk</varname> input of the <varname>my_foo</varname> module instance.</para>
+          <para>For example, consider <xref linkend="ex..TestFoo"/>. Here, one needs to specify <code>TestFoo.my_foo.clk</code> instead of <code>my_foo.clk</code> in order to access the <varname>clk</varname> input of the <varname>my_foo</varname> module instance.</para>
 
-					<example id="ex..TestFoo">
-						<title>Part of a bench which instantiates a &v; design</title>
+          <example id="ex..TestFoo">
+            <title>Part of a bench which instantiates a &v; design</title>
 <programlisting>
 module TestFoo;
   <type>reg</type> <varname>clk_reg</varname>;
   Foo <varname>my_foo</varname>(<parameter>.clk</parameter>(<varname>clk_reg</varname>));
 endmodule
 </programlisting>
-					</example>
-				</section>
+          </example>
+        </section>
 
-				<section id="problems.ivl.vpi_handle_by_name.connect-registers">
-					<title>Registers must be connected</title>
+        <section id="problems.ivl.vpi_handle_by_name.connect-registers">
+          <title>Registers must be connected</title>
 
-					<para>In version 0.8 of Icarus &v;, if you want to access a register in a design, then it must be connected to something (either assigned to a wire or passed as a parameter to a module instantiation). Otherwise, you will get a <literal>nil</literal> value as the result of <function>vpi_handle_by_name</function> method.</para>
+          <para>In version 0.8 of Icarus &v;, if you want to access a register in a design, then it must be connected to something (either assigned to a wire or passed as a parameter to a module instantiation). Otherwise, you will get a <literal>nil</literal> value as the result of <function>vpi_handle_by_name</function> method.</para>
 
-					<para>For example, suppose you wanted to access the <varname>clk_reg</varname> register, from the bench shown in <xref linkend="ex..TestFoo_bad"/>. If you execute the statement <code><varname>clk_reg</varname> = <function>vpi_handle_by_name</function>(<parameter><literal>"TestFoo.clk_reg"</literal></parameter>, <parameter><literal>nil</literal></parameter>)</code> in a specification, then you will discover that the <function>vpi_handle_by_name</function> method returns <literal>nil</literal> instead of a handle to the <varname>clk_reg</varname> register.</para>
+          <para>For example, suppose you wanted to access the <varname>clk_reg</varname> register, from the bench shown in <xref linkend="ex..TestFoo_bad"/>. If you execute the statement <code><varname>clk_reg</varname> = <function>vpi_handle_by_name</function>(<parameter><literal>"TestFoo.clk_reg"</literal></parameter>, <parameter><literal>nil</literal></parameter>)</code> in a specification, then you will discover that the <function>vpi_handle_by_name</function> method returns <literal>nil</literal> instead of a handle to the <varname>clk_reg</varname> register.</para>
 
-					<para>The solution is to change the design such that it appears like the one shown in <xref linkend="ex..TestFoo_fix"/> where the register is connected to a wire, or <xref linkend="ex..TestFoo"/> where the register is connected to a module instantiation.</para>
+          <para>The solution is to change the design such that it appears like the one shown in <xref linkend="ex..TestFoo_fix"/> where the register is connected to a wire, or <xref linkend="ex..TestFoo"/> where the register is connected to a module instantiation.</para>
 
-					<example id="ex..TestFoo_bad">
-						<title>Bad design with unconnected registers</title>
+          <example id="ex..TestFoo_bad">
+            <title>Bad design with unconnected registers</title>
 
-						<para>Here the <varname>clk_reg</varname> register is not connected to anything.</para>
+            <para>Here the <varname>clk_reg</varname> register is not connected to anything.</para>
 
 <programlisting>
 module TestFoo;
   <type>reg</type> <varname>clk_reg</varname>;
 endmodule
 </programlisting>
-					</example>
+          </example>
 
-					<example id="ex..TestFoo_fix">
-						<title>Fixed design with wired registers</title>
+          <example id="ex..TestFoo_fix">
+            <title>Fixed design with wired registers</title>
 
-						<para>Here the <varname>clk_reg</varname> register is connected to the <varname>clk_wire</varname> wire.</para>
+            <para>Here the <varname>clk_reg</varname> register is connected to the <varname>clk_wire</varname> wire.</para>
 
 <programlisting>
 module TestFoo;
@@ -1452,144 +1452,144 @@ module TestFoo;
   assign <varname>clk_wire</varname> = <varname>clk_reg</varname>;
 endmodule
 </programlisting>
-					</example>
-				</section>
-			</section>
+          </example>
+        </section>
+      </section>
 
-			<section id="problems.ivl.vpi_reset">
-				<title>Vpi::reset</title>
+      <section id="problems.ivl.vpi_reset">
+        <title>Vpi::reset</title>
 
-				<note>
-					<para>This method was removed in release 0.3 of &rv;, and is deprecated. Please use <code><constant>Vpi</constant>::<function>vpi_control</function>(<parameter><constant>VpiReset</constant></parameter>)</code> instead.</para>
-				</note>
+        <note>
+          <para>This method was removed in release 0.3 of &rv;, and is deprecated. Please use <code><constant>Vpi</constant>::<function>vpi_control</function>(<parameter><constant>VpiReset</constant></parameter>)</code> instead.</para>
+        </note>
 
-				<para>In version 0.8 of Icarus &v;, the <code><function>vpi_control</function>(<parameter><constant>vpiReset</constant></parameter>)</code> &vpi; function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.</para>
-			</section>
-		</section>
+        <para>In version 0.8 of Icarus &v;, the <code><function>vpi_control</function>(<parameter><constant>vpiReset</constant></parameter>)</code> &vpi; function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.</para>
+      </section>
+    </section>
 
-		<section id="problems.vsim">
-			<title>Mentor Modelsim</title>
+    <section id="problems.vsim">
+      <title>Mentor Modelsim</title>
 
-			<section id="problems.vsim.ruby_run">
-				<title>ruby_run()</title>
+      <section id="problems.vsim.ruby_run">
+        <title>ruby_run()</title>
 
-				&fixed-0.2;
+        &fixed-0.2;
 
-				<para>Version 6.1b of Mentor Modelsim doesn't play nicely with either an embedded Ruby interpreter or POSIX threads in a PLI application. When &rv; invokes the <function>ruby_run</function> function (which starts the Ruby interpreter), the simulator terminates immediately with an exit status of 0.</para>
-			</section>
-		</section>
-	</chapter>
+        <para>Version 6.1b of Mentor Modelsim doesn't play nicely with either an embedded Ruby interpreter or POSIX threads in a PLI application. When &rv; invokes the <function>ruby_run</function> function (which starts the Ruby interpreter), the simulator terminates immediately with an exit status of 0.</para>
+      </section>
+    </section>
+  </chapter>
 
-	<glossary id="glossary">
-		<glossdiv>
-			<title>B</title>
+  <glossary id="glossary">
+    <glossdiv>
+      <title>B</title>
 
-			<glossentry id="term..bench">
-				<glossterm>Bench</glossterm>
-				<glossdef>
-					<para>An environment in which a design is verified against a specification. Often, it is used to emulate conditions in which the design will be eventually deployed.</para>
-				</glossdef>
-			</glossentry>
+      <glossentry id="term..bench">
+        <glossterm>Bench</glossterm>
+        <glossdef>
+          <para>An environment in which a design is verified against a specification. Often, it is used to emulate conditions in which the design will be eventually deployed.</para>
+        </glossdef>
+      </glossentry>
 
-			<glossentry id="term..BDD">
-				<glossterm><acronym>BDD</acronym></glossterm>
+      <glossentry id="term..BDD">
+        <glossterm><acronym>BDD</acronym></glossterm>
 
-				<glossdef>
-					<para>Behavior driven development.</para>
-					<para>A software development methodology which emphasizes thinking in terms of behavior when designing, implementing, and verifying software. See the <ulink url="http://behaviour-driven.org/">official wiki</ulink> for more information.</para>
+        <glossdef>
+          <para>Behavior driven development.</para>
+          <para>A software development methodology which emphasizes thinking in terms of behavior when designing, implementing, and verifying software. See the <ulink url="http://behaviour-driven.org/">official wiki</ulink> for more information.</para>
 
-					<glossseealso otherterm="term..TDD"/>
-					<glossseealso otherterm="term..rspec"/>
-				</glossdef>
-			</glossentry>
-		</glossdiv>
+          <glossseealso otherterm="term..TDD"/>
+          <glossseealso otherterm="term..rspec"/>
+        </glossdef>
+      </glossentry>
+    </glossdiv>
 
-		<glossdiv>
-			<title>D</title>
+    <glossdiv>
+      <title>D</title>
 
-			<glossentry id="term..design">
-				<glossterm>Design</glossterm>
-				<glossdef>
-					<para>An idea or entity that is verified against a specification in order to ensure correctness or soundness of its being.</para>
-				</glossdef>
-			</glossentry>
-		</glossdiv>
+      <glossentry id="term..design">
+        <glossterm>Design</glossterm>
+        <glossdef>
+          <para>An idea or entity that is verified against a specification in order to ensure correctness or soundness of its being.</para>
+        </glossdef>
+      </glossentry>
+    </glossdiv>
 
-		<glossdiv>
-			<title>H</title>
+    <glossdiv>
+      <title>H</title>
 
-			<glossentry id="term..handle">
-				<glossterm>Handle</glossterm>
-				<glossdef>
-					<para>An object in a &v; simulation.</para>
-				</glossdef>
-			</glossentry>
-		</glossdiv>
+      <glossentry id="term..handle">
+        <glossterm>Handle</glossterm>
+        <glossdef>
+          <para>An object in a &v; simulation.</para>
+        </glossdef>
+      </glossentry>
+    </glossdiv>
 
-		<glossdiv>
-			<title>R</title>
+    <glossdiv>
+      <title>R</title>
 
-			<glossentry id="term..rake">
-				<glossterm>&rake;</glossterm>
-				<glossdef>
-					<blockquote>
-						<attribution><ulink url="&rake-doc.url;">&rake; documentation</ulink></attribution>
-						<para>Rake is a build tool, written in Ruby, using Ruby as a build language. Rake is similar to make in scope and purpose.</para>
-					</blockquote>
+      <glossentry id="term..rake">
+        <glossterm>&rake;</glossterm>
+        <glossdef>
+          <blockquote>
+            <attribution><ulink url="&rake-doc.url;">&rake; documentation</ulink></attribution>
+            <para>Rake is a build tool, written in Ruby, using Ruby as a build language. Rake is similar to make in scope and purpose.</para>
+          </blockquote>
 
-					<para>See the <ulink url="&rake.url;">&rake; website</ulink> for more information.</para>
-				</glossdef>
-			</glossentry>
+          <para>See the <ulink url="&rake.url;">&rake; website</ulink> for more information.</para>
+        </glossdef>
+      </glossentry>
 
-			<glossentry id="term..rspec">
-				<glossterm>&rspec;</glossterm>
-				<glossdef>
-					<para>Ruby framework for BDD. See the <ulink url="&rspec.url;">&rspec; website</ulink> and &rspec-tutorial..ulink; for more information.</para>
+      <glossentry id="term..rspec">
+        <glossterm>&rspec;</glossterm>
+        <glossdef>
+          <para>Ruby framework for BDD. See the <ulink url="&rspec.url;">&rspec; website</ulink> and &rspec-tutorial..ulink; for more information.</para>
 
-					<glossseealso otherterm="term..BDD"/>
-				</glossdef>
-			</glossentry>
-		</glossdiv>
+          <glossseealso otherterm="term..BDD"/>
+        </glossdef>
+      </glossentry>
+    </glossdiv>
 
-		<glossdiv>
-			<title>S</title>
+    <glossdiv>
+      <title>S</title>
 
-			<glossentry id="term..specification">
-				<glossterm>Specification</glossterm>
-				<glossdef>
-					<para>A collection of expectations that must be satisfied by a design when subjected to certain conditions.</para>
-				</glossdef>
-			</glossentry>
-		</glossdiv>
+      <glossentry id="term..specification">
+        <glossterm>Specification</glossterm>
+        <glossdef>
+          <para>A collection of expectations that must be satisfied by a design when subjected to certain conditions.</para>
+        </glossdef>
+      </glossentry>
+    </glossdiv>
 
-		<glossdiv>
-			<title>T</title>
+    <glossdiv>
+      <title>T</title>
 
-			<glossentry id="term..TDD">
-				<glossterm>TDD</glossterm>
-				<glossdef>
-					<para>Test Driven Development.</para>
-					<glossseealso otherterm="term..BDD"/>
-				</glossdef>
-			</glossentry>
+      <glossentry id="term..TDD">
+        <glossterm>TDD</glossterm>
+        <glossdef>
+          <para>Test Driven Development.</para>
+          <glossseealso otherterm="term..BDD"/>
+        </glossdef>
+      </glossentry>
 
-			<glossentry id="term..test">
-				<glossterm>Test</glossterm>
-				<glossdef>
-					<para>The act of verifying a design against a specification in a bench.</para>
-					<glossseealso otherterm="term..test-bench"/>
-				</glossdef>
-			</glossentry>
+      <glossentry id="term..test">
+        <glossterm>Test</glossterm>
+        <glossdef>
+          <para>The act of verifying a design against a specification in a bench.</para>
+          <glossseealso otherterm="term..test-bench"/>
+        </glossdef>
+      </glossentry>
 
-			<glossentry id="term..test-bench">
-				<glossterm>Test bench</glossterm>
-				<glossdef>
-					<para>An allusion to <link linkend="background.terminology">a bench in an electronics laboratory</link>, or so it seems.</para>
-					<glossseealso otherterm="term..test"/>
-				</glossdef>
-			</glossentry>
-		</glossdiv>
-	</glossary>
+      <glossentry id="term..test-bench">
+        <glossterm>Test bench</glossterm>
+        <glossdef>
+          <para>An allusion to <link linkend="background.terminology">a bench in an electronics laboratory</link>, or so it seems.</para>
+          <glossseealso otherterm="term..test"/>
+        </glossdef>
+      </glossentry>
+    </glossdiv>
+  </glossary>
 
-	&license;
+  &license;
 </book>

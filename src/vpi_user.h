@@ -495,7 +495,7 @@ typedef PLI_UINT32 *vpiHandle;
 #define vpiAutomatic             50  /* task/func obj is automatic */
 #define vpiCell                  51  /* configuration cell */
 #define vpiConfig                52  /* configuration config file */
-#define vpiConstantSelect        53  /* (boolean) bit-select or part-select 
+#define vpiConstantSelect        53  /* (boolean) bit-select or part-select
                                         indices are constant expressions */
 #define vpiDecompile             54  /* decompile the object */
 #define vpiDefAttribute          55  /* Attribute defined for the obj */
@@ -515,7 +515,7 @@ typedef PLI_UINT32 *vpiHandle;
 #define vpiSigned                65  /* TRUE for vpiIODecl and any object in
                                         the expression class if the object
                                         has the signed attribute */
-#define vpiLocalParam            70  /* TRUE when a param is declared as a 
+#define vpiLocalParam            70  /* TRUE when a param is declared as a
                                         localparam */
 #define vpiModPathHasIfNone      71  /* Mod path has an ifnone statement */
 
