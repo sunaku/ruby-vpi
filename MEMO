@@ -3,8 +3,10 @@ h1. Pending tasks
 * integrate RCov for coverage statistics
 
 * define handled methods in Vpi::method_missing for faster response
+** this has been verified as bottleneck from profiling data
 
 * file bug report for Icarus 0.8
+** try new icarus snapshot
 
 * GHDL
 ** need way to invoke VPI tasks from VHDL, like @$ruby_init();@

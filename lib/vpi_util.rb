@@ -103,12 +103,14 @@ module SWIG
 
     # Writes the given value using the given format, time, and delay. If a format is not given, then the Verilog simulator will attempt to determine the correct format.
     def put_value aValue, aFormat = nil, aTime = nil, aDelay = VpiNoDelay
-      newVal = S_vpi_value.new
-      newVal.format = aFormat || get_value_wrapper(VpiObjTypeVal).format
+      aFormat ||= get_value_wrapper(VpiObjTypeVal).format
 
-      case newVal.format
+      newVal = S_vpi_value.new
+      newVal.format = aFormat
+
+      case aFormat
         when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal, VpiStringVal
-          newVal.value.str = aValue
+          newVal.value.str = aValue.to_s
 
         when VpiScalarVal
           newVal.value.scalar = aValue
@@ -118,7 +120,7 @@ module SWIG
           newVal.value.str = aValue.to_i.to_s(16)
 
         when VpiRealVal
-          newVal.value.real = aValue
+          newVal.value.real = aValue.to_f
 
         when VpiTimeVal
           newVal.value.time = aValue
@@ -134,6 +136,32 @@ module SWIG
       end
 
       vpi_put_value self, newVal, aTime, aDelay
+
+      # ensure that value was written correctly
+        readenVal = get_value(aFormat)
+
+        writtenCorrectly =
+          case aFormat
+            when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal, VpiStringVal
+              if aValue =~ /[xz]/i  # TODO: verify 'z' behavior
+                readenVal =~ /[xz]/i
+              else
+                readenVal == aValue.to_s
+              end
+
+            when VpiIntVal
+              readenVal == aValue.to_i
+
+            when VpiRealVal
+              readenVal == aValue.to_f
+
+            else
+              true
+          end
+
+        unless writtenCorrectly
+          raise IOError, "value written (#{aValue.inspect}) does not match value read (#{readenVal.inspect}) from handle #{self}"
+        end
     end
 
     HINT_REGEXP = %r{_([a-z])$}
