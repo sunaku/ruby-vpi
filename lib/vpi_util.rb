@@ -142,12 +142,15 @@ module SWIG
 
         writtenCorrectly =
           case aFormat
-            when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal, VpiStringVal
+            when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal
               if aValue =~ /[xz]/i  # TODO: verify 'z' behavior
                 readenVal =~ /[xz]/i
               else
                 readenVal == aValue.to_s
               end
+
+            when VpiStringVal
+              readenVal == aValue.to_s
 
             when VpiIntVal
               readenVal == aValue.to_i
