@@ -163,7 +163,7 @@ module SWIG
           end
 
         unless writtenCorrectly
-          raise IOError, "value written (#{aValue.inspect}) does not match value read (#{readenVal.inspect}) from handle #{self}"
+          raise "value written (#{aValue.inspect}) does not match value read (#{readenVal.inspect}) from handle #{self}"
         end
     end
 
