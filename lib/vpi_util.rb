@@ -101,7 +101,7 @@ module SWIG
       end
     end
 
-    # Writes the given value using the given format, time, and delay. If a format is not given, then the Verilog simulator will attempt to determine the correct format.
+    # Writes the given value using the given format, time, and delay, and then returns the given value. If a format is not given, then the Verilog simulator will attempt to determine the correct format.
     def put_value aValue, aFormat = nil, aTime = nil, aDelay = VpiNoDelay
       aFormat ||= get_value_wrapper(VpiObjTypeVal).format
 
@@ -165,6 +165,8 @@ module SWIG
         unless writtenCorrectly
           raise "value written (#{aValue.inspect}) does not match value read (#{readenVal.inspect}) from handle #{self}"
         end
+
+      aValue
     end
 
     HINT_REGEXP = %r{_([a-z])$}
