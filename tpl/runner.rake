@@ -62,7 +62,7 @@ end
 
 
 # Builds Ruby-VPI using the given argument strings.
-def buildRubyVpi aCompilerFlags = nil, aLinkerFlags = nil
+def build_ruby_vpi aCompilerFlags = nil, aLinkerFlags = nil
   unless File.exist?(NORMAL_OBJ_PATH) and File.exist?(SHARED_OBJ_PATH)
     command = 'rake'
     command << " CFLAGS='#{aCompilerFlags}'" if aCompilerFlags
@@ -76,7 +76,7 @@ end
 
 
 # Silently copies the given source path to the given destination if necessary.
-def silentCopy *aArgs
+def silent_copy *aArgs
   safe_ln *aArgs rescue true
 end
 
@@ -90,7 +90,7 @@ namespace 'cver' do
   end
 
   task :build do
-    buildRubyVpi "-DPRAGMATIC_CVER", "-export-dynamic"
+    build_ruby_vpi "-DPRAGMATIC_CVER", "-export-dynamic"
   end
 
   CLOBBER.include 'verilog.log'
@@ -107,8 +107,8 @@ namespace 'ivl' do
   end
 
   task :build do
-    buildRubyVpi "-DICARUS_VERILOG"
-    silentCopy SHARED_OBJ_PATH, 'ruby-vpi.vpi'
+    build_ruby_vpi "-DICARUS_VERILOG"
+    silent_copy SHARED_OBJ_PATH, 'ruby-vpi.vpi'
   end
 
   CLEAN.include 'ruby-vpi.vpi', 'a.out'
@@ -126,7 +126,7 @@ namespace 'vcs' do
   end
 
   task :build do
-    buildRubyVpi "-DSYNOPSYS_VCS"
+    build_ruby_vpi "-DSYNOPSYS_VCS"
   end
 
   CLEAN.include 'csrc', 'simv*'
@@ -144,7 +144,7 @@ namespace 'vsim' do
   end
 
   task :build do
-    buildRubyVpi "-DMENTOR_MODELSIM"
+    build_ruby_vpi "-DMENTOR_MODELSIM"
   end
 
   CLEAN.include 'work'

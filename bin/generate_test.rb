@@ -56,7 +56,7 @@ require 'fileutils'
 
 
 # Writes the given contents to the file at the given path. If the given path already exists, then a backup is created before proceeding.
-def writeFile aPath, aContent
+def write_file aPath, aContent
   # create a backup
   if File.exist? aPath
     backupPath = aPath.dup
@@ -74,12 +74,12 @@ def writeFile aPath, aContent
 end
 
 # Returns a comma-separated string of parameter declarations in Verilog module instantiation format.
-def makeInstParamDecl(paramNames)
+def make_inst_param_decl(paramNames)
   paramNames.inject([]) {|acc, param| acc << ".#{param}(#{param})"}.join(', ')
 end
 
 # Generates and returns the content of the Verilog bench file, which cooperates with the Ruby bench file to run the test bench.
-def generateVerilogBench aModuleInfo, aOutputInfo
+def generate_verilog_bench aModuleInfo, aOutputInfo
 
   # configuration parameters for design under test
   configDecl = aModuleInfo.paramDecls.inject('') do |acc, decl|
@@ -99,8 +99,8 @@ def generateVerilogBench aModuleInfo, aOutputInfo
 
 
   # instantiation for the design under test
-  instConfigDecl = makeInstParamDecl(aModuleInfo.paramNames)
-  instParamDecl = makeInstParamDecl(aModuleInfo.portNames)
+  instConfigDecl = make_inst_param_decl(aModuleInfo.paramNames)
+  instParamDecl = make_inst_param_decl(aModuleInfo.portNames)
 
   instDecl = "#{aModuleInfo.name} " << (
     unless instConfigDecl.empty?
@@ -146,7 +146,7 @@ def generateVerilogBench aModuleInfo, aOutputInfo
 end
 
 # Generates and returns the content of the Ruby bench file, which cooperates with the Verilog bench file to run the test bench.
-def generateRubyBench aModuleInfo, aOutputInfo
+def generate_ruby_bench aModuleInfo, aOutputInfo
   %{
     #{
       case aOutputInfo.specFormat
@@ -176,7 +176,7 @@ def generateRubyBench aModuleInfo, aOutputInfo
 end
 
 # Generates and returns the content of the Ruby design file, which is a Ruby abstraction of the Verilog module's interface.
-def generateDesign aModuleInfo, aOutputInfo
+def generate_design aModuleInfo, aOutputInfo
   accessorDecl = aModuleInfo.portNames.inject([]) do |acc, port|
     acc << ":#{port}"
   end.join(', ')
@@ -215,7 +215,7 @@ def generateDesign aModuleInfo, aOutputInfo
 end
 
 # Generates and returns the content of the Ruby prototype file, which is a Ruby prototype of the design under test.
-def generateProto aModuleInfo, aOutputInfo
+def generate_proto aModuleInfo, aOutputInfo
   %{
     # A prototype of the design under test.
     class #{aOutputInfo.protoClassName} < #{aOutputInfo.designClassName}
@@ -229,7 +229,7 @@ def generateProto aModuleInfo, aOutputInfo
 end
 
 # Generates and returns the content of the Ruby specification file, which verifies the design under test.
-def generateSpec aModuleInfo, aOutputInfo
+def generate_spec aModuleInfo, aOutputInfo
   accessorTestDecl = aModuleInfo.portNames.inject('') do |acc, param|
     acc << "def test_#{param}\nend\n\n"
   end
@@ -282,7 +282,7 @@ def generateSpec aModuleInfo, aOutputInfo
 end
 
 # Generates and returns the content of the runner, which builds and runs the entire test bench.
-def generateRunner aModuleInfo, aOutputInfo
+def generate_runner aModuleInfo, aOutputInfo
   %{
     RUBY_VPI_PATH = '#{aOutputInfo.rubyVpiPath}'
 
@@ -437,21 +437,21 @@ end
     # generate output
       o = OutputInfo.new(m.name, optSpecFmt, optTestName, File.dirname(File.dirname(__FILE__))).freeze
 
-      writeFile o.runnerPath, generateRunner(m, o)
+      write_file o.runnerPath, generate_runner(m, o)
       puts "- Generated runner:           #{o.runnerPath}"
 
-      writeFile o.verilogBenchPath, generateVerilogBench(m, o)
+      write_file o.verilogBenchPath, generate_verilog_bench(m, o)
       puts "- Generated bench:            #{o.verilogBenchPath}"
 
-      writeFile o.rubyBenchPath, generateRubyBench(m, o)
+      write_file o.rubyBenchPath, generate_ruby_bench(m, o)
       puts "- Generated bench:            #{o.rubyBenchPath}"
 
-      writeFile o.designPath, generateDesign(m, o)
+      write_file o.designPath, generate_design(m, o)
       puts "- Generated design:           #{o.designPath}"
 
-      writeFile o.protoPath, generateProto(m, o)
+      write_file o.protoPath, generate_proto(m, o)
       puts "- Generated prototype:        #{o.protoPath}"
 
-      writeFile o.specPath, generateSpec(m, o)
+      write_file o.specPath, generate_spec(m, o)
       puts "- Generated specification:    #{o.specPath}"
   end
