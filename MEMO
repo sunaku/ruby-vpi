@@ -5,13 +5,15 @@ h1. Pending tasks
 * define handled methods in Vpi::method_missing for faster response
 ** this has been verified as bottleneck from profiling data
 
-* file bug report for Icarus 0.8
+* file bug report for Icarus 0.8 (l0_dcache)
 ** try new icarus snapshot
 
 * GHDL
 ** need way to invoke VPI tasks from VHDL, like @$ruby_init();@
 
 * add support for GPL CVer in the test runner template
+
+* decouple code generation with $RUBYLIB and erb
 
 
 h1. Finished tasks

@@ -49,6 +49,9 @@ SIMULATOR_SOURCES_STRING = SIMULATOR_SOURCES.join(' ')
 SHARED_OBJ_PATH = "#{RUBY_VPI_PATH}/ruby-vpi.so"
 NORMAL_OBJ_PATH = "#{RUBY_VPI_PATH}/ruby-vpi.o"
 
+# make Ruby-VPI libraries available to spec
+ENV['RUBYLIB'] = "#{RUBY_VPI_PATH}/lib/:#{RUBY_VPI_PATH}/tpl/"
+
 
 # propogate cleaning events to Ruby-VPI
 task :clobber do |t|

@@ -17,7 +17,7 @@ module counter_rspecTest_bench;
   // interface to Ruby-VPI
   initial begin
     clock = 0;
-    $ruby_init("ruby", "-w", "-I", "../../lib", "-I", "../../tpl", "counter_rspecTest_bench.rb", "-f", "s");
+    $ruby_init("ruby", "-w", "counter_rspecTest_bench.rb", "-f", "s");
   end
 
   // generate a 50% duty-cycle clock for the design under test

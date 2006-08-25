@@ -17,7 +17,7 @@ module counter_unitTest_bench;
   // interface to Ruby-VPI
   initial begin
     clock = 0;
-    $ruby_init("ruby", "-w", "-I", "../../lib", "-I", "../../tpl", "counter_unitTest_bench.rb");
+    $ruby_init("ruby", "-w", "counter_unitTest_bench.rb");
   end
 
   // generate a 50% duty-cycle clock for the design under test

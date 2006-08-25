@@ -128,7 +128,7 @@ def generateVerilogBench aModuleInfo, aOutputInfo
       // interface to Ruby-VPI
       initial begin
         #{clockSignal} = 0;
-        $ruby_init("ruby", "-w", "-I", "#{aOutputInfo.rubyVpiLibPath}", "-I", "#{aOutputInfo.rubyVpiTplPath}", "#{aOutputInfo.rubyBenchPath}"#{%{, "-f", "s"} if aOutputInfo.specFormat == :RSpec});
+        $ruby_init("ruby", "-w", "#{aOutputInfo.rubyBenchPath}"#{%{, "-f", "s"} if aOutputInfo.specFormat == :RSpec});
       end
 
       // generate a 50% duty-cycle clock for the design under test
@@ -352,7 +352,7 @@ class OutputInfo
 
   SPEC_FORMATS = [:RSpec, :UnitTest, :Generic]
 
-  attr_reader :verilogBenchName, :verilogBenchPath, :rubyBenchName, :rubyBenchPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :rubyVpiLibPath, :rubyVpiTplPath, :runnerName, :runnerPath, :protoName, :protoPath, :protoClassName
+  attr_reader :verilogBenchName, :verilogBenchPath, :rubyBenchName, :rubyBenchPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :runnerName, :runnerPath, :protoName, :protoPath, :protoClassName
 
   attr_reader :testName, :suffix, :benchSuffix, :designSuffix, :specSuffix, :runnerSuffix, :protoSuffix
 
@@ -369,8 +369,6 @@ class OutputInfo
     @protoSuffix = @suffix + '_proto'
 
     @rubyVpiPath = aRubyVpiPath
-    @rubyVpiLibPath = @rubyVpiPath + '/lib'
-    @rubyVpiTplPath = @rubyVpiPath + '/tpl'
 
     @verilogBenchName = aModuleName + @benchSuffix
     @verilogBenchPath = @verilogBenchName + VERILOG_EXT
