@@ -1,8 +1,10 @@
-# An interface to the design under test.
+## This is an interface to the design under test. ##
+
 class Counter
   include Vpi
 
   Size = 5
+
   attr_reader :clock, :reset, :count
 
   def initialize

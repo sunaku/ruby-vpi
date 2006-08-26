@@ -1,4 +1,5 @@
-# A prototype of the design under test.
+## This is a prototype of the design under test. ##
+
 class CounterProto < Counter
   def simulate!
     if @reset.intVal == 1

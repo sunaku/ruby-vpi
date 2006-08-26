@@ -1,5 +1,10 @@
-LIMIT = 2 ** Counter::Size # lowest upper bound of counter's value
-MAX = LIMIT - 1 # maximum allowed value for a counter
+## This specification verifies the design under test. ##
+
+# lowest upper bound of counter's value
+LIMIT = 2 ** Counter::Size
+
+# maximum allowed value for a counter
+MAX = LIMIT - 1
 
 include Vpi
 
@@ -16,7 +21,9 @@ context "A resetted counter's value" do
   specify "should increment by one count upon each rising clock edge" do
     LIMIT.times do |i|
       @design.count.intVal.should_be i
-      relay_verilog # advance the clock
+
+      # advance the clock
+        relay_verilog
     end
   end
 end
@@ -27,12 +34,14 @@ context "A counter with the maximum value" do
     @design.reset!
 
     # increment the counter to maximum value
-    MAX.times do relay_verilog end
-    @design.count.intVal.should_be MAX
+      MAX.times do relay_verilog end
+      @design.count.intVal.should_be MAX
   end
 
   specify "should overflow upon increment" do
-    relay_verilog # increment the counter
+    # increment the counter
+      relay_verilog
+
     @design.count.intVal.should_be 0
   end
 end

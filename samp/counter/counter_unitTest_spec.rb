@@ -1,5 +1,10 @@
-LIMIT = 2 ** Counter::Size # lowest upper bound of counter's value
-MAX = LIMIT - 1 # maximum allowed value for a counter
+## This specification verifies the design under test. ##
+
+# lowest upper bound of counter's value
+LIMIT = 2 ** Counter::Size
+
+# maximum allowed value for a counter
+MAX = LIMIT - 1
 
 class ResettedCounterValue < Test::Unit::TestCase
   include Vpi
@@ -16,7 +21,9 @@ class ResettedCounterValue < Test::Unit::TestCase
   def test_increment
     LIMIT.times do |i|
       assert_equal i, @design.count.intVal
-      relay_verilog # advance the clock
+
+      # advance the clock
+        relay_verilog
     end
   end
 end
@@ -29,12 +36,14 @@ class MaximumCounterValue < Test::Unit::TestCase
     @design.reset!
 
     # increment the counter to maximum value
-    MAX.times do relay_verilog end
-    assert_equal MAX, @design.count.intVal
+      MAX.times do relay_verilog end
+      assert_equal MAX, @design.count.intVal
   end
 
   def test_overflow
-    relay_verilog # increment the counter
+    # increment the counter
+      relay_verilog
+
     assert_equal 0, @design.count.intVal
   end
 end
