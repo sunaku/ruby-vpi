@@ -52,22 +52,19 @@
 
 require 'fileutils'
 
-
 # Writes the given contents to the file at the given path. If the given path already exists, then a backup is created before proceeding.
 def write_file aPath, aContent
   # create a backup
-  if File.exist? aPath
-    backupPath = aPath.dup
+    if File.exist? aPath
+      backupPath = aPath.dup
 
-    while File.exist? backupPath
-      backupPath << '~'
+      while File.exist? backupPath
+        backupPath << '~'
+      end
+
+      FileUtils.cp aPath, backupPath, :preserve => true
     end
 
-    FileUtils.cp aPath, backupPath, :preserve => true
-  end
-
-
-  # write the file
   File.open(aPath, 'w') {|f| f << aContent}
 end
 
@@ -80,34 +77,31 @@ end
 def generate_verilog_bench aModuleInfo, aOutputInfo
 
   # configuration parameters for design under test
-  configDecl = aModuleInfo.paramDecls.inject('') do |acc, decl|
-    acc << "parameter #{decl};\n"
-  end
-
+    configDecl = aModuleInfo.paramDecls.inject('') do |acc, decl|
+      acc << "parameter #{decl};\n"
+    end
 
   # accessors for design under test interface
-  portInitDecl = aModuleInfo.portDecls.inject('') do |acc, decl|
-    { 'input' => 'reg', 'output' => 'wire' }.each_pair do |key, val|
-      decl.sub! %r{\b#{key}\b(.*?)$}, "#{val}\\1;"
+    portInitDecl = aModuleInfo.portDecls.inject('') do |acc, decl|
+      { 'input' => 'reg', 'output' => 'wire' }.each_pair do |key, val|
+        decl.sub! %r{\b#{key}\b(.*?)$}, "#{val}\\1;"
+      end
+
+      decl.strip!
+      acc << decl << "\n"
     end
-
-    decl.strip!
-    acc << decl << "\n"
-  end
-
 
   # instantiation for the design under test
-  instConfigDecl = make_inst_param_decl(aModuleInfo.paramNames)
-  instParamDecl = make_inst_param_decl(aModuleInfo.portNames)
+    instConfigDecl = make_inst_param_decl(aModuleInfo.paramNames)
+    instParamDecl = make_inst_param_decl(aModuleInfo.portNames)
 
-  instDecl = "#{aModuleInfo.name} " << (
-    unless instConfigDecl.empty?
-      '#(' << instConfigDecl << ')'
-    else
-      ''
-    end
-  ) << " #{aOutputInfo.verilogBenchName}#{aOutputInfo.designSuffix} (#{instParamDecl});"
-
+    instDecl = "#{aModuleInfo.name} " << (
+      unless instConfigDecl.empty?
+        '#(' << instConfigDecl << ')'
+      else
+        ''
+      end
+    ) << " #{aOutputInfo.verilogBenchName}#{aOutputInfo.designSuffix} (#{instParamDecl});"
 
   clockSignal = aModuleInfo.portNames.first
 
@@ -183,11 +177,10 @@ def generate_design aModuleInfo, aOutputInfo
     acc << %{@#{port} = vpi_handle_by_name("#{aOutputInfo.verilogBenchName}.#{port}", nil)\n}
   end
 
-
   # make module parameters as class constants
-  paramInitDecl = aModuleInfo.paramDecls.inject('') do |acc, decl|
-    acc << decl.strip.capitalize
-  end
+    paramInitDecl = aModuleInfo.paramDecls.inject('') do |acc, decl|
+      acc << decl.strip.capitalize
+    end
 
   portResetCode = aModuleInfo.inputPortNames[1..-1].inject('') do |acc, port|
     acc << %{@#{port}.hexStrVal = 'x'\n}
@@ -311,32 +304,30 @@ class ModuleInfo
     aDecl =~ %r{module\s+(\w+)\s*(\#\((.*?)\))?\s*\((.*?)\)\s*;}
     @name, paramDecl, portDecl = $1, $3 || '', $4
 
-
     # parse configuration parameters
-    paramDecl.gsub! %r{\bparameter\b}, ''
-    paramDecl.strip!
+      paramDecl.gsub! %r{\bparameter\b}, ''
+      paramDecl.strip!
 
-    @paramDecls = paramDecl.split(/,/)
+      @paramDecls = paramDecl.split(/,/)
 
-    @paramNames = paramDecls.inject([]) do |acc, decl|
-      acc << decl.scan(%r{\w+}).first
-    end
-
+      @paramNames = paramDecls.inject([]) do |acc, decl|
+        acc << decl.scan(%r{\w+}).first
+      end
 
     # parse signal parameters
-    portDecl.gsub! %r{\breg\b}, ''
-    portDecl.strip!
+      portDecl.gsub! %r{\breg\b}, ''
+      portDecl.strip!
 
-    @portDecls = portDecl.split(/,/)
+      @portDecls = portDecl.split(/,/)
 
-    @inputPortNames = []
+      @inputPortNames = []
 
-    @portNames = portDecls.inject([]) do |acc, decl|
-      name = decl.scan(%r{\w+}).last
-      @inputPortNames << name if decl =~ /\binput\b/
+      @portNames = portDecls.inject([]) do |acc, decl|
+        name = decl.scan(%r{\w+}).last
+        @inputPortNames << name if decl =~ /\binput\b/
 
-      acc << name
-    end
+        acc << name
+      end
   end
 end
 
