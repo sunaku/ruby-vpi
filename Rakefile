@@ -179,6 +179,11 @@ task :default => :build
       uploadWithoutSvn "#{SSH_URL}/doc/", *FileList['doc/xhtml/*']
     end
 
+    desc 'Connect to website FTP.'
+    task :ftp do
+      sh 'lftp', "sftp://#{SSH_URL}"
+    end
+
 # release
   desc "Prepare release packages."
   task :pkg => ['HISTORY'] do |t|
