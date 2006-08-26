@@ -3,6 +3,27 @@ h1. Release history
 This document is a record of important changes that have occurred with each release of "Ruby-VPI":http://ruby-vpi.rubyforge.org.
 
 
+h1. Version 0.9.2 (2006-08-26)
+
+h2. Summary
+
+This release beautifies generated tests, adds checks to find signal width bugs, and includes a new tool.
+
+h2. Details
+
+* The test generator now uses ERB templates which ensures nice indentation of generated output.
+
+* The test generator now decouples Ruby-VPI paths from Verilog benches via the RUBYLIB environment variable.
+
+* A tool which converts Verilog headers into Ruby has been added.
+
+* @put_value()@ now returns the value it puts. Therefore, it is easier to chain together a series of assignments: @foo.intVal = bar.intVal = baz.intVal = 10@
+
+* @put_value()@ now verifies that the value it puts was written correctly. This helps to find bugs regarding invalid assumptions about the number of bits supported by a signal.
+
+* The source code is now indented with two spaces instead of one tab character.
+
+
 h1. Version 0.9.1 (2006-08-09)
 
 h2. Summary

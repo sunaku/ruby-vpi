@@ -13,12 +13,12 @@ h1. Pending tasks
 
 * add support for GPL CVer in the test runner template
 
-* decouple code generation with $RUBYLIB and erb
-
 
 h1. Finished tasks
 
 * add support for ESL prototyping (like SystemC)
+
+* decouple code generation with $RUBYLIB and erb
 
 
 h1. Obsolete tasks
