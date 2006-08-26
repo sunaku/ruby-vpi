@@ -50,8 +50,6 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
-require 'optparse'
-require 'rdoc/usage'
 require 'fileutils'
 
 
@@ -394,64 +392,68 @@ class OutputInfo
   end
 end
 
+if $0 == __FILE__
+  require 'optparse'
+  require 'rdoc/usage'
 
-# parse command-line options
-  optSpecFmt = :Generic
-  optTestName = 'test'
+  # parse command-line options
+    optSpecFmt = :Generic
+    optTestName = 'test'
 
-  optsParser = OptionParser.new
-  optsParser.on('-h', '--help', 'show this help message') {raise}
-  optsParser.on('-u', '--unit', 'use Test::Unit specification format') {|val| optSpecFmt = :UnitTest if val}
-  optsParser.on('-r', '--rspec', 'use RSpec specification format') {|val| optSpecFmt = :RSpec if val}
-  optsParser.on('-n', '--name NAME', 'specify name of generated test') {|val| optTestName = val}
+    optsParser = OptionParser.new
+    optsParser.on('-h', '--help', 'show this help message') {raise}
+    optsParser.on('-u', '--unit', 'use Test::Unit specification format') {|val| optSpecFmt = :UnitTest if val}
+    optsParser.on('-r', '--rspec', 'use RSpec specification format') {|val| optSpecFmt = :RSpec if val}
+    optsParser.on('-n', '--name NAME', 'specify name of generated test') {|val| optTestName = val}
 
-  begin
-    optsParser.parse!(ARGV)
-  rescue
-    at_exit {puts optsParser}
-    RDoc::usage	# NOTE: this terminates the program
-  end
+    begin
+      optsParser.parse!(ARGV)
+    rescue
+      at_exit {puts optsParser}
+      RDoc::usage	# NOTE: this terminates the program
+    end
 
-  puts "Using name `#{optTestName}' for generated test."
-  puts "Using #{optSpecFmt} specification format."
+    puts "Using name `#{optTestName}' for generated test."
+    puts "Using #{optSpecFmt} specification format."
 
-# sanitize the input
-  input = ARGF.read
+  # sanitize the input
+    input = ARGF.read
 
-  # remove single-line comments
-    input.gsub! %r{//.*$}, ''
+    # remove single-line comments
+      input.gsub! %r{//.*$}, ''
 
-  # collapse the input into a single line
-    input.tr! "\n", ''
+    # collapse the input into a single line
+      input.tr! "\n", ''
 
-  # remove multi-line comments
-    input.gsub! %r{/\*.*?\*/}, ''
+    # remove multi-line comments
+      input.gsub! %r{/\*.*?\*/}, ''
 
-# parse the input
-  input.scan(%r{module.*?;}).each do |moduleDecl|
-    puts
+  # parse the input
+    input.scan(%r{module.*?;}).each do |moduleDecl|
+      puts
 
-    m = ModuleInfo.new(moduleDecl).freeze
-    puts "Parsed module: #{m.name}"
+      m = ModuleInfo.new(moduleDecl).freeze
+      puts "Parsed module: #{m.name}"
 
-    # generate output
-      o = OutputInfo.new(m.name, optSpecFmt, optTestName, File.dirname(File.dirname(__FILE__))).freeze
+      # generate output
+        o = OutputInfo.new(m.name, optSpecFmt, optTestName, File.dirname(File.dirname(__FILE__))).freeze
 
-      write_file o.runnerPath, generate_runner(m, o)
-      puts "- Generated runner:           #{o.runnerPath}"
+        write_file o.runnerPath, generate_runner(m, o)
+        puts "- Generated runner:           #{o.runnerPath}"
 
-      write_file o.verilogBenchPath, generate_verilog_bench(m, o)
-      puts "- Generated bench:            #{o.verilogBenchPath}"
+        write_file o.verilogBenchPath, generate_verilog_bench(m, o)
+        puts "- Generated bench:            #{o.verilogBenchPath}"
 
-      write_file o.rubyBenchPath, generate_ruby_bench(m, o)
-      puts "- Generated bench:            #{o.rubyBenchPath}"
+        write_file o.rubyBenchPath, generate_ruby_bench(m, o)
+        puts "- Generated bench:            #{o.rubyBenchPath}"
 
-      write_file o.designPath, generate_design(m, o)
-      puts "- Generated design:           #{o.designPath}"
+        write_file o.designPath, generate_design(m, o)
+        puts "- Generated design:           #{o.designPath}"
 
-      write_file o.protoPath, generate_proto(m, o)
-      puts "- Generated prototype:        #{o.protoPath}"
+        write_file o.protoPath, generate_proto(m, o)
+        puts "- Generated prototype:        #{o.protoPath}"
 
-      write_file o.specPath, generate_spec(m, o)
-      puts "- Generated specification:    #{o.specPath}"
-  end
+        write_file o.specPath, generate_spec(m, o)
+        puts "- Generated specification:    #{o.specPath}"
+    end
+end
