@@ -52,6 +52,40 @@
 
 
 
+require 'fileutils'
+
+# Writes the given contents to the file at the given path. If the given path already exists, then a backup is created before proceeding.
+def write_file aPath, aContent
+  # create a backup
+    if File.exist? aPath
+      backupPath = aPath.dup
+
+      while File.exist? backupPath
+        backupPath << '~'
+      end
+
+      FileUtils.cp aPath, backupPath, :preserve => true
+    end
+
+  File.open(aPath, 'w') {|f| f << aContent}
+end
+
+
+
+$: << File.join(File.dirname(__FILE__), '..', 'lib')
+require 'eruby'
+
+# Template used for generating output.
+class Template < ERB
+  TEMPLATE_PATH = __FILE__.sub %r{\.rb$}, '_tpl'
+
+  def initialize aName
+    super File.read(File.join(TEMPLATE_PATH, aName))
+  end
+end
+
+
+
 # Holds information about a parsed Verilog module.
 class ModuleInfo
   attr_reader :name, :portNames, :paramNames, :portDecls, :paramDecls, :inputPortNames
@@ -84,6 +118,24 @@ class ModuleInfo
 
         acc << name
       end
+  end
+
+  # Parses the given input and returns an array of Verilog 2001 module declarations.
+  def self.parse aInput
+    # sanitize the input
+      input = aInput.dup
+
+      # remove single-line comments
+        input.gsub! %r{//.*$}, ''
+
+      # collapse the input into a single line
+        input.tr! "\n", ''
+
+      # remove multi-line comments
+        input.gsub! %r{/\*.*?\*/}, ''
+
+    # parse declarations
+      input.scan(%r{module.*?;})
   end
 end
 
@@ -141,48 +193,10 @@ class OutputInfo
   end
 end
 
+
+
 if $0 == __FILE__
-  require 'fileutils'
-
-  # Writes the given contents to the file at the given path. If the given path already exists, then a backup is created before proceeding.
-  def write_file aPath, aContent
-    # create a backup
-      if File.exist? aPath
-        backupPath = aPath.dup
-
-        while File.exist? backupPath
-          backupPath << '~'
-        end
-
-        FileUtils.cp aPath, backupPath, :preserve => true
-      end
-
-    File.open(aPath, 'w') {|f| f << aContent}
-  end
-
-
   # obtain templates for output generation
-    require 'erb'
-
-    class Template < ERB
-      TEMPLATE_PATH = __FILE__.sub %r{\.rb$}, '_tpl'
-
-      def initialize aName
-        input = File.read(File.join(TEMPLATE_PATH, aName))
-
-        # ensure that only <%= ... %> generates output
-          input.gsub! %r{<%=.*?%>}m do |s|
-            if $' =~ /^\n/
-              s << $&
-            else
-              s
-            end
-          end
-
-        super input, 0, '>'
-      end
-    end
-
     VERILOG_BENCH_TEMPLATE = Template.new('bench.v')
     RUBY_BENCH_TEMPLATE = Template.new('bench.rb')
     DESIGN_TEMPLATE = Template.new('design.rb')
@@ -215,47 +229,33 @@ if $0 == __FILE__
     puts "Using #{optSpecFmt} specification format."
 
 
-  # sanitize the input
-    input = ARGF.read
+  ModuleInfo.parse(ARGF.read).each do |moduleDecl|
+    puts
 
-    # remove single-line comments
-      input.gsub! %r{//.*$}, ''
+    m = ModuleInfo.new(moduleDecl).freeze
+    puts "Parsed module: #{m.name}"
 
-    # collapse the input into a single line
-      input.tr! "\n", ''
+    o = OutputInfo.new(m.name, optSpecFmt, optTestName, File.dirname(File.dirname(__FILE__))).freeze
 
-    # remove multi-line comments
-      input.gsub! %r{/\*.*?\*/}, ''
+    # generate output
+      aModuleInfo, aOutputInfo = m, o
 
+      write_file o.runnerPath, RUNNER_TEMPLATE.result(binding)
+      puts "- Generated runner:           #{o.runnerPath}"
 
-  # parse the input
-    input.scan(%r{module.*?;}).each do |moduleDecl|
-      puts
+      write_file o.verilogBenchPath, VERILOG_BENCH_TEMPLATE.result(binding)
+      puts "- Generated bench:            #{o.verilogBenchPath}"
 
-      m = ModuleInfo.new(moduleDecl).freeze
-      puts "Parsed module: #{m.name}"
+      write_file o.rubyBenchPath, RUBY_BENCH_TEMPLATE.result(binding)
+      puts "- Generated bench:            #{o.rubyBenchPath}"
 
-      o = OutputInfo.new(m.name, optSpecFmt, optTestName, File.dirname(File.dirname(__FILE__))).freeze
+      write_file o.designPath, DESIGN_TEMPLATE.result(binding)
+      puts "- Generated design:           #{o.designPath}"
 
-      # generate output
-        aModuleInfo, aOutputInfo = m, o
+      write_file o.protoPath, PROTO_TEMPLATE.result(binding)
+      puts "- Generated prototype:        #{o.protoPath}"
 
-        write_file o.runnerPath, RUNNER_TEMPLATE.result(binding)
-        puts "- Generated runner:           #{o.runnerPath}"
-
-        write_file o.verilogBenchPath, VERILOG_BENCH_TEMPLATE.result(binding)
-        puts "- Generated bench:            #{o.verilogBenchPath}"
-
-        write_file o.rubyBenchPath, RUBY_BENCH_TEMPLATE.result(binding)
-        puts "- Generated bench:            #{o.rubyBenchPath}"
-
-        write_file o.designPath, DESIGN_TEMPLATE.result(binding)
-        puts "- Generated design:           #{o.designPath}"
-
-        write_file o.protoPath, PROTO_TEMPLATE.result(binding)
-        puts "- Generated prototype:        #{o.protoPath}"
-
-        write_file o.specPath, SPEC_TEMPLATE.result(binding)
-        puts "- Generated specification:    #{o.specPath}"
-    end
+      write_file o.specPath, SPEC_TEMPLATE.result(binding)
+      puts "- Generated specification:    #{o.specPath}"
+  end
 end
