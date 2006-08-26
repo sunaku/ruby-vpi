@@ -91,7 +91,7 @@ class ModuleInfo
   attr_reader :name, :portNames, :paramNames, :portDecls, :paramDecls, :inputPortNames
 
   def initialize aDecl
-    aDecl =~ %r{module\s+(\w+)\s*(\#\((.*?)\))?\s*\((.*?)\)\s*;}
+    aDecl =~ %r{module\s+(\w+)\s*(\#\((.*?)\))?\s*\((.*?)\)\s*;}m
     @name, paramDecl, portDecl = $1, $3 || '', $4
 
     # parse configuration parameters
@@ -120,22 +120,17 @@ class ModuleInfo
       end
   end
 
-  # Parses the given input and returns an array of Verilog 2001 module declarations.
-  def self.parse aInput
-    # sanitize the input
-      input = aInput.dup
+  # Parses and returns Verilog 2001 module declarations from the given input.
+  def self.parse_declarations aInput
+    input = aInput.dup
 
-      # remove single-line comments
-        input.gsub! %r{//.*$}, ''
+    # remove single-line comments
+      input.gsub! %r{//.*$}, ''
 
-      # collapse the input into a single line
-        input.tr! "\n", ''
+    # remove multi-line comments
+      input.gsub! %r{/\*.*?\*/}m, ''
 
-      # remove multi-line comments
-        input.gsub! %r{/\*.*?\*/}, ''
-
-    # parse declarations
-      input.scan(%r{module.*?;})
+    input.scan %r{module.*?;}m
   end
 end
 
@@ -229,7 +224,7 @@ if $0 == __FILE__
     puts "Using #{optSpecFmt} specification format."
 
 
-  ModuleInfo.parse(ARGF.read).each do |moduleDecl|
+  ModuleInfo.parse_declarations(ARGF.read).each do |moduleDecl|
     puts
 
     m = ModuleInfo.new(moduleDecl).freeze
