@@ -27,7 +27,7 @@ class ERB
   def initialize aInput, *aArgs
     # ensure that only <%= ... %> tags generate output
       input = aInput.gsub %r{<%=.*?%>}m do |s|
-        if ($' =~ /\r?\n/).zero?
+        if ($' =~ /\r?\n/) == 0
           s << $&
         else
           s

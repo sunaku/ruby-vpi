@@ -1,4 +1,5 @@
-# This is the Ruby side of the bench.
+## This is the Ruby side of the bench. ##
+
 <%
   case aOutputInfo.specFormat
     when :UnitTest

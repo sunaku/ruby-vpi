@@ -1,4 +1,5 @@
-# A prototype of the design under test.
+## This is a prototype of the design under test. ##
+
 class <%= aOutputInfo.protoClassName %> < <%= aOutputInfo.designClassName %>
   def simulate!
     # read inputs
