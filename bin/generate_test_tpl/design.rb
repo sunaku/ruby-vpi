@@ -13,14 +13,14 @@ class <%= aOutputInfo.designClassName %>
   %>
 
   def initialize
-  <% aModuleInfo.portNames.each do |port| %>
+<% aModuleInfo.portNames.each do |port| %>
     @<%= port %> = vpi_handle_by_name("<%= aOutputInfo.verilogBenchName %>.<%= port %>", nil)
-  <% end %>
+<% end %>
   end
 
   def reset!
-  <% aModuleInfo.inputPortNames[1..-1].each do |port| %>
+<% aModuleInfo.inputPortNames[1..-1].each do |port| %>
     @<%= port %>.hexStrVal = 'x'
-  <% end %>
+<% end %>
   end
 end

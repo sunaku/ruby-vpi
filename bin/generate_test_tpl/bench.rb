@@ -17,12 +17,15 @@ require 'rspec'
   setup_bench '<%= aModuleInfo.name + aOutputInfo.suffix %>', :<%= aOutputInfo.protoClassName %>
 
 # service the $ruby_relay() callback
-  <%=
-    case aOutputInfo.specFormat
-      when :UnitTest, :RSpec
-        "# ... #{aOutputInfo.specFormat} will take control from here."
-
-      else
-        aOutputInfo.specClassName + '.new'
-    end
-  %>
+<%
+  case aOutputInfo.specFormat
+    when :UnitTest, :RSpec
+%>
+  # The <%= aOutputInfo.specFormat %> library will take control henceforth.
+<%
+  else
+%>
+  <%= aOutputInfo.specClassName + '.new' %>
+<%
+  end
+%>

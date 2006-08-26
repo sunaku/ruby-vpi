@@ -164,14 +164,32 @@ if $0 == __FILE__
   # obtain templates for output generation
     require 'erb'
 
-    TEMPLATE_PATH = __FILE__.sub /\.rb$/, '_tpl'
+    class Template < ERB
+      TEMPLATE_PATH = __FILE__.sub %r{\.rb$}, '_tpl'
 
-    VERILOG_BENCH_TEMPLATE = ERB.new(File.read(File.join(TEMPLATE_PATH, 'bench.v')))
-    RUBY_BENCH_TEMPLATE = ERB.new(File.read(File.join(TEMPLATE_PATH, 'bench.rb')))
-    DESIGN_TEMPLATE = ERB.new(File.read(File.join(TEMPLATE_PATH, 'design.rb')))
-    PROTO_TEMPLATE = ERB.new(File.read(File.join(TEMPLATE_PATH, 'proto.rb')))
-    SPEC_TEMPLATE = ERB.new(File.read(File.join(TEMPLATE_PATH, 'spec.rb')))
-    RUNNER_TEMPLATE = ERB.new(File.read(File.join(TEMPLATE_PATH, 'runner.rake')))
+      def initialize aName
+        input = File.read(File.join(TEMPLATE_PATH, aName))
+
+        # ensure that only <%= ... %> generates output
+          input.gsub! %r{<%=.*?%>}m do |s|
+            if $' =~ /^\n/
+              s << $&
+            else
+              s
+            end
+          end
+
+        super input, 0, '>'
+      end
+    end
+
+    VERILOG_BENCH_TEMPLATE = Template.new('bench.v')
+    RUBY_BENCH_TEMPLATE = Template.new('bench.rb')
+    DESIGN_TEMPLATE = Template.new('design.rb')
+    PROTO_TEMPLATE = Template.new('proto.rb')
+    SPEC_TEMPLATE = Template.new('spec.rb')
+    RUNNER_TEMPLATE = Template.new('runner.rake')
+
 
   # parse command-line options
     require 'optparse'
