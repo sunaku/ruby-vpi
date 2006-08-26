@@ -15,12 +15,12 @@ context "A resetted counter's value" do
   end
 
   specify "should be zero" do
-    @design.count.intVal.should_be 0
+    @design.count.intVal.should_equal 0
   end
 
   specify "should increment by one count upon each rising clock edge" do
     LIMIT.times do |i|
-      @design.count.intVal.should_be i
+      @design.count.intVal.should_equal i
 
       # advance the clock
         relay_verilog
@@ -35,13 +35,13 @@ context "A counter with the maximum value" do
 
     # increment the counter to maximum value
       MAX.times do relay_verilog end
-      @design.count.intVal.should_be MAX
+      @design.count.intVal.should_equal MAX
   end
 
   specify "should overflow upon increment" do
     # increment the counter
       relay_verilog
 
-    @design.count.intVal.should_be 0
+    @design.count.intVal.should_equal 0
   end
 end

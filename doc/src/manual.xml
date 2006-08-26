@@ -1149,12 +1149,12 @@ Parsed module: counter
   <token>end</token>
 
   <function>specify</function> <literal>"should be zero"</literal> <token>do</token>
-    <varname>@design</varname>.<function>count</function>.<function>intVal</function>.<function>should_be</function> <literal>0</literal>
+    <varname>@design</varname>.<function>count</function>.<function>intVal</function>.<function>should_equal</function> <literal>0</literal>
   <token>end</token>
 
   <function>specify</function> <literal>"should increment by one count upon each rising clock edge"</literal> <token>do</token>
     <constant>LIMIT</constant>.<function>times</function> <token>do</token> |<varname>i</varname>|
-      <varname>@design</varname>.<function>count</function>.<function>intVal</function>.<function>should_be</function> <varname>i</varname>
+      <varname>@design</varname>.<function>count</function>.<function>intVal</function>.<function>should_equal</function> <varname>i</varname>
       <function>relay_verilog</function> <remark># advance the clock</remark>
     <token>end</token>
   <token>end</token>
@@ -1167,12 +1167,12 @@ Parsed module: counter
 
     <remark># increment the counter to maximum value</remark>
     <constant>MAX</constant>.<function>times</function> <token>do</token> <function>relay_verilog</function> <token>end</token>
-    <varname>@design</varname>.<function>count</function>.<function>intVal</function>.<function>should_be</function> <constant>MAX</constant>
+    <varname>@design</varname>.<function>count</function>.<function>intVal</function>.<function>should_equal</function> <constant>MAX</constant>
   <token>end</token>
 
   <function>specify</function> <literal>"should overflow upon increment"</literal> <token>do</token>
     <function>relay_verilog</function> <remark># increment the counter</remark>
-    <varname>@design</varname>.<function>count</function>.<function>intVal</function>.<function>should_be</function> <literal>0</literal>
+    <varname>@design</varname>.<function>count</function>.<function>intVal</function>.<function>should_equal</function> <literal>0</literal>
   <token>end</token>
 <token>end</token>
 </programlisting>

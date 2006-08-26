@@ -20,5 +20,7 @@ h1. Finished tasks
 
 * decouple code generation with $RUBYLIB and erb
 
+* change should_be to should_equal in examplesm
+
 
 h1. Obsolete tasks
