@@ -1411,10 +1411,10 @@ Finished in 0.006766 seconds.
           <example id="ex..TestFoo">
             <title>Part of a bench which instantiates a &v; design</title>
 <programlisting>
-module TestFoo;
+<token>module</token> TestFoo;
   <type>reg</type> <varname>clk_reg</varname>;
   Foo <varname>my_foo</varname>(<parameter>.clk</parameter>(<varname>clk_reg</varname>));
-endmodule
+<token>endmodule</token>
 </programlisting>
           </example>
         </section>
@@ -1434,9 +1434,9 @@ endmodule
             <para>Here the <varname>clk_reg</varname> register is not connected to anything.</para>
 
 <programlisting>
-module TestFoo;
+<token>module</token> TestFoo;
   <type>reg</type> <varname>clk_reg</varname>;
-endmodule
+<token>endmodule</token>
 </programlisting>
           </example>
 
@@ -1446,11 +1446,11 @@ endmodule
             <para>Here the <varname>clk_reg</varname> register is connected to the <varname>clk_wire</varname> wire.</para>
 
 <programlisting>
-module TestFoo;
+<token>module</token> TestFoo;
   <type>reg</type> <varname>clk_reg</varname>;
   <type>wire</type> <varname>clk_wire</varname>;
-  assign <varname>clk_wire</varname> = <varname>clk_reg</varname>;
-endmodule
+  <token>assign</token> <varname>clk_wire</varname> = <varname>clk_reg</varname>;
+<token>endmodule</token>
 </programlisting>
           </example>
         </section>
@@ -1459,9 +1459,9 @@ endmodule
       <section id="problems.ivl.vpi_reset">
         <title>Vpi::reset</title>
 
-        <note>
+        <caution>
           <para>This method was removed in release 0.3 of &rv;, and is deprecated. Please use <code><constant>Vpi</constant>::<function>vpi_control</function>(<parameter><constant>VpiReset</constant></parameter>)</code> instead.</para>
-        </note>
+        </caution>
 
         <para>In version 0.8 of Icarus &v;, the <code><function>vpi_control</function>(<parameter><constant>vpiReset</constant></parameter>)</code> &vpi; function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.</para>
       </section>
