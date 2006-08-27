@@ -831,7 +831,7 @@
               <varlistentry>
                 <term><ulink url="http://www.pragmatic-c.com/gpl-cVer/">GPL CVer</ulink></term>
                 <listitem>
-                  <para>Version 2.11a is not yet acceptable.</para>
+                  <para>Version 2.11a or newer is acceptable.</para>
                 </listitem>
               </varlistentry>
 

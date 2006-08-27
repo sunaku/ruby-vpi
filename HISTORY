@@ -3,6 +3,15 @@ h1. Release history
 This document is a record of important changes that have occurred with each release of "Ruby-VPI":http://ruby-vpi.rubyforge.org.
 
 
+h1. Version 0.9.3 (not yet released)
+
+h2. Summary
+
+h2. Details
+
+* Ruby-VPI now works with the GPL CVer simulator.
+
+
 h1. Version 0.9.2 (2006-08-26)
 
 h2. Summary

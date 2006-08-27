@@ -11,8 +11,6 @@ h1. Pending tasks
 * GHDL
 ** need way to invoke VPI tasks from VHDL, like @$ruby_init();@
 
-* add support for GPL CVer in the test runner template
-
 
 h1. Finished tasks
 
@@ -20,7 +18,9 @@ h1. Finished tasks
 
 * decouple code generation with $RUBYLIB and erb
 
-* change should_be to should_equal in examplesm
+* change should_be to should_equal in examples
+
+* add support for GPL CVer in the test runner template
 
 
 h1. Obsolete tasks
