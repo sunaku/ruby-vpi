@@ -11,6 +11,8 @@ h1. Pending tasks
 * GHDL simulator supports VPI
 ** need way to invoke VPI tasks from VHDL, like @$ruby_init();@
 
+* smarter test generation, which adjusts to user modifications in previously generated output
+
 
 h1. Finished tasks
 

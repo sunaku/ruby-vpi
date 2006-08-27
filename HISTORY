@@ -2,8 +2,17 @@ h1. Release history
 
 This document is a record of important changes that have occurred with each release of "Ruby-VPI":http://ruby-vpi.rubyforge.org.
 
+h2. Version numbering system
 
-h1. Version 3.9.0 (not yet released)
+We _strictly_ follow a version numbering system based on the GNU "major.minor.patch" convention[1], in which:
+* an increase in the *major* number indicates that major changes, which are *functionally incompatible* with previous major versions, have occurred. Thus, what may have worked in the previous version may not work in the new one.
+* an increase in the *minor* number indicates that minor changes, which are are *functionally compatible* with previous minor versions, have occurred. These changes may include new features and bug fixes.
+* an increase in the *patch* number indicates that changes, which are are *functionally compatible* with previous minor versions, have occurred. However, the functionality has not changed and no new features have been added. These changes may include bug fixes.
+
+fn1. C. Gross, "Explaining Open Source Version Numbers", [Online document], 2005 Nov 28, [cited 2006 Aug 27], Available HTTP: "http://ablog.apress.com/?p=738":http://ablog.apress.com/?p=738
+
+
+h1. Version 6.3.0 (not yet released)
 
 h2. Summary
 
@@ -11,14 +20,7 @@ h2. Details
 
 * Ruby-VPI now works with the GPL CVer simulator.
 
-h3. Version numbering
-
-We now _strictly_ follow the GNU "major.minor.patch" version numbering system[1], in which:
-* the *major* number indicates that major changes in the functionality have occurred. Thus, previous versions may not be compatible with the current version.
-* the *minor* number indicates that minor changes, such as new features and bug fixes, in the functionality have occurred. However, these changes are functionally compatible with previous minor versions.
-* the *patch* number indicates that changes, such as bug fixes, have occurred; however, the functionality has not changed and no new features have been added.
-
-In addition, the version numbers of previous releases have been revised according to the new numbering system:
+* We now _strictly_ follow a version numbering system based on the GNU "major.minor.patch" convention. The version numbers of previous releases have been revised accordingly:
 |_. Release date |_. Original version number |_. New version number |
 | 1999-10-31 | 0.0   | 0.0.0 |
 | 2006-02-26 | 0.1   | 1.0.0 |
@@ -26,18 +28,16 @@ In addition, the version numbers of previous releases have been revised accordin
 | 2006-04-23 | 0.3   | 3.0.0 |
 | 2006-04-28 | 0.4   | 3.1.0 |
 | 2006-05-13 | 0.5   | 3.2.0 |
-| 2006-05-25 | 0.6   | 3.3.0 |
-| 2006-07-22 | 0.7   | 3.4.0 |
-| 2006-07-29 | 0.8   | 3.5.0 |
-| 2006-08-04 | 0.8.1 | 3.5.1 |
-| 2006-08-07 | 0.9   | 3.6.0 |
-| 2006-08-09 | 0.9.1 | 3.7.0 |
-| 2006-08-26 | 0.9.2 | 3.8.0 |
-
-fn1. C. Gross, "Explaining Open Source Version Numbers", [Online document], 2005 Nov 28, [cited 2006 Aug 27], Available HTTP: "http://ablog.apress.com/?p=738":http://ablog.apress.com/?p=738
+| 2006-05-25 | 0.6   | 4.0.0 |
+| 2006-07-22 | 0.7   | 5.0.0 |
+| 2006-07-29 | 0.8   | 5.1.0 |
+| 2006-08-04 | 0.8.1 | 5.1.1 |
+| 2006-08-07 | 0.9   | 6.0.0 |
+| 2006-08-09 | 0.9.1 | 6.1.0 |
+| 2006-08-26 | 0.9.2 | 6.2.0 |
 
 
-h1. Version 3.8.0 (2006-08-26)
+h1. Version 6.2.0 (2006-08-26)
 
 h2. Summary
 
@@ -58,7 +58,7 @@ h2. Details
 * The source code is now indented with two spaces instead of one tab character.
 
 
-h1. Version 3.7.0 (2006-08-09)
+h1. Version 6.1.0 (2006-08-09)
 
 h2. Summary
 
@@ -73,7 +73,7 @@ h2. Details
 * Boolean VPI property values are now correctly converted into Ruby truth values.
 
 
-h1. Version 3.6.0 (2006-08-07)
+h1. Version 6.0.0 (2006-08-07)
 
 h2. Summary
 
@@ -96,7 +96,7 @@ h2. Details
 * The user manual has been revised for consistency.
 
 
-h1. Version 3.5.1 (2006-08-04)
+h1. Version 5.1.1 (2006-08-04)
 
 h2. Summary
 
@@ -113,7 +113,7 @@ h2. Acknowledgment
 * Thanks to Todd Nagengast and Matt Fischler for notifying me about unreadable text in the user manual.
 
 
-h1. Version 3.5.0 (2006-07-29)
+h1. Version 5.1.0 (2006-07-29)
 
 h2. Summary
 
@@ -148,7 +148,7 @@ h2. Acknowledgment
 * Thanks to Phil Tomson for correcting the URL of the RHDL website, in the user manual.
 
 
-h1. Version 3.4.0 (2006-07-22)
+h1. Version 5.0.0 (2006-07-22)
 
 h2. Summary
 
@@ -175,7 +175,7 @@ h2. Acknowledgment
 * Thanks to Jan Decaluwe for correcting the description of MyHDL in the user manual.
 
 
-h1. Version 3.3.0 (2006-05-25)
+h1. Version 4.0.0 (2006-05-25)
 
 h2. Summary
 
