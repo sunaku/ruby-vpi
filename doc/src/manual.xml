@@ -1461,7 +1461,7 @@ Finished in 0.006766 seconds.
 
         <caution>
           <title>Deprecated method</title>
-          <para>The <function>vpi_control</function> method was removed in release 2.1.0 (2006-04-17) of &rv;, and is deprecated. Please use <code><constant>Vpi</constant>::<function>vpi_control</function>(<parameter><constant>VpiReset</constant></parameter>)</code> instead.</para>
+          <para>The <function>vpi_control</function> method was removed in release 3.0.0 (2006-04-23) of &rv;, and is deprecated. Please use <code><constant>Vpi</constant>::<function>vpi_control</function>(<parameter><constant>VpiReset</constant></parameter>)</code> instead.</para>
         </caution>
 
         <para>In version 0.8 of Icarus &v;, the <code><function>vpi_control</function>(<parameter><constant>vpiReset</constant></parameter>)</code> &vpi; function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.</para>
