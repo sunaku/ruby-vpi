@@ -3,7 +3,7 @@ h1. Release history
 This document is a record of important changes that have occurred with each release of "Ruby-VPI":http://ruby-vpi.rubyforge.org.
 
 
-h1. Version 0.9.3 (not yet released)
+h1. Version 2.10.0 (not yet released)
 
 h2. Summary
 
@@ -11,8 +11,32 @@ h2. Details
 
 * Ruby-VPI now works with the GPL CVer simulator.
 
+h3. Version numbering
 
-h1. Version 0.9.2 (2006-08-26)
+We now _strictly_ follow the GNU "major.minor.patch" version numbering system[1], in which:
+* the *major* number indicates that major changes in the functionality have occurred. Thus, previous versions may not be compatible with the current version.
+* the *minor* number indicates that  minor changes, such as features and bug fixes, in the functionality have occurred. However, previous minor versions, which have the same major number as the current version, are compatible with the current version.
+* the *patch* number indicates that changes, such as bug fixes, have occurred; however, the functionality has not changed and no new features have been added.
+
+In addition, the version numbers of previous releases have been revised according to the new numbering system:
+* 0.0 (1999-10-31) &rarr; 0.0.0
+* 0.1 (2006-02-26) &rarr; 1.0.0
+* 0.2 (2006-04-17) &rarr; 2.0.0
+* 0.3 (2006-04-23) &rarr; 2.1.0
+* 0.4 (2006-04-28) &rarr; 2.2.0
+* 0.5 (2006-05-13) &rarr; 2.3.0
+* 0.6 (2006-05-25) &rarr; 2.4.0
+* 0.7 (2006-07-22) &rarr; 2.5.0
+* 0.8 (2006-07-29) &rarr; 2.6.0
+* 0.8.1 (2006-08-04) &rarr; 2.6.1
+* 0.9 (2006-08-07) &rarr; 2.7.0
+* 0.9.1 (2006-08-09) &rarr; 2.8.0
+* 0.9.2 (2006-08-26) &rarr; 2.9.0
+
+fn1. C. Gross, "Explaining Open Source Version Numbers", [Online document], 2005 Nov 28, [cited 2006 Aug 27], Available HTTP: "http://ablog.apress.com/?p=738":http://ablog.apress.com/?p=738
+
+
+h1. Version 2.9.0 (2006-08-26)
 
 h2. Summary
 
@@ -33,7 +57,7 @@ h2. Details
 * The source code is now indented with two spaces instead of one tab character.
 
 
-h1. Version 0.9.1 (2006-08-09)
+h1. Version 2.8.0 (2006-08-09)
 
 h2. Summary
 
@@ -48,7 +72,7 @@ h2. Details
 * Boolean VPI property values are now correctly converted into Ruby truth values.
 
 
-h1. Version 0.9 (2006-08-07)
+h1. Version 2.7.0 (2006-08-07)
 
 h2. Summary
 
@@ -71,7 +95,7 @@ h2. Details
 * The user manual has been revised for consistency.
 
 
-h1. Version 0.8.1 (2006-08-04)
+h1. Version 2.6.1 (2006-08-04)
 
 h2. Summary
 
@@ -88,7 +112,7 @@ h2. Acknowledgment
 * Thanks to Todd Nagengast and Matt Fischler for notifying me about unreadable text in the user manual.
 
 
-h1. Version 0.8 (2006-07-29)
+h1. Version 2.6.0 (2006-07-29)
 
 h2. Summary
 
@@ -123,7 +147,7 @@ h2. Acknowledgment
 * Thanks to Phil Tomson for correcting the URL of the RHDL website, in the user manual.
 
 
-h1. Version 0.7 (2006-07-22)
+h1. Version 2.5.0 (2006-07-22)
 
 h2. Summary
 
@@ -150,7 +174,7 @@ h2. Acknowledgment
 * Thanks to Jan Decaluwe for correcting the description of MyHDL in the user manual.
 
 
-h1. Version 0.6 (2006-05-25)
+h1. Version 2.4.0 (2006-05-25)
 
 h2. Summary
 
@@ -176,7 +200,7 @@ h2. Acknowledgment
 * Thanks to Jose Renau for solving the problem of strange delays that occurred whenever a design was reset.
 
 
-h1. Version 0.5 (2006-05-13)
+h1. Version 2.3.0 (2006-05-13)
 
 h2. Summary
 
@@ -199,7 +223,7 @@ h2. Acknowledgment
 * Thanks to Scott L Holmes for helping me "use the RSpec library without its runner":http://article.gmane.org/gmane.comp.lang.ruby.general/150087 program.
 
 
-h1. Version 0.4 (2006-04-28)
+h1. Version 2.2.0 (2006-04-28)
 
 h2. Summary
 
@@ -222,7 +246,7 @@ h2. Details
 ** Ruby 1.8.4 and Mentor Modelsim 6.1d on x86_64 GNU/Linux
 
 
-h1. Version 0.3 (2006-04-23)
+h1. Version 2.1.0 (2006-04-23)
 
 h2. Summary
 
@@ -250,7 +274,7 @@ h2. Acknowledgment
 * Thanks to the "SWIG developers":http://www.swig.org/guilty.html for making this project _much_ easier! ;-)
 
 
-h1. Version 0.2 (2006-04-17)
+h1. Version 2.0.0 (2006-04-17)
 
 h2. Summary
 
@@ -277,7 +301,7 @@ h2. Acknowledgment
 * Thanks to Nobu Nakada for explaining the "cross-thread violation on rb_gc()":http://article.gmane.org/gmane.comp.lang.ruby.general/146653 error.
 
 
-h1. Version 0.1 (2006-02-26)
+h1. Version 1.0.0 (2006-02-26)
 
 h2. Summary
 
@@ -319,7 +343,7 @@ h2. Acknowledgment
 * Thanks to Ross Bamford, Eric Hodel, and Yukihiro Matsumoto for "helping me discover":http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/180662 why the @SystemStackError@ was happening.
 
 
-h1. Version 0.0 (1999-10-31)
+h1. Version 0.0.0 (1999-10-31)
 
 h2. Summary
 

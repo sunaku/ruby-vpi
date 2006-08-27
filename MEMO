@@ -8,7 +8,7 @@ h1. Pending tasks
 * file bug report for Icarus 0.8 (l0_dcache)
 ** try new icarus snapshot
 
-* GHDL
+* GHDL simulator supports VPI
 ** need way to invoke VPI tasks from VHDL, like @$ruby_init();@
 
 
