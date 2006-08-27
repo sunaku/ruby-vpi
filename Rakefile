@@ -77,9 +77,45 @@ task :default => :build
   LDFLAGS = "#{Config::CONFIG['LDFLAGS']} #{ENV['LDFLAGS']}"
 
 
+# extension's object files
+  desc 'Builds object files for supported simulators.'
+  task :build
+
+  DEFAULT_SHARED_OBJ = 'ruby-vpi.so'
+  DEFAULT_NORMAL_OBJ = 'ruby-vpi.o'
+
+  OBJ_DIR = 'obj'
+  directory OBJ_DIR
+  CLOBBER.include OBJ_DIR
+
+  {
+    :cver => ['-DPRAGMATIC_CVER', '-export-dynamic'],
+    :ivl => ['-DICARUS_VERILOG'],
+    :vcs => ['-DSYNOPSYS_VCS'],
+    :vsim => ['-DMENTOR_MODELSIM'],
+  }.each_pair do |target, (cflags, ldflags)|
+    [
+      DEFAULT_NORMAL_OBJ,
+      DEFAULT_SHARED_OBJ,
+    ].each do |src|
+      dstName = src.sub(/#{File.extname src}$/, ".#{target}\\&")
+      dst = File.join(OBJ_DIR, dstName)
+
+      file dst => OBJ_DIR do
+        ENV['CFLAGS'], ENV['LDFLAGS'] = cflags, ldflags
+        sh *%w(rake clean ext)
+
+        mv src, dst
+      end
+
+      task :build => dst
+    end
+  end
+
+
 # extension
   desc 'Builds the Ruby-VPI extension.'
-  task :build => 'Makefile' do |t|
+  task :ext => 'Makefile' do |t|
     sh "make -f #{t.prerequisites[0]}"
   end
 
