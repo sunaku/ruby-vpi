@@ -48,7 +48,7 @@ module <%= aOutputInfo.verilogBenchName %>;
     end
 
     always @(posedge <%= clockSignal %>) begin
-      #1 $ruby_relay();
+      #1 $ruby_relay;
     end
 
 endmodule

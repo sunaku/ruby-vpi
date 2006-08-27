@@ -81,7 +81,7 @@
 
         This code was originally taken from GPL Cver 2.11a: Copyright (c) 1991-2005 Pragmatic C Software Corp.
       */
-      static void vlog_startup_routines_bootstrap() {
+      void vlog_startup_routines_bootstrap() {
         uint i;
         for (i = 0; vlog_startup_routines[i] != NULL; i++)
           vlog_startup_routines[i]();

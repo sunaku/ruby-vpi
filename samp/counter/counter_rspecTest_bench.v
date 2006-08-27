@@ -22,7 +22,7 @@ module counter_rspecTest_bench;
     end
 
     always @(posedge clock) begin
-      #1 $ruby_relay();
+      #1 $ruby_relay;
     end
 
 endmodule
