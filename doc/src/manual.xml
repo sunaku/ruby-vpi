@@ -28,9 +28,9 @@
   <!-- content -->
   <!ENTITY background.step3 "<para>When the Ruby interpreter invokes the <code><constant>Vpi</constant>::<function>relay_verilog</function></code> method, it is paused and the &v; simulator is given control.</para>">
 
-  <!ENTITY fixed-0.2 "<note>
-    <title>Fixed in &rv; 0.2</title>
-    <para>This problem was fixed in release 0.2 of &rv;. If it still occurs, then <link linkend='introduction.resources'>please report it</link>.</para>
+  <!ENTITY fixed-in-2.0.0 "<note>
+    <title>Problem solved</title>
+    <para>This problem was fixed in release 2.0.0 (2006-04-17). If it still occurs, then <link linkend='introduction.resources'>please report it</link>.</para>
   </note>">
 
   <!ENTITY test-bench.gloss "<glossterm linkend='term..test-bench'>test bench</glossterm>">
@@ -153,35 +153,35 @@
 
       <variablelist>
         <varlistentry>
-          <term><ulink url="&rv.url-project;">Project portal</ulink></term>
+          <term><ulink url="&rv.url-project;">Project</ulink></term>
           <listitem>
             <para>Access project facilities, hosted generously by <ulink url="http://rubyforge.org">RubyForge</ulink>.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term><ulink url="&rv.url-project;">Project tracker</ulink></term>
+          <term><ulink url="&rv.url-project;">Tracker</ulink></term>
           <listitem>
             <para>Report problems, contribute patches, and more.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term><ulink url="&rv.url-download;">File releases</ulink></term>
+          <term><ulink url="&rv.url-download;">Releases</ulink></term>
           <listitem>
-            <para>Get the newest release package.</para>
+            <para>Download the newest release of &rv;.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term><ulink url="&rv.url-source;">Source repository</ulink></term>
+          <term><ulink url="&rv.url-source;">Sources</ulink></term>
           <listitem>
-            <para>Get the newest source code.</para>
+            <para>Browse or access the source code repository.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
-          <term><ulink url="&rv.url-forum;">Online forums</ulink></term>
+          <term><ulink url="&rv.url-forum;">Forums</ulink></term>
           <listitem>
             <para>Ask for help, give feedback, or discuss.</para>
           </listitem>
@@ -1373,7 +1373,7 @@ Finished in 0.006766 seconds.
   <chapter id="problems">
     <title>Known problems</title>
 
-    <para>This chapter presents known problems and possible solutions.</para>
+    <para>This chapter presents known problems and possible solutions. In addition, previously solved problems have been retained for historical reference.</para>
 
     <section id="problems.ruby">
       <title>Ruby</title>
@@ -1381,7 +1381,7 @@ Finished in 0.006766 seconds.
       <section id="problems.ruby.SystemStackError">
         <title>SystemStackError</title>
 
-        &fixed-0.2;
+        &fixed-in-2.0.0;
 
         <para>If a <quote>stack level too deep (SystemStackError)</quote> error occurs during the simulation, then increase the system-resource limit for stack-size by running the command <command>ulimit <option>-s</option> <replaceable>unlimited</replaceable></command> before starting the simulation.</para>
       </section>
@@ -1389,7 +1389,7 @@ Finished in 0.006766 seconds.
       <section id="problems.ruby.TestUnit">
         <title>test/unit</title>
 
-        &fixed-0.2;
+        &fixed-in-2.0.0;
 
         <para>If your specification employs Ruby's unit testing framework, then you will encounter the error: <quote>[BUG] cross-thread violation on rb_gc()</quote>.</para>
       </section>
@@ -1460,7 +1460,8 @@ Finished in 0.006766 seconds.
         <title>Vpi::reset</title>
 
         <caution>
-          <para>This method was removed in release 0.3 of &rv;, and is deprecated. Please use <code><constant>Vpi</constant>::<function>vpi_control</function>(<parameter><constant>VpiReset</constant></parameter>)</code> instead.</para>
+          <title>Deprecated method</title>
+          <para>The <function>vpi_control</function> method was removed in release 2.1.0 (2006-04-17) of &rv;, and is deprecated. Please use <code><constant>Vpi</constant>::<function>vpi_control</function>(<parameter><constant>VpiReset</constant></parameter>)</code> instead.</para>
         </caution>
 
         <para>In version 0.8 of Icarus &v;, the <code><function>vpi_control</function>(<parameter><constant>vpiReset</constant></parameter>)</code> &vpi; function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.</para>
@@ -1473,7 +1474,7 @@ Finished in 0.006766 seconds.
       <section id="problems.vsim.ruby_run">
         <title>ruby_run()</title>
 
-        &fixed-0.2;
+        &fixed-in-2.0.0;
 
         <para>Version 6.1b of Mentor Modelsim doesn't play nicely with either an embedded Ruby interpreter or POSIX threads in a PLI application. When &rv; invokes the <function>ruby_run</function> function (which starts the Ruby interpreter), the simulator terminates immediately with an exit status of 0.</para>
       </section>

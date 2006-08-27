@@ -15,23 +15,24 @@ h3. Version numbering
 
 We now _strictly_ follow the GNU "major.minor.patch" version numbering system[1], in which:
 * the *major* number indicates that major changes in the functionality have occurred. Thus, previous versions may not be compatible with the current version.
-* the *minor* number indicates that  minor changes, such as features and bug fixes, in the functionality have occurred. However, previous minor versions, which have the same major number as the current version, are compatible with the current version.
+* the *minor* number indicates that minor changes, such as new features and bug fixes, in the functionality have occurred. However, these changes are functionally compatible with previous minor versions.
 * the *patch* number indicates that changes, such as bug fixes, have occurred; however, the functionality has not changed and no new features have been added.
 
 In addition, the version numbers of previous releases have been revised according to the new numbering system:
-* 0.0 (1999-10-31) &rarr; 0.0.0
-* 0.1 (2006-02-26) &rarr; 1.0.0
-* 0.2 (2006-04-17) &rarr; 2.0.0
-* 0.3 (2006-04-23) &rarr; 2.1.0
-* 0.4 (2006-04-28) &rarr; 2.2.0
-* 0.5 (2006-05-13) &rarr; 2.3.0
-* 0.6 (2006-05-25) &rarr; 2.4.0
-* 0.7 (2006-07-22) &rarr; 2.5.0
-* 0.8 (2006-07-29) &rarr; 2.6.0
-* 0.8.1 (2006-08-04) &rarr; 2.6.1
-* 0.9 (2006-08-07) &rarr; 2.7.0
-* 0.9.1 (2006-08-09) &rarr; 2.8.0
-* 0.9.2 (2006-08-26) &rarr; 2.9.0
+|_. Release date |_. Original version number |_. New version number |
+| 1999-10-31 | 0.0   | 0.0.0 |
+| 2006-02-26 | 0.1   | 1.0.0 |
+| 2006-04-17 | 0.2   | 2.0.0 |
+| 2006-04-23 | 0.3   | 2.1.0 |
+| 2006-04-28 | 0.4   | 2.2.0 |
+| 2006-05-13 | 0.5   | 2.3.0 |
+| 2006-05-25 | 0.6   | 2.4.0 |
+| 2006-07-22 | 0.7   | 2.5.0 |
+| 2006-07-29 | 0.8   | 2.6.0 |
+| 2006-08-04 | 0.8.1 | 2.6.1 |
+| 2006-08-07 | 0.9   | 2.7.0 |
+| 2006-08-09 | 0.9.1 | 2.8.0 |
+| 2006-08-26 | 0.9.2 | 2.9.0 |
 
 fn1. C. Gross, "Explaining Open Source Version Numbers", [Online document], 2005 Nov 28, [cited 2006 Aug 27], Available HTTP: "http://ablog.apress.com/?p=738":http://ablog.apress.com/?p=738
 
