@@ -812,7 +812,7 @@
 
     <section id="usage.requirements">
       <title>Requirements</title>
-      <para>The following software is necessary in order to use &rv;. Once you have obtained them, proceed to <xref linkend="usage.requirements.install"/>.</para>
+      <para>The following software is necessary in order to use &rv;. Once you have obtained them, proceed to <xref linkend="usage.installation.requirements"/>.</para>
 
       <variablelist>
         <varlistentry>
@@ -901,14 +901,25 @@
           </listitem>
         </varlistentry>
       </variablelist>
+    </section>
 
-      <procedure id="usage.requirements.install">
+    <section id="usage.installation">
+      <title>Installation</title>
+
+      <procedure id="usage.installation.requirements">
         <title>Installing the required software</title>
 
         <step><para>Install Ruby.</para></step>
         <step><para>Install RubyGems.</para></step>
         <step><para>Install <application>Rake</application> and <application>RSpec</application> by running the command <command>gem <action>install</action> <option>--remote</option> <replaceable>rake</replaceable> <replaceable>rspec</replaceable></command>.</para></step>
-        <step><para>Ensure that you can build &rv; by running the command <command>rake <action>build</action> <action>clean</action></command> inside the directory in which you extracted the release package.</para></step>
+      </procedure>
+
+      <procedure id="usage.installation.main">
+        <title>Installing &rv;</title>
+
+        <step><para>Decompress the release package and extract its contents.</para></step>
+        <step><para>Travel into the extracted <filename>ruby-vpi-<remark>version number</remark></filename> directory.</para></step>
+        <step><para>Build &rv; by running the command <command>rake <action>build</action></command>.</para></step>
       </procedure>
     </section>
 
