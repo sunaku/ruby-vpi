@@ -204,9 +204,15 @@ task :default => :build
 
   # website publishing
     desc 'Publish documentation to website.'
-    task :web => [:web_dist, :web_doc]
+    task :web => [:web_dist, :web_ref, :web_doc]
 
-    task :web_dist => ['ref', *distDocs] do |t|
+    desc "Publish distribution info."
+    task :web_dist => distDocs do |t|
+      uploadWithoutSvn SSH_URL, *t.prerequisites
+    end
+
+    desc "Publish reference documentation."
+    task :web_ref => 'ref' do |t|
       uploadWithoutSvn SSH_URL, *t.prerequisites
     end
 
