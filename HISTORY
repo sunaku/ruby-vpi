@@ -12,13 +12,21 @@ We _strictly_ follow a version numbering system based on the GNU "major.minor.pa
 fn1. C. Gross, "Explaining Open Source Version Numbers", [Online document], 2005 Nov 28, [cited 2006 Aug 27], Available HTTP: "http://ablog.apress.com/?p=738":http://ablog.apress.com/?p=738
 
 
-h1. Version 6.3.0 (not yet released)
+h1. Version 6.3.0 (2006-08-27)
 
 h2. Summary
 
+This release adds support for the GPL CVer simulator, provides both binary and source packages, and explicitly defines the version numbering system.
+
 h2. Details
 
-* Ruby-VPI now works with the GPL CVer simulator.
+* The GPL CVer simulator is now supported.
+
+* Ruby-VPI now only needs to be built once.
+** You can run tests with different Verilog simulators without having to re-compile Ruby-VPI.
+** Release packages are now available in both source and binary form.
+
+* The RSpec based specifications for the counter example now use the @should_equal@ instead of the @should_be@ assertion, because the latter ensures strict equivalence. For instance, it will fail when a Fixnum is compared to a Bignum.
 
 * We now _strictly_ follow a version numbering system based on the GNU "major.minor.patch" convention. The version numbers of previous releases have been revised accordingly:
 |_. Release date |_. Original version number |_. New version number |
