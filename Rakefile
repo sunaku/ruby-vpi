@@ -241,8 +241,8 @@ task :default => :build
       sh 'lftp', "sftp://#{PROJECT_SSH_URL}"
     end
 
-# release
-  desc "Prepare release packages."
+# release packages
+  desc "Generate release packages."
   task :pkg => ['HISTORY', 'gem_extconf.rb'] do |t|
     # determine release version
       File.read(t.prerequisites[0]) =~ /Version\s+([\d\.]+)/
@@ -250,23 +250,15 @@ task :default => :build
       puts "release version is: #{releaseVersion}"
 
     mkdir tmpDir = generateTempPath
+    cp_r '.', tmpDir
 
-    pkgName = "#{PROJECT_ID}-#{releaseVersion}"
-    pkgDir = File.join(tmpDir, pkgName)
-
-    cp_r '.', pkgDir
-
-    cd pkgDir do |dir|
+    cd tmpDir do
       # clean up
         sh "svn st | awk '/^\\?/ {print $2}' | xargs rm -rf"
         sh "svn up"
         sh "find -name .svn | xargs rm -rf"
 
       sh "rake dist"
-
-      src = File.join('..', File.basename(dir))
-      dstDir = File.dirname(__FILE__)
-      dst = File.join(dstDir, pkgName)
 
       # make gem package
         require 'rubygems'
@@ -285,7 +277,7 @@ task :default => :build
           s.autorequire = PROJECT_ID
           s.executables = FileList['bin/*'].select {|f| File.executable?(f) && File.file?(f)}.map {|f| File.basename f}
 
-          s.required_ruby_version = '>= 1.8.1'
+          s.required_ruby_version = '< 1.9.0'
           s.add_dependency 'rspec', '>= 0.5.4'
           s.add_dependency 'rake', '>= 0.7.0'
 
@@ -304,11 +296,7 @@ task :default => :build
         Gem::Builder.new(spec).build
         ##=end
 
-        mv *(FileList['*.gem'] << dstDir)
-
-      # make source packages
-        sh '7z', 'a', dst + '.src.7z', src
-        sh 'tar', 'jcf', dst + '.src.tar.bz2', src
+        mv *(FileList['*.gem'] << File.dirname(__FILE__))
     end
 
     rm_r tmpDir
