@@ -1,13 +1,13 @@
 h1. Release history
 
-This document is a record of important changes that have occurred with each release of "Ruby-VPI":http://ruby-vpi.rubyforge.org.
+This is a record of important changes that have occurred with each release of "Ruby-VPI":http://ruby-vpi.rubyforge.org.
 
 h2. Version numbering system
 
-We _strictly_ follow a version numbering system based on the GNU "major.minor.patch" convention[1], in which:
-* an increase in the *major* number indicates that major changes, which are *functionally incompatible* with previous major versions, have occurred. Thus, what may have worked in the previous version may not work in the new one.
-* an increase in the *minor* number indicates that minor changes, which are are *functionally compatible* with previous minor versions, have occurred. These changes may include new features and bug fixes.
-* an increase in the *patch* number indicates that changes, which are are *functionally compatible* with previous minor versions, have occurred. However, the functionality has not changed and no new features have been added. These changes may include bug fixes.
+We _strictly_ follow the RubyGems project's "rational versioning policy":http://www.rubygems.org/read/chapter/7 since release 6.3.0. To summarize[1] this "major.minor.build" numbering policy,
+* an increase in the *major* number indicates that *functionally incompatible* have occurred. Thus, what may have worked in the previous version may not work in the new one.
+* an increase in the *minor* number indicates that *functionally compatible* changes have occurred. Thus, what worked in the previous version will work in the new one.
+* an increase in the *build* number indicates that the *underlying implementation* has changed. The functionality has not changed and no features have been added. Thus, what worked in the previous version will work in the new one.
 
 fn1. C. Gross, "Explaining Open Source Version Numbers", [Online document], 2005 Nov 28, [cited 2006 Aug 27], Available HTTP: "http://ablog.apress.com/?p=738":http://ablog.apress.com/?p=738
 
@@ -28,7 +28,7 @@ h2. Details
 
 * The RSpec based specifications for the counter example now use the @should_equal@ instead of the @should_be@ assertion, because the latter ensures strict equivalence. For instance, it will fail when a Fixnum is compared to a Bignum.
 
-* We now _strictly_ follow a version numbering system based on the GNU "major.minor.patch" convention. The version numbers of previous releases have been revised accordingly:
+* We now follow the RubyGems project's "rational versioning policy":http://www.rubygems.org/read/chapter/7. The version numbers of previous releases have been revised accordingly:
 |_. Release date |_. Original version number |_. New version number |
 | 1999-10-31 | 0.0   | 0.0.0 |
 | 2006-02-26 | 0.1   | 1.0.0 |
