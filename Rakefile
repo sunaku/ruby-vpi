@@ -27,7 +27,11 @@
 require 'rake/clean'
 require 'rake/rdoctask'
 require 'tempfile'
+require 'rbconfig'
 
+
+CFLAGS = [Config::CONFIG['CFLAGS'], ENV['CFLAGS'], '-g', '-DDEBUG']
+LDFLAGS = [Config::CONFIG['LDFLAGS'], ENV['LDFLAGS']]
 
 PROJECT_ID = 'ruby-vpi'
 PROJECT_NAME = 'Ruby-VPI'
@@ -36,35 +40,34 @@ PROJECT_SUMMARY = "Ruby interface to Verilog VPI."
 PROJECT_DETAIL = "#{PROJECT_NAME} is a #{PROJECT_SUMMARY}. It lets you create complex Verilog test benches easily and wholly in Ruby."
 PROJECT_SSH_URL = "snk@rubyforge.org:/var/www/gforge-projects/#{PROJECT_ID}"
 
+
+# Returns a temporary, unique path ready for use. No file exists at the returned path.
+def generate_temp_path
+  rm_f path = Tempfile.new($$).path
+  path
+end
+
+# uploads the given sources without their SVN meta-data to the given destination URL
+def upload_without_svn aDestUrl, *aSources
+  tmpDir = generate_temp_path
+  mkdir tmpDir
+
+  tmpSources = aSources.map do |src|
+    cp_r src, tmpDir, :preserve => true
+    File.join(tmpDir, File.basename(src))
+  end
+
+  # remove SVN meta-data from sources
+    sh "find #{tmpDir} -name .svn | xargs rm -rf"
+
+  # upload sources
+    sh 'scp', '-Cr', *(tmpSources + [aDestUrl])
+
+  rm_rf tmpDir
+end
+
+
 task :default => :build
-
-
-# utility methods
-  # Returns a temporary, unique path ready for use. No file exists at the returned path.
-  def generateTempPath
-    rm_f path = Tempfile.new($$).path
-    path
-  end
-
-  # uploads the given sources without their SVN meta-data to the given destination URL
-  def uploadWithoutSvn aDestUrl, *aSources
-    tmpDir = generateTempPath
-    mkdir tmpDir
-
-    tmpSources = aSources.map do |src|
-      cp_r src, tmpDir, :preserve => true
-      File.join(tmpDir, File.basename(src))
-    end
-
-    # remove SVN meta-data from sources
-      sh "find #{tmpDir} -name .svn | xargs rm -rf"
-
-    # upload sources
-      sh 'scp', '-Cr', *(tmpSources + [aDestUrl])
-
-    rm_rf tmpDir
-  end
-
 
 # cleaning
   task :clobber do |t|
@@ -74,13 +77,6 @@ task :default => :build
       end
     end
   end
-
-# variables
-  require 'rbconfig'
-
-  CFLAGS = "#{Config::CONFIG['CFLAGS']} #{ENV['CFLAGS']} -g -DDEBUG"
-  LDFLAGS = "#{Config::CONFIG['LDFLAGS']} #{ENV['LDFLAGS']}"
-
 
 # extension's object files
   desc 'Builds object files for all simulators.'
@@ -223,17 +219,17 @@ task :default => :build
 
     desc "Publish distribution info."
     task :web_dist => distDocs do |t|
-      uploadWithoutSvn PROJECT_SSH_URL, *t.prerequisites
+      upload_without_svn PROJECT_SSH_URL, *t.prerequisites
     end
 
     desc "Publish reference documentation."
     task :web_ref => 'ref' do |t|
-      uploadWithoutSvn PROJECT_SSH_URL, *t.prerequisites
+      upload_without_svn PROJECT_SSH_URL, *t.prerequisites
     end
 
     desc "Publish user documentation."
     task :web_doc => :doc do |t|
-      uploadWithoutSvn "#{PROJECT_SSH_URL}/doc/", *FileList['doc/xhtml/*']
+      upload_without_svn "#{PROJECT_SSH_URL}/doc/", *FileList['doc/xhtml/*']
     end
 
     desc 'Connect to website FTP.'
@@ -249,7 +245,7 @@ task :default => :build
       releaseVersion = $1
       puts "release version is: #{releaseVersion}"
 
-    mkdir tmpDir = generateTempPath
+    mkdir tmpDir = generate_temp_path
     cp_r '.', tmpDir
 
     cd tmpDir do
