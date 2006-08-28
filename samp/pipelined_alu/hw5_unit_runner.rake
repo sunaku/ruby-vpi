@@ -1,5 +1,3 @@
-RUBY_VPI_PATH = '../..'
-
 SIMULATOR_SOURCES = ['hw5_unit_bench.v', 'hw5_unit.v']
 SIMULATOR_TARGET = 'hw5_unit_bench'
 SIMULATOR_ARGS = {
@@ -9,4 +7,8 @@ SIMULATOR_ARGS = {
   :vsim => '',
 }
 
-load "#{RUBY_VPI_PATH}/tpl/runner.rake"
+# build and run the test
+  require 'rubygems'
+  require 'ruby-vpi'
+
+  RubyVPI.load_test_runner

@@ -14,7 +14,8 @@ h1. Pending tasks
 * smarter test generation, which adjusts to user modifications in previously generated output
 
 * distribute as a GEM, binary, and source
-
+** put lib/* into lib/ruby-vpi/*
+** use RUBYLIB to bypass rubygems site installation for local testing. otherwise have to build & install gem _every_ time!
 
 h1. Finished tasks
 

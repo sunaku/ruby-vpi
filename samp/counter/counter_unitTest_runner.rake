@@ -1,8 +1,5 @@
 ## This runner builds and runs the test. ##
 
-# This specifies the path to Ruby-VPI on your system.
-RUBY_VPI_PATH = '../..'
-
 # These are source files that are to be simulated.
 SIMULATOR_SOURCES = [
   'counter_unitTest_bench.v',
@@ -27,4 +24,8 @@ SIMULATOR_ARGS = {
   :vsim => '',
 }
 
-load File.join(RUBY_VPI_PATH, 'tpl', 'runner.rake')
+# build and run the test
+  require 'rubygems'
+  require 'ruby-vpi'
+
+  RubyVPI.load_test_runner

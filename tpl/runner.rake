@@ -1,7 +1,6 @@
 # A template to simplify building and running examples. This file is meant to be embedded in another Rakefile, which bears the responsibility of defining the following variables.
 #
 # = Required variables
-# RUBY_VPI_PATH:: Path to the Ruby-VPI directory.
 # SIMULATOR_SOURCES:: Array of paths to source files needed by the simulator.
 # SIMULATOR_TARGET:: Name of the Verilog module to be simulated.
 # SIMULATOR_ARGS:: A hash containing keys for each simulator task (same as Rakefile task names) and values containing command-line arguments for each simulator.
@@ -33,19 +32,19 @@ require 'rake/clean'
 
 # check for required variables
   raise ArgumentError, "Required variables are undefined." unless
-    defined?(RUBY_VPI_PATH) &&
+    defined?(RubyVPI) &&
     defined?(SIMULATOR_SOURCES) &&
     defined?(SIMULATOR_TARGET) &&
     defined?(SIMULATOR_ARGS)
 
   # make Ruby-VPI libraries available to spec
-  ENV['RUBYLIB'] = File.join(RUBY_VPI_PATH, 'lib') << ':' << File.join(RUBY_VPI_PATH, 'tpl')
+  ENV['RUBYLIB'] = (ENV['RUBYLIB'] && ENV['RUBYLIB'].dup || '') << ":#{RubyVPI.rel_path 'lib'}:#{RubyVPI.rel_path 'tpl'}"
 
 
 # Returns the path to the Ruby-VPI object file for the given simulator.
 def object_file_path aSimId, aShared = false
-  path = File.join(RUBY_VPI_PATH, 'obj', "ruby-vpi.#{aSimId}.#{aShared ? 'so' : 'o'}")
-  raise "Object file `#{path}' is missing; build Ruby-VPI first." unless File.exist? path
+  path = RubyVPI.rel_path('obj', "ruby-vpi.#{aSimId}.#{aShared ? 'so' : 'o'}")
+  raise "Object file `#{path}' is missing.\n Please build Ruby-VPI to generate the missing file." unless File.exist? path
   path
 end
 
@@ -79,7 +78,7 @@ CLEAN.include 'ruby-vpi.vpi', 'a.out'
 
 
 desc "Simulate with Synopsys VCS."
-task :vcs => collect_args(File.join(RUBY_VPI_PATH, 'tpl', 'synopsys_vcs.tab'), SIMULATOR_SOURCES) do |t|
+task :vcs => collect_args(RubyVPI.rel_path('tpl', 'synopsys_vcs.tab'), SIMULATOR_SOURCES) do |t|
   require 'rbconfig'
 
   sh 'vcs', *collect_args(SIMULATOR_ARGS[t.name.to_sym], %w(-R +v2k +vpi -LDFLAGS), File.expand_path(NORMAL_OBJ_PATH), "-L#{Config::CONFIG['libdir']}", Config::CONFIG['LIBRUBYARG'], %w(-lpthread -P), t.prerequisites[1], SIMULATOR_SOURCES)

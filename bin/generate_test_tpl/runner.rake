@@ -1,8 +1,5 @@
 ## This runner builds and runs the test. ##
 
-# This specifies the path to Ruby-VPI on your system.
-RUBY_VPI_PATH = '<%= aOutputInfo.rubyVpiPath %>'
-
 # These are source files that are to be simulated.
 SIMULATOR_SOURCES = [
   '<%= aOutputInfo.verilogBenchPath %>',
@@ -13,22 +10,23 @@ SIMULATOR_SOURCES = [
 SIMULATOR_TARGET = '<%= aOutputInfo.verilogBenchName %>'
 
 # These are command-line arguments for the simulator.
+# They can be specified as a string or an array of strings.
 SIMULATOR_ARGS = {
-  # arguments for GPL Cver
+  # Pragmatic C - Cver
   :cver => '',
 
-  # arguments for Icarus Verilog
+  # Icarus Verilog
   :ivl => '',
 
-  # arguments for Synopsys VCS
+  # Synopsys VCS
   :vcs => '',
 
-  # arguments for Mentor Modelsim
+  # Mentor Modelsim
   :vsim => '',
 }
 
-load File.join(RUBY_VPI_PATH, <%=
-  OutputInfo::RUNNER_TMPL_REL_PATH.split('/').map do |f|
-    %{'#{f}'}
-  end.join(', ')
-%>)
+# build and run the test
+  require 'rubygems'
+  require 'ruby-vpi'
+
+  RubyVPI.load_test_runner
