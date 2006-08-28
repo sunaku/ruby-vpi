@@ -13,10 +13,6 @@ h1. Pending tasks
 
 * smarter test generation, which adjusts to user modifications in previously generated output
 
-* distribute as a GEM, binary, and source
-** put lib/* into lib/ruby-vpi/*
-** use RUBYLIB to bypass rubygems site installation for local testing. otherwise have to build & install gem _every_ time!
-
 h1. Finished tasks
 
 * add support for ESL prototyping (like SystemC)
@@ -30,5 +26,9 @@ h1. Finished tasks
 * build ruby-vpi once to generate all *.so files
 ** test runner should not rebuild ruby-vpi every time
 
+* distribute as a GEM, binary, and source
+** use RUBYLIB to bypass rubygems site installation for local testing. otherwise have to build & install gem _every_ time!
 
 h1. Obsolete tasks
+
+* put lib/* into lib/ruby-vpi/*

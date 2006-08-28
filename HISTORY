@@ -12,6 +12,18 @@ We _strictly_ follow the RubyGems project's "rational versioning policy":http://
 fn1. C. Gross, "Explaining Open Source Version Numbers", [Online document], 2005 Nov 28, [cited 2006 Aug 27], Available HTTP: "http://ablog.apress.com/?p=738":http://ablog.apress.com/?p=738
 
 
+h1. Version 7.0.0 (not yet released)
+
+h2. Summary
+
+h2. Details
+
+* Ruby-VPI is now distributed only as a "source gem":http://www.rubygems.org. You can decompress the gem without installing it onto your system by running the command @gem install -i output_directory ruby-vpi-7.0.0.gem@. In addition, you can still obtain the source code directly from the Subversion repository.
+
+* Test runners no longer have to specify the path to Ruby-VPI installation directory.
+** The test generator's templates and the examples have been updated accordingly.
+
+
 h1. Version 6.3.0 (2006-08-27)
 
 h2. Summary
