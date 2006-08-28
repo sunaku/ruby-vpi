@@ -1266,12 +1266,7 @@ Parsed module: counter
         <title>Verify the prototype</title>
         <para>Now that we have implemented our prototype, we are ready to verify it against our specification by running the test. <xref linkend="fig..test-proto.rspec"/> and <xref linkend="fig..test-proto.unit-test"/> illustrate this process.</para>
 
-        <para>Here, the <varname>PROTO</varname> environment variable is set&mdash;any value is fine&mdash;before running the test in order to replace the design with the prototype in the simulation. Otherwise, our design will be verified&mdash;instead of our prototype&mdash;against our specification. Furthermore, the manner in which the <varname>PROTO</varname> environment variable is set in these figures follows the syntax of the &bash; shell. If you use a different shell, you may have to use different syntax&mdash;or a different command altogether&mdash;in order to set this variable. Finally, the Icarus &v; simulator, denoted by <replaceable>ivl</replaceable>, is used to simulate our design.</para>
-
-        <tip>
-          <title>Changing &v; simulators</title>
-          <para>Run the command <command>rake <replaceable>clobber</replaceable></command> when changing from one &v; simulator to another. This command ensures that &rv; will be recompiled to accomodate the new simulator before the test is run.</para>
-        </tip>
+        <para>Here, the <varname>PROTO</varname> environment variable is set&mdash;any value is fine&mdash;before running the test in order to replace the design with the prototype in the simulation. Otherwise, our design will be verified&mdash;instead of our prototype&mdash;against our specification. Furthermore, the manner in which the <varname>PROTO</varname> environment variable is set in these figures follows the syntax of the &bash; shell. If you use a different shell, you may have to use different syntax, or a different command altogether, in order to set this variable. Finally, the Icarus &v; simulator, denoted by <replaceable>ivl</replaceable>, is used to simulate our design.</para>
 
         <figure id="fig..test-proto.rspec">
           <title>Running a test with specification in &rspec; format</title>
@@ -1343,7 +1338,7 @@ Finished in 0.040668 seconds.
         <title>Verify the design</title>
         <para>Now that we have implemented our design, we are ready to verify it against our specification by running the test. <xref linkend="fig..test-design.rspec"/> and <xref linkend="fig..test-design.unit-test"/> illustrate this process.</para>
 
-        <para>Here, the <varname>PROTO</varname> environment variable is unset before the test is run in order to prevent the design from being replaced by the prototype. Otherwise, our prototype will be verified&mdash;instead of our design&mdash;against our specification. Furthermore, the manner in which the <varname>PROTO</varname> environment variable is unset in these figures follows the syntax of the &bash; shell. If you use a different shell, you may have to use different syntax&mdash;or a different command altogether&mdash;in order to set this variable. Finally, the Icarus &v; simulator, denoted by <replaceable>ivl</replaceable>, is used to simulate our design.</para>
+        <para>Here, the <varname>PROTO</varname> environment variable is unset before the test is run in order to prevent the design from being replaced by the prototype. Otherwise, our prototype will be verified&mdash;instead of our design&mdash;against our specification. Furthermore, the manner in which the <varname>PROTO</varname> environment variable is unset in these figures follows the syntax of the &bash; shell. If you use a different shell, you may have to use different syntax, or a different command altogether, in order to set this variable. Finally, the Icarus &v; simulator, denoted by <replaceable>ivl</replaceable>, is used to simulate our design.</para>
 
         <figure id="fig..test-design.rspec">
           <title>Running a test with specification in &rspec; format</title>
