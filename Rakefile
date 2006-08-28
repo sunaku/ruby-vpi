@@ -29,7 +29,12 @@ require 'rake/rdoctask'
 require 'tempfile'
 
 
-SSH_URL = 'snk@rubyforge.org:/var/www/gforge-projects/ruby-vpi'
+PROJECT_ID = 'ruby-vpi'
+PROJECT_NAME = 'Ruby-VPI'
+PROJECT_URL = "http://#{PROJECT_ID}.rubyforge.org"
+PROJECT_SUMMARY = "Ruby interface to Verilog VPI."
+PROJECT_DETAIL = "#{PROJECT_NAME} is a Ruby interface to Verilog VPI. It lets you create complex Verilog test benches easily and wholly in Ruby."
+PROJECT_SSH_URL = "snk@rubyforge.org:/var/www/gforge-projects/#{PROJECT_ID}"
 
 task :default => :build
 
@@ -81,8 +86,8 @@ task :default => :build
   desc 'Builds object files for supported simulators.'
   task :build
 
-  DEFAULT_SHARED_OBJ = 'ruby-vpi.so'
-  DEFAULT_NORMAL_OBJ = 'ruby-vpi.o'
+  DEFAULT_SHARED_OBJ = "#{PROJECT_ID}.so"
+  DEFAULT_NORMAL_OBJ = "#{PROJECT_ID}.o"
 
   OBJ_DIR = 'obj'
   directory OBJ_DIR
@@ -114,7 +119,7 @@ task :default => :build
 
 
 # extension
-  desc 'Builds the Ruby-VPI extension.'
+  desc "Builds the #{PROJECT_NAME} extension."
   task :ext => 'Makefile' do |t|
     sh "make -f #{t.prerequisites[0]}"
   end
@@ -163,7 +168,7 @@ task :default => :build
   desc 'Generate reference for Ruby.'
   Rake::RDocTask.new 'ref/ruby' do |t|
     t.rdoc_dir = t.name
-    t.title = 'Ruby-VPI: Ruby interface to Verilog VPI'
+    t.title = "#{PROJECT_NAME}: #{PROJECT_SUMMARY}"
     t.options.concat %w(--charset utf-8 --tab-width 2 --line-numbers)
 
     t.rdoc_files.include '**/*.rb'
@@ -208,27 +213,27 @@ task :default => :build
 
     desc "Publish distribution info."
     task :web_dist => distDocs do |t|
-      uploadWithoutSvn SSH_URL, *t.prerequisites
+      uploadWithoutSvn PROJECT_SSH_URL, *t.prerequisites
     end
 
     desc "Publish reference documentation."
     task :web_ref => 'ref' do |t|
-      uploadWithoutSvn SSH_URL, *t.prerequisites
+      uploadWithoutSvn PROJECT_SSH_URL, *t.prerequisites
     end
 
     desc "Publish user documentation."
     task :web_doc => :doc do |t|
-      uploadWithoutSvn "#{SSH_URL}/doc/", *FileList['doc/xhtml/*']
+      uploadWithoutSvn "#{PROJECT_SSH_URL}/doc/", *FileList['doc/xhtml/*']
     end
 
     desc 'Connect to website FTP.'
     task :ftp do
-      sh 'lftp', "sftp://#{SSH_URL}"
+      sh 'lftp', "sftp://#{PROJECT_SSH_URL}"
     end
 
 # release
   desc "Prepare release packages."
-  task :pkg => ['HISTORY'] do |t|
+  task :pkg => ['HISTORY', 'gem_extconf.rb'] do |t|
     # determine release version
       File.read(t.prerequisites[0]) =~ /Version\s+([\d\.]+)/
       version = $1
@@ -241,21 +246,54 @@ task :default => :build
 
     mkdir tmpDir = generateTempPath
 
-    pkgName = "ruby-vpi-#{version}"
+    pkgName = "#{PROJECT_ID}-#{version}"
     pkgDir = File.join(tmpDir, pkgName)
 
     cp_r '.', pkgDir
 
     cd pkgDir do |dir|
       # clean up
-        sh "svn st | awk '{print $2}' | xargs rm -rf"
+        sh "svn st | awk '/^\\?/ {print $2}' | xargs rm -rf"
         sh "svn up"
         sh "find -name .svn | xargs rm -rf"
 
       sh "rake dist"
 
       src = File.join('..', File.basename(dir))
-      dst = File.join(File.dirname(__FILE__), pkgName)
+      dstDir = File.dirname(__FILE__)
+      dst = File.join(dstDir, pkgName)
+
+      # make gem package
+        require 'rubygems'
+
+        spec = Gem::Specification.new do |s|
+          s.name = s.rubyforge_project = PROJECT_ID
+          s.summary = PROJECT_SUMMARY
+          s.description = PROJECT_DETAIL
+          s.homepage = PROJECT_URL
+
+          s.version = version
+          s.files = FileList['**/*']
+
+          s.add_dependency 'rspec', '>= 0.5.4'
+          s.add_dependency 'rake', '>= 0.7.0'
+
+          s.extensions << t.prerequisites[1]
+        end
+
+        ##=begin
+        # This code was taken from Rake 0.7.1.
+        # Copyright (c) 2003, 2004 Jim Weirich
+        begin
+          Gem.manage_gems
+        rescue NoMethodError
+          # Using rubygems prior to 0.6.1
+        end
+
+        Gem::Builder.new(spec).build
+        ##=end
+
+        mv *(FileList['*.gem'] << dstDir)
 
       # make source packages
         sh '7z', 'a', dst + '.src.7z', src
