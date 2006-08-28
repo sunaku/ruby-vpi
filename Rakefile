@@ -246,17 +246,12 @@ task :default => :build
   task :pkg => ['HISTORY', 'gem_extconf.rb'] do |t|
     # determine release version
       File.read(t.prerequisites[0]) =~ /Version\s+([\d\.]+)/
-      version = $1
-
-      # print "Please input the release version (#{version}): "
-      # input = STDIN.gets.chomp
-      # version = input unless input.empty?
-
-      puts "- Release version is: #{version}"
+      releaseVersion = $1
+      puts "release version is: #{releaseVersion}"
 
     mkdir tmpDir = generateTempPath
 
-    pkgName = "#{PROJECT_ID}-#{version}"
+    pkgName = "#{PROJECT_ID}-#{releaseVersion}"
     pkgDir = File.join(tmpDir, pkgName)
 
     cp_r '.', pkgDir
@@ -281,11 +276,15 @@ task :default => :build
           s.summary = PROJECT_SUMMARY
           s.description = PROJECT_DETAIL
           s.homepage = PROJECT_URL
+          s.version = releaseVersion
 
-          s.version = version
+          s.requirements << "POSIX threads library"
+          s.requirements << "C language compiler"
+
           s.files = FileList['**/*']
           s.autorequire = PROJECT_ID
 
+          s.required_ruby_version = '>= 1.8.1'
           s.add_dependency 'rspec', '>= 0.5.4'
           s.add_dependency 'rake', '>= 0.7.0'
 
