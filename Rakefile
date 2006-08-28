@@ -33,7 +33,7 @@ PROJECT_ID = 'ruby-vpi'
 PROJECT_NAME = 'Ruby-VPI'
 PROJECT_URL = "http://#{PROJECT_ID}.rubyforge.org"
 PROJECT_SUMMARY = "Ruby interface to Verilog VPI."
-PROJECT_DETAIL = "#{PROJECT_NAME} is a Ruby interface to Verilog VPI. It lets you create complex Verilog test benches easily and wholly in Ruby."
+PROJECT_DETAIL = "#{PROJECT_NAME} is a #{PROJECT_SUMMARY}. It lets you create complex Verilog test benches easily and wholly in Ruby."
 PROJECT_SSH_URL = "snk@rubyforge.org:/var/www/gforge-projects/#{PROJECT_ID}"
 
 task :default => :build
@@ -83,7 +83,7 @@ task :default => :build
 
 
 # extension's object files
-  desc 'Builds object files for supported simulators.'
+  desc 'Builds object files for all simulators.'
   task :build
 
   DEFAULT_SHARED_OBJ = "#{PROJECT_ID}.so"
@@ -99,22 +99,32 @@ task :default => :build
     :vcs => ['-DSYNOPSYS_VCS'],
     :vsim => ['-DMENTOR_MODELSIM'],
   }.each_pair do |target, (cflags, ldflags)|
-    [
-      DEFAULT_NORMAL_OBJ,
-      DEFAULT_SHARED_OBJ,
-    ].each do |src|
+
+    # object files that are needed to be built
+    objFiles = [DEFAULT_NORMAL_OBJ, DEFAULT_SHARED_OBJ].inject({}) do |memo, src|
       dstName = src.sub(/#{File.extname src}$/, ".#{target}\\&")
       dst = File.join(OBJ_DIR, dstName)
 
-      file dst => OBJ_DIR do
+      memo[src] = dst
+      memo
+    end
+
+    # task to build the object files
+    targetTask = "build_#{target}"
+
+    desc "Builds object files for #{target} simulator."
+    task targetTask => OBJ_DIR do
+      unless objFiles.values.reject {|f| File.exist? f}.empty?
         ENV['CFLAGS'], ENV['LDFLAGS'] = cflags, ldflags
         sh *%w(rake clean ext)
 
-        mv src, dst
+        objFiles.each_pair do |src, dst|
+          mv src, dst
+        end
       end
-
-      task :build => dst
     end
+
+    task :build => targetTask
   end
 
 
@@ -274,6 +284,7 @@ task :default => :build
 
           s.version = version
           s.files = FileList['**/*']
+          s.autorequire = PROJECT_ID
 
           s.add_dependency 'rspec', '>= 0.5.4'
           s.add_dependency 'rake', '>= 0.7.0'
@@ -295,6 +306,7 @@ task :default => :build
 
         mv *(FileList['*.gem'] << dstDir)
 
+=begin
       # make source packages
         sh '7z', 'a', dst + '.src.7z', src
         sh 'tar', 'jcf', dst + '.src.tar.bz2', src
@@ -305,6 +317,7 @@ task :default => :build
         sh 'rake build clean'
         sh '7z', 'a', dst + ".bin.#{tag}.7z", src
         sh 'tar', 'jcf', dst + ".bin.#{tag}.tar.bz2", src
+=end
     end
 
     rm_r tmpDir
