@@ -306,18 +306,9 @@ task :default => :build
 
         mv *(FileList['*.gem'] << dstDir)
 
-=begin
       # make source packages
         sh '7z', 'a', dst + '.src.7z', src
         sh 'tar', 'jcf', dst + '.src.tar.bz2', src
-
-      # make binary packages
-        tag = Config::CONFIG['host_cpu']
-
-        sh 'rake build clean'
-        sh '7z', 'a', dst + ".bin.#{tag}.7z", src
-        sh 'tar', 'jcf', dst + ".bin.#{tag}.tar.bz2", src
-=end
     end
 
     rm_r tmpDir
