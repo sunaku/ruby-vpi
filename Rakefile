@@ -283,6 +283,7 @@ task :default => :build
 
           s.files = FileList['**/*']
           s.autorequire = PROJECT_ID
+          s.executables = FileList['bin/*'].select {|f| File.executable?(f) && File.file?(f)}.map {|f| File.basename f}
 
           s.required_ruby_version = '>= 1.8.1'
           s.add_dependency 'rspec', '>= 0.5.4'

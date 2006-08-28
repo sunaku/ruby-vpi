@@ -47,6 +47,6 @@ class String
   end
 end
 
-if __FILE__ == $0
+if File.basename($0) == File.basename(__FILE__)
   puts ARGF.read.to_ruby
 end

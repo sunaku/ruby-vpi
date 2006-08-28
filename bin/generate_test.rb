@@ -190,7 +190,7 @@ end
 
 
 
-if $0 == __FILE__
+if File.basename($0) == File.basename(__FILE__)
   # obtain templates for output generation
     VERILOG_BENCH_TEMPLATE = Template.new('bench.v')
     RUBY_BENCH_TEMPLATE = Template.new('bench.rb')
