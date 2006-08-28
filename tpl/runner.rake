@@ -44,12 +44,9 @@ require 'rake/clean'
 
 # Returns the path to the Ruby-VPI object file for the given simulator.
 def object_file_path aSimId, aShared = false
-  File.join RUBY_VPI_PATH, 'obj', "ruby-vpi.#{aSimId}.#{aShared ? 'so' : 'o'}"
-end
-
-# Silently copies the given source path to the given destination if necessary.
-def silent_copy *aArgs
-  safe_ln *aArgs rescue true
+  path = File.join(RUBY_VPI_PATH, 'obj', "ruby-vpi.#{aSimId}.#{aShared ? 'so' : 'o'}")
+  raise "Object file `#{path}' is missing; build Ruby-VPI first." unless File.exist? path
+  path
 end
 
 def collect_args *aArgs
@@ -73,7 +70,7 @@ CLOBBER.include 'verilog.log'
 
 desc "Simulate with Icarus Verilog."
 task :ivl => SIMULATOR_SOURCES do |t|
-  silent_copy object_file_path(t.name.to_sym, true), 'ruby-vpi.vpi'
+  cp object_file_path(t.name.to_sym, true), 'ruby-vpi.vpi'
   sh 'iverilog', *collect_args(SIMULATOR_ARGS[t.name.to_sym], %w(-y. -mruby-vpi), SIMULATOR_SOURCES)
   sh 'vvp -M. a.out'
 end
