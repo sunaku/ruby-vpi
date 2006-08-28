@@ -20,12 +20,16 @@
 
 require 'fileutils'
 
-alias old_sh sh
+module FileUtils
+  alias old_sh sh
 
-def sh *aArgs, &aBlock
-  old_sh *collect_args(aArgs), &aBlock
-end
+  # An improved sh() that also accepts arrays as arguments.
+  def sh *aArgs, &aBlock
+    old_sh *collect_args(aArgs).reject {|i| i.to_s.empty?}, &aBlock
+  end
 
-def collect_args *aArgs
-  aArgs.flatten.compact.reject {|i| i.to_s.empty?}
+  # Collects the given arguments into a single, sparse array.
+  def collect_args *aArgs
+    aArgs.flatten.compact
+  end
 end
