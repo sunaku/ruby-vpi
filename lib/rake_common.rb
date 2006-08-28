@@ -18,15 +18,14 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
-# Provides configuration information of the Ruby-VPI project.
-module RubyVPI
-  LIBRARY_PATH = File.dirname(__FILE__)
-  PATH = File.dirname(LIBRARY_PATH)
-  TEMPLATE_PATH = File.join(PATH, 'tpl')
-  OBJECT_PATH = File.join(PATH, 'obj')
+require 'fileutils'
 
-  # Loads the test runner template.
-  def self.load_test_runner
-    load File.join(TEMPLATE_PATH, 'runner.rake')
-  end
+alias old_sh sh
+
+def sh *aArgs, &aBlock
+  old_sh *collect_args(aArgs), &aBlock
+end
+
+def collect_args *aArgs
+  aArgs.flatten.compact.reject {|i| i.to_s.empty?}
 end

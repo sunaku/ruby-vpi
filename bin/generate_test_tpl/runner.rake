@@ -1,4 +1,4 @@
-## This runner builds and runs the test. ##
+## This file builds and runs the test. ##
 
 # These are source files that are to be simulated.
 SIMULATOR_SOURCES = [

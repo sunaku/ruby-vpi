@@ -24,10 +24,13 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
+$:.unshift File.join(File.dirname(__FILE__), 'lib')
+
 require 'rake/clean'
 require 'rake/rdoctask'
 require 'tempfile'
 require 'rbconfig'
+require 'rake_common'
 
 
 CFLAGS = [Config::CONFIG['CFLAGS'], ENV['CFLAGS'], '-g', '-DDEBUG']
@@ -133,7 +136,7 @@ task :default => :build
   CLEAN.include 'Makefile', 'mkmf.log', '*.o', '*.so'
 
   file 'Makefile' => [:swig, 'src/extconf.rb'] do |t|
-    ruby "#{t.prerequisites[1]} --with-cflags='#{CFLAGS}' --with-ldflags='#{LDFLAGS}'"
+    ruby "#{t.prerequisites[1]} --with-cflags='#{CFLAGS.join(' ')}' --with-ldflags='#{LDFLAGS.join(' ')}'"
   end
 
 
