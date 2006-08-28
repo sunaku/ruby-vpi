@@ -246,14 +246,21 @@ task :default => :build
         sh "svn up"
         sh "find -name .svn | xargs rm -rf"
 
-      # make release packages
-        sh "rake dist"
+      sh "rake dist"
 
-        src = File.join('..', File.basename(dir))
-        dst = File.join(File.dirname(__FILE__), pkgName)
+      src = File.join('..', File.basename(dir))
+      dst = File.join(File.dirname(__FILE__), pkgName)
 
-        sh '7z', 'a', dst + '.7z', src
-        sh 'tar', 'zcf', dst + '.tgz', src
+      # make source packages
+        sh '7z', 'a', dst + '.src.7z', src
+        sh 'tar', 'zcf', dst + '.src.tgz', src
+
+      # make binary packages
+        tag = Config::CONFIG['host_cpu']
+
+        sh 'rake build clean'
+        sh '7z', 'a', dst + ".bin.#{tag}.7z", src
+        sh 'tar', 'zcf', dst + ".bin.#{tag}.tgz", src
     end
 
     rm_r tmpDir
