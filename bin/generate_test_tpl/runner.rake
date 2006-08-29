@@ -12,7 +12,7 @@ SIMULATOR_TARGET = '<%= aOutputInfo.verilogBenchName %>'
 # These are command-line arguments for the simulator.
 # They can be specified as a string or an array of strings.
 SIMULATOR_ARGS = {
-  # Pragmatic C - Cver
+  # GPL Cver
   :cver => '',
 
   # Icarus Verilog

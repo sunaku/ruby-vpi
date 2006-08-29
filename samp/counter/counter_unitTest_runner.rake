@@ -1,4 +1,4 @@
-## This runner builds and runs the test. ##
+## This file builds and runs the test.
 
 # These are source files that are to be simulated.
 SIMULATOR_SOURCES = [
@@ -10,17 +10,18 @@ SIMULATOR_SOURCES = [
 SIMULATOR_TARGET = 'counter_unitTest_bench'
 
 # These are command-line arguments for the simulator.
+# They can be specified as a string or an array of strings.
 SIMULATOR_ARGS = {
-  # arguments for GPL Cver
+  # GPL Cver
   :cver => '',
 
-  # arguments for Icarus Verilog
+  # Icarus Verilog
   :ivl => '',
 
-  # arguments for Synopsys VCS
+  # Synopsys VCS
   :vcs => '',
 
-  # arguments for Mentor Modelsim
+  # Mentor Modelsim
   :vsim => '',
 }
 

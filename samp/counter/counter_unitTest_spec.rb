@@ -1,4 +1,4 @@
-## This specification verifies the design under test. ##
+## This specification verifies the design under test.
 
 # lowest upper bound of counter's value
 LIMIT = 2 ** Counter::Size

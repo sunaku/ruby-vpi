@@ -1,9 +1,9 @@
-## This is the Ruby side of the bench. ##
+## This is the Ruby side of the bench.
 
 require 'ruby-vpi'
 require 'ruby-vpi/rspec'
 
 RubyVPI.init_bench 'counter_rspecTest', :CounterProto
 
-# service the $ruby_relay() callback
+# service the $ruby_relay callback
   # The RSpec library will take control henceforth.

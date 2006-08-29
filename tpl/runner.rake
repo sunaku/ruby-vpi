@@ -57,7 +57,7 @@ task :default do
 end
 
 
-desc "Simulate with Pragmatic C - Cver."
+desc "Simulate with GPL Cver."
 task :cver => SIMULATOR_SOURCES do |t|
   sh 'cver', SIMULATOR_ARGS[t.name.to_sym], "+loadvpi=#{object_file_path(t.name.to_sym, true)}:vlog_startup_routines_bootstrap", SIMULATOR_SOURCES
 end
