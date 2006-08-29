@@ -1,9 +1,3 @@
-# Main build specification for Ruby-VPI.
-#
-# = Environment variables
-# CFLAGS:: Arguments to the compiler.
-# LDFLAGS:: Arguments to the linker.
-
 =begin
   Copyright 2006 Suraj N. Kurapati
 
@@ -26,13 +20,12 @@
 
 require 'rake/clean'
 require 'rake/rdoctask'
+
 require 'tempfile'
 require 'rbconfig'
+
 require 'ruby-vpi/rake'
 
-
-CFLAGS = [Config::CONFIG['CFLAGS'], ENV['CFLAGS'], '-g', '-DDEBUG']
-LDFLAGS = [Config::CONFIG['LDFLAGS'], ENV['LDFLAGS']]
 
 PROJECT_ID = 'ruby-vpi'
 PROJECT_NAME = 'Ruby-VPI'
@@ -70,86 +63,61 @@ end
 
 task :default => :build
 
-# cleaning
-  task :clobber do |t|
-    FileList['samp/*/', 'doc'].each do |dir|
-      cd dir do
-        sh 'rake', t.name
-      end
+task :clobber do |t|
+  files = FileList['**/Rakefile'].reject {|f| File.expand_path(f) == __FILE__}
+
+  files.each do |f|
+    cd File.dirname(f) do
+      sh 'rake', t.name
     end
   end
+end
 
-# extension
-  desc 'Builds object files for all simulators.'
-  task :build
 
-  DEFAULT_SHARED_OBJ = "#{PROJECT_ID}.so"
-  DEFAULT_NORMAL_OBJ = "#{PROJECT_ID}.o"
+desc "Builds object files for all simulators."
+task :build
 
-  OBJ_DIR = 'obj'
-  directory OBJ_DIR
-  CLOBBER.include OBJ_DIR
+DEFAULT_SHARED_OBJ = "#{PROJECT_ID}.so"
+DEFAULT_NORMAL_OBJ = "#{PROJECT_ID}.o"
 
-  {
-    :cver => ['-DPRAGMATIC_CVER', '-export-dynamic'],
-    :ivl => ['-DICARUS_VERILOG'],
-    :vcs => ['-DSYNOPSYS_VCS'],
-    :vsim => ['-DMENTOR_MODELSIM'],
-  }.each_pair do |target, (cflags, ldflags)|
+directory 'obj'
+CLOBBER.include 'obj'
 
-    # object files that are needed to be built
-    objFiles = [DEFAULT_NORMAL_OBJ, DEFAULT_SHARED_OBJ].inject({}) do |memo, src|
-      dstName = src.sub(/#{File.extname src}$/, ".#{target}\\&")
-      dst = File.join(OBJ_DIR, dstName)
+{
+  :cver => ['-DPRAGMATIC_CVER', '-export-dynamic'],
+  :ivl => ['-DICARUS_VERILOG'],
+  :vcs => ['-DSYNOPSYS_VCS'],
+  :vsim => ['-DMENTOR_MODELSIM'],
+}.each_pair do |target, (cflags, ldflags)|
 
-      memo[src] = dst
-      memo
-    end
+  # object files that are needed to be built
+  objFiles = [DEFAULT_NORMAL_OBJ, DEFAULT_SHARED_OBJ].inject({}) do |memo, src|
+    dstName = src.sub(/#{File.extname src}$/, ".#{target}\\&")
+    dst = File.expand_path(File.join('obj', dstName))
 
-    # task to build the object files
-    targetTask = "build_#{target}"
+    memo[src] = dst
+    memo
+  end
 
-    desc "Builds object files for #{target} simulator."
-    task targetTask => OBJ_DIR do
-      unless objFiles.values.reject {|f| File.exist? f}.empty?
+  # task to build the object files
+  targetTask = "build_#{target}"
+
+  desc "Builds object files for #{target} simulator."
+  task targetTask => ['obj', 'ext'] do |t|
+    unless objFiles.values.reject {|f| File.exist? f}.empty?
+      cd t.prerequisites[1] do
         ENV['CFLAGS'], ENV['LDFLAGS'] = cflags, ldflags
-        sh *%w(rake clean ext)
+        sh %w(rake clean default)
 
         objFiles.each_pair do |src, dst|
           mv src, dst
         end
       end
     end
-
-    task :build => targetTask
   end
 
-
-  desc "Builds the #{PROJECT_NAME} extension."
-  task :ext => 'Makefile' do |t|
-    sh "make -f #{t.prerequisites[0]}"
-  end
-
-  CLEAN.include 'Makefile', 'mkmf.log', '*.o', '*.so'
-
-  file 'Makefile' => [:swig, 'src/extconf.rb'] do |t|
-    ruby "#{t.prerequisites[1]} --with-cflags='#{CFLAGS.join(' ')}' --with-ldflags='#{LDFLAGS.join(' ')}'"
-  end
-
-
-  desc 'Generate Ruby wrapper for VPI.'
-  task :swig => 'src/swig_wrap.cin'
-
-  file 'src/swig_wrap.cin' => 'src/swig_vpi.i' do |t|
-    sh "swig -ruby -o #{t.name} #{t.prerequisites[0]}"
-  end
-
-  file 'src/swig_vpi.i' => 'src/swig_vpi.h'
-
-  file 'src/swig_vpi.h' => 'src/vpi_user.h' do |t|
-    # avoid problems with SWIG-generated wrapper for VPI vprintf functions which use va_list
-    ruby %{-pe 'gsub /\\bva_list\\b/, "int"' #{t.prerequisites[0]} > #{t.name}}
-  end
+  task :build => targetTask
+end
 
 
 # documentation
@@ -187,7 +155,7 @@ task :default => :build
   desc 'Generate reference for C.'
   file 'ref/c' do |t|
     # doxygen outputs to this temporary destination
-    tempDest = 'src/html'
+    tempDest = 'ext/html'
 
     cd File.dirname(tempDest) do
       sh "doxygen"
@@ -211,7 +179,11 @@ task :default => :build
 
 
   desc "Prepare for distribution."
-  task :dist => [:swig, :doc, *distDocs]
+  task :dist => ['ext', :doc, *distDocs] do |t|
+    cd t.prerequisites[0] do
+      sh 'rake swig'
+    end
+  end
 
   # website publishing
     desc 'Publish documentation to website.'

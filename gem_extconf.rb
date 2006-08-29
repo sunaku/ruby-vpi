@@ -2,7 +2,7 @@
 
 require 'fileutils'
 
-system('rake build clean') &&
+system('rake build') &&
 FileUtils.touch('Makefile')
 
 exit $?.exitstatus
