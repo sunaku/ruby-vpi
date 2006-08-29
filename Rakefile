@@ -273,11 +273,10 @@ task :default => :build
           s.files = FileList['**/*']
           s.autorequire = PROJECT_ID
           s.executables = FileList['bin/*'].select {|f| File.executable?(f) && File.file?(f)}.map {|f| File.basename f}
-
           s.extensions << t.prerequisites[1]
         end
 
-        Gem.manage_gems
+        Gem::manage_gems
         Gem::Builder.new(spec).build
 
         mv *(FileList['*.gem'] << File.dirname(__FILE__))

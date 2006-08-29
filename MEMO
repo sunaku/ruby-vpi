@@ -1,3 +1,7 @@
+h1. Notes
+
+* When within Rake, rubygems is automatically available for use. no need to require() it again
+
 h1. Pending tasks
 
 * integrate RCov for coverage statistics
@@ -21,14 +25,14 @@ h1. Finished tasks
 
 * change should_be to should_equal in examples
 
-* add support for GPL CVer in the test runner template
+* add support for GPL Cver in the test runner template
 
 * build ruby-vpi once to generate all *.so files
 ** test runner should not rebuild ruby-vpi every time
 
 * distribute as a GEM, binary, and source
 ** use RUBYLIB to bypass rubygems site installation for local testing. otherwise have to build & install gem _every_ time!
+** put lib/* into lib/ruby-vpi/*
 
 h1. Obsolete tasks
 
-* put lib/* into lib/ruby-vpi/*

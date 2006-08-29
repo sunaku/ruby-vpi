@@ -812,7 +812,7 @@
 
     <section id="usage.requirements">
       <title>Requirements</title>
-      <para>The following software is necessary in order to use &rv;. Once you have obtained them, proceed to <xref linkend="usage.installation.requirements"/>.</para>
+      <para>The following software is necessary in order to use &rv;.</para>
 
       <variablelist>
         <varlistentry>
@@ -829,7 +829,7 @@
               </varlistentry>
 
               <varlistentry>
-                <term><ulink url="http://www.pragmatic-c.com/gpl-cVer/">GPL CVer</ulink></term>
+                <term><ulink url="http://www.pragmatic-c.com/gpl-cver/">GPL Cver</ulink></term>
                 <listitem>
                   <para>Version 2.11a or newer is acceptable.</para>
                 </listitem>
@@ -876,51 +876,23 @@
         <varlistentry>
           <term><ulink url="http://www.ruby-lang.org">Ruby</ulink></term>
           <listitem>
-            <para>Version 1.8 or newer, including header and linkable object files for building extensions, is necessary.</para>
+            <para>Version 1.8 or newer, including header and linkable object files for building extensions, is necessary. You can install Ruby by following <ulink url="http://www.rubygarden.org/faq/section/show/3">these instructions</ulink>.</para>
           </listitem>
         </varlistentry>
 
         <varlistentry>
           <term><ulink url="http://rubyforge.org/frs/?group_id=126">RubyGems</ulink></term>
           <listitem>
-            <para>Any recent version should be acceptable.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term><ulink url="http://rubyforge.org/frs/?group_id=50">&rake;</ulink></term>
-          <listitem>
-            <para>Version 0.7.0 or newer is necessary.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term><ulink url="http://rubyforge.org/frs/?group_id=797">&rspec;</ulink></term>
-          <listitem>
-            <para>Version 0.5.4 or newer is necessary.</para>
+            <para>Any recent version should be acceptable. You can install RubyGems by following <ulink url="http://www.rubygems.org/read/chapter/3">these instructions</ulink>.</para>
           </listitem>
         </varlistentry>
       </variablelist>
     </section>
 
     <section id="usage.installation">
-      <title>Installation</title>
+      <title>Installation and uninstallation</title>
 
-      <procedure id="usage.installation.requirements">
-        <title>Installing the required software</title>
-
-        <step><para>Install Ruby.</para></step>
-        <step><para>Install RubyGems.</para></step>
-        <step><para>Install <application>Rake</application> and <application>RSpec</application> by running the command <command>gem <action>install</action> <option>--remote</option> <replaceable>rake</replaceable> <replaceable>rspec</replaceable></command>.</para></step>
-      </procedure>
-
-      <procedure id="usage.installation.main">
-        <title>Installing &rv;</title>
-
-        <step><para>Decompress the release package and extract its contents.</para></step>
-        <step><para>Travel into the extracted <filename>ruby-vpi-<remark>version number</remark></filename> directory.</para></step>
-        <step><para>Build &rv; by running the command <command>rake <action>build</action></command>.</para></step>
-      </procedure>
+      <para>Once you have satisfied the <link linkend="usage.requirements">necessary requirements</link>, you can install &rv; by running the command <command>gem <action>install</action> <replaceable>ruby-vpi</replaceable></command> at your command-prompt. Likewise, you can uninstall &rv; by running the command <command>gem <action>uninstall</action> <replaceable>ruby-vpi</replaceable></command> at your command-prompt.</para>
     </section>
 
     <section id="usage.tools">
