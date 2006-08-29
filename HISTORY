@@ -18,9 +18,9 @@ h2. Summary
 
 h2. Details
 
-* Ruby-VPI is now distributed only as a "source gem":http://www.rubygems.org. You can decompress the gem without installing it onto your system by running the command @gem install -i output_directory ruby-vpi-7.0.0.gem@. In addition, you can still obtain the source code directly from the Subversion repository.
+* @put_value()@ now accomodates register value overflows when verifying the value it has written.
 
-* The tools in @bin/@ become available in your system's @bin/@ directory when the gem is installed.
+* Ruby-VPI is now distributed only as a "source gem":http://www.rubygems.org. You can decompress the gem without installing it onto your system by running the command @gem install -i output_directory ruby-vpi-7.0.0.gem@. In addition, you can still obtain the source code directly from the Subversion repository.
 
 * The test generator's templates and the examples have been updated as follows:
 ** Test runners no longer have to specify the path to Ruby-VPI installation directory. Instead, they simply @require 'ruby-vpi/runner'@. Thus, you can run your tests on any machine with Ruby-VPI without having to know where it is installed.
@@ -28,8 +28,17 @@ h2. Details
 
 * All Ruby libraries in the @lib/@ directory have been moved into @lib/ruby-vpi/@ to prevent load-path clashes with other gems. You should access these libraries by prefixing their path with "ruby-vpi". For example, @require 'vpi_util'@ should now be written as @require 'ruby-vpi/vpi_util'@.
 
+* The @src/@ directory has been renamed to @ext/@ to follow RubyGems convention.
+
+* The tools in @bin/@ become available in your system's @bin/@ directory when the gem is installed.
+** Usage and help information has been added to the @header_to_ruby.rb@ tool.
+
 * Incorrect spelling of GPL Cver (v should be uncapitalized) has been fixed.
+
 * Incorrect link to GPL Cver website has been fixed.
+
+* The user manual has been updated according to all of the above changes.
+
 
 h1. Version 6.3.0 (2006-08-27)
 
