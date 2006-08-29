@@ -1,5 +1,4 @@
-## This is an interface to the design under test. ##
-
+# An interface to the design under test.
 class <%= aOutputInfo.designClassName %>
   include Vpi
 

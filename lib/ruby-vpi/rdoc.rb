@@ -22,7 +22,7 @@
 require 'rdoc/usage'
 
 module RDoc
-  # Display usage from the given file.
+  # Display usage information from RDoc comments in the given file.
   def RDoc.usage_from_file input_file, *args
     comment = File.open(input_file) do |file|
       find_comment(file)

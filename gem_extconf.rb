@@ -1,4 +1,4 @@
-## This file is invoked by RubyGems to build the extension. ##
+## This file is invoked by RubyGems to build the extension.
 
 require 'fileutils'
 

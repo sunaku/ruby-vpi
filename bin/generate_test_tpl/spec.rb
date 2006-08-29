@@ -1,4 +1,4 @@
-## This specification verifies the design under test. ##
+## This specification verifies the design under test.
 
 <%
   case aOutputInfo.specFormat

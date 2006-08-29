@@ -1,4 +1,4 @@
-## This is the Ruby side of the bench. ##
+## This is the Ruby side of the bench.
 
 require 'ruby-vpi'
 <%
