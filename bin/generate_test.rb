@@ -193,7 +193,6 @@ if File.basename($0) == File.basename(__FILE__)
 
   # parse command-line options
     require 'optparse'
-    require 'ruby-vpi/rdoc'
 
     optSpecFmt = :Generic
     optTestName = 'test'
@@ -202,7 +201,9 @@ if File.basename($0) == File.basename(__FILE__)
     opts.banner = "Usage: #{File.basename __FILE__} [options] [files]"
 
     opts.on '-h', '--help', 'show this help message' do
+      require 'ruby-vpi/rdoc'
       RDoc.usage_from_file __FILE__
+
       puts opts
       exit
     end
