@@ -17,15 +17,7 @@
 #
 # For example, when the interface of a Verilog module changes, you would simply re-run this tool to incorporate those changes into the test without diverting your focus from the specification.
 #
-# == Usage
-# ruby generate_test.rb [option...] [input-file...]
-#
-# option::
-# 	Specify "--help" to see a list of options.
-#
-# input-file::
-# 	A source file which contains one or more Verilog 2001 module declarations.
-#
+# == Notes
 # * If no input files are specified, then the standard input stream will be read instead.
 # * The first signal parameter in a module's declaration is assumed to be the clocking signal.
 # * Existing output files will be backed-up before being over-written. A backed-up file has a tilde (~) appended to its name.
@@ -72,7 +64,6 @@ end
 
 
 
-$:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 require 'ruby-vpi/erb'
 
 # Template used for generating output.
@@ -202,26 +193,36 @@ if File.basename($0) == File.basename(__FILE__)
 
   # parse command-line options
     require 'optparse'
-    require 'rdoc/usage'
+    require 'ruby-vpi/rdoc'
 
     optSpecFmt = :Generic
     optTestName = 'test'
 
-    optsParser = OptionParser.new
-    optsParser.on('-h', '--help', 'show this help message') {raise}
-    optsParser.on('-u', '--unit', 'use Test::Unit specification format') {|val| optSpecFmt = :UnitTest if val}
-    optsParser.on('-r', '--rspec', 'use RSpec specification format') {|val| optSpecFmt = :RSpec if val}
-    optsParser.on('-n', '--name NAME', 'specify name of generated test') {|val| optTestName = val}
+    opts = OptionParser.new
+    opts.banner = "Usage: #{File.basename __FILE__} [options] [files]"
 
-    begin
-      optsParser.parse!(ARGV)
-    rescue
-      at_exit {puts optsParser}
-      RDoc::usage	# NOTE: this terminates the program
+    opts.on '-h', '--help', 'show this help message' do
+      RDoc.usage_from_file __FILE__
+      puts opts
+      exit
     end
 
-    puts "Using name `#{optTestName}' for generated test."
-    puts "Using #{optSpecFmt} specification format."
+    opts.on '-u', '--unit', 'use Test::Unit specification format' do |val|
+      optSpecFmt = :UnitTest if val
+    end
+
+    opts.on '-r', '--rspec', 'use RSpec specification format' do |val|
+      optSpecFmt = :RSpec if val
+    end
+
+    opts.on '-n', '--name NAME', 'attach NAME indentifier to generated test' do |val|
+      optTestName = val
+    end
+
+    opts.parse! ARGV
+
+  puts "Using name `#{optTestName}' for generated test."
+  puts "Using #{optSpecFmt} specification format."
 
 
   ModuleInfo.parse_declarations(ARGF.read).each do |moduleDecl|
