@@ -153,7 +153,10 @@ module SWIG
               readenVal == aValue.to_s
 
             when VpiIntVal
-              readenVal == aValue.to_i
+              (readenVal == aValue.to_i) or
+
+              # allow for value overflow when limit reached
+              (readenVal == (aValue.to_i % (2 ** self.vpiSize)))
 
             when VpiRealVal
               readenVal == aValue.to_f
