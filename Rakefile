@@ -24,6 +24,7 @@ require 'rake/rdoctask'
 require 'tempfile'
 require 'rbconfig'
 
+$:.unshift File.join(File.dirname(__FILE__), 'lib')
 require 'ruby-vpi/rake'
 
 
