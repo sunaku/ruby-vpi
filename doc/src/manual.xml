@@ -112,7 +112,7 @@
         </varlistentry>
 
         <varlistentry>
-          <term><filename>src</filename></term>
+          <term><filename>ext</filename></term>
           <listitem>
             <para>This directory contains source code, written in the C language, for the <link linkend="background.organization">core of &rv;</link>.</para>
           </listitem>
@@ -890,19 +890,21 @@
     </section>
 
     <section id="usage.installation">
-      <title>Installation and uninstallation</title>
+      <title>Installation and maintenance</title>
 
-      <para>Once you have satisfied the <link linkend="usage.requirements">necessary requirements</link>, you can install &rv; by running the command <command>gem <action>install</action> <replaceable>ruby-vpi</replaceable></command> at your command-prompt. Likewise, you can uninstall &rv; by running the command <command>gem <action>uninstall</action> <replaceable>ruby-vpi</replaceable></command> at your command-prompt.</para>
+      <para>Once you have satisfied the <link linkend="usage.requirements">necessary requirements</link>, you can install &rv; by running the command <command>gem <action>install</action> <replaceable>ruby-vpi</replaceable></command>. Likewise, you can uninstall &rv; by running the command <command>gem <action>uninstall</action> <replaceable>ruby-vpi</replaceable></command>. Furthermore, you can upgrade to the latest release of &rv; by running the command <command>gem <action>update</action> <replaceable>ruby-vpi</replaceable></command>.</para>
+
+      <para>You can learn more about using and manipulating RubyGems in <ulink url="http://www.rubygems.org">the RubyGems user manual</ulink>.</para>
     </section>
 
     <section id="usage.tools">
       <title>Tools</title>
-      <para>The <filename>tools</filename> directory contains tools which ease the process of writing tests. Each tool provides help and usage information invoked with the <option>--help</option> option.</para>
+      <para>The <filename>bin</filename> directory contains various utilities which ease the process of writing tests. Each tool provides help and usage information invoked with the <option>--help</option> option.</para>
 
       <section id="usage.tools.generate-test">
         <title>Automated test generation</title>
 
-        <para>The <filename>bin/generate_test.rb</filename> tool can be used to automatically generate tests from &v; 2001 module declarations. You can try it by running the command <command>ruby <replaceable>bin/generate_test.rb</replaceable> <option>--help</option></command>.</para>
+        <para>The <command>generate_test.rb</command> tool can be used to automatically generate tests from &v; 2001 module declarations (see <xref linkend="usage.tutorial.generate-test"/>). You can try it by running the command <command>generate_test.rb <option>--help</option></command>.</para>
       </section>
     </section>
 
@@ -1039,7 +1041,7 @@
         <figure id="fig..generate-test.rspec">
           <title>Generating a test with specification in &rspec; format</title>
 <screen>
-<prompt>$</prompt> <userinput><command>ruby <replaceable>bin/generate_test.rb</replaceable> <replaceable>counter.v</replaceable> <option>--rspec</option> <option>--name</option> <replaceable>rspecTest</replaceable></command></userinput>
+<prompt>$</prompt> <userinput><command>generate_test.rb <replaceable>counter.v</replaceable> <option>--rspec</option> <option>--name</option> <replaceable>rspecTest</replaceable></command></userinput>
 <computeroutput>Using name `rspecTest' for generated test.
 Using RSpec specification format.
 
@@ -1056,7 +1058,7 @@ Parsed module: counter
         <figure id="fig..generate-test.unit-test">
           <title>Generating a test with specification in unit test format</title>
 <screen>
-<prompt>$</prompt> <userinput><command>ruby <replaceable>bin/generate_test.rb</replaceable> <replaceable>counter.v</replaceable> <option>--unit</option> <option>--name</option> <replaceable>unitTest</replaceable></command></userinput>
+<prompt>$</prompt> <userinput><command>generate_test.rb <replaceable>counter.v</replaceable> <option>--unit</option> <option>--name</option> <replaceable>unitTest</replaceable></command></userinput>
 <computeroutput>Using name `unitTest' for generated test.
 Using UnitTest specification format.
 

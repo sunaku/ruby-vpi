@@ -20,7 +20,9 @@ h2. Details
 
 * Ruby-VPI is now distributed only as a "source gem":http://www.rubygems.org. You can decompress the gem without installing it onto your system by running the command @gem install -i output_directory ruby-vpi-7.0.0.gem@. In addition, you can still obtain the source code directly from the Subversion repository.
 
-* The test generator's templates and the examples have been updated according to the following changes.
+* The tools in @bin/@ become available in your system's @bin/@ directory when the gem is installed.
+
+* The test generator's templates and the examples have been updated as follows:
 ** Test runners no longer have to specify the path to Ruby-VPI installation directory. Instead, they simply @require 'ruby-vpi/runner'@. Thus, you can run your tests on any machine with Ruby-VPI without having to know where it is installed.
 ** Ruby benches now invoke @RubyVPI.init_bench@ instead of @require 'bench'; setup_bench@ to become initialized.
 
