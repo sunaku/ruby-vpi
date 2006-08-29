@@ -81,7 +81,7 @@ task :default => :build
     end
   end
 
-# extension's object files
+# extension
   desc 'Builds object files for all simulators.'
   task :build
 
@@ -127,7 +127,6 @@ task :default => :build
   end
 
 
-# extension
   desc "Builds the #{PROJECT_NAME} extension."
   task :ext => 'Makefile' do |t|
     sh "make -f #{t.prerequisites[0]}"
@@ -269,6 +268,9 @@ task :default => :build
           s.homepage = PROJECT_URL
           s.version = releaseVersion
 
+          s.add_dependency 'rspec', '>= 0.5.4'
+          s.add_dependency 'rake', '>= 0.7.0'
+
           s.requirements << "POSIX threads library"
           s.requirements << "C language compiler"
 
@@ -276,24 +278,11 @@ task :default => :build
           s.autorequire = PROJECT_ID
           s.executables = FileList['bin/*'].select {|f| File.executable?(f) && File.file?(f)}.map {|f| File.basename f}
 
-          s.required_ruby_version = '< 1.9.0'
-          s.add_dependency 'rspec', '>= 0.5.4'
-          s.add_dependency 'rake', '>= 0.7.0'
-
           s.extensions << t.prerequisites[1]
         end
 
-        ##=begin
-        # This code was taken from Rake 0.7.1.
-        # Copyright (c) 2003, 2004 Jim Weirich
-        begin
-          Gem.manage_gems
-        rescue NoMethodError
-          # Using rubygems prior to 0.6.1
-        end
-
+        Gem.manage_gems
         Gem::Builder.new(spec).build
-        ##=end
 
         mv *(FileList['*.gem'] << File.dirname(__FILE__))
     end
