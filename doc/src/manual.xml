@@ -84,7 +84,7 @@
 
   <chapter id="introduction">
     <title>Introduction</title>
-    <para>&rv; is a &ruby..ulink; interface to <ulink url="http://en.wikipedia.org/wiki/Verilog">&vpi;</ulink>. It lets you create complex &v; test benches easily and wholly in Ruby.</para>
+    <para>&rv; is a &r..ulink; interface to <ulink url="http://en.wikipedia.org/wiki/Verilog">&vpi;</ulink>. It lets you create complex &v; test benches easily and wholly in Ruby.</para>
 
     <section id="introduction.license">
       <title>License</title>
@@ -765,11 +765,11 @@
           <title>Initialization of a test</title>
 
           <step>
-            <para>The &v; simulator initializes the Ruby interpreter by invoking the <code><function>$ruby_init</function>();</code> system task/function, whose parameters represent the command-line invocation of the Ruby interpreter. For example, one would specify <code><function>$ruby_init</function>(<parameter><literal>"ruby"</literal></parameter>, <parameter><literal>"-w"</literal></parameter>);</code> in &v; to achieve the same effect as specifying <command>ruby <option>-w</option></command> at a command-prompt.</para>
+            <para>The &v; simulator initializes the Ruby interpreter by invoking the <code><function>$ruby_init</function>;</code> system task/function, whose parameters represent the command-line invocation of the Ruby interpreter. For example, one would specify <code><function>$ruby_init</function>(<parameter><literal>"ruby"</literal></parameter>, <parameter><literal>"-w"</literal></parameter>);</code> in &v; to achieve the same effect as specifying <command>ruby <option>-w</option></command> at a command-prompt.</para>
           </step>
 
           <step>
-            <para>The &v; simulator is paused and the Ruby interpreter is initialized with the arguments of the <code><function>$ruby_init</function>();</code> system task/function.</para>
+            <para>The &v; simulator is paused and the Ruby interpreter is initialized with the arguments of the <code><function>$ruby_init</function>;</code> system task/function.</para>
           </step>
 
           <step>&background.step3;</step>
@@ -794,7 +794,7 @@
           <title>Execution of a test</title>
 
           <step>
-            <para>The &v; simulator transfers control to the Ruby interpreter by invoking the <code><function>$ruby_relay</function>();</code> system task/function.</para>
+            <para>The &v; simulator transfers control to the Ruby interpreter by invoking the <code><function>$ruby_relay</function>;</code> system task/function.</para>
           </step>
 
           <step>
@@ -906,6 +906,12 @@
 
         <para>The <command>generate_test.rb</command> tool can be used to automatically generate tests from &v; 2001 module declarations (see <xref linkend="usage.tutorial.generate-test"/>). You can try it by running the command <command>generate_test.rb <option>--help</option></command>.</para>
       </section>
+
+      <section id="usage.tools.verilog-ruby-conv">
+        <title>&v; to &r; conversion</title>
+
+        <para>The <command>header_to_ruby.rb</command> tool can be used to convert &v; header files into &r;. You can try it by running the command <command>header_to_ruby.rb <option>--help</option></command>.</para>
+      </section>
     </section>
 
     <section id="usage.examples">
@@ -934,7 +940,7 @@
         </step>
 
         <step>
-          <para><link linkend="usage.tutorial.implement-proto">Implement the prototype</link> of the design in &ruby;.</para>
+          <para><link linkend="usage.tutorial.implement-proto">Implement the prototype</link> of the design in &r;.</para>
         </step>
 
         <step>
@@ -1282,7 +1288,7 @@ Finished in 0.040668 seconds.
       <section id="usage.tutorial.implement-design">
         <title>Implement the design</title>
 
-        <para>Now that we have implemented and verified our prototype, we are ready to implement our design. This is often quite simple because we translate <emphasis>existing</emphasis> code from &ruby; into &v;. <xref linkend="fig..counter.v_impl"/> illustrates the result of this process.</para>
+        <para>Now that we have implemented and verified our prototype, we are ready to implement our design. This is often quite simple because we translate <emphasis>existing</emphasis> code from &r; into &v;. <xref linkend="fig..counter.v_impl"/> illustrates the result of this process.</para>
 
         <important>
           <title>Before we continue&hellip;</title>

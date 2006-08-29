@@ -31,10 +31,9 @@
 
 
 <!-- acronyms & abbreviations -->
-<!ENTITY ruby "Ruby">
-<!ENTITY ruby.url "http://www.ruby-lang.org/en/20020101.html">
-<!ENTITY ruby..ulink "<ulink url='&ruby.url;'>&ruby;</ulink>">
-
+<!ENTITY r "Ruby">
+<!ENTITY r.url "http://www.ruby-lang.org/en/20020101.html">
+<!ENTITY r..ulink "<ulink url='&r.url;'>&r;</ulink>">
 <!ENTITY v "Verilog">
 <!ENTITY vpi "<acronym>VPI</acronym>">
 
