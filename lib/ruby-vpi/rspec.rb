@@ -1,7 +1,8 @@
-# Template for Ruby benches.
+# Bootstraps the RSpec library from within Ruby.
 
 =begin
   Copyright 2006 Suraj N. Kurapati
+  Copyright 2006 RSpec project
 
   This file is part of Ruby-VPI.
 
@@ -20,28 +21,12 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
-# Initializes the current bench using the given parameters.
-def setup_bench aTestPrefix, aProtoClassId
-  Vpi::relay_verilog	# service the $ruby_init() callback
+require 'rubygems'
+require_gem 'rspec', '>= 0.5.4'
+require 'spec'
 
-  require 'vpi_util'
+# prevent RSpec termination when no arguments are provided
+  ARGV.unshift ''
 
-  # load the design under test
-    require "#{aTestPrefix}_design.rb"
-
-    if ENV['PROTO']
-      require "#{aTestPrefix}_proto.rb"
-
-      proto = Kernel.const_get(aProtoClassId).new
-
-      Vpi.class_eval do
-        define_method :relay_verilog do
-          proto.simulate!
-        end
-      end
-
-      puts "#{aTestPrefix}: verifying prototype instead of design"
-    end
-
-  require "#{aTestPrefix}_spec.rb"
-end
+$context_runner = ::Spec::Runner::OptionParser.create_context_runner(ARGV, false, STDERR, STDOUT)
+at_exit {$context_runner.run false}

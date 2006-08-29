@@ -24,13 +24,11 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
-$:.unshift File.join(File.dirname(__FILE__), 'lib')
-
 require 'rake/clean'
 require 'rake/rdoctask'
 require 'tempfile'
 require 'rbconfig'
-require 'rake_common'
+require 'ruby-vpi/rake'
 
 
 CFLAGS = [Config::CONFIG['CFLAGS'], ENV['CFLAGS'], '-g', '-DDEBUG']
@@ -259,8 +257,6 @@ task :default => :build
       sh "rake dist"
 
       # make gem package
-        require 'rubygems'
-
         spec = Gem::Specification.new do |s|
           s.name = s.rubyforge_project = PROJECT_ID
           s.summary = PROJECT_SUMMARY

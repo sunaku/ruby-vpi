@@ -7,8 +7,4 @@ SIMULATOR_ARGS = {
   :vsim => '',
 }
 
-# build and run the test
-  require 'rubygems'
-  require 'ruby-vpi'
-
-  RubyVPI.load_test_runner
+require 'ruby-vpi/runner'

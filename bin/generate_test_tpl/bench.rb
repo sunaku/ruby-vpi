@@ -1,5 +1,6 @@
 ## This is the Ruby side of the bench. ##
 
+require 'ruby-vpi'
 <%
   case aOutputInfo.specFormat
     when :UnitTest
@@ -8,16 +9,14 @@ require 'test/unit'
 <%
     when :RSpec
 %>
-require 'rspec'
+require 'ruby-vpi/rspec'
 <%
   end
 %>
 
-# initalize the bench
-  require 'bench'
-  setup_bench '<%= aModuleInfo.name + aOutputInfo.suffix %>', :<%= aOutputInfo.protoClassName %>
+RubyVPI.init_bench '<%= aModuleInfo.name + aOutputInfo.suffix %>', :<%= aOutputInfo.protoClassName %>
 
-# service the $ruby_relay() callback
+# service the $ruby_relay callback
 <%
   case aOutputInfo.specFormat
     when :UnitTest, :RSpec

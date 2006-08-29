@@ -26,7 +26,33 @@ module RubyVPI
   OBJECT_PATH = File.join(PATH, 'obj')
 
   # Loads the test runner template.
-  def self.load_test_runner
+  def self.load_runner_template
     load File.join(TEMPLATE_PATH, 'runner.rake')
+  end
+
+  # Initializes the current bench using the given parameters.
+  def self.init_bench aTestPrefix, aProtoClassId
+    Vpi::relay_verilog	# service the $ruby_init() callback
+
+    require 'ruby-vpi/vpi_util'
+
+    # load the design under test
+      require "#{aTestPrefix}_design.rb"
+
+      if ENV['PROTO']
+        require "#{aTestPrefix}_proto.rb"
+
+        proto = Kernel.const_get(aProtoClassId).new
+
+        Vpi.class_eval do
+          define_method :relay_verilog do
+            proto.simulate!
+          end
+        end
+
+        puts "#{aTestPrefix}: verifying prototype instead of design"
+      end
+
+    require "#{aTestPrefix}_spec.rb"
   end
 end

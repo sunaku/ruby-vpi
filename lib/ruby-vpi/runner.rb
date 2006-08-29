@@ -1,8 +1,5 @@
-# Bootstraps the RSpec library from within Ruby.
-
 =begin
   Copyright 2006 Suraj N. Kurapati
-  Copyright 2006 RSpec project
 
   This file is part of Ruby-VPI.
 
@@ -21,13 +18,5 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
-require 'rubygems'
-require_gem 'rspec', '>= 0.5.4'
-require 'spec'
-
-# prevent RSpec termination when no arguments are provided
-ARGV.unshift ''
-
-
-$context_runner = ::Spec::Runner::OptionParser.create_context_runner(ARGV, false, STDERR, STDOUT)
-at_exit {$context_runner.run false}
+require 'ruby-vpi'
+RubyVPI.load_runner_template

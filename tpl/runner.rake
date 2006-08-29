@@ -36,12 +36,12 @@
 
 
 require 'rake/clean'
-require 'rake_common'
+require 'ruby-vpi/rake'
 
 include RubyVPI
 
 # make Ruby-VPI libraries available to spec
-ENV['RUBYLIB'] = (ENV['RUBYLIB'] && ENV['RUBYLIB'].dup || '') << ":#{LIBRARY_PATH}:#{TEMPLATE_PATH}"
+ENV['RUBYLIB'] = (ENV['RUBYLIB'] && ENV['RUBYLIB'].dup || '') << ":#{LIBRARY_PATH}"
 
 
 # Returns the path to the Ruby-VPI object file for the given simulator.

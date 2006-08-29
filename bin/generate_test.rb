@@ -72,8 +72,8 @@ end
 
 
 
-$: << File.join(File.dirname(__FILE__), '..', 'lib')
-require 'eruby'
+$:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+require 'ruby-vpi/erb'
 
 # Template used for generating output.
 class Template < ERB

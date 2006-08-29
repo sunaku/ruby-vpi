@@ -20,7 +20,7 @@
 
 # A specification which verifies the design under test.
 require 'hw5_unit_design.rb'
-require 'vpi_util'
+require 'ruby-vpi/vpi_util'
 require 'test/unit'
 
 require 'InputGenerator'
