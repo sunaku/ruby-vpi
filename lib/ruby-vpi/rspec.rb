@@ -22,7 +22,7 @@
 =end
 
 require 'rubygems'
-require_gem 'rspec', '>= 0.5.4'
+require_gem 'rspec'
 require 'spec'
 
 # prevent RSpec termination when no arguments are provided
