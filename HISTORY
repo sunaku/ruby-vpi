@@ -12,9 +12,11 @@ We _strictly_ follow the RubyGems project's "rational versioning policy":http://
 fn1. C. Gross, "Explaining Open Source Version Numbers", [Online document], 2005 Nov 28, [cited 2006 Aug 27], Available HTTP: "http://ablog.apress.com/?p=738":http://ablog.apress.com/?p=738
 
 
-h1. Version 7.1.0 (not yet released)
+h1. Version 7.1.0 (2006-08-29)
 
 h2. Summary
+
+This release simplifies running of multiple tests, restores compatibility with Synopsys VCS, and better integrates with RubyGems.
 
 h2. Details
 
