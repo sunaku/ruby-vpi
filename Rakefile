@@ -247,8 +247,6 @@ end
           s.autorequire = PROJECT_ID
           s.executables = FileList['bin/*'].select {|f| File.executable?(f) && File.file?(f)}.map {|f| File.basename f}
           s.extensions << t.prerequisites[1]
-
-          s.has_rdoc = true
         end
 
         Gem::manage_gems
@@ -259,6 +257,21 @@ end
 
     rm_r tmpDir
   end
+
+
+desc "Configures the gem during installation."
+task :config_gem_install do
+  # makes documentation available to gem_server
+    gemDir = File.dirname(__FILE__)
+    gemName = File.basename(gemDir)
+    docDir = File.join('..', '..', 'doc', gemName, 'rdoc')
+
+    mkdir_p docDir
+    mv 'doc/xhtml', File.join(docDir, 'manual')
+    mv 'readme.html', File.join(docDir, 'index.html')
+    mv FileList['ref/*', '*.html'].to_a, docDir
+end
+
 
 # testing
   desc "Ensure that examples work with $SIMULATOR"
