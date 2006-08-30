@@ -182,7 +182,7 @@ end
 #
 
 desc "Prepare distribution information."
-taks :dist_info => ['HISTORY', 'README', 'MEMO'].map do |src|
+task :dist_info => ['HISTORY', 'README', 'MEMO'].map do |src|
   dst = src.downcase << '.html'
 
   file dst => src do |t|
