@@ -126,13 +126,6 @@
         </varlistentry>
 
         <varlistentry>
-          <term><filename>tpl</filename></term>
-          <listitem>
-            <para>This directory contains templates used by tests.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
           <term><filename>bin</filename></term>
           <listitem>
             <para>This directory contains various tools. See <xref linkend="usage.tools"/> for more information.</para>
