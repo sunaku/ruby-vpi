@@ -26,6 +26,10 @@ h2. Details
 
 * Ruby-VPI documentation is now available through RubyGems' "@gem_server@ web interface":http://docs.rubygems.org/read/chapter/2#page10.
 
+* The user manual now discusses how to determine the location of a Ruby-VPI installation.
+
+* The @tpl/@ directory has been removed.
+
 
 h1. Version 7.0.0 (2006-08-29)
 
