@@ -36,6 +36,8 @@
 
 
 require 'rake/clean'
+
+require 'ruby-vpi'
 require 'ruby-vpi/rake'
 
 include RubyVPI
