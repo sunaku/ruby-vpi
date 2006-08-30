@@ -181,8 +181,7 @@ end
 # distribution
 #
 
-desc "Prepare distribution information."
-task :dist_info => ['HISTORY', 'README', 'MEMO'].map do |src|
+distDocs = ['HISTORY', 'README', 'MEMO'].map do |src|
   dst = src.downcase << '.html'
 
   file dst => src do |t|
@@ -192,6 +191,9 @@ task :dist_info => ['HISTORY', 'README', 'MEMO'].map do |src|
   CLOBBER.include dst
   dst
 end
+
+desc "Prepare distribution information."
+task :dist_info => distDocs
 
 
 desc "Prepare for distribution."
@@ -206,7 +208,7 @@ desc 'Publish documentation to website.'
 task :web => [:web_dist, :web_ref, :web_doc]
 
 desc "Publish distribution info."
-task :web_dist => :dist_info do |t|
+task :web_dist => distDocs do |t|
   upload_without_svn PROJECT_SSH_URL, *t.prerequisites
 end
 
