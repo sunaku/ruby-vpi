@@ -18,7 +18,9 @@ h2. Summary
 
 h2. Details
 
-* Added @ruby-vpi/runner_proxy@ library which, when embedded into a Rakefile, runs all generated tests in the working directory with any specified arguments. For example, have a look at the @samp/counter/Rakefile@ file.
+* Added @lib/ruby-vpi/runner_proxy@ library which, when embedded into a Rakefile, runs all generated tests in the working directory with any specified arguments. For example, have a look at the @samp/counter/Rakefile@ file.
+
+* Fixed a bug preventing running of tests with VCS simulator.
 
 
 h1. Version 7.0.0 (2006-08-29)
