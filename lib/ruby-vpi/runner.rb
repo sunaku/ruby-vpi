@@ -78,10 +78,10 @@ CLEAN.include 'ruby-vpi.vpi', 'a.out'
 
 
 desc "Simulate with Synopsys VCS."
-task :vcs => collect_args(File.join(TEMPLATE_PATH, 'synopsys_vcs.tab'), SIMULATOR_SOURCES) do |t|
+task :vcs => collect_args(File.join(File.dirname(__FILE__), 'synopsys_vcs.tab'), SIMULATOR_SOURCES) do |t|
   require 'rbconfig'
 
-  sh 'vcs', SIMULATOR_ARGS[t.name.to_sym], %w(-R +v2k +vpi -LDFLAGS), File.expand_path(NORMAL_OBJ_PATH), "-L#{Config::CONFIG['libdir']}", Config::CONFIG['LIBRUBYARG'], %w(-lpthread -P), t.prerequisites[1], SIMULATOR_SOURCES
+  sh 'vcs', SIMULATOR_ARGS[t.name.to_sym], %w(-R +v2k +vpi -LDFLAGS), File.expand_path(object_file_path(t.name.to_sym)), "-L#{Config::CONFIG['libdir']}", Config::CONFIG['LIBRUBYARG'], %w(-lpthread -P), t.prerequisites[1], SIMULATOR_SOURCES
 end
 
 CLEAN.include 'csrc', 'simv*'
