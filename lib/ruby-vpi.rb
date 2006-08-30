@@ -25,11 +25,6 @@ module RubyVPI
   TEMPLATE_PATH = File.join(PATH, 'tpl')
   OBJECT_PATH = File.join(PATH, 'obj')
 
-  # Loads the test runner template.
-  def self.load_runner_template
-    load File.join(TEMPLATE_PATH, 'runner.rake')
-  end
-
   # Initializes the current bench using the given parameters.
   def self.init_bench aTestPrefix, aProtoClassId
     Vpi::relay_verilog	# service the $ruby_init() callback

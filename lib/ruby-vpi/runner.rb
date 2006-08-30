@@ -19,4 +19,4 @@
 =end
 
 require 'ruby-vpi'
-RubyVPI.load_runner_template
+load File.join(RubyVPI::TEMPLATE_PATH, 'runner.rake')

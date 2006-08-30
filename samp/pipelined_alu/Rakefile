@@ -1,1 +1,1 @@
-load '../../tpl/launcher.rake'
+require 'ruby-vpi/runner_proxy'
