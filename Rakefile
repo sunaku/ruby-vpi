@@ -264,12 +264,12 @@ task :config_gem_install do
   # makes documentation available to gem_server
     gemDir = File.dirname(__FILE__)
     gemName = File.basename(gemDir)
-    docDir = File.join('..', '..', 'doc', gemName, 'rdoc')
+    docDir = File.join('..', '..', 'doc', gemName)
 
     mkdir_p docDir
-    mv 'doc/xhtml', File.join(docDir, 'manual')
-    mv 'readme.html', File.join(docDir, 'index.html')
-    mv FileList['ref/*', '*.html'].to_a, docDir
+    ln_s gemDir, File.join(docDir, 'rdoc')
+
+    cp 'readme.html', 'index.html'
 end
 
 
