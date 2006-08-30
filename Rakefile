@@ -75,6 +75,11 @@ task :clobber do |t|
 end
 
 
+
+##
+# extension
+#
+
 desc "Builds object files for all simulators."
 task :build
 
@@ -121,142 +126,152 @@ CLOBBER.include 'obj'
 end
 
 
+
+##
 # documentation
-  desc 'Generate documentation.'
-  task 'doc' => 'ref' do |t|
-    cd t.name do
-      sh 'rake'
-    end
+#
+
+desc 'Generate documentation.'
+task 'doc' => 'ref' do |t|
+  cd t.name do
+    sh 'rake'
+  end
+end
+
+
+directory 'ref'
+CLOBBER.include 'ref'
+
+desc 'Generate reference documentation.'
+file 'ref' => ['ref/c', 'ref/ruby']
+
+
+directory 'ref/ruby'
+CLOBBER.include 'ref/ruby'
+
+desc 'Generate reference for Ruby.'
+Rake::RDocTask.new 'ref/ruby' do |t|
+  t.rdoc_dir = t.name
+  t.title = "#{PROJECT_NAME}: #{PROJECT_SUMMARY}"
+  t.options.concat %w(--charset utf-8 --tab-width 2 --line-numbers)
+
+  t.rdoc_files.include '**/*.rb'
+end
+
+
+directory 'ref/c'
+CLOBBER.include 'ref/c'
+
+desc 'Generate reference for C.'
+file 'ref/c' do |t|
+  # doxygen outputs to this temporary destination
+  tempDest = 'ext/html'
+
+  cd File.dirname(tempDest) do
+    sh "doxygen"
   end
 
-
-  directory 'ref'
-  CLOBBER.include 'ref'
-
-  desc 'Generate reference documentation.'
-  file 'ref' => ['ref/c', 'ref/ruby']
+  mv FileList[tempDest + '/*'].to_a, t.name
+  rmdir tempDest
+end
 
 
-  directory 'ref/ruby'
-  CLOBBER.include 'ref/ruby'
 
-  desc 'Generate reference for Ruby.'
-  Rake::RDocTask.new 'ref/ruby' do |t|
-    t.rdoc_dir = t.name
-    t.title = "#{PROJECT_NAME}: #{PROJECT_SUMMARY}"
-    t.options.concat %w(--charset utf-8 --tab-width 2 --line-numbers)
-
-    t.rdoc_files.include '**/*.rb'
-  end
-
-
-  directory 'ref/c'
-  CLOBBER.include 'ref/c'
-
-  desc 'Generate reference for C.'
-  file 'ref/c' do |t|
-    # doxygen outputs to this temporary destination
-    tempDest = 'ext/html'
-
-    cd File.dirname(tempDest) do
-      sh "doxygen"
-    end
-
-    mv FileList[tempDest + '/*'].to_a, t.name
-    rmdir tempDest
-  end
-
+##
 # distribution
-  distDocs = ['HISTORY', 'README', 'MEMO'].map do |src|
-    dst = src.downcase << '.html'
+#
 
-    file dst => src do |t|
-      sh "redcloth < #{t.prerequisites[0]} > #{t.name}"
-    end
+desc "Prepare distribution information."
+taks :dist_info => ['HISTORY', 'README', 'MEMO'].map do |src|
+  dst = src.downcase << '.html'
 
-    CLOBBER.include dst
-    dst
+  file dst => src do |t|
+    sh "redcloth < #{t.prerequisites[0]} > #{t.name}"
   end
 
+  CLOBBER.include dst
+  dst
+end
 
-  desc "Prepare for distribution."
-  task :dist => ['ext', :doc, *distDocs] do |t|
-    cd t.prerequisites[0] do
-      sh 'rake swig'
-    end
+
+desc "Prepare for distribution."
+task :dist => ['ext', :doc, :dist_info] do |t|
+  cd t.prerequisites[0] do
+    sh 'rake swig'
+  end
+end
+
+
+desc 'Publish documentation to website.'
+task :web => [:web_dist, :web_ref, :web_doc]
+
+desc "Publish distribution info."
+task :web_dist => :dist_info do |t|
+  upload_without_svn PROJECT_SSH_URL, *t.prerequisites
+end
+
+desc "Publish reference documentation."
+task :web_ref => 'ref' do |t|
+  upload_without_svn PROJECT_SSH_URL, *t.prerequisites
+end
+
+desc "Publish user documentation."
+task :web_doc => :doc do |t|
+  upload_without_svn "#{PROJECT_SSH_URL}/doc/", *FileList['doc/xhtml/*']
+end
+
+desc 'Connect to website FTP.'
+task :ftp do
+  sh 'lftp', "sftp://#{PROJECT_SSH_URL}"
+end
+
+
+desc "Generate release packages."
+task :pkg => ['HISTORY', 'gem_extconf.rb'] do |t|
+  # determine release version
+    File.read(t.prerequisites[0]) =~ /Version\s+([\d\.]+)/
+    releaseVersion = $1
+    puts "release version is: #{releaseVersion}"
+
+  mkdir tmpDir = generate_temp_path
+  cp_r '.', tmpDir
+
+  cd tmpDir do
+    # clean up
+      sh "svn st | awk '/^\\?/ {print $2}' | xargs rm -rf"
+      sh "svn up"
+      sh "find -name .svn | xargs rm -rf"
+
+    sh "rake dist"
+
+    # make gem package
+      spec = Gem::Specification.new do |s|
+        s.name = s.rubyforge_project = PROJECT_ID
+        s.summary = PROJECT_SUMMARY
+        s.description = PROJECT_DETAIL
+        s.homepage = PROJECT_URL
+        s.version = releaseVersion
+
+        s.add_dependency 'rspec', '>= 0.5.4'
+        s.add_dependency 'rake', '>= 0.7.0'
+
+        s.requirements << "POSIX threads library"
+        s.requirements << "C language compiler"
+
+        s.files = FileList['**/*']
+        s.autorequire = PROJECT_ID
+        s.executables = FileList['bin/*'].select {|f| File.executable?(f) && File.file?(f)}.map {|f| File.basename f}
+        s.extensions << t.prerequisites[1]
+      end
+
+      Gem::manage_gems
+      Gem::Builder.new(spec).build
+
+      mv *(FileList['*.gem'] << File.dirname(__FILE__))
   end
 
-  # website publishing
-    desc 'Publish documentation to website.'
-    task :web => [:web_dist, :web_ref, :web_doc]
-
-    desc "Publish distribution info."
-    task :web_dist => distDocs do |t|
-      upload_without_svn PROJECT_SSH_URL, *t.prerequisites
-    end
-
-    desc "Publish reference documentation."
-    task :web_ref => 'ref' do |t|
-      upload_without_svn PROJECT_SSH_URL, *t.prerequisites
-    end
-
-    desc "Publish user documentation."
-    task :web_doc => :doc do |t|
-      upload_without_svn "#{PROJECT_SSH_URL}/doc/", *FileList['doc/xhtml/*']
-    end
-
-    desc 'Connect to website FTP.'
-    task :ftp do
-      sh 'lftp', "sftp://#{PROJECT_SSH_URL}"
-    end
-
-# release packages
-  desc "Generate release packages."
-  task :pkg => ['HISTORY', 'gem_extconf.rb'] do |t|
-    # determine release version
-      File.read(t.prerequisites[0]) =~ /Version\s+([\d\.]+)/
-      releaseVersion = $1
-      puts "release version is: #{releaseVersion}"
-
-    mkdir tmpDir = generate_temp_path
-    cp_r '.', tmpDir
-
-    cd tmpDir do
-      # clean up
-        sh "svn st | awk '/^\\?/ {print $2}' | xargs rm -rf"
-        sh "svn up"
-        sh "find -name .svn | xargs rm -rf"
-
-      sh "rake dist"
-
-      # make gem package
-        spec = Gem::Specification.new do |s|
-          s.name = s.rubyforge_project = PROJECT_ID
-          s.summary = PROJECT_SUMMARY
-          s.description = PROJECT_DETAIL
-          s.homepage = PROJECT_URL
-          s.version = releaseVersion
-
-          s.add_dependency 'rspec', '>= 0.5.4'
-          s.add_dependency 'rake', '>= 0.7.0'
-
-          s.requirements << "POSIX threads library"
-          s.requirements << "C language compiler"
-
-          s.files = FileList['**/*']
-          s.autorequire = PROJECT_ID
-          s.executables = FileList['bin/*'].select {|f| File.executable?(f) && File.file?(f)}.map {|f| File.basename f}
-          s.extensions << t.prerequisites[1]
-        end
-
-        Gem::manage_gems
-        Gem::Builder.new(spec).build
-
-        mv *(FileList['*.gem'] << File.dirname(__FILE__))
-    end
-
-    rm_r tmpDir
-  end
+  rm_r tmpDir
+end
 
 
 desc "Configures the gem during installation."
@@ -274,12 +289,16 @@ task :config_gem_install => 'readme.html' do |t|
 end
 
 
+
+##
 # testing
-  desc "Ensure that examples work with $SIMULATOR"
-  task :test => FileList['samp/*/'] do |t|
-    t.prerequisites.each do |s|
-      cd s do
-        sh 'rake', ENV['SIMULATOR'] || 'ivl'
-      end
+#
+
+desc "Ensure that examples work with $SIMULATOR"
+task :test => FileList['samp/*/'] do |t|
+  t.prerequisites.each do |s|
+    cd s do
+      sh 'rake', ENV['SIMULATOR'] || 'ivl'
     end
   end
+end
