@@ -133,8 +133,6 @@ class OutputInfo
   VERILOG_EXT = '.v'
   RUNNER_EXT = '.rake'
 
-  RUNNER_TMPL_REL_PATH = 'tpl/runner.rake'
-
   SPEC_FORMATS = [:RSpec, :UnitTest, :Generic]
 
   attr_reader :verilogBenchName, :verilogBenchPath, :rubyBenchName, :rubyBenchPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :runnerName, :runnerPath, :protoName, :protoPath, :protoClassName

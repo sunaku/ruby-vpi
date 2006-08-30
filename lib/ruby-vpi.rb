@@ -20,11 +20,6 @@
 
 # Provides configuration information of the Ruby-VPI project.
 module RubyVPI
-  LIBRARY_PATH = File.dirname(__FILE__)
-  PATH = File.dirname(LIBRARY_PATH)
-  TEMPLATE_PATH = File.join(PATH, 'tpl')
-  OBJECT_PATH = File.join(PATH, 'obj')
-
   # Initializes the current bench using the given parameters.
   def self.init_bench aTestPrefix, aProtoClassId
     Vpi::relay_verilog	# service the $ruby_init() callback
