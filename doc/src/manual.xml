@@ -892,9 +892,18 @@
     <section id="usage.installation">
       <title>Installation and maintenance</title>
 
-      <para>Once you have satisfied the <link linkend="usage.requirements">necessary requirements</link>, you can install &rv; by running the command <command>gem <action>install</action> <replaceable>ruby-vpi</replaceable></command>. Likewise, you can uninstall &rv; by running the command <command>gem <action>uninstall</action> <replaceable>ruby-vpi</replaceable></command>. Furthermore, you can upgrade to the latest release of &rv; by running the command <command>gem <action>update</action> <replaceable>ruby-vpi</replaceable></command>.</para>
+      <para>Once you have satisfied the <link linkend="usage.requirements">necessary requirements</link>, you can install &rv; by running the command <command>gem <action>install</action> <replaceable>ruby-vpi</replaceable></command>. RubyGems will install &rv; into the system gem directory, whose path can be determined by running the command <command>gem <action>env</action> <replaceable>gemdir</replaceable></command>. Within this directory, there is a "gems" subdirectory which contains the &rv; installation, as illustrated below.</para>
 
-      <para>You can learn more about using and manipulating RubyGems in <ulink url="http://www.rubygems.org">the RubyGems user manual</ulink>.</para>
+<screen>
+<prompt>$</prompt> <userinput><command>gem <action>env</action> <replaceable>gemdir</replaceable></command></userinput>
+<computeroutput>/usr/lib/ruby/gems/1.8</computeroutput>
+
+<prompt>$</prompt> <userinput><command>ls <option>-d</option> <replaceable>/usr/lib/ruby/gems/1.8</replaceable>/gems/ruby-vpi-*</command></userinput>
+<computeroutput>/usr/lib/ruby/gems/1.8/gems/ruby-vpi-7.0.0/</computeroutput>
+</screen>
+
+
+      <para>You can uninstall &rv; by running the command <command>gem <action>uninstall</action> <replaceable>ruby-vpi</replaceable></command>. Furthermore, you can upgrade to the latest release of &rv; by running the command <command>gem <action>update</action> <replaceable>ruby-vpi</replaceable></command>. Finally, you can learn more about using and manipulating RubyGems in <ulink url="http://www.rubygems.org">the RubyGems user manual</ulink>.</para>
     </section>
 
     <section id="usage.tools">
