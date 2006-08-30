@@ -260,7 +260,7 @@ end
 
 
 desc "Configures the gem during installation."
-task :config_gem_install do
+task :config_gem_install => 'readme.html' do |t|
   # makes documentation available to gem_server
     gemDir = File.dirname(__FILE__)
     gemName = File.basename(gemDir)
@@ -269,7 +269,8 @@ task :config_gem_install do
     mkdir_p docDir
     ln_s gemDir, File.join(docDir, 'rdoc')
 
-    cp 'readme.html', 'index.html'
+    # gem_server doesn't dynamically generate directory index
+    cp t.prerequisites[0], 'index.html'
 end
 
 
