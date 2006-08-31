@@ -187,7 +187,7 @@ distDocs = [DIST_INFO_HEADER, 'README', 'HISTORY', 'MEMO'].map do |src|
   dst = src.downcase << '.html'
   dstPartial = src.downcase << '.part.html'
 
-  file dst => src do
+  file dst => [DIST_INFO_HEADER, src] do
     sh "redcloth #{DIST_INFO_HEADER unless src == DIST_INFO_HEADER} #{src} > #{dst}"
   end
 
