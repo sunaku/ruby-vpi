@@ -153,9 +153,9 @@ desc 'Generate reference for Ruby.'
 Rake::RDocTask.new 'ref/ruby' do |t|
   t.rdoc_dir = t.name
   t.title = "#{PROJECT_NAME}: #{PROJECT_SUMMARY}"
-  t.options.concat %w(--charset utf-8 --tab-width 2 --line-numbers)
-
-  t.rdoc_files.include '**/*.rb'
+  t.options.concat %w(--charset utf-8 --line-numbers)
+  t.rdoc_files.include '{bin,lib/**}/*.rb'
+  t.main = 'SWIG::TYPE_p_unsigned_int'
 end
 
 
