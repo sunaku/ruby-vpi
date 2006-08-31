@@ -1,0 +1,47 @@
+h1 {
+  background-color: snow;
+  border-bottom: thin solid salmon;
+  padding: 0.5em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: serif;
+}
+
+body {
+  font-family: sans-serif;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+.variablelist {
+  float: left;
+
+  width: 30%;
+  margin-right: 2em;
+  margin-bottom: 2em;
+  padding: 1em;
+
+  background-color: mistyrose;
+  border: thin solid salmon;
+}
+
+.term {
+  font-size: x-large;
+  font-weight: bolder;
+}
+
+pre {
+  padding: 1em;
+  border: thin solid silver;
+  background-color: whitesmoke;
+  overflow: auto;
+}
+
+code {
+  background-color: antiquewhite;
+}
+
+.intro {
+  text-align: center;
+}

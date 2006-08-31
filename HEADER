@@ -1,0 +1,74 @@
+<head>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+h1{text-align: center}. Welcome to Ruby-VPI
+
+Ruby-VPI is a "Ruby interface":http://ruby-lang.org/en/ to "Verilog VPI":http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945. It lets you create complex Verilog test benches easily and wholly in Ruby.
+
+<div class="variablelist">
+<dl>
+<dt>
+<span class="term">
+<a href="./doc/usage.tutorial.html" target="_top">Tutorial</a>
+</span>
+</dt>
+<dd>
+<p>Learn how to use Ruby-VPI.</p>
+</dd>
+<dt>
+<span class="term">
+<a href="http://rubyforge.org/projects/ruby-vpi" target="_top">
+Project</a>
+</span>
+</dt>
+<dd>
+<p>
+Access project facilities, hosted generously by <a href="http://rubyforge.org" target="_top">
+RubyForge</a>
+.</p>
+</dd>
+<dt>
+<span class="term">
+<a href="http://rubyforge.org/projects/ruby-vpi" target="_top">
+Tracker</a>
+</span>
+</dt>
+<dd>
+<p>
+Report problems, contribute patches, and more.</p>
+</dd>
+<dt>
+<span class="term">
+<a href="http://rubyforge.org/frs/?group_id=1339" target="_top">
+Releases</a>
+</span>
+</dt>
+<dd>
+<p>
+Download the newest releases.</p>
+</dd>
+<dt>
+<span class="term">
+<a href="http://rubyforge.org/scm/?group_id=1339" target="_top">
+Sources</a>
+</span>
+</dt>
+<dd>
+<p>
+Browse or access the source code repository.</p>
+</dd>
+<dt>
+<span class="term">
+<a href="http://rubyforge.org/forum/?group_id=1339" target="_top">
+Forums</a>
+</span>
+</dt>
+<dd>
+<p>
+Ask for help, give feedback, or discuss.</p>
+</dd>
+</dl>
+</div>
+</div>
+

@@ -181,16 +181,23 @@ end
 # distribution
 #
 
-distDocs = ['HISTORY', 'README', 'MEMO'].map do |src|
-  dst = src.downcase << '.html'
+DIST_INFO_HEADER = 'HEADER'
 
-  file dst => src do |t|
-    sh "redcloth < #{t.prerequisites[0]} > #{t.name}"
+distDocs = [DIST_INFO_HEADER, 'README', 'HISTORY', 'MEMO'].map do |src|
+  dst = src.downcase << '.html'
+  dstPartial = src.downcase << '.part.html'
+
+  file dst => src do
+    sh "redcloth #{DIST_INFO_HEADER unless src == DIST_INFO_HEADER} #{src} > #{dst}"
   end
 
-  CLOBBER.include dst
-  dst
-end
+  file dstPartial => src do
+    sh "redcloth < #{src} > #{dstPartial}"
+  end
+
+  CLOBBER.include dst, dstPartial
+  [dst, dstPartial]
+end.flatten
 
 desc "Prepare distribution information."
 task :dist_info => distDocs
