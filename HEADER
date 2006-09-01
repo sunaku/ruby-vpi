@@ -76,11 +76,12 @@ Ask for help, give feedback, or discuss.</p>
 h2. Features
 
 * Utilize the power and elegance of the Ruby language ("Why choose Ruby?":http://www.ruby-doc.org/whyruby).
-** *Unlimited length integers* and floating point numbers.
+** Provides built-in support for *unlimited length* integers and floating point numbers, regular expressions, networking, multi-threading, system calls, _ad infinium_!
 ** Doesn't get in your way.
 ** Makes programming _fun_ again!
-* Apply *agile development* techniques to create RTL for hardware using behavior and test driven development.
-** *Rapid prototyping* of designs.
-** *Executable specifications* so simple that even your non-technical boss can understand them!
+** Powers "thousands of open-source projects":http://rubyforge.org/.
+* Apply "*agile development* techniques":http://www.martinfowler.com/articles/newMethodology.html to create RTL for hardware.
+** *Rapid prototyping* and verifcation of your designs _rapidly_ using "BDD(behavior-driven development)":http://behaviour-driven.org/, "TDD(test-driven development)":http://www.agiledata.org/essays/tdd.html, and more.
+** Consolidate your requirements and verification efforts with *executable specifications*.
 * This is *free software* distributed under the GNU GPL.
 
