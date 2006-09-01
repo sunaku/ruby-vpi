@@ -13,7 +13,7 @@ h2. Features
 ** Consolidate your requirements and verification efforts with *executable specifications*.
 
 * Utilize the power and elegance of the Ruby language ("Why choose Ruby?":http://www.ruby-doc.org/whyruby).
-** Provides built-in support for *unlimited length* integers and floating point numbers, regular expressions, networking, multi-threading, system calls, _ad infinium_!
+** Provides built-in support for *unlimited length integers*, regular expressions, networking, multi-threading, system calls, _ad infinium_!
 ** Doesn't get in your way.
 ** Makes programming _fun_ again!
 ** Powers "thousands of open-source projects":http://rubyforge.org/.
