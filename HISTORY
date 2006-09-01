@@ -159,7 +159,7 @@ h2. Summary
 
 This release fixes unreadable syntax coloring in the user manual.
 
-h2. Acknowledgment
+h2. Acknowledgments
 
 * Thanks to Todd Nagengast and Matt Fischler for notifying me about unreadable text in the user manual.
 
@@ -176,7 +176,7 @@ h2. Summary
 
 This release adds a tutorial to the user manual, and improves the tools and examples.
 
-h2. Acknowledgment
+h2. Acknowledgments
 
 * Thanks to Phil Tomson for correcting the URL of the RHDL website, in the user manual.
 
@@ -211,7 +211,7 @@ h2. Summary
 
 This release enhances the VPI utility layer and adds new content to the user manual.
 
-h2. Acknowledgment
+h2. Acknowledgments
 
 * Thanks to Jan Decaluwe for correcting the description of MyHDL in the user manual.
 
@@ -238,7 +238,7 @@ h2. Summary
 
 This release adds a comprehensive user manual, upgrades from make to "Rake":http://rake.rubyforge.org, and improves the test generation tool.
 
-h2. Acknowledgment
+h2. Acknowledgments
 
 * Thanks to Jose Renau for solving the problem of strange delays that occurred whenever a design was reset.
 
@@ -264,7 +264,7 @@ h2. Summary
 
 This release adds a tool which generates test benches, and adds support for "Behavior Driven Development":http://behaviour-driven.org via the "RSpec":http://rspec.rubyforge.org library.
 
-h2. Acknowledgment
+h2. Acknowledgments
 
 * Thanks to Scott L Holmes for helping me "use the RSpec library without its runner":http://article.gmane.org/gmane.comp.lang.ruby.general/150087 program.
 
@@ -310,7 +310,7 @@ h2. Summary
 
 This release adds support for the _entire_ "IEEE Std. 1364-2005":http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945 VPI interface, and updates the examples into unit tests.
 
-h2. Acknowledgment
+h2. Acknowledgments
 
 * Thanks to the "SWIG developers":http://www.swig.org/guilty.html for making this project _much_ easier! ;-)
 
@@ -341,7 +341,7 @@ h2. Summary
 
 This release fixes major bugs, adds support for Mentor Modelsim, and removes the @$ruby_task@ callback.
 
-h2. Acknowledgment
+h2. Acknowledgments
 
 * Thanks to Nobu Nakada for explaining the "cross-thread violation on rb_gc()":http://article.gmane.org/gmane.comp.lang.ruby.general/146653 error.
 
@@ -371,7 +371,7 @@ This release adds enough Verilog VPI functionality to make Ruby-VPI usable for s
 * read and change VPI handle values
 * stop, finish, restart the simulation
 
-h2. Acknowledgment
+h2. Acknowledgments
 
 * Thanks to Jose Renau for helping me debug how Synopsys VCS works with Verilog VPI. The problem was that VCS required calltf signatures to be @void (*)(void)@, whereas the Verilog standard defines a calltf signature as @PLI_INT32 (*)(PLI_BYTE8*)@.
 
