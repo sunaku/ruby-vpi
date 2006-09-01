@@ -22,14 +22,25 @@ h2. Features
 
 <div class="variablelist">
 <dl>
+
 <dt>
 <span class="term">
 <a href="./doc/usage.tutorial.html" target="_top">Tutorial</a>
 </span>
 </dt>
 <dd>
-<p>Learn how to use Ruby-VPI.</p>
+<p>Learn how to use Ruby-VPI quickly.</p>
 </dd>
+
+<dt>
+<span class="term">
+<a href="./doc/" target="_top">User manual</a>
+</span>
+</dt>
+<dd>
+<p>Complete documentation for users. Start here!</p>
+</dd>
+
 <dt>
 <span class="term">
 <a href="http://rubyforge.org/projects/ruby-vpi" target="_top">
