@@ -9,11 +9,11 @@ Ruby-VPI is a "Ruby interface":http://ruby-lang.org/en/ to "Verilog VPI":http://
 h2. Features
 
 * Apply "*agile development* techniques":http://www.martinfowler.com/articles/newMethodology.html to create RTL for hardware.
-** *Rapid prototyping* and verifcation of your designs _rapidly_ using "BDD(behavior-driven development)":http://behaviour-driven.org/, "TDD(test-driven development)":http://www.agiledata.org/essays/tdd.html, and more.
+** *Rapid prototyping* and verifcation of your designs using "BDD(behavior-driven development)":http://behaviour-driven.org/, "TDD(test-driven development)":http://www.agiledata.org/essays/tdd.html, and more.
 ** Consolidate your requirements and verification efforts with *executable specifications*.
 
 * Utilize the power and elegance of the Ruby language ("Why choose Ruby?":http://www.ruby-doc.org/whyruby).
-** Provides built-in support for *unlimited length integers*, regular expressions, networking, multi-threading, system calls, _ad infinium_!
+** Built-in support for *unlimited length integers*, regular expressions, networking, multi-threading, system calls, _ad infinium_!
 ** Doesn't get in your way.
 ** Makes programming _fun_ again!
 ** Powers "thousands of open-source projects":http://rubyforge.org/.
