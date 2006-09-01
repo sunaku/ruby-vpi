@@ -215,7 +215,7 @@ desc 'Publish documentation to website.'
 task :web => [:web_dist, :web_ref, :web_doc]
 
 desc "Publish distribution info."
-task :web_dist => distDocs do |t|
+task :web_dist => ['style.css', *distDocs] do |t|
   upload_without_svn PROJECT_SSH_URL, *t.prerequisites
 end
 
