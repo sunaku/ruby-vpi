@@ -16,7 +16,6 @@ h2. Features
 ** Built-in support for *unlimited length integers*, regular expressions, networking, multi-threading, system calls, _ad infinium_!
 ** Doesn't get in your way.
 ** Makes programming _fun_ again!
-** Powers "thousands of open-source projects":http://rubyforge.org/.
 
 * Study, modify, or distribute this is *free software*, released under the "GNU General Public License":http://www.gnu.org/copyleft/gpl.html, as you see fit.
 

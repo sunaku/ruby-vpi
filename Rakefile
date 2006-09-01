@@ -304,10 +304,10 @@ end
 #
 
 desc "Ensure that examples work with $SIMULATOR"
-task :test => FileList['samp/*/'] do |t|
-  t.prerequisites.each do |s|
+task :test => :build do
+  FileList['samp/*/'].each do |s|
     cd s do
-      sh 'rake', ENV['SIMULATOR'] || 'ivl'
+      sh 'rake', ENV['SIMULATOR'] || 'cver'
     end
   end
 end
