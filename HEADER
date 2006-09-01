@@ -6,6 +6,19 @@ h1{text-align: center}. Welcome to Ruby-VPI
 
 Ruby-VPI is a "Ruby interface":http://ruby-lang.org/en/ to "Verilog VPI":http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945. It lets you create complex Verilog test benches easily and wholly in Ruby.
 
+h2. Features
+
+* Utilize the power and elegance of the Ruby language ("Why choose Ruby?":http://www.ruby-doc.org/whyruby).
+** Provides built-in support for *unlimited length* integers and floating point numbers, regular expressions, networking, multi-threading, system calls, _ad infinium_!
+** Doesn't get in your way.
+** Makes programming _fun_ again!
+** Powers "thousands of open-source projects":http://rubyforge.org/.
+* Apply "*agile development* techniques":http://www.martinfowler.com/articles/newMethodology.html to create RTL for hardware.
+** *Rapid prototyping* and verifcation of your designs _rapidly_ using "BDD(behavior-driven development)":http://behaviour-driven.org/, "TDD(test-driven development)":http://www.agiledata.org/essays/tdd.html, and more.
+** Consolidate your requirements and verification efforts with *executable specifications*.
+* This is *free software* distributed under the "GNU General Public License":http://www.gnu.org/copyleft/gpl.html.
+
+
 <div class="variablelist">
 <dl>
 <dt>
@@ -25,8 +38,8 @@ Project</a>
 <dd>
 <p>
 Access project facilities, hosted generously by <a href="http://rubyforge.org" target="_top">
-RubyForge</a>
-.</p>
+RubyForge</a>.
+</p>
 </dd>
 <dt>
 <span class="term">
@@ -72,16 +85,4 @@ Ask for help, give feedback, or discuss.</p>
 </div>
 </div>
 
-
-h2. Features
-
-* Utilize the power and elegance of the Ruby language ("Why choose Ruby?":http://www.ruby-doc.org/whyruby).
-** Provides built-in support for *unlimited length* integers and floating point numbers, regular expressions, networking, multi-threading, system calls, _ad infinium_!
-** Doesn't get in your way.
-** Makes programming _fun_ again!
-** Powers "thousands of open-source projects":http://rubyforge.org/.
-* Apply "*agile development* techniques":http://www.martinfowler.com/articles/newMethodology.html to create RTL for hardware.
-** *Rapid prototyping* and verifcation of your designs _rapidly_ using "BDD(behavior-driven development)":http://behaviour-driven.org/, "TDD(test-driven development)":http://www.agiledata.org/essays/tdd.html, and more.
-** Consolidate your requirements and verification efforts with *executable specifications*.
-* This is *free software* distributed under the GNU GPL.
 

@@ -10,16 +10,16 @@ h1, h2, h3, h4, h5, h6 {
 
 body {
   font-family: sans-serif;
-  margin-left: 10%;
+  margin-left: 30%;
   margin-right: 10%;
 }
 
 .variablelist {
-  float: left;
+  position: absolute;
+  left: 2%;
+  top: 1em;
 
-  width: 30%;
-  margin-right: 2em;
-  margin-bottom: 2em;
+  width: 18%;
   padding: 1em;
 
   background-color: mistyrose;
