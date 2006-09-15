@@ -21,10 +21,21 @@
 # Provides configuration information of the Ruby-VPI project.
 module RubyVPI
   # Initializes the current bench using the given parameters.
-  def self.init_bench aTestPrefix, aProtoClassId
+  def RubyVPI.init_bench aTestPrefix, aProtoClassId
+    require 'ruby-vpi/vpi_util'
     Vpi::relay_verilog	# service the $ruby_init() callback
 
-    require 'ruby-vpi/vpi_util'
+    # set up code coverage analysis
+      if ENV['COVERAGE']
+        require 'ruby-vpi/rcov'
+
+        RubyVPI.with_coverage_analysis do |a|
+          a.dump_coverage_info [
+            Rcov::TextReport.new,
+            Rcov::HTMLCoverage.new(:destdir => "#{aTestPrefix}_coverage")
+          ]
+        end
+      end
 
     # load the design under test
       require "#{aTestPrefix}_design.rb"

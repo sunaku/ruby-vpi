@@ -15,7 +15,7 @@ h2. Features
 
 * Utilize Ruby's power and elegance ("Why choose Ruby?":http://www.ruby-doc.org/whyruby).
 ** Built-in support for unlimited length integers, regular expressions, networking, multi-threading, system calls, _ad infinium_!
-** Doesn't get in your way.
+** Easy to use; doesn't get in your way.
 ** Makes programming _fun_ again!
 
 * Study, modify, or distribute this is free software, released under the "GNU General Public License":http://www.gnu.org/copyleft/gpl.html, as you see fit.
@@ -35,7 +35,7 @@ h2. Features
 
 <dt>
 <span class="term">
-<a href="./doc/" target="_top">User manual</a>
+<a href="./doc/" target="_top">Manual</a>
 </span>
 </dt>
 <dd>
