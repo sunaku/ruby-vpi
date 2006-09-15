@@ -263,6 +263,7 @@ task :pkg => ['HISTORY', 'gem_extconf.rb'] do |t|
 
         s.add_dependency 'rspec', '>= 0.5.4'
         s.add_dependency 'rake', '>= 0.7.0'
+        s.add_dependency 'rcov', '>= 0.7.0'
 
         s.requirements << "POSIX threads library"
         s.requirements << "C language compiler"

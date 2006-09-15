@@ -5,11 +5,31 @@ This is a record of important changes that have occurred with each release of "R
 h2. Version numbering system
 
 We _strictly_ follow the RubyGems project's "rational versioning policy":http://www.rubygems.org/read/chapter/7 since release 6.3.0. To summarize[1] this "major.minor.build" numbering policy,
-* an increase in the *major* number indicates that *functionally incompatible* have occurred. Thus, what may have worked in the previous version may not work in the new one.
-* an increase in the *minor* number indicates that *functionally compatible* changes have occurred. Thus, what worked in the previous version will work in the new one.
-* an increase in the *build* number indicates that the *underlying implementation* has changed. The functionality has not changed and no features have been added. Thus, what worked in the previous version will work in the new one.
+* an increase in the _major_ number indicates that _functionally incompatible_ have occurred. Thus, what may have worked in the previous version may not work in the new one.
+* an increase in the _minor_ number indicates that _functionally compatible_ changes have occurred. Thus, what worked in the previous version will work in the new one.
+* an increase in the _build_ number indicates that the _underlying implementation_ has changed. The functionality has not changed and no features have been added. Thus, what worked in the previous version will work in the new one.
 
 fn1. C. Gross, "Explaining Open Source Version Numbers", [Online document], 2005 Nov 28, [cited 2006 Aug 27], Available HTTP: "http://ablog.apress.com/?p=738":http://ablog.apress.com/?p=738
+
+
+h1. Version 7.2.0 (2006-09-15)
+
+h2. Summary
+
+This release adds initial[1] support for code coverage analysis via the "rcov library":http://eigenclass.org/hiki.rb?rcov.
+
+h2. Acknowledgments
+
+Thanks to Mauricio Fernandez for helping me use rcov without its runner.
+
+h2. Details
+
+* Added initial[1] support for code coverage analysis, which can be enabled by setting the @COVERAGE@ environment variable to a non-empty value before running a test.
+** For example, you can run a test with the GPL Cver simulator while enabling the generation of code coverage reports as follows: @export COVERAGE=1; rake cver@
+
+* Coverage reports are generated in text and HTML formats.
+
+fn1. Full capabilites of the rcov library, such as its various analysis modes, are not yet utilized.
 
 
 h1. Version 7.1.0 (2006-08-29)
