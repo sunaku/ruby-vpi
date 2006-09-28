@@ -5,7 +5,7 @@ This is a record of important changes that have occurred with each release of "R
 h2. Version numbering system
 
 We _strictly_ follow the RubyGems project's "rational versioning policy":http://www.rubygems.org/read/chapter/7 since release 6.3.0. To summarize[1] this "major.minor.build" numbering policy,
-* an increase in the _major_ number indicates that _functionally incompatible_ have occurred. Thus, what may have worked in the previous version may not work in the new one.
+* an increase in the _major_ number indicates that _functionally incompatible_ changes have occurred. Thus, what may have worked in the previous version may not work in the new one.
 * an increase in the _minor_ number indicates that _functionally compatible_ changes have occurred. Thus, what worked in the previous version will work in the new one.
 * an increase in the _build_ number indicates that the _underlying implementation_ has changed. The functionality has not changed and no features have been added. Thus, what worked in the previous version will work in the new one.
 
