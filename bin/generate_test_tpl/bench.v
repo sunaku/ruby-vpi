@@ -26,14 +26,14 @@ module <%= aOutputInfo.verilogBenchName %>;
   end
 %>
 
-    <%= aModuleInfo.name %><%
+    <%= aModuleInfo.name %> <%
       instConfigDecl = make_inst_param_decl(aModuleInfo.paramNames)
 
       unless instConfigDecl.empty?
     %>#(<%= instConfigDecl %>)<%
       end
 
-    %><%= aOutputInfo.verilogBenchName + aOutputInfo.designSuffix %>(<%= make_inst_param_decl(aModuleInfo.portNames) %>);
+    %><%= aOutputInfo.verilogBenchName %>_design(<%= make_inst_param_decl(aModuleInfo.portNames) %>);
 
   // connect to the Ruby side of this bench
     initial begin
