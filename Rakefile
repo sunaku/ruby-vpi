@@ -36,6 +36,7 @@ PROJECT_DETAIL = "#{PROJECT_NAME} is a #{PROJECT_SUMMARY}. It lets you create co
 PROJECT_SSH_URL = "snk@rubyforge.org:/var/www/gforge-projects/#{PROJECT_ID}"
 
 
+
 # Returns a temporary, unique path ready for use. No file exists at the returned path.
 def generate_temp_path
   rm_f path = Tempfile.new($$).path
@@ -62,6 +63,7 @@ def upload_without_svn aDestUrl, *aSources
 end
 
 
+
 task :default => :build
 
 task :clobber do |t|
@@ -76,9 +78,7 @@ end
 
 
 
-##
-# extension
-#
+## extension
 
 desc "Builds object files for all simulators."
 task :build
@@ -127,9 +127,7 @@ end
 
 
 
-##
-# documentation
-#
+## documentation
 
 desc 'Generate documentation.'
 task 'doc' => 'ref' do |t|
@@ -177,9 +175,7 @@ end
 
 
 
-##
-# distribution
-#
+## distribution
 
 DIST_INFO_HEADER = 'HEADER'
 
@@ -270,7 +266,7 @@ task :pkg => ['HISTORY', 'gem_extconf.rb'] do |t|
 
         s.files = FileList['**/*']
         s.autorequire = PROJECT_ID
-        s.executables = FileList['bin/*'].select {|f| File.executable?(f) && File.file?(f)}.map {|f| File.basename f}
+        s.executables = FileList['bin/*'].select {|f| File.executable?( f ) && File.file?( f )}.map {|f| File.basename f}
         s.extensions << t.prerequisites[1]
       end
 
@@ -286,7 +282,7 @@ end
 
 desc "Configures the gem during installation."
 task :config_gem_install => 'readme.html' do |t|
-  # makes documentation available to gem_server
+  # make documentation available to gem_server
     gemDir = File.dirname(__FILE__)
     gemName = File.basename(gemDir)
     docDir = File.join('..', '..', 'doc', gemName)
@@ -300,12 +296,13 @@ end
 
 
 
-##
-# testing
-#
+## testing
 
 desc "Ensure that examples work with $SIMULATOR"
 task :test => :build do
+  # ensures that current sources are tested instead of the installed gem
+  ENV['RUBYLIB'] = File.join(File.dirname(__FILE__), 'lib')
+
   FileList['samp/*/'].each do |s|
     cd s do
       sh 'rake', ENV['SIMULATOR'] || 'cver'
