@@ -10,9 +10,9 @@ class <%= aOutputInfo.specClassName %> < Test::Unit::TestCase
   def setup
     @design = <%= aOutputInfo.designClassName %>.new
   end
-<% aModuleInfo.portNames.each do |param| %>
+<% aModuleInfo.ports.each do |port| %>
 
-  def test_<%= param %>
+  def test_<%= port.name %>
   end
 <% end %>
 end

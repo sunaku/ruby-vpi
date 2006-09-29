@@ -2,25 +2,25 @@
 class <%= aOutputInfo.designClassName %>
   include Vpi
 
-<% aModuleInfo.paramDecls.each do |decl| %>
-  <%= decl.strip.capitalize %>
+<% (aParseInfo.constants + aModuleInfo.parameters).each do |var| %>
+  <%= var.name.to_ruby_const_name %> = <%= var.value %>
 <% end %>
 
   attr_reader <%=
-    aModuleInfo.portNames.inject([]) do |acc, port|
-      acc << ":#{port}"
+    aModuleInfo.ports.map do |port|
+      ":#{port.name}"
     end.join(', ')
   %>
 
   def initialize
-<% aModuleInfo.portNames.each do |port| %>
-    @<%= port %> = vpi_handle_by_name("<%= aOutputInfo.verilogBenchName %>.<%= port %>", nil)
+<% aModuleInfo.ports.each do |port| %>
+    @<%= port.name %> = vpi_handle_by_name("<%= aOutputInfo.verilogBenchName %>.<%= port.name %>", nil)
 <% end %>
   end
 
   def reset!
-<% aModuleInfo.inputPortNames[1..-1].each do |port| %>
-    @<%= port %>.hexStrVal = 'x'
+<% aModuleInfo.ports.select { |p| p.input? }[1..-1].each do |port| %>
+    @<%= port.name %>.hexStrVal = 'x'
 <% end %>
   end
 end

@@ -63,6 +63,13 @@ def write_file aPath, aContent
 end
 
 
+class String
+  # Converts this string into a valid Ruby constant name.
+  def to_ruby_const_name
+    self[0, 1].upcase << self[1..-1]
+  end
+end
+
 
 require 'ruby-vpi/erb'
 
@@ -72,56 +79,6 @@ class Template < ERB
 
   def initialize aName
     super File.read(File.join(TEMPLATE_PATH, aName))
-  end
-end
-
-
-
-# Holds information about a parsed Verilog module.
-class ModuleInfo
-  attr_reader :name, :portNames, :paramNames, :portDecls, :paramDecls, :inputPortNames
-
-  def initialize aDecl
-    aDecl =~ %r{module\s+(\w+)\s*(\#\((.*?)\))?\s*\((.*?)\)\s*;}m
-    @name, paramDecl, portDecl = $1, $3 || '', $4
-
-    # parse configuration parameters
-      paramDecl.gsub! %r{\bparameter\b}, ''
-      paramDecl.strip!
-
-      @paramDecls = paramDecl.split(/,/)
-
-      @paramNames = paramDecls.inject([]) do |acc, decl|
-        acc << decl.scan(%r{\w+}).first
-      end
-
-    # parse signal parameters
-      portDecl.gsub! %r{\breg\b}, ''
-      portDecl.strip!
-
-      @portDecls = portDecl.split(/,/)
-
-      @inputPortNames = []
-
-      @portNames = portDecls.inject([]) do |acc, decl|
-        name = decl.scan(%r{\w+}).last
-        @inputPortNames << name if decl =~ /\binput\b/
-
-        acc << name
-      end
-  end
-
-  # Parses and returns Verilog 2001 module declarations from the given input.
-  def self.parse_declarations aInput
-    input = aInput.dup
-
-    # remove single-line comments
-      input.gsub! %r{//.*$}, ''
-
-    # remove multi-line comments
-      input.gsub! %r{/\*.*?\*/}m, ''
-
-    input.scan %r{module.*?;}m
   end
 end
 
@@ -168,9 +125,9 @@ class OutputInfo
     @specName = aModuleName + @specSuffix
     @specPath = @specName + RUBY_EXT
 
-    @designClassName = aModuleName.capitalize
+    @designClassName = aModuleName.to_ruby_const_name
     @protoClassName = @designClassName + 'Proto'
-    @specClassName = @specName.capitalize
+    @specClassName = @specName.to_ruby_const_name
 
     @runnerName = aModuleName + @runnerSuffix
     @runnerPath = @runnerName + RUNNER_EXT
@@ -224,16 +181,17 @@ if File.basename($0) == File.basename(__FILE__)
   puts "Using #{optSpecFmt} specification format."
 
 
-  ModuleInfo.parse_declarations(ARGF.read).each do |moduleDecl|
-    puts
+  require 'ruby-vpi/verilog_parser'
 
-    m = ModuleInfo.new(moduleDecl).freeze
-    puts "Parsed module: #{m.name}"
+  v = VerilogParser.new(ARGF.read)
+
+  v.modules.each do |m|
+    puts '', "Parsed module: #{m.name}"
 
     o = OutputInfo.new(m.name, optSpecFmt, optTestName, File.dirname(File.dirname(__FILE__))).freeze
 
     # generate output
-      aModuleInfo, aOutputInfo = m, o
+      aParseInfo, aModuleInfo, aOutputInfo = v, m, o
 
       write_file o.runnerPath, RUNNER_TEMPLATE.result(binding)
       puts "- Generated runner:           #{o.runnerPath}"

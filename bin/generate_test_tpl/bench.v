@@ -1,39 +1,36 @@
 <%
   # Returns a comma-separated string of parameter declarations in Verilog module instantiation format.
-  def make_inst_param_decl(paramNames)
-    paramNames.inject([]) {|acc, param| acc << ".#{param}(#{param})"}.join(', ')
+  def make_inst_param_decl aParams
+    aParams.map do |param|
+      ".#{param.name}(#{param.name})"
+    end.join(', ')
   end
 
-  clockSignal = aModuleInfo.portNames.first
+  clockSignal = aModuleInfo.ports.first.name
 %>
 /* This is the Verilog side of the bench. */
+
+<%= aParseInfo.constants.map {|c| c.decl}.join "\n" %>
 
 module <%= aOutputInfo.verilogBenchName %>;
 
   // instantiate the design under test
-<% aModuleInfo.paramDecls.each do |decl| %>
-    parameter <%= decl %>;
+<% aModuleInfo.parameters.each do |param| %>
+    <%= param.decl %>;
 <% end %>
 
-<%
-  aModuleInfo.portDecls.each do |decl|
-    { 'input' => 'reg', 'output' => 'wire' }.each_pair do |key, val|
-      decl.sub! %r{\b#{key}\b(.*?)$}, "#{val}\\1;"
-    end
-%>
-    <%= decl.strip %>
-<%
-  end
-%>
+<% aModuleInfo.ports.each do |port| %>
+    <%= port.input? ? 'reg' : 'wire' %> <%= port.size %> <%= port.name %>;
+<% end %>
 
     <%= aModuleInfo.name %> <%
-      instConfigDecl = make_inst_param_decl(aModuleInfo.paramNames)
+      instConfigDecl = make_inst_param_decl(aModuleInfo.parameters)
 
       unless instConfigDecl.empty?
     %>#(<%= instConfigDecl %>)<%
       end
 
-    %><%= aOutputInfo.verilogBenchName %>_design(<%= make_inst_param_decl(aModuleInfo.portNames) %>);
+    %><%= aOutputInfo.verilogBenchName %>_design(<%= make_inst_param_decl(aModuleInfo.ports) %>);
 
   // connect to the Ruby side of this bench
     initial begin
