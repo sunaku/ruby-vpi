@@ -42,10 +42,9 @@ module hw5_unit(
 );
 
 
-  //-------------------------------------
-  // PHASE 0: perform the ALU operations
+  /* PHASE 0: perform the ALU operations */
 
-    // operation ID
+  // operation ID
     reg [`DATABITS-1:0] in_databits_phase0;
     reg [1:0] in_op_phase0;
 
@@ -54,24 +53,21 @@ module hw5_unit(
       in_op_phase0 = in_op;
     end
 
-
-    // addition
+  // addition
     reg [`WIDTH-1:0] add_result_phase0;
 
     always @(*) begin
       add_result_phase0 = a + b;
     end
 
-
-    // subtraction
+  // subtraction
     reg [`WIDTH-1:0] sub_result_phase0;
 
     always @(*) begin
       sub_result_phase0 = a - b;
     end
 
-
-    // multiplication
+  // multiplication
     reg [`WIDTH-1:0] mul_result_phase0;
 
     always @(*) begin
@@ -79,17 +75,16 @@ module hw5_unit(
     end
 
 
-    // always @(posedge clk) begin
-    // 	$display("in_databits_phase0 => %d", in_databits_phase0);
-    // 	$display("in_op_phase0 => %d", in_op_phase0);
-    // 	$display("add_result_phase0 => %d", add_result_phase0);
-    // 	$display("sub_result_phase0 => %d", sub_result_phase0);
-    // 	$display("mul_result_phase0 => %d", mul_result_phase0);
-    // end
+  // always @(posedge clk) begin
+  // 	$display("in_databits_phase0 => %d", in_databits_phase0);
+  // 	$display("in_op_phase0 => %d", in_op_phase0);
+  // 	$display("add_result_phase0 => %d", add_result_phase0);
+  // 	$display("sub_result_phase0 => %d", sub_result_phase0);
+  // 	$display("mul_result_phase0 => %d", mul_result_phase0);
+  // end
 
 
-  //-------------------------------------
-  // PHASE 1: delay the ALU results
+  /* PHASE 1: delay the ALU results */
 
     reg [`DATABITS-1:0] in_databits_phase1;
     reg [1:0] in_op_phase1;
@@ -116,8 +111,7 @@ module hw5_unit(
     // end
 
 
-  //-------------------------------------
-  // PHASE 2: delay the ALU results
+  /* PHASE 2: delay the ALU results */
 
     reg [`DATABITS-1:0] in_databits_phase2;
     reg [1:0] in_op_phase2;
@@ -144,8 +138,7 @@ module hw5_unit(
     // end
 
 
-  //-------------------------------------
-  // PHASE 3: produce the outputs
+  /* PHASE 3: produce the outputs */
 
     reg [`DATABITS-1:0] out_databits_next;
     reg [1:0] out_op_next;
@@ -160,7 +153,6 @@ module hw5_unit(
 
       out_databits_next = in_databits_phase2;
 
-      // determine res_next
       case (in_op_phase2)
         `OP_NOP:
           res_next = 0;

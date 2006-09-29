@@ -67,10 +67,10 @@ class Hw5UnitModel
 
   # Number of cycles each operation uses.
   OPERATION_LATENCIES = {
-    :add => 3, #1,
-    :sub => 3, #2,
-    :mul => 3, #3,
-    :nop => 3, #1,
+    :add => 1,
+    :sub => 2,
+    :mul => 3,
+    :nop => 1,
   }
 
   # The famous no-operation.
