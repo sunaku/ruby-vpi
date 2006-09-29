@@ -61,6 +61,16 @@ module SWIG
   class TYPE_p_unsigned_int
     include Vpi
 
+    # Tests if the logic value of this handle is "don't care" (x).
+    def x?
+      self.hexStrVal =~ /x/i
+    end
+
+    # Tests if the logic value of this handle is high impedance (z).
+    def z?
+      self.hexStrVal =~ /z/i
+    end
+
     # Reads the value using the given format and returns a +S_vpi_value+ object.
     def get_value_wrapper aFormat
       val = S_vpi_value.new
