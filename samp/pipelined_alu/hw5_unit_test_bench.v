@@ -10,7 +10,6 @@
 module hw5_unit_test_bench;
 
   // instantiate the design under test
-
     reg  clk;
     reg  reset;
     reg [`DATABITS-1:0] in_databits;

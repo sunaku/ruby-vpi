@@ -4,7 +4,6 @@ module counter_rspecTest_bench;
 
   // instantiate the design under test
     parameter Size = 5;
-
     reg  clock;
     reg  reset;
     wire [Size - 1 : 0] count;

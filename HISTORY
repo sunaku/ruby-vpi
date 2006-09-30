@@ -12,6 +12,22 @@ We _strictly_ follow the RubyGems project's "rational versioning policy":http://
 fn1. C. Gross, "Explaining Open Source Version Numbers", [Online document], 2005 Nov 28, [cited 2006 Aug 27], Available HTTP: "http://ablog.apress.com/?p=738":http://ablog.apress.com/?p=738
 
 
+h1. Version 7.3.0 (2006-09-30)
+
+h2. Summary
+
+This release fixes a bug in generated Verilog benches and adds parsed constants to generated Verilog benches and Ruby designs.
+
+h2. Details
+
+* Module instantiation code in generated Verilog benches has been fixed. Whitespace between the module type and instance variable was missing.
+
+* The test generator tool now provides parsed Verilog constants and include-directives in generated Verilog benches; and parsed Verilog constants in generated Ruby designs.
+** The pipelined ALU example has been revised accordingly.
+
+* A library for parsing Verilog source code has been added as @lib/ruby-vpi/verilog_parser.rb@.
+
+
 h1. Version 7.2.0 (2006-09-15)
 
 h2. Summary
@@ -432,6 +448,6 @@ This is Kazuhiro HIWADA's initial testing release of Ruby-VPI. See its "original
 
 h2. Details
 
-* Added ability to relay control from Verilog test bench to Ruby (using @$ruby_callback@) and vice versa (using @PLI::relay_verilog@).
+* Added ability to relay control from Verilog test bench to Ruby (using @$ruby_callback@) and vice versa (using @PLI::relay_Verilog@).
 
 * Tested and developed using Ruby 1.4 and Verilog-XL from Cadence systems, on a SPARC machine running Solaris 2.6.
