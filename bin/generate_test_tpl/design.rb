@@ -3,7 +3,7 @@ class <%= aOutputInfo.designClassName %>
   include Vpi
 
 <% (aParseInfo.constants + aModuleInfo.parameters).each do |var| %>
-  <%= var.decl.verilog_to_ruby %>
+  <%= var.name.to_ruby_const_name %> = <%= var.value.verilog_to_ruby %>
 <% end %>
 
   attr_reader <%=
