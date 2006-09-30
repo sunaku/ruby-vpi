@@ -2,6 +2,13 @@
 class Hw5_unit
   include Vpi
 
+  WIDTH = 32
+  DATABITS = 7
+  OP_NOP = 0
+  OP_ADD = 1
+  OP_SUB = 2
+  OP_MULT = 3
+  
   # Number of cycles needed to reset this design.
   RESET_DELAY = 5
 
