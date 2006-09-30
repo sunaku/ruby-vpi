@@ -8,12 +8,12 @@ class Hw5_unit
   OP_ADD = 1
   OP_SUB = 2
   OP_MULT = 3
-  
-  # Number of cycles needed to reset this design.
-  RESET_DELAY = 5
 
   # Supported types of ALU operations.
-  OPERATIONS = [ :add, :sub, :mul, :nop ]
+  OPERATIONS = constants.grep(/^OP_/).map {|s| const_get s}
+
+  # Number of cycles needed to reset this design.
+  RESET_DELAY = 5
 
   attr_reader :clk, :reset, :in_databits, :a, :b, :in_op, :res, :out_databits, :out_op
 
@@ -36,8 +36,13 @@ class Hw5_unit
     @b.hexStrVal = 'x'
     @in_op.hexStrVal = 'x'
 
+
     @reset.intVal = 1
-    RESET_DELAY.times {relay_verilog}
+
+    RESET_DELAY.times do
+      relay_verilog
+    end
+
     @reset.intVal = 0
   end
 
@@ -59,16 +64,16 @@ class Hw5_unit
     # Computes the result of this operation.
     def compute
       case @type
-        when :add
+        when OP_ADD
           @arg1 + @arg2
 
-        when :sub
+        when OP_SUB
           @arg1 - @arg2
 
-        when :mul
+        when OP_MULT
           @arg1 * @arg2
 
-        when :nop
+        when OP_NOP
           nil
 
         else

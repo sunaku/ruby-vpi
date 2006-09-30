@@ -27,24 +27,14 @@ class Hw5_unit_test_spec < Test::Unit::TestCase
   # Number of input sequences to test.
   NUM_TESTS = 4000
 
-  # Ruby's native int is 31 bits
-  RUBY_INTEGER_BITS = 31
-
-  # Used to convert VPI integer into Ruby integer
-  VPI_INTEGER_MASK = (2 ** RUBY_INTEGER_BITS.next) - 1
+  # Bitmask capable of capturing ALU result.
+  ALU_RESULT_MASK = (2 ** Hw5_unit::WIDTH) - 1
 
   # Upper limit of values allowed for an operation's tag.
-  OPERATION_TAG_LIMIT = 2 ** 7
-
-  OPERATION_ENCODINGS = {
-    :nop => 0,
-    :add => 1,
-    :sub => 2,
-    :mul => 3,
-  }
+  OPERATION_TAG_LIMIT = 2 ** Hw5_unit::DATABITS
 
   def setup
-    @ig = InputGenerator.new(RUBY_INTEGER_BITS)
+    @ig = InputGenerator.new(Hw5_unit::WIDTH)
 
     @design = Hw5_unit.new
     @design.reset!
@@ -66,7 +56,7 @@ class Hw5_unit_test_spec < Test::Unit::TestCase
 
           @design.a.intVal = op.arg1
           @design.b.intVal = op.arg2
-          @design.in_op.intVal = OPERATION_ENCODINGS[op.type]
+          @design.in_op.intVal = op.type
           @design.in_databits.intVal = op.tag
 
           issuedOps << op
@@ -78,17 +68,17 @@ class Hw5_unit_test_spec < Test::Unit::TestCase
       # verify result of finished operation
         unless @design.out_databits.x?
           finishedOp = Hw5_unit::Operation.new(
-            OPERATION_ENCODINGS.index(@design.out_op.intVal),
+            @design.out_op.intVal,
             @design.out_databits.intVal
           )
-          finishedOp.result = @design.res.intVal & VPI_INTEGER_MASK
+          finishedOp.result = @design.res.intVal & ALU_RESULT_MASK
 
           expectedOp = issuedOps.shift
           assert_equal expectedOp.type, finishedOp.type, "incorrect operation"
           assert_equal expectedOp.tag, finishedOp.tag, "incorrect tag"
 
-          unless finishedOp.type == :nop
-            assert_equal expectedOp.compute & VPI_INTEGER_MASK, finishedOp.result, "incorrect result"
+          unless finishedOp.type == Hw5_unit::OP_NOP
+            assert_equal expectedOp.compute & ALU_RESULT_MASK, finishedOp.result, "incorrect result"
           end
 
           numVerified += 1
