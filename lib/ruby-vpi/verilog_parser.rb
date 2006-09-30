@@ -20,28 +20,31 @@
 =end
 
 class VerilogParser
-  attr_reader :modules, :constants
+  attr_reader :modules, :constants, :includes
 
   # Parses the given Verilog source code.
   def initialize aInput
     input = aInput.dup
 
-    # remove single-line comments
+    # strip comments
       input.gsub! %r{//.*$}, ''
-
-    # remove multi-line comments
       input.gsub! %r{/\*.*?\*/}m, ''
 
     @modules = input.scan(%r{module.*?;}m).map! do |decl|
       Module.new decl
     end
 
-    @constants = input.scan(%r{(`define\s+(\w+)\s+(.+))}).map! do |arr|
-      Constant.new(*arr)
+    @constants = input.scan(%r{(`define\s+(\w+)\s+(.+))}).map! do |matches|
+      Constant.new(*matches)
+    end
+
+    @includes = input.scan(%r{(`include\s*(\S+))}).map! do |matches|
+      Include.new(*matches)
     end
   end
 
   Constant = Struct.new(:decl, :name, :value)
+  Include = Struct.new(:decl, :target)
 
   class Module
     attr_reader :decl, :name, :parameters, :ports

@@ -10,7 +10,7 @@
 %>
 /* This is the Verilog side of the bench. */
 
-<%= aParseInfo.constants.map {|c| c.decl}.join "\n" %>
+<%= (aParseInfo.includes + aParseInfo.constants).map {|v| v.decl}.join "\n" %>
 
 module <%= aOutputInfo.verilogBenchName %>;
 
@@ -18,7 +18,6 @@ module <%= aOutputInfo.verilogBenchName %>;
 <% aModuleInfo.parameters.each do |param| %>
     <%= param.decl %>;
 <% end %>
-
 <% aModuleInfo.ports.each do |port| %>
     <%= port.input? ? 'reg' : 'wire' %> <%= port.size %> <%= port.name %>;
 <% end %>
