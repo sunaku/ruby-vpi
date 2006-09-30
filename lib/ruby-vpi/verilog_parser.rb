@@ -96,3 +96,38 @@ class VerilogParser
     end
   end
 end
+
+class String
+  # Converts this string containing Verilog code into loadable Ruby code.
+  def verilog_to_ruby
+    content = self.dup
+
+    # single-line comments
+      content.gsub! %r{//(.*)$}, '#\1'
+
+    # multi-line comments
+      content.gsub! %r{/\*.*?\*/}m, "\n=begin\n\\0\n=end\n"
+
+    # preprocessor directives
+      content.gsub! %r{`include}, '#\0'
+
+      content.gsub! %r{`define\s+(\w+)\s+(.+)} do
+        "#{$1.to_ruby_const_name} = #{$2}"
+      end
+
+      content.gsub! %r{`+}, ''
+
+    # numbers
+      content.gsub! %r{\d*\'([dohb]\w+)}, '0\1'
+
+    # ranges
+      content.gsub! %r{(\S)\s*:\s*(\S)}, '\1..\2'
+
+    content
+  end
+
+  # Converts this string into a valid Ruby constant name.
+  def to_ruby_const_name
+    self[0, 1].upcase << self[1..-1]
+  end
+end

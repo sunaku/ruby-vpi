@@ -42,6 +42,7 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
+require 'ruby-vpi/verilog_parser'
 
 
 require 'fileutils'
@@ -60,14 +61,6 @@ def write_file aPath, aContent
     end
 
   File.open(aPath, 'w') {|f| f << aContent}
-end
-
-
-class String
-  # Converts this string into a valid Ruby constant name.
-  def to_ruby_const_name
-    self[0, 1].upcase << self[1..-1]
-  end
 end
 
 
@@ -180,8 +173,6 @@ if File.basename($0) == File.basename(__FILE__)
   puts "Using name `#{optTestName}' for generated test."
   puts "Using #{optSpecFmt} specification format."
 
-
-  require 'ruby-vpi/verilog_parser'
 
   v = VerilogParser.new(ARGF.read)
 

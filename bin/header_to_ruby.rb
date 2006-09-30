@@ -23,32 +23,6 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
-class String
-  # Converts this Verilog header content into Ruby syntax.
-  def to_ruby
-    content = self.dup
-
-    # remove single-line comments
-      content.gsub! %r{//(.*)$}, '#\1'
-
-    # remove multi-line comments
-      content.gsub! %r{/\*.*?\*/}m, "\n=begin\n\\0\n=end\n"
-
-    # remove preprocessor directives
-      content.gsub! %r{`include}, '#\0'
-      content.gsub! %r{`define\s+(\w+)\s+(.+)}, '\1 = \2'
-      content.gsub! %r{`+}, ''
-
-    # change numbers
-      content.gsub! %r{\d*\'([dohb]\w+)}, '0\1'
-
-    # change ranges
-      content.gsub! %r{(\S)\s*:\s*(\S)}, '\1..\2'
-
-    content
-  end
-end
-
 if File.basename($0) == File.basename(__FILE__)
   # parse command-line options
     require 'optparse'
@@ -66,5 +40,6 @@ if File.basename($0) == File.basename(__FILE__)
 
     opts.parse! ARGV
 
-  puts ARGF.read.to_ruby
+  require 'ruby-vpi/verilog_parser'
+  puts ARGF.read.verilog_to_ruby
 end
