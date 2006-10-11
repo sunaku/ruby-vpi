@@ -43,23 +43,9 @@ def generate_temp_path
   path
 end
 
-# uploads the given sources without their SVN meta-data to the given destination URL
-def upload_without_svn aDestUrl, *aSources
-  tmpDir = generate_temp_path
-  mkdir tmpDir
-
-  tmpSources = aSources.map do |src|
-    cp_r src, tmpDir, :preserve => true
-    File.join(tmpDir, File.basename(src))
-  end
-
-  # remove SVN meta-data from sources
-    sh "find #{tmpDir} -name .svn | xargs rm -rf"
-
-  # upload sources
-    sh 'scp', '-Cr', *(tmpSources + [aDestUrl])
-
-  rm_rf tmpDir
+# uploads the given sources to the given destination URL
+def upload aDestUrl, *aSources
+  sh 'scp', '-Cr', aSources, aDestUrl
 end
 
 
@@ -212,17 +198,17 @@ task :web => [:web_dist, :web_ref, :web_doc]
 
 desc "Publish distribution info."
 task :web_dist => ['style.css', *distDocs] do |t|
-  upload_without_svn PROJECT_SSH_URL, *t.prerequisites
+  upload PROJECT_SSH_URL, *t.prerequisites
 end
 
 desc "Publish reference documentation."
 task :web_ref => 'ref' do |t|
-  upload_without_svn PROJECT_SSH_URL, *t.prerequisites
+  upload PROJECT_SSH_URL, *t.prerequisites
 end
 
 desc "Publish user documentation."
 task :web_doc => :doc do |t|
-  upload_without_svn "#{PROJECT_SSH_URL}/doc/", *FileList['doc/xhtml/*']
+  upload "#{PROJECT_SSH_URL}/doc/", *FileList['doc/xhtml/*']
 end
 
 desc 'Connect to website FTP.'
@@ -243,13 +229,12 @@ task :pkg => ['HISTORY', 'gem_extconf.rb'] do |t|
 
   cd tmpDir do
     # clean up
-      sh "svn st | awk '/^\\?/ {print $2}' | xargs rm -rf"
-      sh "svn up"
-      sh "find -name .svn | xargs rm -rf"
-
-    sh "rake dist"
+      sh "darcs whatsnew --summary | awk '/^\\?/ {print $2}' | xargs rm -rf"
+      sh "rm -rf _darcs"
 
     # make gem package
+      sh "rake dist"
+
       spec = Gem::Specification.new do |s|
         s.name = s.rubyforge_project = PROJECT_ID
         s.summary = PROJECT_SUMMARY
