@@ -222,7 +222,9 @@ end
 
 
 desc "Generate release packages."
-task :package => :dist
+task :release => [:clobber, :dist] do
+  sh 'rake package'
+end
 
 spec = Gem::Specification.new do |s|
   s.name = s.rubyforge_project = PROJECT_ID

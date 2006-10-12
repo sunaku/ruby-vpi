@@ -7,3 +7,16 @@ h1. Getting started
 * See API documentation for the "C extension":./ref/c or "Ruby-VPI libraries":./ref/ruby.
 
 * Visit the "project website":http://ruby-vpi.rubyforge.org for additional resources.
+
+
+h1. Compiling from source
+
+In addition to the "normal requirements":./doc/usage.requirements.html, you need the following software to compile from source:
+
+* "DocBook-XML":http://www.docbook.org/
+** xsltproc
+** xmlto
+* "RedCloth":http://rubyforge.org/projects/redcloth/
+* "SWIG":http://www.swig.org/
+
+Once you have satisfied these requirements, you can run @rake release@ to build the release packages. Also, see the output of @rake -T@ for more build options.
