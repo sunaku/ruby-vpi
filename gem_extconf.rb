@@ -2,7 +2,7 @@
 
 require 'fileutils'
 
-system('rake build config_gem_install') &&
+system('rake build gem_config_inst') &&
 FileUtils.touch('Makefile')
 
 exit $?.exitstatus

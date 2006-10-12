@@ -251,7 +251,7 @@ end
 
 
 desc "Configures the gem during installation."
-task :config_gem_install => 'readme.html' do |t|
+task :gem_config_inst => 'readme.html' do |t|
   # make documentation available to gem_server
     gemDir = File.dirname(__FILE__)
     gemName = File.basename(gemDir)
