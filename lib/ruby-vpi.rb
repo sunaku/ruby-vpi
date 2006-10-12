@@ -26,7 +26,7 @@ module RubyVpi
     Vpi::relay_verilog	# service the $ruby_init() callback
 
     # set up code coverage analysis
-      if ENV['COVERAGE']
+      unless (ENV['COVERAGE'] || '').empty?
         require 'ruby-vpi/rcov'
 
         RubyVpi.with_coverage_analysis do |a|
@@ -40,7 +40,7 @@ module RubyVpi
     # load the design under test
       require "#{aTestPrefix}_design.rb"
 
-      if ENV['PROTO']
+      unless (ENV['PROTOTYPE'] || '').empty?
         require "#{aTestPrefix}_proto.rb"
 
         proto = Kernel.const_get(aProtoClassId).new
