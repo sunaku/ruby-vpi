@@ -119,7 +119,7 @@ class OutputInfo
     @specPath = @specName + RUBY_EXT
 
     @designClassName = aModuleName.to_ruby_const_name
-    @protoClassName = @designClassName + 'Proto'
+    @protoClassName = @designClassName + 'Prototype'
     @specClassName = @specName.to_ruby_const_name
 
     @runnerName = aModuleName + @runnerSuffix

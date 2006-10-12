@@ -1230,7 +1230,7 @@ Parsed module: counter
         <figure id="fig..counter_proto.rb">
           <title>Ruby prototype of our &v; design</title>
 <programlisting>
-<token>class</token> <constant>CounterProto</constant> &lt; <constant>Counter</constant>
+<token>class</token> <constant>CounterPrototype</constant> &lt; <constant>Counter</constant>
   <token>def</token> <function>simulate!</function>
     <token>if</token> <varname>@reset</varname>.<function>intVal</function> == <literal>1</literal>
       <varname>@count</varname>.<function>intVal</function> = <literal>0</literal>

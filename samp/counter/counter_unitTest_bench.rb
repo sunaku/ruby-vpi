@@ -3,7 +3,7 @@
 require 'ruby-vpi'
 require 'test/unit'
 
-RubyVpi.init_bench 'counter_unitTest', :CounterProto
+RubyVpi.init_bench 'counter_unitTest', :CounterPrototype
 
 # service the $ruby_relay callback
   # The UnitTest library will take control henceforth.
