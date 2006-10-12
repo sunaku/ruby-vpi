@@ -20,6 +20,7 @@
 
 require 'rake/clean'
 require 'rake/rdoctask'
+require 'rake/gempackagetask'
 
 require 'tempfile'
 require 'rbconfig'
@@ -35,6 +36,9 @@ PROJECT_SUMMARY = "Ruby interface to Verilog VPI."
 PROJECT_DETAIL = "#{PROJECT_NAME} is a #{PROJECT_SUMMARY}. It lets you create complex Verilog test benches easily and wholly in Ruby."
 PROJECT_SSH_URL = "snk@rubyforge.org:/var/www/gforge-projects/#{PROJECT_ID}"
 
+File.read('HISTORY') =~ /Version\s+([\d\.]+)\s*\((.*?)\)/
+PROJECT_VERSION = $1
+PROJECT_BIRTHDAY = $2
 
 
 # Returns a temporary, unique path ready for use. No file exists at the returned path.
@@ -218,50 +222,31 @@ end
 
 
 desc "Generate release packages."
-task :pkg => ['HISTORY', 'gem_extconf.rb'] do |t|
-  # determine release version
-    File.read(t.prerequisites[0]) =~ /Version\s+([\d\.]+)/
-    releaseVersion = $1
-    puts "release version is: #{releaseVersion}"
+task :package => :dist
 
-  mkdir tmpDir = generate_temp_path
-  cp_r '.', tmpDir
+spec = Gem::Specification.new do |s|
+  s.name = s.rubyforge_project = PROJECT_ID
+  s.summary = PROJECT_SUMMARY
+  s.description = PROJECT_DETAIL
+  s.homepage = PROJECT_URL
+  s.version = PROJECT_VERSION
 
-  cd tmpDir do
-    # clean up
-      sh "darcs whatsnew --summary | awk '/^\\?/ {print $2}' | xargs rm -rf"
-      sh "rm -rf _darcs"
+  s.add_dependency 'rspec', '>= 0.5.4'
+  s.add_dependency 'rake', '>= 0.7.0'
+  s.add_dependency 'rcov', '>= 0.7.0'
 
-    # make gem package
-      sh "rake dist"
+  s.requirements << "POSIX threads library"
+  s.requirements << "C language compiler"
 
-      spec = Gem::Specification.new do |s|
-        s.name = s.rubyforge_project = PROJECT_ID
-        s.summary = PROJECT_SUMMARY
-        s.description = PROJECT_DETAIL
-        s.homepage = PROJECT_URL
-        s.version = releaseVersion
+  s.files = FileList['**/*'].exclude('_darcs')
+  s.autorequire = PROJECT_ID
+  s.executables = FileList['bin/*'].select {|f| File.executable?( f ) && File.file?( f )}.map {|f| File.basename f}
+  s.extensions << 'gem_extconf.rb'
+end
 
-        s.add_dependency 'rspec', '>= 0.5.4'
-        s.add_dependency 'rake', '>= 0.7.0'
-        s.add_dependency 'rcov', '>= 0.7.0'
-
-        s.requirements << "POSIX threads library"
-        s.requirements << "C language compiler"
-
-        s.files = FileList['**/*']
-        s.autorequire = PROJECT_ID
-        s.executables = FileList['bin/*'].select {|f| File.executable?( f ) && File.file?( f )}.map {|f| File.basename f}
-        s.extensions << t.prerequisites[1]
-      end
-
-      Gem::manage_gems
-      Gem::Builder.new(spec).build
-
-      mv *(FileList['*.gem'] << File.dirname(__FILE__))
-  end
-
-  rm_r tmpDir
+Rake::GemPackageTask.new(spec) do |pkg|
+  pkg.need_zip = true
+  pkg.need_tar = true
 end
 
 
