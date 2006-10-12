@@ -5,8 +5,6 @@ body {
 
 /* admonitions */
   .tip, .note, .important, .caution, .warning {
-    /* border: thin solid lightgreen;
-    background-color: honeydew; */
     border: thin solid steelblue;
     background-color: aliceblue;
     padding: 1em;
@@ -36,34 +34,32 @@ body {
   }
 
   .function {
-    color: orangered;
   }
 
   .constant {
-    color: brown;
+    color: green;
     font-weight: bold;
   }
 
   .literal {
-    color: darkgreen;
-    background-color: honeydew;
+    color: blue;
   }
 
   .varname {
     color: magenta;
-    /*background-color: ghostwhite;*/
   }
 
   .token {
-    color: midnightblue;
+    font-weight: bold;
+    color: indigo;
   }
 
   .type {
-    color: royalblue;
+    color: red;
   }
 
   .remark {
-    color: gray;
+    color: orangered;
   }
 
   .command {
