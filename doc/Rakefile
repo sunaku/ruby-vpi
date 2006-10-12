@@ -21,35 +21,18 @@
 require 'rake/clean'
 
 FORMATS = {
-  # task name => [xsltproc flag, needs resources?]
-  'html' => ['xhtml', true],
-  'text' => ['txt', false],
+  # format => xsltproc flag
+  'html' => 'xhtml',
+  'text' => 'txt',
 }
 
 task :default => FORMATS.keys
 
-FORMATS.each_pair do |fmtName, (fmtFlag, needsResources)|
-  desc "Generate documentation in #{fmtName} format."
-  file fmtFlag => ['src/manual.xml', 'src/manual.xsl'] do |t|
-    sh %{xmlto #{fmtFlag} -o #{fmtFlag} -m #{t.prerequisites[1]} #{t.prerequisites[0]}}
+FORMATS.each_pair do |fmt, flag|
+  desc "Generate documentation in #{fmt} format."
+  task fmt => ['src/manual.xml', 'src/manual.xsl'] do |t|
+    sh %{xmlto #{flag} -m #{t.prerequisites[1]} #{t.prerequisites[0]}}
   end
-
-  CLOBBER.include fmtFlag
-
-  task fmtName => fmtFlag
-
-  # copy additional resources to output directory
-    if needsResources
-      FileList['src/*/'].each do |path|
-        dst = File.join(fmtFlag, File.basename(path))
-
-        file dst => [path, fmtFlag] do
-          cp_r path, dst
-        end
-
-        CLEAN.include dst
-
-        task fmtName => dst
-      end
-    end
 end
+
+CLOBBER.include '*.html', '*.txt'

@@ -212,7 +212,7 @@ end
 
 desc "Publish user documentation."
 task :web_doc => :doc do |t|
-  upload "#{PROJECT_SSH_URL}/doc/", *FileList['doc/xhtml/*']
+  upload PROJECT_SSH_URL, *t.prerequisites
 end
 
 desc 'Connect to website FTP.'
