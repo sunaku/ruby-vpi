@@ -53,6 +53,7 @@ Access project facilities, hosted generously by <a href="http://rubyforge.org" t
 RubyForge</a>.
 </p>
 </dd>
+
 <dt>
 <span class="term">
 <a href="http://rubyforge.org/tracker/?group_id=1339" target="_top">
@@ -63,6 +64,7 @@ Tracker</a>
 <p>
 Report problems, contribute patches, and more.</p>
 </dd>
+
 <dt>
 <span class="term">
 <a href="http://rubyforge.org/frs/?group_id=1339" target="_top">
@@ -73,9 +75,10 @@ Releases</a>
 <p>
 Download the newest releases.</p>
 </dd>
+
 <dt>
 <span class="term">
-<a href="http://rubyforge.org/scm/?group_id=1339" target="_top">
+<a href="http://ruby-vpi.rubyforge.org/src/ruby-vpi" target="_top">
 Sources</a>
 </span>
 </dt>
@@ -83,6 +86,7 @@ Sources</a>
 <p>
 Browse or access the source code repository.</p>
 </dd>
+
 <dt>
 <span class="term">
 <a href="http://rubyforge.org/forum/?group_id=1339" target="_top">
@@ -93,6 +97,7 @@ Forums</a>
 <p>
 Ask for help, give feedback, or discuss.</p>
 </dd>
+
 </dl>
 </div>
 </div>

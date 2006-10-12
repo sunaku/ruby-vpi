@@ -16,8 +16,7 @@
 <!ENTITY rv.url-download "http://rubyforge.org/frs/?group_id=1339">
 <!ENTITY rv.url-tracker "http://rubyforge.org/tracker/?group_id=1339">
 <!ENTITY rv.url-forum "http://rubyforge.org/forum/?group_id=1339">
-<!ENTITY rv.url-source-repo "svn://rubyforge.org//var/svn/ruby-vpi">
-<!ENTITY rv.url-source "http://rubyforge.org/scm/?group_id=1339">
+<!ENTITY rv.url-source "&rv.url;/src/ruby-vpi">
 <!ENTITY rv..ulink "<ulink url='&rv.url;'>&rv;</ulink>">
 
 
