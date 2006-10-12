@@ -57,7 +57,8 @@ end
 task :default => :build
 
 task :clobber do |t|
-  files = FileList['**/Rakefile'].reject {|f| File.expand_path(f) == __FILE__}
+  files = FileList['**/Rakefile'].exclude('_darcs')
+  files.shift # avoid infinite loop on _this_ file
 
   files.each do |f|
     cd File.dirname(f) do

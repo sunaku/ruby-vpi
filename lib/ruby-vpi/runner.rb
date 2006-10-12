@@ -42,7 +42,7 @@ LIBRARY_PATH = File.join(File.dirname(__FILE__), '..')
 OBJECT_PATH = File.join(LIBRARY_PATH, '..', 'obj')
 
 # make Ruby-VPI libraries available to spec
-  ENV['RUBYLIB'] = (ENV['RUBYLIB'] && ENV['RUBYLIB'].dup || '') << ":#{LIBRARY_PATH}"
+  ENV['RUBYLIB'] = "#{ENV['RUBYLIB'] || ''}:#{LIBRARY_PATH}"
 
 
 # Returns the path to the Ruby-VPI object file for the given simulator.
