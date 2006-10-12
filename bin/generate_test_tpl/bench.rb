@@ -14,7 +14,7 @@ require 'ruby-vpi/rspec'
   end
 %>
 
-RubyVPI.init_bench '<%= aModuleInfo.name + aOutputInfo.suffix %>', :<%= aOutputInfo.protoClassName %>
+RubyVpi.init_bench '<%= aModuleInfo.name + aOutputInfo.suffix %>', :<%= aOutputInfo.protoClassName %>
 
 # service the $ruby_relay callback
 <%
