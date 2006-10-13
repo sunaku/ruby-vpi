@@ -13,8 +13,6 @@ h1. Pending tasks
 * GHDL simulator supports VPI
 ** need way to invoke VPI tasks from VHDL, like @$ruby_init();@
 
-* smarter test generation, which adjusts to user modifications in previously generated output
-
 
 h1. Finished tasks
 
@@ -40,3 +38,5 @@ h1. Obsolete tasks
 
 * file bug report for Icarus 0.8 (l0_dcache)
 ** try new icarus snapshot
+
+* smarter test generation, which adjusts to user modifications in previously generated output -- just use a smart merging tool like *kdiff3*
