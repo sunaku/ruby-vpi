@@ -10,7 +10,7 @@
   the file named "LICENSE".
 
   Source code formatting rules:
-     is a reserved keyword
+    <token> is a reserved keyword
     <type> is structure, class, variable type, etc.
     <varname> is a variable name
     <function> is function or method name
@@ -33,16 +33,17 @@
     <para>This problem was fixed in release 2.0.0 (2006-04-17). If it still occurs, then <link linkend='introduction.resources'>please report it</link>.</para>
   </note>">
 
-  <!ENTITY test-bench.gloss "<glossterm linkend='term..test-bench'>test bench</glossterm>">
-  <!ENTITY test.gloss "<glossterm linkend='term..test'>test</glossterm>">
-  <!ENTITY design.gloss "<glossterm linkend='term..design'>design</glossterm>">
-  <!ENTITY specification.gloss "<glossterm linkend='term..specification'>specification</glossterm>">
-  <!ENTITY bench.gloss "<glossterm linkend='term..bench'>bench</glossterm>">
-  <!ENTITY BDD.gloss "<glossterm linkend='term..BDD'>BDD</glossterm>">
-  <!ENTITY TDD.gloss "<glossterm linkend='term..TDD'>TDD</glossterm>">
-  <!ENTITY rspec.gloss "<glossterm linkend='term..rspec'>&rspec;</glossterm>">
-  <!ENTITY rake.gloss "<glossterm linkend='term..rake'>&rake;</glossterm>">
-  <!ENTITY handle.gloss "<glossterm linkend='term..handle'>handle</glossterm>">
+  <!ENTITY test-bench.gloss "<xref linkend='term..test-bench'/>">
+  <!ENTITY test.gloss "<xref linkend='term..test'/>">
+  <!ENTITY design.gloss "<xref linkend='term..design'/>">
+  <!ENTITY specification.gloss "<xref linkend='term..specification'/>">
+  <!ENTITY bench.gloss "<xref linkend='term..bench'/>">
+  <!ENTITY BDD.gloss "<xref linkend='term..BDD'/>">
+  <!ENTITY TDD.gloss "<xref linkend='term..TDD'/>">
+  <!ENTITY rspec.gloss "<xref linkend='term..rspec'/>">
+  <!ENTITY rake.gloss "<xref linkend='term..rake'/>">
+  <!ENTITY handle.gloss "<xref linkend='term..handle'/>">
+  <!ENTITY expectation.gloss "<xref linkend='term..expectation'/>">
 
   <!ENTITY rake "Rake">
   <!ENTITY rake.url "http://rake.rubyforge.org/">
@@ -121,7 +122,7 @@
         <varlistentry>
           <term><filename>lib</filename></term>
           <listitem>
-            <para>This directory contains libraries, written in the Ruby language, for use by specifications.</para>
+            <para>This directory contains Ruby libraries provided by &rv;.</para>
           </listitem>
         </varlistentry>
 
@@ -918,6 +919,7 @@
 
     <section id="usage.examples">
       <title>Examples</title>
+
       <para>The <filename>samp</filename> directory contains several example tests which illustrate how &rv; can be used. Each example has an associated <filename>Rakefile</filename> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the command <command>rake</command> to get started.</para>
 
       <para>Also, some example specifications make use of BDD through the <application>RSpec</application> library. See the <xref linkend="background.methodology"/> for a discussion of <application>RSpec</application>.</para>
@@ -961,7 +963,7 @@
       <section id="usage.tutorial.declare-design">
         <title>Start with a design</title>
 
-        <para>First, we need a design to verify. In this tutorial, <xref linkend="fig..counter.v_decl"/> will serve as our design. Its interface is composed of the following parts:
+        <para>First, we need a &design.gloss; to verify. In this tutorial, <xref linkend="fig..counter.v_decl"/> will serve as our design. Its interface is composed of the following parts:
           <variablelist>
             <varlistentry>
               <term><constant>Size</constant></term>
@@ -1003,10 +1005,10 @@
       <section id="usage.tutorial.generate-test">
         <title>Generate a test</title>
 
-        <para>Now that we have a design to verify, let us generate a test for it using the automated test generator tool. This tool allows us to implement our specification in either &rspec;, unit test, or our very own format. Each format represents a different software development methodology: &rspec; represents &BDD.gloss;, unit testing represents &TDD.gloss;, and our own format can represent another methodology.</para>
+        <para>Now that we have a &design.gloss; to verify, let us generate a &test.gloss; for it using the automated test generator tool. This tool allows us to implement our &specification.gloss; in either &rspec;, unit test, or our very own format. Each format represents a different software development methodology: &rspec; represents &BDD.gloss;, unit testing represents &TDD.gloss;, and our own format can represent another methodology.</para>
 
         <note>
-          <para>In this tutorial, we will see how to implement our specification in both &rspec; and unit test formats.</para>
+          <para>In this tutorial, you will see how specifications are implemented in <emphasis>both</emphasis> &rspec; and unit test formats.</para>
         </note>
 
         <para>Once we have decided how we want to implement our specification, we can proceed to generate a test for our design. <xref linkend="fig..generate-test.rspec"/> and <xref linkend="fig..generate-test.unit-test"/> illustrate this process. Here, the test generation tool produces a test composed of the following parts:
@@ -1084,7 +1086,7 @@ Parsed module: counter
       <section id="usage.tutorial.specification">
         <title>Specify your expectations</title>
 
-        <para>So far, the test generation tool has created a basic foundation for our test. Now we must build upon this foundation by identifying our expectations of the design. That is, how do we expect the design to <emphasis>behave</emphasis> under certain conditions?</para>
+        <para>So far, the test generation tool has created a basic foundation for our &test.gloss;. Now we must build upon this foundation by identifying our &expectation.gloss;s of the &design.gloss;. That is, how do we expect the design to <emphasis>behave</emphasis> under certain conditions?</para>
 
         <para>The following is a reasonable set of expectations for our simple counter:
           <itemizedlist>
@@ -1133,7 +1135,7 @@ Parsed module: counter
 <constant>LIMIT</constant> = <literal>2</literal> ** <constant>Counter</constant>::<constant>Size</constant>  <remark># lowest upper bound of counter's value</remark>
 <constant>MAX</constant> = <constant>LIMIT</constant> - <literal>1</literal>             <remark># maximum allowed value for a counter</remark>
 
-<function>include</function> <constant>Vpi</constant>
+<token>include</token> <constant>Vpi</constant>
 
 <function>context</function> <literal>"A resetted counter's value"</literal> <token>do</token>
   <function>setup</function> <token>do</token>
@@ -1178,7 +1180,7 @@ Parsed module: counter
 <constant>MAX</constant> = <constant>LIMIT</constant> - <literal>1</literal>             <remark># maximum allowed value for a counter</remark>
 
 <token>class</token> <constant>ResettedCounterValue</constant> &lt; <constant>Test</constant>::<constant>Unit</constant>::<constant>TestCase</constant>
-  <function>include</function> <constant>Vpi</constant>
+  <token>include</token> <constant>Vpi</constant>
 
   <token>def</token> <function>setup</function>
     <varname>@design</varname> = <constant>Counter</constant>.<function>new</function>
@@ -1198,7 +1200,7 @@ Parsed module: counter
 <token>end</token>
 
 <token>class</token> <constant>MaximumCounterValue</constant> &lt; <constant>Test</constant>::<constant>Unit</constant>::<constant>TestCase</constant>
-  <function>include</function> <constant>Vpi</constant>
+  <token>include</token> <constant>Vpi</constant>
 
   <token>def</token> <function>setup</function>
     <varname>@design</varname> = <constant>Counter</constant>.<function>new</function>
@@ -1220,7 +1222,8 @@ Parsed module: counter
 
       <section id="usage.tutorial.implement-proto">
         <title>Implement the prototype</title>
-        <para>Now that we have a specification against which to verify our design, let us build a prototype of our design. By doing so, we exercise our specification, experience potential problems that may arise when we later implement our design in &v;, and gain confidence in our work. <!--Furthermore, we will use the <emphasis>same</emphasis> specification later when verifying our design!--> <xref linkend="fig..counter_proto.rb"/> shows the completed prototype for our design.</para>
+
+        <para>Now that we have a &specification.gloss; against which to verify our &design.gloss;, let us build a prototype of our design. By doing so, we exercise our specification, experience potential problems that may arise when we later implement our design in &v;, and gain confidence in our work. <xref linkend="fig..counter_proto.rb"/> shows the completed prototype for our design.</para>
 
         <important>
           <title>Before we continue&hellip;</title>
@@ -1246,7 +1249,11 @@ Parsed module: counter
 
       <section id="usage.tutorial.test-proto">
         <title>Verify the prototype</title>
-        <para>Now that we have implemented our prototype, we are ready to verify it against our specification by running the test. <xref linkend="fig..test-proto.rspec"/> and <xref linkend="fig..test-proto.unit-test"/> illustrate this process.</para>
+        <para>Now that we have implemented our prototype, we are ready to verify it against our &specification.gloss; by running the &test.gloss;. <xref linkend="fig..test-proto.rspec"/> and <xref linkend="fig..test-proto.unit-test"/> illustrate this process.</para>
+
+        <tip>
+          <para>The <emphasis>same</emphasis> specification can be used to verify both prototype and design.</para>
+        </tip>
 
         <para>Here, the <varname>PROTOTYPE</varname> environment variable is assigned a non-empty value while running the test, so that, instead of our design, our prototype is verified against our specification. You can also assign a value to <varname>PROTOTYPE</varname> before running the test, by using your shell's <command>export</command> or <command>setenv</command> command. Finally, the Icarus &v; simulator, denoted by <replaceable>ivl</replaceable>, is used to run the simulation.</para>
 
@@ -1288,7 +1295,7 @@ Finished in 0.040668 seconds.
       <section id="usage.tutorial.implement-design">
         <title>Implement the design</title>
 
-        <para>Now that we have implemented and verified our prototype, we are ready to implement our design. This is often quite simple because we translate <emphasis>existing</emphasis> code from &r; (our prototype) into &v; (our design). <xref linkend="fig..counter.v_impl"/> illustrates the result of this process. Once again, note the striking similarities between the implementations of our prototype and our design.</para>
+        <para>Now that we have implemented and verified our prototype, we are ready to implement our &design.gloss;. This is often quite simple because we translate <emphasis>existing</emphasis> code from &r; (our prototype) into &v; (our design). <xref linkend="fig..counter.v_impl"/> illustrates the result of this process. Once again, note the striking similarities between the implementation of our prototype and design.</para>
 
         <important>
           <title>Before we continue&hellip;</title>
@@ -1316,7 +1323,7 @@ Finished in 0.040668 seconds.
 
       <section id="usage.tutorial.test-design">
         <title>Verify the design</title>
-        <para>Now that we have implemented our design, we are ready to verify it against our specification by running the test. <xref linkend="fig..test-design.rspec"/> and <xref linkend="fig..test-design.unit-test"/> illustrate this process.</para>
+        <para>Now that we have implemented our &design.gloss;, we are ready to verify it against our &specification.gloss; by running the &test.gloss;. <xref linkend="fig..test-design.rspec"/> and <xref linkend="fig..test-design.unit-test"/> illustrate this process.</para>
 
         <para>Here, the <varname>PROTOTYPE</varname> environment variable is <emphasis>not</emphasis> specified while running the test, so that our design, instead of our prototype, is verified against our specification. You can also achieve this effect by assigning an empty value to <varname>PROTOTYPE</varname>, or by using your shell's <command>unset</command> command. Finally, the Icarus &v; simulator, denoted by <replaceable>ivl</replaceable>, is used to run the simulation.</para>
 
@@ -1472,7 +1479,7 @@ Finished in 0.006766 seconds.
       <glossentry id="term..bench">
         <glossterm>Bench</glossterm>
         <glossdef>
-          <para>An environment in which a design is verified against a specification. Often, it is used to emulate conditions in which the design will be eventually deployed.</para>
+          <para>An environment in which a &design.gloss; is verified against a &specification.gloss;. Often, it is used to emulate conditions in which the design will be eventually deployed.</para>
         </glossdef>
       </glossentry>
 
@@ -1495,7 +1502,18 @@ Finished in 0.006766 seconds.
       <glossentry id="term..design">
         <glossterm>Design</glossterm>
         <glossdef>
-          <para>An idea or entity that is verified against a specification in order to ensure correctness or soundness of its being.</para>
+          <para>An idea or entity that is verified against a &specification.gloss; in order to ensure correctness or soundness of its being. In other words, it is the thing being checked: does it work or not?</para>
+        </glossdef>
+      </glossentry>
+    </glossdiv>
+
+    <glossdiv>
+      <title>E</title>
+
+      <glossentry id="term..expectation">
+        <glossterm>Expectation</glossterm>
+        <glossdef>
+          <para>The desired response to some stimulus.</para>
         </glossdef>
       </glossentry>
     </glossdiv>
@@ -1506,7 +1524,7 @@ Finished in 0.006766 seconds.
       <glossentry id="term..handle">
         <glossterm>Handle</glossterm>
         <glossdef>
-          <para>An object in a &v; simulation.</para>
+          <para>An object in a &v; simulation. For example, a handle can represent a wire, register, module, if-statement, expression, and so on.</para>
         </glossdef>
       </glossentry>
     </glossdiv>
@@ -1542,7 +1560,7 @@ Finished in 0.006766 seconds.
       <glossentry id="term..specification">
         <glossterm>Specification</glossterm>
         <glossdef>
-          <para>A collection of expectations that must be satisfied by a design when subjected to certain conditions.</para>
+          <para>A set of &expectation.gloss;s which define the desired behavior of a &design.gloss; when it is subjected to certain conditions.</para>
         </glossdef>
       </glossentry>
     </glossdiv>
@@ -1561,7 +1579,7 @@ Finished in 0.006766 seconds.
       <glossentry id="term..test">
         <glossterm>Test</glossterm>
         <glossdef>
-          <para>The act of verifying a design against a specification in a bench.</para>
+          <para>Something that checks if a &design.gloss; satisfies a &specification.gloss;.</para>
           <glossseealso otherterm="term..test-bench"/>
         </glossdef>
       </glossentry>
