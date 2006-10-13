@@ -199,10 +199,10 @@ end
 
 
 desc 'Publish documentation to website.'
-task :web => [:web_dist, :web_ref, :web_doc]
+task :web => [:web_info, :web_ref, :web_doc]
 
 desc "Publish distribution info."
-task :web_dist => ['style.css', *distDocs] do |t|
+task :web_info => ['style.css', *distDocs] do |t|
   upload PROJECT_SSH_URL, *t.prerequisites
 end
 
