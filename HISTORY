@@ -16,7 +16,13 @@ h1. Version 7.3.0 (2006-09-30)
 
 h2. Summary
 
-This release fixes a bug in generated Verilog benches and adds parsed constants to generated Verilog benches and Ruby designs.
+This release fixes a bug in generated Verilog benches, includes parsed constants in generated tests, and adds new methods to handles.
+
+h2. Notice
+
+* Handles now have two new methods:
+** @handle.x?@ -- checks if the logic value is "don't care"
+** @handle.z?@ -- checks if the logic value is high impedance
 
 h2. Details
 
