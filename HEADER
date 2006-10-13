@@ -38,7 +38,16 @@ h2. Features
 </span>
 </dt>
 <dd>
-<p>Complete documentation for users. Start here!</p>
+<p>Complete documentation for users. _Start here!_</p>
+</dd>
+
+<dt>
+<span class="term">
+<a href="./ref/" target="_top">Reference</a>
+</span>
+</dt>
+<dd>
+<p>API reference documentation for Ruby libraries and C extension.</p>
 </dd>
 
 <dt>
