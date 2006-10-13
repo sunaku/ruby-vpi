@@ -1,7 +1,7 @@
 #!/usr/bin/ruby -w
-#
-# == Synopsis
-# Transforms Verilog header files into Ruby syntax.
+# Transforms Verilog header files into Ruby.
+# * If no input files are specified, then the standard input stream is assumed to be the input.
+# * The resulting output is emitted to the standard output stream.
 
 =begin
   Copyright 2006 Suraj N. Kurapati
