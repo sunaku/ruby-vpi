@@ -38,12 +38,7 @@
 require 'rake/clean'
 require 'ruby-vpi/rake'
 
-LIBRARY_PATH = File.join(File.dirname(__FILE__), '..')
-OBJECT_PATH = File.join(LIBRARY_PATH, '..', 'obj')
-
-# make Ruby-VPI libraries available to spec
-  ENV['RUBYLIB'] = "#{ENV['RUBYLIB'] || ''}:#{LIBRARY_PATH}"
-
+OBJECT_PATH = File.join(File.dirname(__FILE__), '..', '..', 'obj')
 
 # Returns the path to the Ruby-VPI object file for the given simulator.
 def object_file_path aSimId, aShared = false
@@ -52,6 +47,8 @@ def object_file_path aSimId, aShared = false
   path
 end
 
+
+desc "Show a list of available tasks."
 task :default do
   Rake.application.options.show_task_pattern = //
   Rake.application.display_tasks_and_comments
