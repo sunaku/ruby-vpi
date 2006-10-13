@@ -48,7 +48,7 @@ OBJECT_PATH = File.join(LIBRARY_PATH, '..', 'obj')
 # Returns the path to the Ruby-VPI object file for the given simulator.
 def object_file_path aSimId, aShared = false
   path = File.join(OBJECT_PATH, "ruby-vpi.#{aSimId}.#{aShared ? 'so' : 'o'}")
-  raise "Object file `#{path}' is missing.\n Please build Ruby-VPI to generate the missing file." unless File.exist? path
+  raise "Object file #{path.inspect} is missing.\n Rebuild Ruby-VPI to generate the missing file." unless File.exist? path
   path
 end
 

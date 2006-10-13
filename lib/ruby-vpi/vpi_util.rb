@@ -218,7 +218,7 @@ module SWIG
         begin
           prop = Vpi.const_get(propName)
         rescue NameError
-          raise ArgumentError, "invalid VPI property `#{propName}'"
+          raise ArgumentError, "invalid VPI property #{propName.inspect}"
         end
 
       # access the VPI property
@@ -296,7 +296,7 @@ module SWIG
           end
         end
 
-      raise NoMethodError, "unable to access VPI property `#{propName}' through method `#{aMsg}' with arguments `#{aArgs.inspect}' for handle #{self}"
+      raise NoMethodError, "unable to access VPI property #{propName.inspect} through method #{aMsg.inspect} with arguments #{aArgs.inspect} for handle #{self}"
     end
 
     # Returns an array of handles of the given type.

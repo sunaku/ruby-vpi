@@ -152,7 +152,7 @@ if File.basename($0) == File.basename(__FILE__)
 
     opts.parse! ARGV
 
-  puts "Using name `#{optTestName}' for generated test."
+  puts "Using name #{optTestName.inspect} for generated test."
   puts "Using #{optSpecFmt} specification format."
 
 
