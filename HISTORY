@@ -12,6 +12,33 @@ We _strictly_ follow the RubyGems project's "rational versioning policy":http://
 fn1. C. Gross, "Explaining Open Source Version Numbers", [Online document], 2005 Nov 28, [cited 2006 Aug 27], Available HTTP: "http://ablog.apress.com/?p=738":http://ablog.apress.com/?p=738
 
 
+h1. Version 8.0.0 (2006-10-13)
+
+h2. Summary
+
+This release renames some identifiers for consistency, updates the documentation, and improves integration with RubyGems.
+
+h2. Notice
+
+* The @RubyVPI@ module has been renamed to @RubyVpi@.
+
+* The @PROTO@ environment variable has been renamed to @PROTOTYPE@.
+** In addition to using @unset@, you can now disable simulation of the prototype by assigning an empty value to this variable.
+
+h2. Details
+
+* We now use "Darcs":http://darcs.net for revision control, instead of Subversion. The source repository can now be accessed at "http://ruby-vpi.rubyforge.org/src/ruby-vpi":http://ruby-vpi.rubyforge.org/src/ruby-vpi.
+
+* The source code is now distributed in tar.gz and zip form, in addition to gem.
+
+* Some identifiers have been renamed for better consistency.
+
+* The user manual now resides directly within the @doc/@ directory.
+** The integration of documentation in @gem_server@ has been improved.
+
+* The glossary and tutorial in the user manual have been revised.
+
+
 h1. Version 7.3.0 (2006-09-30)
 
 h2. Summary
