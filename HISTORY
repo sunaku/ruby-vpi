@@ -12,6 +12,21 @@ We _strictly_ follow the RubyGems project's "rational versioning policy":http://
 fn1. C. Gross, "Explaining Open Source Version Numbers", [Online document], 2005 Nov 28, [cited 2006 Aug 27], Available HTTP: "http://ablog.apress.com/?p=738":http://ablog.apress.com/?p=738
 
 
+h1. Version 8.1.0 (2006-10-21)
+
+h2. Summary
+
+This release adds an integer library and renames the vpi_util library.
+
+h2. Notice
+
+* The *vpi_util* library has been renamed to *vpi*. This change should not affect your code unless you explicitly imported this library via @require 'ruby-vpi/vpi_util'@. In which case, you should update your code to use @require 'ruby-vpi/vpi'@ accordingly.
+
+h2. Details
+
+* An integer library has been added to simplify common tasks related to hardware and the binary number system. You can import this library for use via @require 'ruby-vpi/integer'@.
+
+
 h1. Version 8.0.0 (2006-10-13)
 
 h2. Summary
