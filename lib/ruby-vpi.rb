@@ -22,7 +22,7 @@
 module RubyVpi
   # Initializes the current bench using the given parameters.
   def RubyVpi.init_bench aTestPrefix, aProtoClassId
-    require 'ruby-vpi/vpi_util'
+    require 'ruby-vpi/vpi'
     Vpi::relay_verilog	# service the $ruby_init() callback
 
     # set up code coverage analysis
