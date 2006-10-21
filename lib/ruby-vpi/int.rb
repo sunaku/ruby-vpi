@@ -18,7 +18,7 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
-# NOTE: Because integers are immediate values in Ruby, all of these methods return a new value. That is, they *cannot* modify the value of the integer upon which these methods are invoked.
+# NOTE: Because integers are _immediate_ values in Ruby, these methods *cannot* modify the value of the integer upon which they are invoked. Instead, they return the new value as their result.
 class Integer
   # Returns the ceiling of the logarithm (base 2) of this positive integer.
   def log2
@@ -32,12 +32,12 @@ class Integer
     end
   end
 
-  # Returns the number of bits necessary to represent this integer.
+  # Returns the minimum number of bits necessary to represent this integer.
   def length
     to_s(2).length
   end
 
-  # Returns the lowest upper-bound of this integer.
+  # Returns the lowest upper-bound of this integer. This integer cannot reach the limit without occupying more bits in its binary representation.
   def limit
     length.to_limit
   end
@@ -59,7 +59,7 @@ class Integer
   end
 
 
-  # Returns the maximum value representable by this integer.
+  # Returns the maximum value representable by this integer without occupying more bits in its binary representation.
   alias max mask
 
   # Returns the maximum value representable by an integer with *this* number of bits.
@@ -129,14 +129,15 @@ class Integer
   end
 
   # Splits this integer into an array of smaller integers, each of which have the given positive, non-zero width (number of bits). These smaller integers are ordered from left to right, in the same way that humans write unsigned binary numbers; for example:
-  # >> 6.split 1
-  # => [1, 1, 0]
-  # >> 6.split(1).map {|i| i.to_s 2}
-  # => ["1", "1", "0"]
-  # >> 6.split 2
-  # => [1, 2]
-  # >> 6.split(2).map {|i| i.to_s 2}
-  # => ["1", "10"]
+  #
+  ## >> 6.split 1
+  ## => [1, 1, 0]
+  ## >> 6.split(1).map {|i| i.to_s 2}
+  ## => ["1", "1", "0"]
+  ## >> 6.split 2
+  ## => [1, 2]
+  ## >> 6.split(2).map {|i| i.to_s 2}
+  ## => ["1", "10"]
   def split aWidth = 8
     raise ArgumentError, "width must be positive and non-zero" unless aWidth > 0
 
