@@ -90,8 +90,8 @@ class Integer
     bits = length
     bits += 1 if self > 0 # positive integers also have a sign bit (zero)
 
-    if bits > aPackedWidth
-      raise ArgumentError, "packed width must be at least #{bits} for integer #{self}"
+    unless aPackedWidth >= bits
+      raise ArgumentError, "packed width #{aPackedWidth} must be at least #{bits} for integer #{self}"
     end
 
     extend_sign(bits, aPackedWidth)
@@ -99,6 +99,12 @@ class Integer
 
   # Transforms this fixed-length integer (represented in two's complement form) that has the given width (number of bits) into an infinite-length Ruby integer.
   def unpack aPackedWidth
+    bits = length
+
+    unless aPackedWidth >= bits
+      raise ArgumentError, "packed width #{aPackedWidth} must be at least #{bits} for integer #{self}"
+    end
+
     mask = aPackedWidth.to_mask
     result = self & mask
 
