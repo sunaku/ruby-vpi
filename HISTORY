@@ -12,6 +12,23 @@ We _strictly_ follow the RubyGems project's "rational versioning policy":http://
 fn1. C. Gross, "Explaining Open Source Version Numbers", [Online document], 2005 Nov 28, [cited 2006 Aug 27], Available HTTP: "http://ablog.apress.com/?p=738":http://ablog.apress.com/?p=738
 
 
+h1. Version 8.2.0 (2006-10-24)
+
+h2. Summary
+
+This release simplifies configuration of generated tests.
+
+h2. Notice
+
+* Generated runners now have a @SIMULATOR_INCLUDES@ array, whose entries specify places where Verilog source files, needed by the Verilog design, reside.
+
+h2. Details
+
+* Generated Verilog benches now inherit all @`include@ and @`define@ directives from the Verilog design in a simpler manner.
+* A generated test no longer requires its Verilog design to reside in the same directory.
+* The sample tests have been updated accordingly.
+
+
 h1. Version 8.1.0 (2006-10-21)
 
 h2. Summary
