@@ -1,5 +1,7 @@
 /* This is the Verilog side of the bench. */
 
+`include "counter.v"
+
 module counter_rspecTest_bench;
 
   // instantiate the design under test
@@ -8,7 +10,7 @@ module counter_rspecTest_bench;
     reg  reset;
     wire [Size - 1 : 0] count;
 
-    counter #(.Size(Size))counter_rspecTest_bench_design(.clock(clock), .reset(reset), .count(count));
+    counter #(.Size(Size)) counter_rspecTest_bench_design(.clock(clock), .reset(reset), .count(count));
 
   // connect to the Ruby side of this bench
     initial begin

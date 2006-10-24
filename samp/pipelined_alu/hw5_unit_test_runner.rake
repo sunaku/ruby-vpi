@@ -3,8 +3,10 @@
 # These are source files that are to be simulated.
 SIMULATOR_SOURCES = [
   'hw5_unit_test_bench.v',
-  'hw5_unit.v',
 ]
+
+# These are paths to directories which contain dependencies for the sources listed above.
+SIMULATOR_INCLUDES = []
 
 # This specifies the "top module" that is to be simulated.
 SIMULATOR_TARGET = 'hw5_unit_test_bench'
