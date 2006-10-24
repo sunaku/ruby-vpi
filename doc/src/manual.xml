@@ -944,11 +944,11 @@
         </step>
 
         <step>
-          <para><link linkend="usage.tutorial.implement-proto">Implement the prototype</link> of the design in &r;.</para>
+          <para>(Optional) <link linkend="usage.tutorial.implement-proto">Implement the prototype</link> of the design in &r;.</para>
         </step>
 
         <step>
-          <para><link linkend="usage.tutorial.test-proto">Verify the prototype</link> against the specification.</para>
+          <para>(Optional) <link linkend="usage.tutorial.test-proto">Verify the prototype</link> against the specification.</para>
         </step>
 
         <step>
