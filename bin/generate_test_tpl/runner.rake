@@ -3,7 +3,6 @@
 # These are source files that are to be simulated.
 SIMULATOR_SOURCES = [
   '<%= aOutputInfo.verilogBenchPath %>',
-  '<%= aModuleInfo.name %>.v',
 ]
 
 # This specifies the "top module" that is to be simulated.

@@ -10,7 +10,7 @@
 %>
 /* This is the Verilog side of the bench. */
 
-<%= (aParseInfo.includes + aParseInfo.constants).map {|v| v.decl}.join "\n" %>
+`include "<%= aModuleInfo.name %>.v"
 
 module <%= aOutputInfo.verilogBenchName %>;
 
