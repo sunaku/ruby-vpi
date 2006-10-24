@@ -34,10 +34,10 @@ class Hw5_unit_test_spec < Test::Unit::TestCase
   OPERATION_TAG_LIMIT = 2 ** Hw5_unit::DATABITS
 
   def setup
-    @ig = InputGenerator.new(Hw5_unit::WIDTH)
-
     @design = Hw5_unit.new
     @design.reset!
+
+    @inputGen = InputGenerator.new(Hw5_unit::WIDTH)
   end
 
   def test_pipeline
@@ -50,8 +50,8 @@ class Hw5_unit_test_spec < Test::Unit::TestCase
           op = Hw5_unit::Operation.new(
             Hw5_unit::OPERATIONS[rand(Hw5_unit::OPERATIONS.size)],
             numIssued % OPERATION_TAG_LIMIT,
-            @ig.gen.abs,
-            @ig.gen.abs
+            @inputGen.gen,
+            @inputGen.gen
           )
 
           @design.a.intVal = op.arg1
