@@ -1,11 +1,12 @@
 ## This file builds and runs the test.
 
-# These are source files that are to be simulated.
+# These are source files that are to be compiled.
 SIMULATOR_SOURCES = [
   '<%= aOutputInfo.verilogBenchPath %>',
 ]
 
-# These are paths to directories which contain dependencies for the sources listed above.
+# These are paths to directories which contain either
+# the sources (listed above) or their dependencies or both.
 SIMULATOR_INCLUDES = []
 
 # This specifies the "top module" that is to be simulated.

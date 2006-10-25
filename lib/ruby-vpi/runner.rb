@@ -36,6 +36,22 @@
 
   SIMULATOR_INCLUDES = [] unless defined? SIMULATOR_INCLUDES
 
+# resolve paths to sources by searching include directories
+  SIMULATOR_SOURCES.map! do |src|
+    unless File.exist? src
+      SIMULATOR_INCLUDES.each do |dir|
+        path = File.join(dir, src)
+
+        if File.exist? path
+          src = path
+          break
+        end
+      end
+    end
+
+    src
+  end
+
 
 require 'rake/clean'
 require 'ruby-vpi/rake'
