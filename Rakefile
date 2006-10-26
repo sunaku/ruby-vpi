@@ -1,7 +1,6 @@
 # = Environment variables
 # CFLAGS:: Arguments to the compiler.
 # LDFLAGS:: Arguments to the linker.
-
 =begin
   Copyright 2006 Suraj N. Kurapati
 
@@ -22,6 +21,8 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
+CFLAGS, LDFLAGS = ENV['CFLAGS'], ENV['LDFLAGS']
+
 require 'rake/clean'
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
@@ -30,14 +31,11 @@ require 'tempfile'
 require 'rbconfig'
 
 $:.unshift File.join(File.dirname(__FILE__), 'lib')
+require 'ruby-vpi'
 require 'ruby-vpi/rake'
 
 
-PROJECT_ID = 'ruby-vpi'
-PROJECT_NAME = 'Ruby-VPI'
-PROJECT_URL = "http://#{PROJECT_ID}.rubyforge.org"
-PROJECT_SUMMARY = "Ruby interface to Verilog VPI."
-PROJECT_DETAIL = "#{PROJECT_NAME} is a #{PROJECT_SUMMARY}. It lets you create complex Verilog test benches easily and wholly in Ruby."
+include RubyVpi::Config
 PROJECT_SSH_URL = "snk@rubyforge.org:/var/www/gforge-projects/#{PROJECT_ID}"
 
 File.read('HISTORY') =~ /Version\s+([\d\.]+)\s*\((.*?)\)/
@@ -84,28 +82,20 @@ directory 'obj'
 CLOBBER.include 'obj'
 
 
-CFLAGS = ENV['CFLAGS'] || ''
-LDFLAGS = ENV['LDFLAGS'] || ''
+SIMULATORS.each do |sim|
+  taskName = "build_#{sim.id}"
 
-{
-  :cver => ['-DPRAGMATIC_CVER', '-export-dynamic'],
-  :ivl => ['-DICARUS_VERILOG'],
-  :vcs => ['-DSYNOPSYS_VCS'],
-  :vsim => ['-DMENTOR_MODELSIM'],
-}.each_pair do |target, (cflags, ldflags)|
-  targetTask = "build_#{target}"
-
-  desc "Builds object files for #{target} simulator."
-  task targetTask => ['obj', 'ext'] do |t|
+  desc "Builds object files for #{sim.name} simulator."
+  task taskName => ['obj', 'ext'] do
     src = "#{PROJECT_ID}.so"
-    dst = "#{PROJECT_ID}.#{target}.so"
+    dst = "#{PROJECT_ID}.#{sim.id}.so"
 
-    dst = File.expand_path(File.join(t.prerequisites[0], dst))
+    dst = File.expand_path(File.join('obj', dst))
 
     unless File.exist? dst
-      cd t.prerequisites[1] do
-        ENV['CFLAGS'] = "#{CFLAGS} #{cflags}"
-        ENV['LDFLAGS'] = "#{LDFLAGS} #{ldflags}"
+      cd 'ext' do
+        ENV['CFLAGS'] = "#{CFLAGS} #{sim.compiler_args}"
+        ENV['LDFLAGS'] = "#{LDFLAGS} #{sim.linker_args}"
 
         sh 'rake'
         mv src, dst
@@ -114,7 +104,7 @@ LDFLAGS = ENV['LDFLAGS'] || ''
     end
   end
 
-  task :build => targetTask
+  task :build => taskName
 end
 
 
@@ -193,7 +183,7 @@ task :dist_info => distDocs
 
 desc "Prepare for distribution."
 task :dist => ['ext', :doc, :dist_info] do |t|
-  cd t.prerequisites[0] do
+  cd 'ext' do
     sh 'rake swig'
   end
 end

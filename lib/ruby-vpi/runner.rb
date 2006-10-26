@@ -54,17 +54,21 @@
 
 
 require 'rake/clean'
+require 'ruby-vpi'
 require 'ruby-vpi/rake'
 
+include RubyVpi::Config
+
 OBJECT_PATH = File.join(File.dirname(__FILE__), '..', '..', 'obj')
+BOOTSTAP_FUNC = 'vlog_startup_routines_bootstrap'
 
 
 # Returns the path to the Ruby-VPI object file for the given simulator.
 def object_file_path aSimId
-  path = File.join(OBJECT_PATH, "ruby-vpi.#{aSimId}.so")
+  path = File.join(OBJECT_PATH, "#{PROJECT_ID}.#{aSimId}.so")
 
   unless File.exist? path
-    raise "Object file #{path.inspect} is missing.\n Rebuild Ruby-VPI to generate the missing file."
+    raise "Object file #{path.inspect} is missing. Rebuild #{PROJECT_NAME}."
   end
 
   path
@@ -93,7 +97,7 @@ end
 
 desc "Simulate with GPL Cver."
 task :cver do
-  sh 'cver', SIMULATOR_ARGS[:cver], "+loadvpi=#{object_file_path(:cver)}:vlog_startup_routines_bootstrap", expand_include_dir_options(:cver), SIMULATOR_SOURCES
+  sh 'cver', SIMULATOR_ARGS[:cver], "+loadvpi=#{object_file_path(:cver)}:#{BOOTSTAP_FUNC}", expand_include_dir_options(:cver), SIMULATOR_SOURCES
 end
 
 CLOBBER.include 'verilog.log'
@@ -111,7 +115,7 @@ CLEAN.include 'ruby-vpi.vpi', 'a.out'
 
 desc "Simulate with Synopsys VCS."
 task :vcs do
-  sh %w(vcs -R +v2k +vpi), SIMULATOR_ARGS[:vcs], '-load', "#{object_file_path(:vcs)}:vlog_startup_routines_bootstrap", expand_include_dir_options(:vcs), SIMULATOR_SOURCES
+  sh %w(vcs -R +v2k +vpi), SIMULATOR_ARGS[:vcs], '-load', "#{object_file_path(:vcs)}:#{BOOTSTAP_FUNC}", expand_include_dir_options(:vcs), SIMULATOR_SOURCES
 end
 
 CLEAN.include 'csrc', 'simv*'

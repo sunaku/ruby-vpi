@@ -56,4 +56,20 @@ module RubyVpi
 
     require "#{aTestPrefix}_spec.rb"
   end
+
+  module Config
+    PROJECT_ID = 'ruby-vpi'
+    PROJECT_NAME = 'Ruby-VPI'
+    PROJECT_URL = "http://#{PROJECT_ID}.rubyforge.org"
+    PROJECT_SUMMARY = "Ruby interface to Verilog VPI."
+    PROJECT_DETAIL = "#{PROJECT_NAME} is a #{PROJECT_SUMMARY}. It lets you create complex Verilog test benches easily and wholly in Ruby."
+
+    Simulator = Struct.new(:id, :name, :compiler_args, :linker_args)
+    SIMULATORS = [
+      Simulator.new(:cver, 'GPL Cver', '-DPRAGMATIC_CVER', ''),
+      Simulator.new(:ivl, 'Icarus Verilog', '-DICARUS_VERILOG', ''),
+      Simulator.new(:vcs, 'Synopsys VCS', '-DSYNOPSYS_VCS', ''),
+      Simulator.new(:vsim, 'Mentor Modelsim', '-DMENTOR_MODELSIM', ''),
+    ]
+  end
 end
