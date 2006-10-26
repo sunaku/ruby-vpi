@@ -1,2 +1,0 @@
-$ruby_init	call=vlog_ruby_init	acc=wn:*
-$ruby_relay	call=vlog_ruby_relay	acc=wn:*

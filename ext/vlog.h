@@ -21,8 +21,8 @@
   Interface between C and Verilog code.
 */
 
-#ifndef VLOG_HIN
-#define VLOG_HIN
+#ifndef VLOG_H
+#define VLOG_H
 
   #include "verilog.h"
 
@@ -40,17 +40,15 @@
   */
   verilog_tf_funcSig(vlog_ruby_init);
 
-  #ifndef SYNOPSYS_VCS
-    /**
-      Binds a C function to a VPI task, so that Verilog code can invoke the C function by calling the VPI task.
+  /**
+    Binds a C function to a VPI task, so that Verilog code can invoke the C function by calling the VPI task.
 
-      For example, if we bound a VPI task named "$hello_world" to the C function hello_world(), then the hello_world() function would be invoked whenever Verilog code called the "$hello_world" VPI task.
+    For example, if we bound a VPI task named "$hello_world" to the C function hello_world(), then the hello_world() function would be invoked whenever Verilog code called the "$hello_world" VPI task.
 
-      @param	apTaskName	Name of the VPI task. For example, "$hello_world".
+    @param	apTaskName	Name of the VPI task. For example, "$hello_world".
 
-      @param	apTaskDef	The C function which you want to associate with the given VPI task. For example, hello_world().
-    */
-    static void vlog_bind_task(PLI_BYTE8* apTaskName, verilog_tf_funcPtr(apTaskDef));
-  #endif
+    @param	apTaskDef	The C function which you want to associate with the given VPI task. For example, hello_world().
+  */
+  void vlog_bind_task(PLI_BYTE8* apTaskName, verilog_tf_funcPtr(apTaskDef));
 
 #endif

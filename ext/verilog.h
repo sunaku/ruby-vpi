@@ -27,7 +27,6 @@
   // Use our verbatim copy of the official IEEE Std. 1364-2005 header file, which was obtained from this URL: <http://www.boydtechinc.com/ptf/archive/ptf_2005/0737.html>
   #include "vpi_user.h"
 
-
   // Adjust for the peculiarities of the Verilog simulator being used.
   #ifdef SYNOPSYS_VCS
     #define VERILOG_LENIENT
@@ -50,7 +49,7 @@
     #define verilog_tf_funcPtr verilog_tf_funcPtr_strict
 
     #define verilog_tf_funcSig(aFuncName)	\
-      static PLI_INT32 aFuncName(PLI_BYTE8* aDummy)
+      PLI_INT32 aFuncName(PLI_BYTE8* aDummy)
 
     #define verilog_tf_funcReturn(aReturnVal)	\
       return aReturnVal

@@ -1,4 +1,6 @@
 require 'mkmf'
 
-have_library 'pthread', 'pthread_create'
-create_makefile 'ruby-vpi'
+have_header('pthread.h') &&
+have_header('ruby.h') &&
+
+create_makefile('ruby-vpi')

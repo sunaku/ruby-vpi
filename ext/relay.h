@@ -1,6 +1,6 @@
 /*
-  Copyright 2006 Suraj N. Kurapati
   Copyright 1999 Kazuhiro HIWADA
+  Copyright 2006 Suraj N. Kurapati
 
   This file is part of Ruby-VPI.
 
@@ -18,19 +18,31 @@
   along with Ruby-VPI; if not, write to the Free Software Foundation,
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
-
 /**\file
-  The Ruby-VPI extension, in a nutshell.
+  Logic for transferring control between Ruby and Verilog.
 */
 
-#ifdef __cplusplus
-  extern "C" {
-#endif
+#ifndef RELAY_H
+#define RELAY_H
 
-  #include "swig.cin"
-  #include "vlog.cin"
-  #include "relay.cin"
+  /**
+    Initialize the relay mechanism, which enables Verilog code to transfer control to Ruby code and vice versa.
+  */
+  void relay_init();
 
-#ifdef __cplusplus
-  }
+  /**
+    Transfers control to Ruby code.
+  */
+  void relay_ruby();
+
+  /**
+    Transfers control to Verilog code.
+  */
+  void relay_verilog();
+
+  /**
+    Starts the Ruby interpreter.
+  */
+  inline void relay_ruby_run();
+
 #endif

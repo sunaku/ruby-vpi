@@ -18,31 +18,19 @@
   along with Ruby-VPI; if not, write to the Free Software Foundation,
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
-/**\file
-  Logic for transferring control between Ruby and Verilog.
-*/
 
-#ifndef RELAY_HIN
-#define RELAY_HIN
+#include "swig.h"
 
-  /**
-    Initialize the relay mechanism, which enables Verilog code to transfer control to Ruby code and vice versa.
-  */
-  static void relay_init();
+#include "relay.h"
+#include "swig_wrap.cin"
 
-  /**
-    Transfers control to Ruby code.
-  */
-  static void relay_ruby();
 
-  /**
-    Transfers control to Verilog code.
-  */
-  static void relay_verilog();
+void swig_init() {
+  Init_vpi();
+  rb_define_module_function(mVpi, "relay_verilog", swig_rb_relay_verilog, 0);
+}
 
-  /**
-    Starts the Ruby interpreter.
-  */
-  static inline void relay_ruby_run();
-
-#endif
+VALUE swig_rb_relay_verilog(VALUE arSelf) {
+  relay_verilog();
+  return arSelf;
+}

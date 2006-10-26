@@ -76,9 +76,6 @@ end
 desc "Builds object files for all simulators."
 task :build
 
-DEFAULT_SHARED_OBJ = "#{PROJECT_ID}.so"
-DEFAULT_NORMAL_OBJ = "#{PROJECT_ID}.o"
-
 directory 'obj'
 CLOBBER.include 'obj'
 
@@ -88,29 +85,22 @@ CLOBBER.include 'obj'
   :vcs => ['-DSYNOPSYS_VCS'],
   :vsim => ['-DMENTOR_MODELSIM'],
 }.each_pair do |target, (cflags, ldflags)|
-
-  # object files that are needed to be built
-  objFiles = [DEFAULT_NORMAL_OBJ, DEFAULT_SHARED_OBJ].inject({}) do |memo, src|
-    dstName = src.sub(/#{File.extname src}$/, ".#{target}\\&")
-    dst = File.expand_path(File.join('obj', dstName))
-
-    memo[src] = dst
-    memo
-  end
-
-  # task to build the object files
   targetTask = "build_#{target}"
 
   desc "Builds object files for #{target} simulator."
   task targetTask => ['obj', 'ext'] do |t|
-    unless objFiles.values.reject {|f| File.exist? f}.empty?
+    src = "#{PROJECT_ID}.so"
+    dst = "#{PROJECT_ID}.#{target}.so"
+
+    dst = File.expand_path(File.join(t.prerequisites[0], dst))
+
+    unless File.exist? dst
       cd t.prerequisites[1] do
         ENV['CFLAGS'], ENV['LDFLAGS'] = cflags, ldflags
-        sh %w(rake clean default)
 
-        objFiles.each_pair do |src, dst|
-          mv src, dst
-        end
+        sh 'rake'
+        mv src, dst
+        sh 'rake clean'
       end
     end
   end

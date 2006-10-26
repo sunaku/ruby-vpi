@@ -57,13 +57,16 @@ require 'rake/clean'
 require 'ruby-vpi/rake'
 
 OBJECT_PATH = File.join(File.dirname(__FILE__), '..', '..', 'obj')
-VCS_TAB_FILE = File.join(File.dirname(__FILE__), 'synopsys_vcs.tab')
 
 
 # Returns the path to the Ruby-VPI object file for the given simulator.
-def object_file_path aSimId, aShared = false
-  path = File.join(OBJECT_PATH, "ruby-vpi.#{aSimId}.#{aShared ? 'so' : 'o'}")
-  raise "Object file #{path.inspect} is missing.\n Rebuild Ruby-VPI to generate the missing file." unless File.exist? path
+def object_file_path aSimId
+  path = File.join(OBJECT_PATH, "ruby-vpi.#{aSimId}.so")
+
+  unless File.exist? path
+    raise "Object file #{path.inspect} is missing.\n Rebuild Ruby-VPI to generate the missing file."
+  end
+
   path
 end
 
@@ -90,7 +93,7 @@ end
 
 desc "Simulate with GPL Cver."
 task :cver do
-  sh 'cver', SIMULATOR_ARGS[:cver], "+loadvpi=#{object_file_path(:cver, true)}:vlog_startup_routines_bootstrap", expand_include_dir_options(:cver), SIMULATOR_SOURCES
+  sh 'cver', SIMULATOR_ARGS[:cver], "+loadvpi=#{object_file_path(:cver)}:vlog_startup_routines_bootstrap", expand_include_dir_options(:cver), SIMULATOR_SOURCES
 end
 
 CLOBBER.include 'verilog.log'
@@ -98,8 +101,8 @@ CLOBBER.include 'verilog.log'
 
 desc "Simulate with Icarus Verilog."
 task :ivl do
-  cp object_file_path(:ivl, true), 'ruby-vpi.vpi'
-  sh 'iverilog', SIMULATOR_ARGS[:ivl], %w(-y. -mruby-vpi), expand_include_dir_options(:ivl), SIMULATOR_SOURCES
+  cp object_file_path(:ivl), 'ruby-vpi.vpi'
+  sh 'iverilog', SIMULATOR_ARGS[:ivl], '-mruby-vpi', expand_include_dir_options(:ivl), SIMULATOR_SOURCES
   sh 'vvp -M. a.out'
 end
 
@@ -107,10 +110,8 @@ CLEAN.include 'ruby-vpi.vpi', 'a.out'
 
 
 desc "Simulate with Synopsys VCS."
-task :vcs => VCS_TAB_FILE do
-  require 'rbconfig'
-
-  sh 'vcs', SIMULATOR_ARGS[:vcs], %w(-R +v2k +vpi -LDFLAGS), File.expand_path(object_file_path(:vcs)), "-L#{Config::CONFIG['libdir']}", Config::CONFIG['LIBRUBYARG'], '-lpthread', '-P', VCS_TAB_FILE, expand_include_dir_options(:vcs), SIMULATOR_SOURCES
+task :vcs do
+  sh %w(vcs -R +v2k +vpi), SIMULATOR_ARGS[:vcs], '-load', "#{object_file_path(:vcs)}:vlog_startup_routines_bootstrap", expand_include_dir_options(:vcs), SIMULATOR_SOURCES
 end
 
 CLEAN.include 'csrc', 'simv*'
@@ -119,8 +120,8 @@ CLEAN.include 'csrc', 'simv*'
 desc "Simulate with Mentor Modelsim."
 task :vsim do
   sh 'vlib work'
-  sh 'vlog', SIMULATOR_ARGS[:vsim], expand_include_dir_options(:vsim), SIMULATOR_SOURCES
-  sh 'vsim', '-c', SIMULATOR_TARGET, '-pli', object_file_path(:vsim, true), '-do', 'run -all'
+  sh 'vlog', expand_include_dir_options(:vsim), SIMULATOR_SOURCES
+  sh 'vsim', SIMULATOR_ARGS[:vsim], '-c', SIMULATOR_TARGET, '-pli', object_file_path(:vsim), '-do', 'run -all'
 end
 
 CLEAN.include 'work'

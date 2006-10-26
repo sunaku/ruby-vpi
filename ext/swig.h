@@ -1,6 +1,5 @@
 /*
   Copyright 2006 Suraj N. Kurapati
-  Copyright 1999 Kazuhiro HIWADA
 
   This file is part of Ruby-VPI.
 
@@ -18,21 +17,23 @@
   along with Ruby-VPI; if not, write to the Free Software Foundation,
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
+/**\file
+  C interface to the SWIG-generated VPI interface.
+*/
 
-#include "swig.hin"
-#include "relay.hin"
-#include "common.h"
+#ifndef SWIG_H
+#define SWIG_H
 
+  #include <ruby.h>
 
-#include "swig_wrap.cin"
+  /**
+    Registers the SWIG-generated VPI interface with Ruby, so that Ruby code can access it.
+  */
+  void swig_init();
 
+  /**
+    Transfers control from Ruby code to Verilog code.
+  */
+  VALUE swig_rb_relay_verilog(VALUE arSelf);
 
-static void swig_init() {
-  Init_vpi();
-  rb_define_module_function(mVpi, "relay_verilog", swig_rb_relay_verilog, 0);
-}
-
-static VALUE swig_rb_relay_verilog(VALUE arSelf) {
-  relay_verilog();
-  return arSelf;
-}
+#endif
