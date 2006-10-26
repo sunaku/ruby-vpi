@@ -1,3 +1,7 @@
+# = Environment variables
+# CFLAGS:: Arguments to the compiler.
+# LDFLAGS:: Arguments to the linker.
+
 =begin
   Copyright 2006 Suraj N. Kurapati
 
@@ -79,6 +83,10 @@ task :build
 directory 'obj'
 CLOBBER.include 'obj'
 
+
+CFLAGS = ENV['CFLAGS'] || ''
+LDFLAGS = ENV['LDFLAGS'] || ''
+
 {
   :cver => ['-DPRAGMATIC_CVER', '-export-dynamic'],
   :ivl => ['-DICARUS_VERILOG'],
@@ -96,7 +104,8 @@ CLOBBER.include 'obj'
 
     unless File.exist? dst
       cd t.prerequisites[1] do
-        ENV['CFLAGS'], ENV['LDFLAGS'] = cflags, ldflags
+        ENV['CFLAGS'] = "#{CFLAGS} #{cflags}"
+        ENV['LDFLAGS'] = "#{LDFLAGS} #{ldflags}"
 
         sh 'rake'
         mv src, dst
