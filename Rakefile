@@ -56,13 +56,15 @@ end
 
 task :default => :build
 
-task :clobber do |t|
-  files = FileList['**/Rakefile'].exclude('_darcs')
-  files.shift # avoid infinite loop on _this_ file
+[:clean, :clobber].each do |t|
+  task t do
+    files = FileList['**/Rakefile'].exclude('_darcs')
+    files.shift # avoid infinite loop on _this_ file
 
-  files.each do |f|
-    cd File.dirname(f) do
-      sh 'rake', t.name
+    files.each do |f|
+      cd File.dirname(f) do
+        sh 'rake', t.to_s
+      end
     end
   end
 end
