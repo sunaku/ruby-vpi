@@ -75,10 +75,11 @@ void (*vlog_startup_routines[])() = { vlog_startup, 0 };
   /**
     Invokes each routine specified in the vlog_startup_routines array.
 
-    This code was originally taken from GPL Cver 2.11a: Copyright (c) 1991-2005 Pragmatic C Software Corp.
+    This code is originally from GPL Cver 2.11a:
+    Copyright (c) 1991-2005 Pragmatic C Software Corp.
   */
   void vlog_startup_routines_bootstrap() {
-    uint i;
+    unsigned int i;
     for (i = 0; vlog_startup_routines[i] != NULL; i++)
       vlog_startup_routines[i]();
   }

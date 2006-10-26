@@ -51,7 +51,7 @@ void relay_verilog() {
 
 typedef struct {
   PLI_BYTE8** mArgs;	/// Array of command-line arguments.
-  uint mCount;	/// Number of command-line arguments.
+  unsigned int mCount;	/// Number of command-line arguments.
 } relay__RubyOptions__def;
 
 /**
@@ -69,12 +69,12 @@ void* ruby_run_handshake(void* apRubyOptions) {
     relay__RubyOptions__def* pRubyOptions = (relay__RubyOptions__def*) apRubyOptions;
 
     PLI_BYTE8** argv = pRubyOptions->mArgs;
-    uint argc = pRubyOptions->mCount;
+    unsigned int argc = pRubyOptions->mCount;
 
     ruby_options(argc, argv);
 
     // free the memory used by command-line options
-    uint i;
+    unsigned int i;
     for (i = 0; i < argc; i++) {
       free(argv[i]);
     }
