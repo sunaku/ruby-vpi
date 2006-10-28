@@ -30,7 +30,9 @@ require 'rake/gempackagetask'
 require 'tempfile'
 require 'rbconfig'
 
-$:.unshift File.join(File.dirname(__FILE__), 'lib')
+PROJECT_LIBS = File.join(File.dirname(__FILE__), 'lib')
+
+$:.unshift PROJECT_LIBS
 require 'ruby-vpi'
 require 'ruby-vpi/rake'
 
@@ -62,6 +64,9 @@ task :default => :build
   task t do
     files = FileList['**/Rakefile'].exclude('_darcs')
     files.shift # avoid infinite loop on _this_ file
+
+    # allows propogation to lower levels when gem not installed
+    ENV['RUBYLIB'] = PROJECT_LIBS
 
     files.each do |f|
       cd File.dirname(f) do
@@ -265,7 +270,7 @@ end
 desc "Ensure that examples work with $SIMULATOR"
 task :test => :build do
   # ensures that current sources are tested instead of the installed gem
-  ENV['RUBYLIB'] = File.join(File.dirname(__FILE__), 'lib')
+  ENV['RUBYLIB'] = PROJECT_LIBS
 
   FileList['samp/*/'].each do |s|
     cd s do
