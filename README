@@ -1,3 +1,21 @@
+h1{text-align: center}. Welcome to Ruby-VPI
+
+Ruby-VPI is a "Ruby interface":http://ruby-lang.org to "Verilog VPI":http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945. It lets you create complex Verilog test benches easily and wholly in Ruby.
+
+h2. Features
+
+* Prototype and verify designs _quickly_ using "BDD(behavior-driven development)":http://behaviour-driven.org/, "TDD(test-driven development)":http://www.agiledata.org/essays/tdd.html, and more.
+* Reuse the _same_ specification to verify both prototype and design.
+* Specifications are executable _and_ human-readable. (See this <a href="./doc/usage.tutorial.html#fig..counter_rspecTest_spec.rb">example specification</a> and its <a href="./doc/usage.tutorial.html#fig..test-proto.rspec">boss-friendly output</a>.)
+
+* Utilize Ruby's power and elegance. ("Why choose Ruby?":http://www.ruby-doc.org/whyruby)
+** Built-in support for unlimited length integers, regular expressions, networking, multi-threading, system calls, _ad infinium_!
+** Easy to use; doesn't get in your way.
+** Makes programming _fun_ again!
+
+* Study, modify, or distribute this free software in accordance with the "GNU General Public License":http://www.gnu.org/copyleft/gpl.html.
+
+
 h1. Getting started
 
 * See the "user manual":./doc to begin using Ruby-VPI.
