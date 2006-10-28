@@ -3,7 +3,7 @@
 require 'ruby-vpi'
 require 'ruby-vpi/rspec'
 
-RubyVpi.init_bench 'counter_rspecTest', :CounterPrototype
+RubyVpi.init_bench 'counter_rspec', :CounterPrototype
 
 # service the $ruby_relay callback
-  # The RSpec library will take control henceforth.
+  # The rSpec library will take control henceforth.

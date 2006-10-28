@@ -7,9 +7,9 @@ class Counter
   attr_reader :clock, :reset, :count
 
   def initialize
-    @clock = vpi_handle_by_name("counter_rspecTest_bench.clock", nil)
-    @reset = vpi_handle_by_name("counter_rspecTest_bench.reset", nil)
-    @count = vpi_handle_by_name("counter_rspecTest_bench.count", nil)
+    @clock = vpi_handle_by_name("counter_rspec_bench.clock", nil)
+    @reset = vpi_handle_by_name("counter_rspec_bench.reset", nil)
+    @count = vpi_handle_by_name("counter_rspec_bench.count", nil)
   end
 
   def reset!

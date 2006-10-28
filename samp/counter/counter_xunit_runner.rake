@@ -2,7 +2,7 @@
 
 # These are source files that are to be compiled.
 SIMULATOR_SOURCES = [
-  'counter_rspecTest_bench.v',
+  'counter_xunit_bench.v',
 ]
 
 # These are paths to directories which contain the
@@ -10,7 +10,7 @@ SIMULATOR_SOURCES = [
 SIMULATOR_INCLUDES = []
 
 # This specifies the "top module" that is to be simulated.
-SIMULATOR_TARGET = 'counter_rspecTest_bench'
+SIMULATOR_TARGET = 'counter_xunit_bench'
 
 # These are command-line arguments for the simulator.
 # They can be specified as a string or an array of strings.

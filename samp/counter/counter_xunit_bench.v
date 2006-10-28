@@ -2,7 +2,7 @@
 
 `include "counter.v"
 
-module counter_unitTest_bench;
+module counter_xunit_bench;
 
   // instantiate the design under test
     parameter Size = 5;
@@ -10,12 +10,12 @@ module counter_unitTest_bench;
     reg  reset;
     wire [Size - 1 : 0] count;
 
-    counter #(.Size(Size)) counter_unitTest_bench_design(.clock(clock), .reset(reset), .count(count));
+    counter #(.Size(Size)) counter_xunit_bench_design(.clock(clock), .reset(reset), .count(count));
 
   // connect to the Ruby side of this bench
     initial begin
       clock = 0;
-      $ruby_init("ruby", "-w", "-rubygems", "counter_unitTest_bench.rb");
+      $ruby_init("ruby", "-w", "-rubygems", "counter_xunit_bench.rb");
     end
 
     always begin
