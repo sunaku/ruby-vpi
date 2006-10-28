@@ -5,8 +5,8 @@ SIMULATOR_SOURCES = [
   '<%= aOutputInfo.verilogBenchPath %>',
 ]
 
-# These are paths to directories which contain either
-# the sources (listed above) or their dependencies or both.
+# These are paths to directories which contain the
+# sources listed above, their dependencies, or both.
 SIMULATOR_INCLUDES = []
 
 # This specifies the "top module" that is to be simulated.

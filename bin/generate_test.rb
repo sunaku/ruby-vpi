@@ -1,8 +1,18 @@
 #!/usr/bin/ruby -w
 # Generates Ruby-VPI tests from Verilog 2001 module declarations.
-# * If no input files are specified, then the standard input stream is assumed to be the input.
+# * The standard input stream is read if no input files are specified.
 # * The first input signal in a module's declaration is assumed to be the clocking signal.
-# * Existing output files will be backed-up before being over-written. A backed-up file has a tilde (~) appended to its name.
+#
+# = Progress indicators
+# As this tool performs its duties, it notifies you of important information using the following indicators.
+#
+# create:: Output file does not exist. It will be created.
+# skip:: Output file exists and is up to date.
+# update:: Output file exists and is out of date. A backup copy will be made (with a ".old" suffix) before this output file is updated. Use a text merging tool or manually transfer any necessary information from the backup copy to the updated output file.
+#
+# = Environment variables
+# MERGER:: A command for invoking a text merging tool with two arguments: old file, new file. The tool should save its output to the new file.
+
 
 =begin
   Copyright 2006 Suraj N. Kurapati
@@ -25,24 +35,39 @@
 =end
 
 require 'ruby-vpi/verilog_parser'
-
-
 require 'fileutils'
+require 'digest/md5'
 
-# Writes the given contents to the file at the given path. If the given path already exists, then a backup is created before proceeding.
+
+# Notify the user about some action being performed.
+def notify *args
+  printf "%8s  %s\n", *args
+end
+
+# Writes the given contents to the file at the given path. If the given path already exists, then a backup is created before invoking the merging tool.
 def write_file aPath, aContent
-  # create a backup
-    if File.exist? aPath
-      backupPath = aPath.dup
+  if File.exist? aPath
+    oldDigest = Digest::MD5.digest(File.read(aPath))
+    newDigest = Digest::MD5.digest(aContent)
 
-      while File.exist? backupPath
-        backupPath << '~'
+    if oldDigest == newDigest
+      notify :skip, aPath
+    else
+      notify :update, aPath
+
+      old, new = "#{aPath}.old", aPath
+
+      FileUtils.cp aPath, old, :preserve => true
+      File.open(new, 'w') {|f| f << aContent}
+
+      if m = ENV['MERGER']
+        system "#{m} #{old.inspect} #{new.inspect}"
       end
-
-      FileUtils.cp aPath, backupPath, :preserve => true
     end
-
-  File.open(aPath, 'w') {|f| f << aContent}
+  else
+    notify :create, aPath
+    File.open(aPath, 'w') {|f| f << aContent}
+  end
 end
 
 
@@ -152,36 +177,26 @@ if File.basename($0) == File.basename(__FILE__)
 
     opts.parse! ARGV
 
-  puts "Using name #{optTestName.inspect} for generated test."
-  puts "Using #{optSpecFmt} specification format."
+    notify :name, optTestName
+    notify :format, optSpecFmt
 
 
   v = VerilogParser.new(ARGF.read)
 
   v.modules.each do |m|
-    puts '', "Parsed module: #{m.name}"
+    puts
+    notify :module, m.name
 
-    o = OutputInfo.new(m.name, optSpecFmt, optTestName, File.dirname(File.dirname(__FILE__))).freeze
+    o = OutputInfo.new(m.name, optSpecFmt, optTestName, File.dirname(File.dirname(__FILE__)))
 
     # generate output
-      aParseInfo, aModuleInfo, aOutputInfo = v, m, o
+      aParseInfo, aModuleInfo, aOutputInfo = v.freeze, m.freeze, o.freeze
 
       write_file o.runnerPath, RUNNER_TEMPLATE.result(binding)
-      puts "- Generated runner:           #{o.runnerPath}"
-
       write_file o.verilogBenchPath, VERILOG_BENCH_TEMPLATE.result(binding)
-      puts "- Generated bench:            #{o.verilogBenchPath}"
-
       write_file o.rubyBenchPath, RUBY_BENCH_TEMPLATE.result(binding)
-      puts "- Generated bench:            #{o.rubyBenchPath}"
-
       write_file o.designPath, DESIGN_TEMPLATE.result(binding)
-      puts "- Generated design:           #{o.designPath}"
-
       write_file o.protoPath, PROTO_TEMPLATE.result(binding)
-      puts "- Generated prototype:        #{o.protoPath}"
-
       write_file o.specPath, SPEC_TEMPLATE.result(binding)
-      puts "- Generated specification:    #{o.specPath}"
   end
 end
