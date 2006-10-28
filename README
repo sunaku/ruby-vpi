@@ -27,9 +27,9 @@ h1. Getting started
 * Visit the "project website":http://ruby-vpi.rubyforge.org for additional resources.
 
 
-h1. Compiling from source
+h1. Building release packages
 
-In addition to the "normal requirements":./doc/usage.requirements.html, you need the following software to compile from source:
+In addition to the "normal requirements":./doc/usage.requirements.html, you need the following software to build release packages:
 
 * "DocBook-XML":http://www.docbook.org/
 ** xsltproc
