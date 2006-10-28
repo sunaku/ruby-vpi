@@ -12,11 +12,51 @@ We _strictly_ follow the RubyGems project's "rational versioning policy":http://
 fn1. C. Gross, "Explaining Open Source Version Numbers", [Online document], 2005 Nov 28, [cited 2006 Aug 27], Available HTTP: "http://ablog.apress.com/?p=738":http://ablog.apress.com/?p=738
 
 
+h1. Version 9.0.0 (2006-10-28)
+
+h2. Summary
+
+This release improves the automated test generator and adds new content to the user manual.
+
+h2. Acknowledgments
+
+Thanks to Matt Fischler for helping test and debug the installation of Ruby-VPI on Windows.
+
+h2. Notice
+
+* The command-line options for @generate_test.rb@ have changed. Run the command @generate_test.rb --help@ for details.
+
+h2. Details
+
+* Test runners now attempt to resolve paths in @SIMULATOR_SOURCES@ by searching for them within the directories specified in @SIMULATOR_INCLUDES@.
+
+* Synopsys VCS is now used in a better way (via the @-load@ option).
+** The old PLI table file (@synopsys_vcs.tab@) has been removed.
+** The C extension has been revised accordingly.
+
+** The C extension now compiles without errors in Cygwin.
+
+* The automated test generator now:
+** Only creates output files when necessary.
+** Updates existing output files using "text merging tools":./doc/usage.recommendations.html if possible. (Refer to @MERGER@ in the help information of @generate_test.rb@.)
+** Emits progress information similar to Ruby on Rails.
+
+* The user manual now:
+** Includes instructions for installing on Windows (via Cygwin).
+** Has a recommended software section, with links to text merging tools.
+** Uses the term "xUnit":http://en.wikipedia.org/wiki/XUnit instead of "unit test".
+** Correctly spells "rSpec".
+
+
 h1. Version 8.2.0 (2006-10-24)
 
 h2. Summary
 
 This release simplifies configuration of generated tests.
+
+h2. Acknowledgments
+
+Thanks to "students in CMPE-126":http://www.soe.ucsc.edu/classes/cmpe126/Fall06/ for their constructive criticism.
 
 h2. Notice
 
