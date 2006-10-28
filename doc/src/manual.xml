@@ -832,14 +832,14 @@
               <varlistentry>
                 <term><ulink url="http://www.synopsys.com/products/simulation/simulation.html">Synopsys VCS</ulink></term>
                 <listitem>
-                  <para>Version X-2005.06 or newer is acceptable.</para>
+                  <para>Any version that supports the <option>-load</option> option is acceptable.</para>
                 </listitem>
               </varlistentry>
 
               <varlistentry>
                 <term><ulink url="http://www.model.com">Mentor Modelsim</ulink></term>
                 <listitem>
-                  <para>Version 6.1b or newer is acceptable.</para>
+                  <para>Any version that supports the <option>-pli</option> option is acceptable.</para>
                 </listitem>
               </varlistentry>
             </variablelist>
