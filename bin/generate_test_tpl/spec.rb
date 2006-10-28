@@ -2,7 +2,7 @@
 
 <%
   case aOutputInfo.specFormat
-    when :UnitTest
+    when :xUnit
 %>
 class <%= aOutputInfo.specClassName %> < Test::Unit::TestCase
   include Vpi
@@ -17,7 +17,7 @@ class <%= aOutputInfo.specClassName %> < Test::Unit::TestCase
 <% end %>
 end
 <%
-   when :RSpec
+   when :rSpec
 %>
 include Vpi
 

@@ -35,7 +35,7 @@ module <%= aOutputInfo.verilogBenchName %>;
     initial begin
       <%= clockSignal %> = 0;
       $ruby_init("ruby", "-w", "-rubygems", "<%= aOutputInfo.rubyBenchPath %>"<%=
-        %{, "-f", "s"} if aOutputInfo.specFormat == :RSpec
+        %{, "-f", "s"} if aOutputInfo.specFormat == :rSpec
       %>);
     end
 

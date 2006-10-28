@@ -3,11 +3,11 @@
 require 'ruby-vpi'
 <%
   case aOutputInfo.specFormat
-    when :UnitTest
+    when :xUnit
 %>
 require 'test/unit'
 <%
-    when :RSpec
+    when :rSpec
 %>
 require 'ruby-vpi/rspec'
 <%
@@ -19,7 +19,7 @@ RubyVpi.init_bench '<%= aModuleInfo.name + aOutputInfo.suffix %>', :<%= aOutputI
 # service the $ruby_relay callback
 <%
   case aOutputInfo.specFormat
-    when :UnitTest, :RSpec
+    when :xUnit, :rSpec
 %>
   # The <%= aOutputInfo.specFormat %> library will take control henceforth.
 <%

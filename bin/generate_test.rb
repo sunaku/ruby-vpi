@@ -90,7 +90,7 @@ class OutputInfo
   VERILOG_EXT = '.v'
   RUNNER_EXT = '.rake'
 
-  SPEC_FORMATS = [:RSpec, :UnitTest, :Generic]
+  SPEC_FORMATS = [:rSpec, :xUnit, :generic]
 
   attr_reader :verilogBenchName, :verilogBenchPath, :rubyBenchName, :rubyBenchPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :runnerName, :runnerPath, :protoName, :protoPath, :protoClassName
 
@@ -149,7 +149,7 @@ if File.basename($0) == File.basename(__FILE__)
   # parse command-line options
     require 'optparse'
 
-    optSpecFmt = :Generic
+    optSpecFmt = :generic
     optTestName = 'test'
 
     opts = OptionParser.new
@@ -163,12 +163,12 @@ if File.basename($0) == File.basename(__FILE__)
       exit
     end
 
-    opts.on '-u', '--unit', 'use Test::Unit specification format' do |val|
-      optSpecFmt = :UnitTest if val
+    opts.on '-u', '--xunit', 'use xUnit specification format' do |val|
+      optSpecFmt = :xUnit if val
     end
 
-    opts.on '-r', '--rspec', 'use RSpec specification format' do |val|
-      optSpecFmt = :RSpec if val
+    opts.on '-s', '--rspec', 'use rSpec specification format' do |val|
+      optSpecFmt = :rSpec if val
     end
 
     opts.on '-n', '--name NAME', 'attach NAME indentifier to generated test' do |val|
