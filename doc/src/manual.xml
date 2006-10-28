@@ -883,6 +883,59 @@
       </variablelist>
     </section>
 
+    <section id="usage.recommendations">
+      <title>Recommendations</title>
+      <para>The following software may make your interactions with &rv; more pleasant.</para>
+
+      <variablelist>
+        <varlistentry>
+          <term>Text merging tool</term>
+          <listitem>
+            <para>An <emphasis>interactive</emphasis> text merging tool can greatly simplify the process of transferring wanted changes from one file to another. In particular, such tools are especially beneficial when using the <link linkend="usage.tools.generate-test">automated test generator</link>. Below are a list of popular text merging tools.</para>
+
+            <variablelist>
+
+              <varlistentry>
+                <term><ulink url="http://elonen.iki.fi/code/imediff/">imediff2</ulink></term>
+                <listitem>
+                  <para>A textual, fullscreen two-way merging tool, which works in a terminal. Useful when working remotely via SSH.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term><ulink url="http://kdiff3.sourceforge.net/">kdiff3</ulink></term>
+                <listitem>
+                  <para>A graphical, three-way merging tool for KDE.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term><ulink url="http://meld.sourceforge.net/">meld</ulink></term>
+                <listitem>
+                  <para>A graphical, three-way merging tool for GNOME.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term><ulink url="http://tkdiff.sourceforge.net/">tkdiff</ulink></term>
+                <listitem>
+                  <para>A graphical, two-way merging tool that uses the cross-platform Tk windowing toolkit.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term><ulink url="http://furius.ca/xxdiff/">xxdiff</ulink></term>
+                <listitem>
+                  <para>A graphical, three-way merging tool.</para>
+                </listitem>
+              </varlistentry>
+
+            </variablelist>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
+
     <section id="usage.installation">
       <title>Installation and maintenance</title>
 
