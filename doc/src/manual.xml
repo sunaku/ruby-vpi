@@ -75,7 +75,7 @@
     </copyright>
 
     <abstract>
-      <para>This manual explains how to use &rv;. You can find the newest version of this manual at the <ulink url="&rv.url;">&rv; website</ulink>.</para>
+      <para>This manual explains how to use &rv;. A <ulink url="manual.txt">plain-text version of this manual</ulink> is also available. Finally, you can find the newest version of this manual at the <ulink url="&rv.url;">&rv; website</ulink>.</para>
     </abstract>
 
     <legalnotice>
@@ -1063,11 +1063,6 @@
           </variablelist>
         </para>
 
-        <important>
-          <title>Before we continue&hellip;</title>
-          <para>Save the source code shown in <xref linkend="fig..counter.v_decl"/> into a file named <filename>counter.v</filename>.</para>
-        </important>
-
         <figure id="fig..counter.v_decl">
           <title>Declaration of a simple up-counter with synchronous reset</title>
 <programlisting>
@@ -1079,6 +1074,11 @@
 <token>endmodule</token>
 </programlisting>
         </figure>
+
+        <important>
+          <title>Before we continue&hellip;</title>
+          <para>Save the source code shown in <xref linkend="fig..counter.v_decl"/> into a file named <filename>counter.v</filename>.</para>
+        </important>
       </section>
 
       <section id="usage.tutorial.generate-test">
@@ -1187,31 +1187,6 @@
 
         <para>Now that we have identified a set of expectations for our design, we are ready to implement them in our specification. <xref linkend="fig..counter_rspec_spec.rb"/> and <xref linkend="fig..counter_xunit_spec.rb"/> illustrate this process. Note the striking similarities between our expectations and their implementation.</para>
 
-        <important>
-          <title>Before we continue&hellip;</title>
-          <itemizedlist>
-            <listitem>
-              <para>Append the following code to the files named <filename>counter_rspec_design.rb</filename> and <filename>counter_xunit_design.rb</filename>.</para>
-
-<programlisting>
-<token>class</token> <constant>Counter</constant>
-  <token>def</token> <function>reset!</function>
-    <varname>@reset</varname>.<function>intVal</function> = <literal>1</literal>
-    <function>relay_verilog</function> <remark># advance the clock</remark>
-    <varname>@reset</varname>.<function>intVal</function> = <literal>0</literal>
-  <token>end</token>
-<token>end</token>
-</programlisting>
-            </listitem>
-            <listitem>
-              <para>Replace the contents of the file named <filename>counter_rspec_spec.rb</filename> with the source code shown in <xref linkend="fig..counter_rspec_spec.rb"/>.</para>
-            </listitem>
-            <listitem>
-              <para>Replace the contents of the file named <filename>counter_xunit_spec.rb</filename> with the source code shown in <xref linkend="fig..counter_xunit_spec.rb"/>.</para>
-            </listitem>
-          </itemizedlist>
-        </important>
-
         <figure id="fig..counter_rspec_spec.rb">
           <title>Specification implemented in &rspec; format</title>
 <programlisting>
@@ -1301,17 +1276,37 @@
 <token>end</token>
 </programlisting>
         </figure>
+
+        <important>
+          <title>Before we continue&hellip;</title>
+          <itemizedlist>
+            <listitem>
+              <para>Replace the contents of the file named <filename>counter_rspec_spec.rb</filename> with the source code shown in <xref linkend="fig..counter_rspec_spec.rb"/>.</para>
+            </listitem>
+            <listitem>
+              <para>Replace the contents of the file named <filename>counter_xunit_spec.rb</filename> with the source code shown in <xref linkend="fig..counter_xunit_spec.rb"/>.</para>
+            </listitem>
+            <listitem>
+              <para>Append the following code to the files named <filename>counter_rspec_design.rb</filename> and <filename>counter_xunit_design.rb</filename>. This code defines the <function>reset!</function> method which encapsulates the process of resetting our &v; design.</para>
+
+<programlisting>
+<token>class</token> <constant>Counter</constant>
+  <token>def</token> <function>reset!</function>
+    <varname>@reset</varname>.<function>intVal</function> = <literal>1</literal>
+    <function>relay_verilog</function> <remark># advance the clock</remark>
+    <varname>@reset</varname>.<function>intVal</function> = <literal>0</literal>
+  <token>end</token>
+<token>end</token>
+</programlisting>
+            </listitem>
+          </itemizedlist>
+        </important>
       </section>
 
       <section id="usage.tutorial.implement-proto">
         <title>Implement the prototype</title>
 
         <para>Now that we have a &specification.gloss; against which to verify our &design.gloss;, let us build a prototype of our design. By doing so, we exercise our specification, experience potential problems that may arise when we later implement our design in &v;, and gain confidence in our work. <xref linkend="fig..counter_proto.rb"/> shows the completed prototype for our design.</para>
-
-        <important>
-          <title>Before we continue&hellip;</title>
-          <para>Replace the contents of the files named <filename>counter_rspec_proto.rb</filename> and <filename>counter_xunit_proto.rb</filename> with the source code shown in <xref linkend="fig..counter_proto.rb"/>.</para>
-        </important>
 
         <figure id="fig..counter_proto.rb">
           <title>Ruby prototype of our &v; design</title>
@@ -1328,6 +1323,10 @@
 </programlisting>
         </figure>
 
+        <important>
+          <title>Before we continue&hellip;</title>
+          <para>Replace the contents of the files named <filename>counter_rspec_proto.rb</filename> and <filename>counter_xunit_proto.rb</filename> with the source code shown in <xref linkend="fig..counter_proto.rb"/>.</para>
+        </important>
       </section>
 
       <section id="usage.tutorial.test-proto">
@@ -1380,11 +1379,6 @@ Finished in 0.040668 seconds.
 
         <para>Now that we have implemented and verified our prototype, we are ready to implement our &design.gloss;. This is often quite simple because we translate <emphasis>existing</emphasis> code from &r; (our prototype) into &v; (our design). <xref linkend="fig..counter.v_impl"/> illustrates the result of this process. Once again, note the striking similarities between the implementation of our prototype and design.</para>
 
-        <important>
-          <title>Before we continue&hellip;</title>
-          <para>Replace the contents of the file named <filename>counter.v</filename> with the source code shown in <xref linkend="fig..counter.v_impl"/>.</para>
-        </important>
-
         <figure id="fig..counter.v_impl">
           <title>Implementation of a simple up-counter with synchronous reset</title>
 <programlisting>
@@ -1402,6 +1396,11 @@ Finished in 0.040668 seconds.
 <token>endmodule</token>
 </programlisting>
         </figure>
+
+        <important>
+          <title>Before we continue&hellip;</title>
+          <para>Replace the contents of the file named <filename>counter.v</filename> with the source code shown in <xref linkend="fig..counter.v_impl"/>.</para>
+        </important>
       </section>
 
       <section id="usage.tutorial.test-design">
