@@ -805,10 +805,10 @@
     </section>
   </chapter>
 
-  <chapter id="usage">
-    <title>Usage</title>
+  <chapter id="setup">
+    <title>Setup</title>
 
-    <section id="usage.requirements">
+    <section id="setup.reqs">
       <title>Requirements</title>
       <para>The following software is necessary in order to use &rv;.</para>
 
@@ -885,65 +885,65 @@
           </listitem>
         </varlistentry>
       </variablelist>
+
+      <section id="setup.reqs.optional">
+        <title>Recommendations</title>
+        <para>The following software may make your interactions with &rv; more pleasant.</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>Text merging tool</term>
+            <listitem>
+              <para>An <emphasis>interactive</emphasis> text merging tool can greatly simplify the process of transferring wanted changes from one file to another. In particular, such tools are especially beneficial when using the &test-gen.link;. A handful of the currently available open-source text merging tools are listed below.</para>
+
+              <variablelist>
+
+                <varlistentry>
+                  <term><ulink url="http://kdiff3.sourceforge.net/">&kd;</ulink></term>
+                  <listitem>
+                    <para>A graphical, three-way merging tool for KDE.</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><ulink url="http://meld.sourceforge.net/"><application>meld</application></ulink></term>
+                  <listitem>
+                    <para>A graphical, three-way merging tool for GNOME.</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><ulink url="http://tkdiff.sourceforge.net/"><application>tkdiff</application></ulink></term>
+                  <listitem>
+                    <para>A graphical, two-way merging tool that uses the cross-platform Tk windowing toolkit.</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><ulink url="http://furius.ca/xxdiff/"><application>xxdiff</application></ulink></term>
+                  <listitem>
+                    <para>A graphical, three-way merging tool.</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><ulink url="http://elonen.iki.fi/code/imediff/"><application>imediff2</application></ulink></term>
+                  <listitem>
+                    <para>A textual, fullscreen two-way merging tool. This tool is useful when you are working remotely via SSH.</para>
+                  </listitem>
+                </varlistentry>
+
+              </variablelist>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </section>
     </section>
 
-    <section id="usage.recommendations">
-      <title>Recommendations</title>
-      <para>The following software may make your interactions with &rv; more pleasant.</para>
+    <section id="setup.installation">
+      <title>Installation</title>
 
-      <variablelist>
-        <varlistentry>
-          <term>Text merging tool</term>
-          <listitem>
-            <para>An <emphasis>interactive</emphasis> text merging tool can greatly simplify the process of transferring wanted changes from one file to another. In particular, such tools are especially beneficial when using the &test-gen.link;. Below are a list of popular text merging tools.</para>
-
-            <variablelist>
-
-              <varlistentry>
-                <term><ulink url="http://kdiff3.sourceforge.net/">&kd;</ulink></term>
-                <listitem>
-                  <para>A graphical, three-way merging tool for KDE.</para>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><ulink url="http://meld.sourceforge.net/"><application>meld</application></ulink></term>
-                <listitem>
-                  <para>A graphical, three-way merging tool for GNOME.</para>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><ulink url="http://tkdiff.sourceforge.net/"><application>tkdiff</application></ulink></term>
-                <listitem>
-                  <para>A graphical, two-way merging tool that uses the cross-platform Tk windowing toolkit.</para>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><ulink url="http://furius.ca/xxdiff/"><application>xxdiff</application></ulink></term>
-                <listitem>
-                  <para>A graphical, three-way merging tool.</para>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><ulink url="http://elonen.iki.fi/code/imediff/"><application>imediff2</application></ulink></term>
-                <listitem>
-                  <para>A textual, fullscreen two-way merging tool. This tool is useful when you are working remotely via SSH.</para>
-                </listitem>
-              </varlistentry>
-
-            </variablelist>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-    </section>
-
-    <section id="usage.installation">
-      <title>Installation and maintenance</title>
-
-      <para>Once you have satisfied the <link linkend="usage.requirements">necessary requirements</link>, you can install &rv; by running the command <command>gem <action>install</action> <replaceable>ruby-vpi</replaceable></command>. RubyGems will install &rv; into the system gem directory, whose path can be determined by running the command <command>gem <action>env</action> <replaceable>gemdir</replaceable></command>. Within this directory, there is a "gems" subdirectory which contains the &rv; installation, as illustrated below.</para>
+      <para>Once you have satisfied the <link linkend="setup.reqs">necessary requirements</link>, you can install &rv; by running the command <command>gem <action>install</action> <replaceable>ruby-vpi</replaceable></command>. RubyGems will install &rv; into the system gem directory, whose path can be determined by running the command <command>gem <action>env</action> <replaceable>gemdir</replaceable></command>. Within this directory, there is a "gems" subdirectory which contains the &rv; installation, as illustrated below.</para>
 
 <screen>
 <prompt>$</prompt> <userinput><command>gem <action>env</action> <replaceable>gemdir</replaceable></command></userinput>
@@ -953,10 +953,7 @@
 <computeroutput>/usr/lib/ruby/gems/1.8/gems/ruby-vpi-7.0.0/</computeroutput>
 </screen>
 
-
-      <para>You can uninstall &rv; by running the command <command>gem <action>uninstall</action> <replaceable>ruby-vpi</replaceable></command>. Furthermore, you can upgrade to the latest release of &rv; by running the command <command>gem <action>update</action> <replaceable>ruby-vpi</replaceable></command>. Finally, you can learn more about using and manipulating RubyGems in <ulink url="http://www.rubygems.org">the RubyGems user manual</ulink>.</para>
-
-      <section id="usage.installation.windows">
+      <section id="setup.installation.windows">
         <title>Installing on Windows</title>
 
         <procedure>
@@ -982,6 +979,16 @@
         </procedure>
       </section>
     </section>
+
+    <section id="setup.maintenance">
+      <title>Maintenance</title>
+
+      <para>You can uninstall &rv; by running the command <command>gem <action>uninstall</action> <replaceable>ruby-vpi</replaceable></command>. Furthermore, you can upgrade to the latest release of &rv; by running the command <command>gem <action>update</action> <replaceable>ruby-vpi</replaceable></command>. Finally, you can learn more about using and manipulating RubyGems in <ulink url="http://www.rubygems.org">the RubyGems user manual</ulink>.</para>
+    </section>
+  </chapter>
+
+  <chapter id="usage">
+    <title>Usage</title>
 
     <section id="usage.tools">
       <title>Tools</title>
@@ -1025,7 +1032,7 @@
           </variablelist>
         </para>
 
-        <para>The reason for dividing a single test into these parts is mainly to decouple the design from the specification. This allows you to focus on writing the specification while the remainder is automatically generated by the tool. For example, when the interface of a &v; module changes, you would simply re-run this tool and incorporate those changes (using a <link linkend="usage.recommendations">text merging tool</link>) into the test without diverting your focus from the specification.</para>
+        <para>The reason for dividing a single test into these parts is mainly to decouple the design from the specification. This allows you to focus on writing the specification while the remainder is automatically generated by the tool. For example, when the interface of a &v; module changes, you would simply re-run this tool and incorporate those changes (using a <link linkend="setup.reqs.optional">text merging tool</link>) into the test without diverting your focus from the specification.</para>
 
         <tip>
           <title>Using &kd; with the automated test generator</title>
@@ -1046,14 +1053,6 @@ kdiff3 --auto --merge --output "$2" "$@" 2>/dev/null
 
         <para>The <command>header_to_ruby.rb</command> tool can be used to convert &v; header files into &r;. You can try it by running the command <command>header_to_ruby.rb <option>--help</option></command>.</para>
       </section>
-    </section>
-
-    <section id="usage.examples">
-      <title>Examples</title>
-
-      <para>The <filename>samp</filename> directory contains several example tests which illustrate how &rv; can be used. Each example has an associated <filename>Rakefile</filename> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the command <command>rake</command> to get started.</para>
-
-      <para>Also, some example specifications make use of BDD through the <application>rSpec</application> library. See the <xref linkend="background.methodology"/> for a discussion of <application>rSpec</application>.</para>
     </section>
 
     <section id="usage.tutorial">
@@ -1467,7 +1466,14 @@ Finished in 0.006766 seconds.
 </screen>
         </figure>
       </section>
+    </section>
 
+    <section id="usage.examples">
+      <title>Examples</title>
+
+      <para>The <filename>samp</filename> directory contains several example tests which illustrate how &rv; can be used. Each example has an associated <filename>Rakefile</filename> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the command <command>rake</command> to get started.</para>
+
+      <para>Also, some example specifications make use of BDD through the <application>rSpec</application> library. See the <xref linkend="background.methodology"/> for a discussion of <application>rSpec</application>.</para>
     </section>
   </chapter>
 
