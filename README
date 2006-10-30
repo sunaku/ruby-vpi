@@ -6,7 +6,7 @@ h2. Features
 
 * Prototype and verify designs _quickly_ using "BDD(behavior-driven development)":http://behaviour-driven.org/, "TDD(test-driven development)":http://www.agiledata.org/essays/tdd.html, and more.
 * Reuse the _same_ specification to verify both prototype and design.
-* Specifications are executable _and_ human-readable. (See this <a href="./doc/usage.tutorial.html#fig..counter_rspecTest_spec.rb">example specification</a> and its <a href="./doc/usage.tutorial.html#fig..test-proto.rspec">boss-friendly output</a>.)
+* Specifications are executable _and_ human-readable. (See this <a href="./doc/usage.tutorial.html#fig..counter_rspec_spec.rb">example specification</a> and its <a href="./doc/usage.tutorial.html#fig..test-proto.rspec">boss-friendly output</a>.)
 
 * Utilize Ruby's power and elegance. ("Why choose Ruby?":http://www.ruby-doc.org/whyruby)
 ** Built-in support for unlimited length integers, regular expressions, networking, multi-threading, system calls, _ad infinium_!
