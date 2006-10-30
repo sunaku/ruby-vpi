@@ -54,6 +54,8 @@
   <!ENTITY rspec..ulink "<ulink url='&rspec.url;'>&rspec;</ulink>">
   <!ENTITY rspec-tutorial.url "http://rspec.rubyforge.org/tutorials/index.html">
   <!ENTITY rspec-tutorial..ulink "<ulink url='&rspec-tutorial.url;'>&rspec; tutorial</ulink>">
+
+  <!ENTITY kd "<application>kdiff3</application>">
 ]>
 <book lang="en">
   <bookinfo>
@@ -896,14 +898,7 @@
             <variablelist>
 
               <varlistentry>
-                <term><ulink url="http://elonen.iki.fi/code/imediff/">imediff2</ulink></term>
-                <listitem>
-                  <para>A textual, fullscreen two-way merging tool, which works in a terminal. Useful when working remotely via SSH.</para>
-                </listitem>
-              </varlistentry>
-
-              <varlistentry>
-                <term><ulink url="http://kdiff3.sourceforge.net/">kdiff3</ulink></term>
+                <term><ulink url="http://kdiff3.sourceforge.net/">&kd;</ulink></term>
                 <listitem>
                   <para>A graphical, three-way merging tool for KDE.</para>
                 </listitem>
@@ -927,6 +922,13 @@
                 <term><ulink url="http://furius.ca/xxdiff/">xxdiff</ulink></term>
                 <listitem>
                   <para>A graphical, three-way merging tool.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term><ulink url="http://elonen.iki.fi/code/imediff/">imediff2</ulink></term>
+                <listitem>
+                  <para>A textual, fullscreen two-way merging tool. This tool is useful when you are working remotely via SSH.</para>
                 </listitem>
               </varlistentry>
 
@@ -987,6 +989,19 @@
         <title>Automated test generation</title>
 
         <para>The <command>generate_test.rb</command> tool can be used to automatically generate tests from &v; 2001 module declarations (see <xref linkend="usage.tutorial.generate-test"/>). You can try it by running the command <command>generate_test.rb <option>--help</option></command>.</para>
+
+        <tip>
+          <title>Using &kd; with the automated test generator</title>
+          <para>Create a file named <filename>merge2</filename> with the content below, make it executable, and put it somewhere accessible by your <varname>PATH</varname> environment variable. Next, update the <varname>MERGER</varname> environment variable by executing <command>export <varname>MERGER</varname>=<replaceable>merge2</replaceable></command>.</para>
+
+<programlisting>
+#!/bin/sh
+# args: old file, new file
+kdiff3 --auto --merge --output "$2" "$@" 2>/dev/null
+</programlisting>
+
+          <para>From now on, &kd; will be invoked to help you transfer your changes between generated files. When you are finished transferring changes, simply issue the "save the file" command and terminate &kd;. Or, if you do not want to transfer any changes, simply terminate &kd;.</para>
+        </tip>
       </section>
 
       <section id="usage.tools.verilog-ruby-conv">
