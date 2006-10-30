@@ -964,14 +964,18 @@
             <para>Search for object files whose names end with <filename>.so</filename>, <filename>.o</filename>, or <filename>.dll</filename> in your &v; simulator's installation directory.</para>
           </step>
           <step>
-            <para>Determine which object files, among those found in the previous step, contain symbols whose names begin with <symbol>_vpi</symbol><footnote><para>Because &rv; makes use of the &v; &vpi; C-language interface, it links to symbols whose names begin with <symbol>_vpi</symbol>. It is possible for these symbols to be undefined when &rv; is compiled under GNU/Linux and similar operating systems. In contrast, one <ulink url="http://sourceware.org/ml/cygwin/2001-12/msg01292.html">cannot compile a shared object file with references to undefined symbols under Windows</ulink>. Thus, we must find a Verilog simulator's shared object file, which contains definitions of all &vpi; symbols, and give this file to the linker when compiling &rv;.</para></footnote> by running the command <command>for x in *.{o,so,dll}; do nm $x | grep -q '[Tt] _vpi' > /dev/null &amp;&amp; echo $x; done</command> in Cygwin.</para>
+            <para>Determine which object files, among those found in the previous step, contain symbols whose names begin with <symbol>_vpi</symbol><footnote><para>Because &rv; makes use of the &vpi; C-language interface, it links to symbols whose names begin with <symbol>_vpi</symbol>. It is possible for these symbols to be undefined when &rv; is compiled under GNU/Linux and similar operating systems. In contrast, one <ulink url="http://sourceware.org/ml/cygwin/2001-12/msg01293.html">cannot compile a shared object file with references to undefined symbols under Windows</ulink>. Thus, we must find a Verilog simulator's shared object file, which contains definitions of all &vpi; symbols, and give this file to the linker when compiling &rv;.</para></footnote> by running the command <command>for x in *.{o,so,dll}; do nm $x | grep -q '[Tt] _vpi' > /dev/null &amp;&amp; echo $x; done</command> in Cygwin.</para>
 
-            <para>If you are using Mentor Modelsim, the desired object file can be found at a path similar to <filename>C:\Modeltech\win32\libvsim.dll</filename>.</para>
+            <tip>
+              <para>If you are using Mentor Modelsim, the desired object file can be found at a path similar to <filename>C:\Modeltech\win32\libvsim.dll</filename>.</para>
+            </tip>
 
-            <para>If you are using GPL Cver, the desired object file can be found at a path similar to <filename>C:\gplcver\objs\v_vpi.o</filename>.</para>
+            <tip>
+              <para>If you are using GPL Cver, the desired object file can be found at a path similar to <filename>C:\gplcver\objs\v_vpi.o</filename>.</para>
+            </tip>
           </step>
           <step>
-            <para>Assign the path of the object file (determined in the previous step) to the <varname>LDFLAGS</varname> environment variable. For example, if the object file's path is <replaceable>/life/long/journey</replaceable>, then you would run the command <command>export <varname>LDFLAGS</varname>=<replaceable>/life/long/journey</replaceable></command> in Cygwin.</para>
+            <para>Assign the path of the object file (determined in the previous step) to the <varname>LDFLAGS</varname> environment variable. For example, if the object file's path is <replaceable>/foo/bar/vpi.so</replaceable>, then you would run the command <command>export <varname>LDFLAGS</varname>=<replaceable>/foo/bar/vpi.so</replaceable></command> in Cygwin.</para>
           </step>
           <step>
             <para>You may now install &rv; by running the command <command>gem <action>install</action> <replaceable>ruby-vpi</replaceable></command> in Cygwin.</para>
