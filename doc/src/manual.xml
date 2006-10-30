@@ -56,6 +56,8 @@
   <!ENTITY rspec-tutorial..ulink "<ulink url='&rspec-tutorial.url;'>&rspec; tutorial</ulink>">
 
   <!ENTITY kd "<application>kdiff3</application>">
+
+  <!ENTITY test-gen.link "<link linkend='usage.tools.generate-test'>automated test generator</link>">
 ]>
 <book lang="en">
   <bookinfo>
@@ -849,7 +851,7 @@
         </varlistentry>
 
         <varlistentry>
-          <term><command>make</command></term>
+          <term><application>make</application></term>
           <listitem>
             <para><ulink url="http://www.gnu.org/software/make/">&gnu; make</ulink> is preferred but any distribution of <command>make</command> should be acceptable.</para>
           </listitem>
@@ -893,7 +895,7 @@
         <varlistentry>
           <term>Text merging tool</term>
           <listitem>
-            <para>An <emphasis>interactive</emphasis> text merging tool can greatly simplify the process of transferring wanted changes from one file to another. In particular, such tools are especially beneficial when using the <link linkend="usage.tools.generate-test">automated test generator</link>. Below are a list of popular text merging tools.</para>
+            <para>An <emphasis>interactive</emphasis> text merging tool can greatly simplify the process of transferring wanted changes from one file to another. In particular, such tools are especially beneficial when using the &test-gen.link;. Below are a list of popular text merging tools.</para>
 
             <variablelist>
 
@@ -905,28 +907,28 @@
               </varlistentry>
 
               <varlistentry>
-                <term><ulink url="http://meld.sourceforge.net/">meld</ulink></term>
+                <term><ulink url="http://meld.sourceforge.net/"><application>meld</application></ulink></term>
                 <listitem>
                   <para>A graphical, three-way merging tool for GNOME.</para>
                 </listitem>
               </varlistentry>
 
               <varlistentry>
-                <term><ulink url="http://tkdiff.sourceforge.net/">tkdiff</ulink></term>
+                <term><ulink url="http://tkdiff.sourceforge.net/"><application>tkdiff</application></ulink></term>
                 <listitem>
                   <para>A graphical, two-way merging tool that uses the cross-platform Tk windowing toolkit.</para>
                 </listitem>
               </varlistentry>
 
               <varlistentry>
-                <term><ulink url="http://furius.ca/xxdiff/">xxdiff</ulink></term>
+                <term><ulink url="http://furius.ca/xxdiff/"><application>xxdiff</application></ulink></term>
                 <listitem>
                   <para>A graphical, three-way merging tool.</para>
                 </listitem>
               </varlistentry>
 
               <varlistentry>
-                <term><ulink url="http://elonen.iki.fi/code/imediff/">imediff2</ulink></term>
+                <term><ulink url="http://elonen.iki.fi/code/imediff/"><application>imediff2</application></ulink></term>
                 <listitem>
                   <para>A textual, fullscreen two-way merging tool. This tool is useful when you are working remotely via SSH.</para>
                 </listitem>
@@ -988,7 +990,42 @@
       <section id="usage.tools.generate-test">
         <title>Automated test generation</title>
 
-        <para>The <command>generate_test.rb</command> tool can be used to automatically generate tests from &v; 2001 module declarations (see <xref linkend="usage.tutorial.generate-test"/>). You can try it by running the command <command>generate_test.rb <option>--help</option></command>.</para>
+        <para>The automated test generator (<command>generate_test.rb</command>) generates tests from &v; 2001 module declarations, as demonstrated in <xref linkend="usage.tutorial.generate-test"/>. A generated test is composed of the following parts:
+          <variablelist>
+            <varlistentry>
+              <term>Runner</term>
+              <listitem>
+                <para>Written in Rake, this file builds and runs the test.</para>
+              </listitem>
+            </varlistentry>
+            <varlistentry>
+              <term>Bench</term>
+              <listitem>
+                <para>Written in Verilog and Ruby, these files define the testing environment.</para>
+              </listitem>
+            </varlistentry>
+            <varlistentry>
+              <term>Design</term>
+              <listitem>
+                <para>Written in Ruby, this file provides an interface to the design being verified.</para>
+              </listitem>
+            </varlistentry>
+            <varlistentry>
+              <term>Prototype</term>
+              <listitem>
+                <para>Written in Ruby, this file defines a prototype of the design being verified.</para>
+              </listitem>
+            </varlistentry>
+            <varlistentry>
+              <term>Specification</term>
+              <listitem>
+                <para>Written in Ruby, this file verifies the design.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </para>
+
+        <para>The reason for dividing a single test into these parts is mainly to decouple the design from the specification. This allows you to focus on writing the specification while the remainder is automatically generated by the tool. For example, when the interface of a &v; module changes, you would simply re-run this tool and incorporate those changes (using a <link linkend="usage.recommendations">text merging tool</link>) into the test without diverting your focus from the specification.</para>
 
         <tip>
           <title>Using &kd; with the automated test generator</title>
@@ -1030,7 +1067,7 @@ kdiff3 --auto --merge --output "$2" "$@" 2>/dev/null
         </step>
 
         <step>
-          <para><link linkend="usage.tutorial.generate-test">Generate a test</link> for the design using the <link linkend="usage.tools.generate-test">automated test generator</link> tool.</para>
+          <para><link linkend="usage.tutorial.generate-test">Generate a test</link> for the design using the &test-gen.link; tool.</para>
         </step>
 
         <step>
@@ -1099,48 +1136,9 @@ kdiff3 --auto --merge --output "$2" "$@" 2>/dev/null
       <section id="usage.tutorial.generate-test">
         <title>Generate a test</title>
 
-        <para>Now that we have a &design.gloss; to verify, let us generate a &test.gloss; for it using the automated test generator tool. This tool allows us to implement our &specification.gloss; in either &rspec;, xUnit, or our very own format. Each format represents a different software development methodology: &rspec; represents &BDD.gloss;, xUnit represents &TDD.gloss;, and our own format can represent another methodology.</para>
+        <para>Now that we have a &design.gloss; to verify, let us generate a &test.gloss; for it using the &test-gen.link;. This tool allows us to implement our &specification.gloss; in either &rspec;, xUnit, or our very own format. Each format represents a different software development methodology: &rspec; represents &BDD.gloss;, xUnit represents &TDD.gloss;, and our own format can represent another methodology. Both &rspec; and xUnit are presented in this tutorial.</para>
 
-        <note>
-          <para>In this tutorial, you will see how specifications are implemented in <emphasis>both</emphasis> &rspec; and xUnit formats.</para>
-        </note>
-
-        <para>Once we have decided how we want to implement our specification, we can proceed to generate a test for our design. <xref linkend="fig..generate-test.rspec"/> and <xref linkend="fig..generate-test.unit-test"/> illustrate this process. Here, the test generation tool produces a test composed of the following parts:
-          <variablelist>
-            <varlistentry>
-              <term>Runner</term>
-              <listitem>
-                <para>Written in Rake, this file builds and runs the test.</para>
-              </listitem>
-            </varlistentry>
-            <varlistentry>
-              <term>Bench</term>
-              <listitem>
-                <para>Written in Verilog and Ruby, these files define the testing environment.</para>
-              </listitem>
-            </varlistentry>
-            <varlistentry>
-              <term>Design</term>
-              <listitem>
-                <para>Written in Ruby, this file provides an interface to the design being verified.</para>
-              </listitem>
-            </varlistentry>
-            <varlistentry>
-              <term>Prototype</term>
-              <listitem>
-                <para>Written in Ruby, this file defines a prototype of the design being verified.</para>
-              </listitem>
-            </varlistentry>
-            <varlistentry>
-              <term>Specification</term>
-              <listitem>
-                <para>Written in Ruby, this file verifies the design.</para>
-              </listitem>
-            </varlistentry>
-          </variablelist>
-        </para>
-
-        <para>The reason for dividing a single test into these parts is mainly to decouple the design from the specification. This allows you to focus on writing the specification while the remainder is automatically generated by the tool. For example, when the interface of a &v; module changes, you would simply re-run this tool and <link linkend="usage.recommendations">incorporate those changes</link> into the test without diverting your focus from the specification.</para>
+        <para>Once we have decided how we want to implement our specification, we can proceed to generate a test for our design. <xref linkend="fig..generate-test.rspec"/> and <xref linkend="fig..generate-test.unit-test"/> illustrate this process.</para>
 
         <figure id="fig..generate-test.rspec">
           <title>Generating a test with specification in &rspec; format</title>
