@@ -1349,10 +1349,16 @@ kdiff3 --auto --merge --output "$2" "$@" 2>/dev/null
         <para>Now that we have implemented our prototype, we are ready to verify it against our &specification.gloss; by running the &test.gloss;. <xref linkend="fig..test-proto.rspec"/> and <xref linkend="fig..test-proto.unit-test"/> illustrate this process.</para>
 
         <tip>
+          <title>Reuse your past efforts!</title>
           <para>The <emphasis>same</emphasis> specification can be used to verify both prototype and design.</para>
         </tip>
 
         <para>Here, the <varname>PROTOTYPE</varname> environment variable is assigned a non-empty value while running the test, so that, instead of our design, our prototype is verified against our specification. You can also assign a value to <varname>PROTOTYPE</varname> before running the test, by using your shell's <command>export</command> or <command>setenv</command> command. Finally, the Icarus &v; simulator, denoted by <replaceable>ivl</replaceable>, is used to run the simulation.</para>
+
+        <tip>
+          <title>What can the test runner do?</title>
+          <para>If you invoke the test runner (1) without any arguments or (2) with the <option>-T</option> option, it will show you a list of tasks that it can perform for you.</para>
+        </tip>
 
         <figure id="fig..test-proto.rspec">
           <title>Running a test with specification in &rspec; format</title>
@@ -1423,6 +1429,15 @@ Finished in 0.040668 seconds.
         <para>Now that we have implemented our &design.gloss;, we are ready to verify it against our &specification.gloss; by running the &test.gloss;. <xref linkend="fig..test-design.rspec"/> and <xref linkend="fig..test-design.unit-test"/> illustrate this process.</para>
 
         <para>Here, the <varname>PROTOTYPE</varname> environment variable is <emphasis>not</emphasis> specified while running the test, so that our design, instead of our prototype, is verified against our specification. You can also achieve this effect by assigning an empty value to <varname>PROTOTYPE</varname>, or by using your shell's <command>unset</command> command. Finally, the Icarus &v; simulator, denoted by <replaceable>ivl</replaceable>, is used to run the simulation.</para>
+
+        <tip>
+          <title>Running multiple tests</title>
+          <para>Create a file named <filename>Rakefile</filename> containing the following line.</para>
+
+          <programlisting>require 'ruby-vpi/runner_proxy'</programlisting>
+
+          <para>Now you can invoke all test runners in the current directory simply by executing <command>rake <replaceable>ivl</replaceable></command> (where <replaceable>ivl</replaceable> denotes the Icarus Verilog simulator).</para>
+        </tip>
 
         <figure id="fig..test-design.rspec">
           <title>Running a test with specification in &rspec; format</title>
