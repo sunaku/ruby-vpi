@@ -9,9 +9,6 @@
   clockSignal = aModuleInfo.ports.first.name
 %>
 /* This is the Verilog side of the bench. */
-
-`include "<%= aModuleInfo.name %>.v"
-
 module <%= aOutputInfo.verilogBenchName %>;
 
   // instantiate the design under test

@@ -3,6 +3,7 @@
 # These are source files that are to be compiled.
 SIMULATOR_SOURCES = [
   '<%= aOutputInfo.verilogBenchPath %>',
+  '<%= aModuleInfo.name %>.v',
 ]
 
 # These are paths to directories which contain the
