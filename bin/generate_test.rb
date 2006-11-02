@@ -4,14 +4,13 @@
 # * The first input signal in a module's declaration is assumed to be the clocking signal.
 #
 # = Progress indicators
-# As this tool performs its duties, it notifies you of important information using the following indicators.
-#
-# create:: Output file does not exist. It will be created.
-# skip:: Output file exists and is up to date.
-# update:: Output file exists and is out of date. A backup copy will be made (with a ".old" suffix) before this output file is updated. Use a text merging tool or manually transfer any necessary information from the backup copy to the updated output file.
+# create:: File will be created because it does not exist.
+# skip:: File will be skipped because it is already up to date.
+# update:: File will be updated because it is out of date. A backup copy will be made before the file is updated. Use a text merging tool (see MERGER) or manually transfer any necessary information from the backup copy to the updated file.
+# backup:: A backup copy of a file is being made.
 #
 # = Environment variables
-# MERGER:: A command for invoking a text merging tool with two arguments: old file, new file. The tool should save its output to the new file.
+# MERGER:: A command that invokes a text merging tool with two arguments: old file, new file. The tool's output should be written to the new file.
 
 
 =begin
@@ -53,11 +52,12 @@ def write_file aPath, aContent
     if oldDigest == newDigest
       notify :skip, aPath
     else
-      notify :update, aPath
-
       old, new = "#{aPath}.old", aPath
 
+      notify :backup, old
       FileUtils.cp aPath, old, :preserve => true
+
+      notify :update, aPath
       File.open(new, 'w') {|f| f << aContent}
 
       if m = ENV['MERGER']
