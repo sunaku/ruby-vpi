@@ -10,7 +10,7 @@
 # backup:: A backup copy of a file is being made.
 #
 # = Environment variables
-# MERGER:: A command that invokes a text merging tool with two arguments: old file, new file. The tool's output should be written to the new file.
+# MERGER:: A command that invokes a text merging tool with two arguments: (1) old file, (2) new file. The tool's output should be written to the new file.
 
 
 =begin
@@ -170,7 +170,7 @@ if File.basename($0) == File.basename(__FILE__)
       optSpecFmt = :rSpec if val
     end
 
-    opts.on '-n', '--name NAME', 'attach NAME indentifier to generated test' do |val|
+    opts.on '-n', '--name NAME', 'insert NAME into the names of generated files' do |val|
       optTestName = val
     end
 
