@@ -163,11 +163,11 @@ if File.basename($0) == File.basename(__FILE__)
       exit
     end
 
-    opts.on '-u', '--xunit', 'use xUnit specification format' do |val|
+    opts.on '--xunit', 'use xUnit specification format' do |val|
       optSpecFmt = :xUnit if val
     end
 
-    opts.on '-s', '--rspec', 'use rSpec specification format' do |val|
+    opts.on '--rspec', 'use rSpec specification format' do |val|
       optSpecFmt = :rSpec if val
     end
 
