@@ -1306,12 +1306,10 @@ kdiff3 --auto --merge --output "$2" "$@" 2>/dev/null
               <para>Replace the contents of the files named <filename>counter_rspec_design.rb</filename> and <filename>counter_xunit_design.rb</filename> with the following code. This code defines the <function>reset!</function> method which resets our &v; design.</para>
 
 <programlisting>
-<token>class</token> &lt;&lt; <constant>Counter</constant>
-  <token>def</token> <function>reset!</function>
-    <function>reset</function>.<function>intVal</function> = <literal>1</literal>
-    <function>relay_verilog</function> <remark># advance the clock</remark>
-    <function>reset</function>.<function>intVal</function> = <literal>0</literal>
-  <token>end</token>
+<token>def</token> <constant>Counter</constant>.<function>reset!</function>
+  <function>reset</function>.<function>intVal</function> = <literal>1</literal>
+  <function>relay_verilog</function> <remark># advance the clock</remark>
+  <function>reset</function>.<function>intVal</function> = <literal>0</literal>
 <token>end</token>
 </programlisting>
             </listitem>
@@ -1327,13 +1325,11 @@ kdiff3 --auto --merge --output "$2" "$@" 2>/dev/null
         <figure id="fig..counter_proto.rb">
           <title>Ruby prototype of our &v; design</title>
 <programlisting>
-<token>class</token> &lt;&lt; <constant>Counter</constant>
-  <token>def</token> <function>simulate!</function>
-    <token>if</token> <function>reset</function>.<function>intVal</function> == <literal>1</literal>
-      <function>count</function>.<function>intVal</function> = <literal>0</literal>
-    <token>else</token>
-      <function>count</function>.<function>intVal</function> += <literal>1</literal>
-    <token>end</token>
+<token>def</token> <constant>Counter</constant>.<function>simulate!</function>
+  <token>if</token> <function>reset</function>.<function>intVal</function> == <literal>1</literal>
+    <function>count</function>.<function>intVal</function> = <literal>0</literal>
+  <token>else</token>
+    <function>count</function>.<function>intVal</function> += <literal>1</literal>
   <token>end</token>
 <token>end</token>
 </programlisting>

@@ -12,7 +12,7 @@ module counter_xunit_bench;
   // connect to the Ruby side of this bench
     initial begin
       clock = 0;
-      $ruby_init("ruby", "-w", "-rubygems", "counter_xunit_bench.rb");
+      $ruby_init("ruby", "-w", "-rubygems", "-rruby-vpi", "counter_xunit_bench.rb");
     end
 
     always begin

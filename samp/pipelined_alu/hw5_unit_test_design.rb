@@ -11,23 +11,22 @@ OPERATIONS = (OP_NOP..OP_MULT).to_a
 # Number of cycles needed to reset this design.
 RESET_DELAY = 5
 
-class << Hw5_unit
-  def reset!
-    reset.hexStrVal = 'x'
-    in_databits.hexStrVal = 'x'
-    a.hexStrVal = 'x'
-    b.hexStrVal = 'x'
-    in_op.hexStrVal = 'x'
+# This method resets the design under test.
+def Hw5_unit.reset!
+  reset.hexStrVal = 'x'
+  in_databits.hexStrVal = 'x'
+  a.hexStrVal = 'x'
+  b.hexStrVal = 'x'
+  in_op.hexStrVal = 'x'
 
 
-    reset.intVal = 1
+  reset.intVal = 1
 
-    RESET_DELAY.times do
-      relay_verilog
-    end
-
-    reset.intVal = 0
+  RESET_DELAY.times do
+    relay_verilog
   end
+
+  reset.intVal = 0
 end
 
 
