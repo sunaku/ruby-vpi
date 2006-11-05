@@ -8,6 +8,7 @@
 # skip:: File will be skipped because it is already up to date.
 # update:: File will be updated because it is out of date. A backup copy will be made before the file is updated. Use a text merging tool (see MERGER) or manually transfer any necessary information from the backup copy to the updated file.
 # backup:: A backup copy of a file is being made.
+# module:: A Verilog module has been identified.
 #
 # = Environment variables
 # MERGER:: A command that invokes a text merging tool with two arguments: (1) old file, (2) new file. The tool's output should be written to the new file.
@@ -175,9 +176,6 @@ if File.basename($0) == File.basename(__FILE__)
     end
 
     opts.parse! ARGV
-
-    notify :name, optTestName
-    notify :format, optSpecFmt
 
 
   v = VerilogParser.new(ARGF.read)
