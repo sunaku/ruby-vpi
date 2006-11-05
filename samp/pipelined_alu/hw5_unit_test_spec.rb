@@ -20,7 +20,7 @@
 
 # This file is a behavioral specification for the design under test.
 
-require 'InputGenerator'
+require 'int_gen'
 
 class Hw5_unit_test_spec < Test::Unit::TestCase
   # Number of input sequences to test.
@@ -34,7 +34,7 @@ class Hw5_unit_test_spec < Test::Unit::TestCase
 
   def setup
     Hw5_unit.reset!
-    @inputGen = InputGenerator.new(WIDTH)
+    @intGen = IntegerGenerator.new(WIDTH)
   end
 
   def test_pipeline
@@ -47,8 +47,8 @@ class Hw5_unit_test_spec < Test::Unit::TestCase
           op = Operation.new(
             OPERATIONS[rand(OPERATIONS.size)],
             numIssued % OPERATION_TAG_LIMIT,
-            @inputGen.gen,
-            @inputGen.gen
+            @intGen.random,
+            @intGen.random
           )
 
           Hw5_unit.a.intVal = op.arg1
