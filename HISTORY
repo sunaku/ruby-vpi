@@ -12,6 +12,48 @@ We _strictly_ follow the RubyGems project's "rational versioning policy":http://
 fn1. C. Gross, "Explaining Open Source Version Numbers", [Online document], 2005 Nov 28, [cited 2006 Aug 27], Available HTTP: "http://ablog.apress.com/?p=738":http://ablog.apress.com/?p=738
 
 
+h1. Version 10.0.0 (2006-11-05)
+
+h2. Summary
+
+This release adds the ability to access a handle's children and reduces the amount of code produced by the automated test generator.
+
+h2. Acknowledgment
+
+Thanks to Matt Fischler for finding the problem of misdirected compilation errors in Verilog benches.
+
+h2. Notice
+
+* The way in which Ruby-VPI and generated tests interact has changed: the design is now a VPI handle object and the @design.rb@ and @proto.rb@ files define "singleton methods":http://wiki.rubygarden.org/Ruby/page/show/SingletonTutorial for that object.
+** I suggest that you regenerate your existing tests (just run *generate_test.rb* again) whilst employing the service of a text merging tool (see the user manual).
+
+* You can now access a handle's children by simply calling methods on it. In the event that a child handle has the same name as a VPI property, the child is given priority. However, you can always access VPI properties explicitly via the @get_value@ and @put_value@ methods.
+
+* *generate_test.rb* no longer accepts the @-s@ and @-u@ options. Use their longer counterparts @--rspec@ and @--xunit@ instead.
+
+
+h2. Detail
+
+h3. Automated test generator
+
+* Generated Verilog benches no longer divert compilation errors from Verilog design files. That is, if the Verilog simulator finds compilation errors in a Verilog design file, it will report that the Verilog design file is at fault (instead of reporting that the generated Verilog bench is at fault).
+
+* The user is now notified when a backup of an existing file is made.
+
+* Generated tests have been greatly simplified to reduce the amount of work for the user.
+** The design is now just a handle to the module in the Verilog bench.
+** @include Vpi@ and @@design@ are no longer generated.
+** The tutorial and examples have been updated accordingly.
+
+h3. User manual
+
+* Revised the stylesheet to make disjoint sections readily distinguishable from eachother, through generous spacing and minor coloring.
+
+* Added tips about @ruby-vpi/runner_proxy@, @rake -T@, and using *kdiff3* with *generate_test.rb*.
+
+* Moved installation information into a new "setup" chapter.
+
+
 h1. Version 9.0.0 (2006-10-28)
 
 h2. Summary

@@ -5,6 +5,8 @@ h1. Notes
 
 h1. Pending tasks
 
+* interactive console IRB wrapper for spec (just like Breakpoints in Rails)
+
 * add support for reading & writing vpi_delay values
 
 * define handled methods in Vpi::method_missing for faster response
@@ -12,6 +14,10 @@ h1. Pending tasks
 
 * GHDL simulator supports VPI
 ** need way to invoke VPI tasks from VHDL, like @$ruby_init();@
+
+* need to dump signal values when expectation fails in rSpec
+** maybe a waveform dump will also help
+** this will help in debugging the problem
 
 
 h1. Finished tasks
@@ -32,6 +38,8 @@ h1. Finished tasks
 ** move stuff from lib/ into lib/ruby-vpi/
 
 * integrate RCov for code-coverage statistics
+
+* method_missing for Design class
 
 
 h1. Obsolete tasks
