@@ -185,9 +185,21 @@ module SWIG
     QUERY_REGEXP = %r{\?$}
     PREFIX_REGEXP = %r{^(.*?)_}
 
-    # Enables read and write access to VPI properties of this handle.
+    # Enables access to (1) child handles and (2) VPI properties of this handle. In the case that a child handle has the same name as a VPI property, the child handle will be accessed instead of the VPI property. However, you can still access the VPI property via #get_value and #put_value.
     def method_missing aMsg, *aArgs, &aBlockArg
       methName = aMsg.to_s
+
+      # give access to a child handle if possible
+        if child = vpi_handle_by_name(methName, self)
+          # cache the child for future accesses, in order to cut down number of calls to method_missing
+            (class << self; self; end).class_eval do
+              define_method aMsg do
+                child
+              end
+            end
+
+          return child
+        end
 
       # determine if property is being written
         if isAssign = methName =~ ASSIGN_REGEXP
