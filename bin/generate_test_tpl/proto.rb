@@ -1,7 +1,7 @@
 # This is a prototype of the design under test.
 class << <%= aOutputInfo.designClassName %>
   # When prototyping is enabled, this method is invoked
-  # instead of Vpi::relay_verilog to simulate the design.
+  # instead of relay_verilog to simulate the design.
   def simulate!
     # discard old outputs
 <% aModuleInfo.ports.reject { |p| p.input? }.each do |port| %>

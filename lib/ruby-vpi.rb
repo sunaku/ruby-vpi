@@ -18,10 +18,21 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
-# Provides configuration information of the Ruby-VPI project.
 module RubyVpi
-  # Initializes the current bench using the given parameters.
-  def RubyVpi.init_bench aTestPrefix, aDesignClassId
+  # Initializes the current bench by loading:
+  # 1. the design.rb file
+  # 2. the proto.rb file (if prototyping is enabled)
+  # 3. the spec.rb file
+  #
+  # aDesignId:: The name of the Ruby interface to the design under test.
+  # aSpecFormat:: The format of the specification.
+  def RubyVpi.init_bench aDesignId, aSpecFormat
+    if caller.find {|s| s =~ /^(.*?)_bench.rb:/}
+      testName = $1
+    else
+      raise 'Unable to determine name of test.'
+    end
+
     # set up the VPI utility layer
       require 'ruby-vpi/vpi'
 
@@ -29,8 +40,18 @@ module RubyVpi
         include Vpi
       end
 
-      # service the $ruby_init() callback
-        relay_verilog
+    # set up the specification library
+      case aSpecFormat
+        when :xUnit
+          require 'test/unit'
+
+        when :rSpec
+          ARGV.concat %w[-f s]
+          require 'ruby-vpi/rspec'
+      end
+
+    # service the $ruby_init() task
+      relay_verilog
 
     # set up code coverage analysis
       unless (ENV['COVERAGE'] || '').empty?
@@ -39,22 +60,22 @@ module RubyVpi
         RubyVpi.with_coverage_analysis do |a|
           a.dump_coverage_info [
             Rcov::TextReport.new,
-            Rcov::HTMLCoverage.new(:destdir => "#{aTestPrefix}_coverage")
+            Rcov::HTMLCoverage.new(:destdir => "#{testName}_coverage")
           ]
         end
       end
 
     # load the design under test
-      unless design = vpi_handle_by_name("#{aTestPrefix}_bench", nil)
-        raise "Verilog bench for test #{aTestPrefix.inspect} is inaccessible."
+      unless design = vpi_handle_by_name("#{testName}_bench", nil)
+        raise "Verilog bench for test #{testName.inspect} is inaccessible."
       end
 
-      Kernel.const_set(aDesignClassId, design)
-      require "#{aTestPrefix}_design.rb"
+      Kernel.const_set(aDesignId, design)
+      require "#{testName}_design.rb"
 
     # load the design's prototype
       unless (ENV['PROTOTYPE'] || '').empty?
-        require "#{aTestPrefix}_proto.rb"
+        require "#{testName}_proto.rb"
 
         Vpi.class_eval do
           define_method :relay_verilog do
@@ -62,12 +83,14 @@ module RubyVpi
           end
         end
 
-        puts "#{Config::PROJECT_NAME}: prototype has been enabled for test #{aTestPrefix.inspect}"
+        puts "#{Config::PROJECT_NAME}: prototype has been enabled for test #{testName.inspect}"
       end
 
-    require "#{aTestPrefix}_spec.rb"
+    # load the design's specification
+      require "#{testName}_spec.rb"
   end
 
+  # Provides information about the Ruby-VPI project's configuration.
   module Config
     PROJECT_ID = 'ruby-vpi'
     PROJECT_NAME = 'Ruby-VPI'
@@ -76,6 +99,8 @@ module RubyVpi
     PROJECT_DETAIL = "#{PROJECT_NAME} is a #{PROJECT_SUMMARY}. It lets you create complex Verilog test benches easily and wholly in Ruby."
 
     Simulator = Struct.new(:id, :name, :compiler_args, :linker_args)
+
+    # List of supported Verilog simulators.
     SIMULATORS = [
       Simulator.new(:cver, 'GPL Cver', '-DPRAGMATIC_CVER', ''),
       Simulator.new(:ivl, 'Icarus Verilog', '-DICARUS_VERILOG', ''),
