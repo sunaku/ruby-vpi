@@ -1,4 +1,4 @@
-## This is the Ruby side of the bench.
+# This file is the Ruby side of the bench.
 
 require 'ruby-vpi'
 <%
@@ -14,7 +14,7 @@ require 'ruby-vpi/rspec'
   end
 %>
 
-RubyVpi.init_bench '<%= aModuleInfo.name + aOutputInfo.suffix %>', :<%= aOutputInfo.protoClassName %>
+RubyVpi.init_bench '<%= aModuleInfo.name + aOutputInfo.suffix %>', :<%= aOutputInfo.designClassName %>
 
 # service the $ruby_relay callback
 <%

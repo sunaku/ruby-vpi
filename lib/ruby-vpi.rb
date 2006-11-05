@@ -21,9 +21,16 @@
 # Provides configuration information of the Ruby-VPI project.
 module RubyVpi
   # Initializes the current bench using the given parameters.
-  def RubyVpi.init_bench aTestPrefix, aProtoClassId
-    require 'ruby-vpi/vpi'
-    Vpi::relay_verilog	# service the $ruby_init() callback
+  def RubyVpi.init_bench aTestPrefix, aDesignClassId
+    # set up the VPI utility layer
+      require 'ruby-vpi/vpi'
+
+      Object.class_eval do
+        include Vpi
+      end
+
+      # service the $ruby_init() callback
+        relay_verilog
 
     # set up code coverage analysis
       unless (ENV['COVERAGE'] || '').empty?
@@ -38,20 +45,24 @@ module RubyVpi
       end
 
     # load the design under test
+      unless design = vpi_handle_by_name("#{aTestPrefix}_bench", nil)
+        raise "Verilog bench for test #{aTestPrefix.inspect} is inaccessible."
+      end
+
+      Kernel.const_set(aDesignClassId, design)
       require "#{aTestPrefix}_design.rb"
 
+    # load the design's prototype
       unless (ENV['PROTOTYPE'] || '').empty?
         require "#{aTestPrefix}_proto.rb"
 
-        proto = Kernel.const_get(aProtoClassId).new
-
         Vpi.class_eval do
           define_method :relay_verilog do
-            proto.simulate!
+            design.simulate!
           end
         end
 
-        puts "#{aTestPrefix}: verifying prototype instead of design"
+        puts "#{Config::PROJECT_NAME}: prototype has been enabled for test #{aTestPrefix.inspect}"
       end
 
     require "#{aTestPrefix}_spec.rb"

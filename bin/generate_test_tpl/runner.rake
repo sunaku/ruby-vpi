@@ -1,9 +1,9 @@
-## This file builds and runs the test.
+# This file runs the test.
 
 # These are source files that are to be compiled.
 SIMULATOR_SOURCES = [
-  '<%= aOutputInfo.verilogBenchPath %>',
   '<%= aModuleInfo.name %>.v',
+  '<%= aOutputInfo.verilogBenchPath %>',
 ]
 
 # These are paths to directories which contain the

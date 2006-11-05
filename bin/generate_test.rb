@@ -92,7 +92,7 @@ class OutputInfo
 
   SPEC_FORMATS = [:rSpec, :xUnit, :generic]
 
-  attr_reader :verilogBenchName, :verilogBenchPath, :rubyBenchName, :rubyBenchPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :runnerName, :runnerPath, :protoName, :protoPath, :protoClassName
+  attr_reader :verilogBenchName, :verilogBenchPath, :rubyBenchName, :rubyBenchPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :runnerName, :runnerPath, :protoName, :protoPath
 
   attr_reader :testName, :suffix, :benchSuffix, :designSuffix, :specSuffix, :runnerSuffix, :protoSuffix
 
@@ -126,7 +126,6 @@ class OutputInfo
     @specPath = @specName + RUBY_EXT
 
     @designClassName = aModuleName.to_ruby_const_name
-    @protoClassName = @designClassName + 'Prototype'
     @specClassName = @specName.to_ruby_const_name
 
     @runnerName = aModuleName + @runnerSuffix
