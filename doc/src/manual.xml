@@ -327,7 +327,11 @@
 
         <section id="organization.vpi.util">
           <title>&vpi; utility layer</title>
-          <para>From a user's perspective, the &vpi; utility layer greatly enhances the ability to interact with handles. One simply invokes a handle's methods, which are carefully named in the following manner, to access its &vpi; properties.</para>
+          <para>From a user's perspective, the &vpi; utility layer greatly enhances the ability to interact with handles. One simply invokes a handle's methods, which are carefully named in the following manner, to access either (1) its children or (2) its &vpi; properties.</para>
+
+          <para>The children of a handle are simply the handles that are immediately contained within it in. For example, suppose that you had a &v; module that contains some registers. The children, of a handle to the module, would be handles to the registers.</para>
+
+          <para>In the event that a child handle has the same name as a &vpi; property, the child is given priority. However, you can always access &vpi; properties explicitly via the <function>get_value</function> and <function>put_value</function> methods.</para>
 
           <table id="table..handle-property-accessor-naming-format" frame='all'>
             <title>Naming format for accessing a handle's &vpi; properties</title>
