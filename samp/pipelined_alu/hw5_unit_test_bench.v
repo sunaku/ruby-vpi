@@ -1,7 +1,4 @@
-/* This is the Verilog side of the bench. */
-
-`include "hw5_unit.v"
-
+/* This file is the Verilog side of the bench. */
 module hw5_unit_test_bench;
 
   // instantiate the design under test

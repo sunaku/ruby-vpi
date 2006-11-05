@@ -1,7 +1,8 @@
-## This file builds and runs the test.
+# This file runs the test.
 
 # These are source files that are to be compiled.
 SIMULATOR_SOURCES = [
+  'hw5_unit.v',
   'hw5_unit_test_bench.v',
 ]
 

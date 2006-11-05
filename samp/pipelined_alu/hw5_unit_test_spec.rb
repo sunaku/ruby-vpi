@@ -1,4 +1,3 @@
-## This specification verifies the design under test.
 =begin
   Copyright 2006 Suraj N. Kurapati
 
@@ -19,25 +18,23 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
+# This file is a behavioral specification for the design under test.
+
 require 'InputGenerator'
 
 class Hw5_unit_test_spec < Test::Unit::TestCase
-  include Vpi
-
   # Number of input sequences to test.
   NUM_TESTS = 4000
 
   # Bitmask capable of capturing ALU result.
-  ALU_RESULT_MASK = (2 ** Hw5_unit::WIDTH) - 1
+  ALU_RESULT_MASK = (2 ** WIDTH) - 1
 
   # Upper limit of values allowed for an operation's tag.
-  OPERATION_TAG_LIMIT = 2 ** Hw5_unit::DATABITS
+  OPERATION_TAG_LIMIT = 2 ** DATABITS
 
   def setup
-    @design = Hw5_unit.new
-    @design.reset!
-
-    @inputGen = InputGenerator.new(Hw5_unit::WIDTH)
+    Hw5_unit.reset!
+    @inputGen = InputGenerator.new(WIDTH)
   end
 
   def test_pipeline
@@ -47,17 +44,17 @@ class Hw5_unit_test_spec < Test::Unit::TestCase
     until numVerified == NUM_TESTS
       # issue a new operation
         if numIssued < NUM_TESTS
-          op = Hw5_unit::Operation.new(
-            Hw5_unit::OPERATIONS[rand(Hw5_unit::OPERATIONS.size)],
+          op = Operation.new(
+            OPERATIONS[rand(OPERATIONS.size)],
             numIssued % OPERATION_TAG_LIMIT,
             @inputGen.gen,
             @inputGen.gen
           )
 
-          @design.a.intVal = op.arg1
-          @design.b.intVal = op.arg2
-          @design.in_op.intVal = op.type
-          @design.in_databits.intVal = op.tag
+          Hw5_unit.a.intVal = op.arg1
+          Hw5_unit.b.intVal = op.arg2
+          Hw5_unit.in_op.intVal = op.type
+          Hw5_unit.in_databits.intVal = op.tag
 
           issuedOps << op
           numIssued += 1
@@ -66,18 +63,18 @@ class Hw5_unit_test_spec < Test::Unit::TestCase
       relay_verilog
 
       # verify result of finished operation
-        unless @design.out_databits.x?
-          finishedOp = Hw5_unit::Operation.new(
-            @design.out_op.intVal,
-            @design.out_databits.intVal
+        unless Hw5_unit.out_databits.x?
+          finishedOp = Operation.new(
+            Hw5_unit.out_op.intVal,
+            Hw5_unit.out_databits.intVal
           )
-          finishedOp.result = @design.res.intVal & ALU_RESULT_MASK
+          finishedOp.result = Hw5_unit.res.intVal & ALU_RESULT_MASK
 
           expectedOp = issuedOps.shift
           assert_equal expectedOp.type, finishedOp.type, "incorrect operation"
           assert_equal expectedOp.tag, finishedOp.tag, "incorrect tag"
 
-          unless finishedOp.type == Hw5_unit::OP_NOP
+          unless finishedOp.type == OP_NOP
             assert_equal expectedOp.compute & ALU_RESULT_MASK, finishedOp.result, "incorrect result"
           end
 

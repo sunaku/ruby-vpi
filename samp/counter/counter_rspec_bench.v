@@ -1,7 +1,4 @@
-/* This is the Verilog side of the bench. */
-
-`include "counter.v"
-
+/* This file is the Verilog side of the bench. */
 module counter_rspec_bench;
 
   // instantiate the design under test

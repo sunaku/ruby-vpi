@@ -1,22 +1,8 @@
-# An interface to the design under test.
-class Counter
-  include Vpi
-
-  Size = 5
-
-  attr_reader :clock, :reset, :count
-
-  def initialize
-    @clock = vpi_handle_by_name("counter_xunit_bench.clock", nil)
-    @reset = vpi_handle_by_name("counter_xunit_bench.reset", nil)
-    @count = vpi_handle_by_name("counter_xunit_bench.count", nil)
-  end
-
+# This is a Ruby interface to the design under test.
+class << Counter
   def reset!
-    @reset.hexStrVal = 'x'
-
-    @reset.intVal = 1
+    reset.intVal = 1
     relay_verilog
-    @reset.intVal = 0
+    reset.intVal = 0
   end
 end
