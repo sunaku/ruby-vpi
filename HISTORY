@@ -12,6 +12,36 @@ We _strictly_ follow the RubyGems project's "rational versioning policy":http://
 fn1. C. Gross, "Explaining Open Source Version Numbers", [Online document], 2005 Nov 28, [cited 2006 Aug 27], Available HTTP: "http://ablog.apress.com/?p=738":http://ablog.apress.com/?p=738
 
 
+h1. Version 11.0.0 (2006-11-05)
+
+h2. Summary
+
+This release shortens generated Ruby benches and uses the less confusing notation for defining "singleton methods":http://wiki.rubygarden.org/Ruby/page/show/SingletonTutorial in generated designs and prototypes.
+
+h2. Notice
+
+* The arguments for the "@RubyVPI.init_bench@ method":ref/ruby/classes/RubyVpi.html have changed.
+
+* *generate_test.rb* no longer emits undocumented status indicators: _name_ and _format_.
+
+* The source code is no longer distributed as a *zip* package, because it seems to be quite underutilized in comparison to the *tgz* and *gem* packages.
+
+h2. Detail
+
+* Generated Ruby benches have been shortened to just _one_ line of code!
+
+* The less confusing notation of <pre>def some_object.a_singleton_method
+  do_stuff
+end</pre> is now used instead of the <pre>class << some_object
+  def a_singleton_method
+    do_stuff
+  end
+end</pre> notation.
+** The tutorial and examples have been updated accordingly.
+
+* The pipelined ALU example now has an updated @IntegerGenerator@ class.
+
+
 h1. Version 10.0.0 (2006-11-05)
 
 h2. Summary
