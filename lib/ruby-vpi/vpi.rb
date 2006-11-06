@@ -286,7 +286,7 @@ module SWIG
                     accessor = 'l'
                     redo
 
-                  when /Type$/, /Direction$/, /Index$/, /Size$/, /Strength\d?$/, /Polarity$/, /Edge$/, /Offset$/, /Mode$/
+                  when /Type$/, /Direction$/, /Index$/, /Size$/, /Strength\d?$/, /Polarity$/, /Edge$/, /Offset$/, /Mode$/, /LineNo$/
                     accessor = 'i'
                     redo
 
@@ -327,6 +327,10 @@ module SWIG
     # Iterates over all handles of the given type and executes the given block once for each handle.
     def each aType, &aBlock	# :yields: handle
       self[aType].each(&aBlock)
+    end
+
+    def inspect
+      %{#<#{vpiType_s} #{vpiFullName} size=#{vpiSize}, file=#{vpiFile.inspect}, line=#{vpiLineNo}>}
     end
   end
 end
