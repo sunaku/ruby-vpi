@@ -191,11 +191,16 @@ module SWIG
       aValue
     end
 
-    # Returns an array of child handles of the given VPI types.
+    # Returns an array of child handles of the given VPI type names or VPI type constants. For example, the name 'reg' and the constant 'VpiReg' both access child handles that are registers.
     def [] *aTypes
       handles = []
 
       aTypes.each do |t|
+        # resolve type names into type constants
+          unless t.is_a? Integer
+            t = @@propCache[t.to_sym].type
+          end
+
         if itr = vpi_iterate(t, self)
           while h = vpi_scan(itr)
             handles << h
@@ -224,11 +229,9 @@ module SWIG
 
     @@propCache = Hash.new {|h, k| h[k] = Property.resolve(k)}
 
-    # Enables access to (1) child handles and (2) VPI properties of this handle. In the case that a child handle has the same name as a VPI property, the child handle will be accessed instead of the VPI property. However, you can still access the VPI property via #get_value and #put_value.
+    # Enables access to (1) child handles and (2) VPI properties of this handle through method calls. In the case that a child handle has the same name as a VPI property, the child handle will be accessed instead of the VPI property. However, you can still access the VPI property via #get_value and #put_value.
     def method_missing aMsg, *aArgs, &aBlockArg
-      methName = aMsg.to_s
-
-      if child = vpi_handle_by_name(methName, self)
+      if child = vpi_handle_by_name(aMsg.to_s, self)
         # cache the child for future accesses, in order to cut down number of calls to method_missing
           (class << self; self; end).class_eval do
             define_method aMsg do
@@ -239,7 +242,7 @@ module SWIG
         child
 
       else
-        prop = @@propCache[methName]
+        prop = @@propCache[aMsg]
 
         if prop.operation
           self.send(prop.operation, prop.type, *aArgs, &aBlockArg)
@@ -289,7 +292,7 @@ module SWIG
     # Resolves the given shorthand name into its VPI property.
     def Property.resolve aName
       # parse the given property name
-        tokens = aName.split(/_/)
+        tokens = aName.to_s.split(/_/)
 
 
         tokens.last.sub!(/[\?!=]$/, '')
