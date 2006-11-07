@@ -24,12 +24,20 @@ module Vpi
   Handle = SWIG::TYPE_p_unsigned_int
 
   # An object inside a Verilog simulation (see *vpiHandle* in IEEE Std. 1364-2005).
-  # * Learn how to read and write values to handles in the user manual.
+  # * VPI types and properties can be specified as names or integer constants.
+  #   * example names:
+  #     * "intVal"
+  #     * :intVal
+  #     * "vpiIntVal"
+  #     * :vpiIntVal
+  #     * "VpiIntVal"
+  #     * :VpiIntVal
+  #   * example constants:
+  #     * VpiIntVal
   class Handle
     include Vpi
 
     # inherit Enumerable methods, such as #each, #map, #select, etc.
-    # our version of these methods accept a list of VPI type constants (see #[])
       Enumerable.instance_methods.each do |meth|
         # using a string because define_method does not accept a block until Ruby 1.9
         class_eval %{
@@ -49,7 +57,7 @@ module Vpi
       self.hexStrVal =~ /z/i
     end
 
-    # Reads the value using the given format and returns a +S_vpi_value+ object.
+    # Reads the value using the given format (integer constant) and returns a +S_vpi_value+ object.
     def get_value_wrapper aFormat
       val = S_vpi_value.new
       val.format = aFormat
@@ -58,9 +66,9 @@ module Vpi
       val
     end
 
-    # Reads the value using the given format and returns it. If a format is not given, then the Verilog simulator will attempt to determine the correct format.
+    # Reads the value using the given format (name or integer constant) and returns it. If a format is not given, then the Verilog simulator will attempt to determine the correct format.
     def get_value aFormat = VpiObjTypeVal
-      val = get_value_wrapper(aFormat)
+      val = get_value_wrapper(resolve_prop_type(aFormat))
 
       case val.format
         when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal, VpiStringVal
@@ -89,9 +97,14 @@ module Vpi
       end
     end
 
-    # Writes the given value using the given format, time, and delay, and then returns the given value. If a format is not given, then the Verilog simulator will attempt to determine the correct format.
+    # Writes the given value using the given format (name or integer constant), time, and delay, and then returns the given value. If a format is not given, then the Verilog simulator will attempt to determine the correct format.
     def put_value aValue, aFormat = nil, aTime = nil, aDelay = VpiNoDelay
-      aFormat ||= get_value_wrapper(VpiObjTypeVal).format
+      aFormat =
+        if aFormat
+          resolve_prop_type(aFormat)
+        else
+          get_value_wrapper(VpiObjTypeVal).format
+        end
 
       newVal = S_vpi_value.new
       newVal.format = aFormat
@@ -158,15 +171,12 @@ module Vpi
       aValue
     end
 
-    # Returns an array of child handles of the given VPI type names or VPI type constants. For example, the name 'reg' and the constant 'VpiReg' both access child handles that are registers.
+    # Returns an array of child handles of the given types (name or integer constant).
     def [] *aTypes
       handles = []
 
       aTypes.each do |t|
-        # resolve type names into type constants
-          unless t.is_a? Integer
-            t = @@propCache[t.to_sym].type
-          end
+        t = resolve_prop_type(t)
 
         if itr = vpi_iterate(t, self)
           while h = vpi_scan(itr)
@@ -178,7 +188,7 @@ module Vpi
       handles
     end
 
-    # Inspects the given VPI property names in addition to those common to all handles. The same rules for accessing a handle's VPI properties (by calling methods) apply to the given property names. Thus, you can specify 'intVal' instead of 'VpiIntVal', and so on.
+    # Inspects the given VPI property names, in addition to those common to all handles.
     def inspect *aPropNames
       aPropNames.unshift :fullName, :size, :file, :lineNo
 
@@ -194,12 +204,15 @@ module Vpi
 
     @@propCache = Hash.new {|h, k| h[k] = Property.resolve(k)}
 
-    # Enables access to (1) child handles and (2) VPI properties of this handle through method calls. In the case that a child handle has the same name as a VPI property, the child handle will be accessed instead of the VPI property. However, you can still access the VPI property via #get_value and #put_value.
-    def method_missing aMsg, *aArgs, &aBlockArg
-      if child = vpi_handle_by_name(aMsg.to_s, self)
+    # Enables access to this handle's
+    # 1. child handles
+    # 2. VPI properties
+    # through method calls. In the case that a child handle has the same name as a VPI property, the child handle will be accessed instead of the VPI property. However, you can still access the VPI property via #get_value and #put_value.
+    def method_missing aMeth, *aArgs, &aBlockArg
+      if child = vpi_handle_by_name(aMeth.to_s, self)
         # cache the child for future accesses, in order to cut down number of calls to method_missing
           (class << self; self; end).class_eval do
-            define_method aMsg do
+            define_method aMeth do
               child
             end
           end
@@ -207,7 +220,7 @@ module Vpi
         child
 
       else
-        prop = @@propCache[aMsg]
+        prop = @@propCache[aMeth]
 
         if prop.operation
           self.send(prop.operation, prop.type, *aArgs, &aBlockArg)
@@ -243,7 +256,7 @@ module Vpi
               vpi_handle(prop.type, self) unless prop.assignment
 
             else
-              raise NoMethodError, "unable to access VPI property #{prop.name.inspect} through method #{aMsg.inspect} with arguments #{aArgs.inspect} for handle #{self}"
+              raise NoMethodError, "unable to access VPI property #{prop.name.inspect} through method #{aMeth.inspect} with arguments #{aArgs.inspect} for handle #{self}"
           end
         end
       end
@@ -316,6 +329,17 @@ module Vpi
         end
 
       Property.new type, name, operation, accessor, isAssign
+    end
+
+    private
+
+    # resolve type names into type constants
+    def resolve_prop_type aNameOrType
+      if aNameOrType.is_a? Integer
+        aNameOrType
+      else
+        @@propCache[aNameOrType.to_sym].type
+      end
     end
   end
 end
