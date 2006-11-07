@@ -222,135 +222,135 @@ module SWIG
     end
 
 
-    HINT_REGEXP = %r{_([a-z])$}
-    ASSIGN_REGEXP = %r{=$}
-    QUERY_REGEXP = %r{\?$}
-    PREFIX_REGEXP = %r{^(.*?)_}
+    @@propCache = Hash.new {|h, k| h[k] = Property.resolve(k)}
 
     # Enables access to (1) child handles and (2) VPI properties of this handle. In the case that a child handle has the same name as a VPI property, the child handle will be accessed instead of the VPI property. However, you can still access the VPI property via #get_value and #put_value.
     def method_missing aMsg, *aArgs, &aBlockArg
       methName = aMsg.to_s
 
-      # give access to a child handle if possible
-        if child = vpi_handle_by_name(methName, self)
-          # cache the child for future accesses, in order to cut down number of calls to method_missing
-            (class << self; self; end).class_eval do
-              define_method aMsg do
-                child
-              end
+      if child = vpi_handle_by_name(methName, self)
+        # cache the child for future accesses, in order to cut down number of calls to method_missing
+          (class << self; self; end).class_eval do
+            define_method aMsg do
+              child
             end
+          end
 
-          return child
+        child
+
+      else
+        prop = @@propCache[methName]
+
+        if prop.operation
+          self.send(prop.operation, prop.type, *aArgs, &aBlockArg)
+
+        else
+          case prop.accessor
+            when :d	# delay values
+              raise NotImplementedError, 'processing of delay values is not yet implemented.'
+              # TODO: vpi_put_delays
+              # TODO: vpi_get_delays
+
+            when :l	# logic values
+              if prop.assignment
+                value = aArgs.shift
+                put_value(value, prop.type, *aArgs)
+              else
+                get_value(prop.type)
+              end
+
+            when :i	# integer values
+              vpi_get(prop.type, self) unless prop.assignment
+
+            when :b # boolean values
+              unless prop.assignment
+                value = vpi_get(prop, self)
+                value && (value != 0)	# zero is false in C
+              end
+
+            when :s	# string values
+              vpi_get_str(prop.type, self) unless prop.assignment
+
+            when :h	# handle values
+              vpi_handle(prop.type, self) unless prop.assignment
+
+            else
+              raise NoMethodError, "unable to access VPI property #{prop.name.inspect} through method #{aMsg.inspect} with arguments #{aArgs.inspect} for handle #{self}"
+          end
         end
+      end
+    end
 
-      # determine if property is being written
-        if isAssign = methName =~ ASSIGN_REGEXP
-          methName.sub! ASSIGN_REGEXP, ''
-        end
 
-      # determine if property is being queried
-        if isQuery = methName =~ QUERY_REGEXP
-          methName.sub! QUERY_REGEXP, ''
-        end
+    private
 
-      # parse Accessor parameter
-        if accessor = methName[HINT_REGEXP, 1]
-          methName.sub! HINT_REGEXP, ''
-        end
+    Property = Struct.new :type, :name, :operation, :accessor, :assignment
 
-      # parse Operation parameter
-        if operation = methName[PREFIX_REGEXP, 1]
-          methName.sub! PREFIX_REGEXP, ''
-        end
+    # Resolves the given shorthand name into its VPI property.
+    def Property.resolve aName
+      # parse the given property name
+        tokens = aName.split(/_/)
 
-      # resolve Property parameter into a valid VPI property
-        propName = methName[0, 1].upcase << methName[1..-1]
-        propName.insert(0, 'Vpi') unless methName =~ /^vpi/
 
-        puts '', Kernel.caller.join("\n"), '', "operation: #{operation}", "meth: #{aMsg}", "args: #{aArgs.inspect}", "name: #{methName}", "prop: #{propName}", "assign: #{isAssign}", "query: #{isQuery}" if $DEBUG
+        tokens.last.sub!(/[\?!=]$/, '')
+
+        addendum = $&
+        isAssign = $& == '='
+        isQuery = $& == '?'
+
+
+        tokens.last =~ /^[a-z]$/ && tokens.pop
+        accessor = $&
+
+        name = tokens.pop
+
+        operation =
+          unless tokens.empty?
+            tokens.join('_') << (addendum || '')
+          end
+
+      # determine the VPI integer type for the property
+        name = name[0, 1].upcase << name[1..-1]
+        name.insert 0, 'Vpi' unless name =~ /^[Vv]pi/
 
         begin
-          prop = Vpi.const_get(propName)
+          type = Vpi.const_get(name)
         rescue NameError
-          raise ArgumentError, "invalid VPI property #{propName.inspect}"
+          raise ArgumentError, "#{name.inspect} is not a valid VPI property"
         end
 
-      # access the VPI property
-        if operation
-          return self.send(operation.to_sym, prop, *aArgs, &aBlockArg)
-        else
-          loop do
-            puts "looping, accessor: #{accessor}" if $DEBUG
+      accessor =
+        if accessor
+          accessor.to_sym
 
-            case accessor
-              when 'd'	# delay values
-                if isAssign
-                  # TODO: vpi_put_delays
-                else
-                  # TODO: vpi_get_delays
-                end
+        else # infer accessor from VPI property name
+          if isQuery
+            :b
 
-              when 'l'	# logic values
-                if isAssign
-                  value = aArgs.shift
-                  return put_value(value, prop, *aArgs)
-                else
-                  return get_value(prop)
-                end
+          else
+            case name
+              when /Time$/
+                :d
 
-              when 'i'	# integer values
-                return vpi_get(prop, self) unless isAssign
+              when /Val$/
+                :l
 
-              when 'b'	# boolean values
-                unless isAssign
-                  value = vpi_get(prop, self)
-                  return value && (value != 0)	# zero is false in C
-                end
+              when /Type$/, /Direction$/, /Index$/, /Size$/, /Strength\d?$/, /Polarity$/, /Edge$/, /Offset$/, /Mode$/, /LineNo$/
+                :i
 
-              when 's'	# string values
-                return vpi_get_str(prop, self) unless isAssign
+              when /Is[A-Z]/, /ed$/
+                :b
 
-              when 'h'	# handle values
-                return vpi_handle(prop, self) unless isAssign
+              when /Name$/, /File$/, /Decompile$/
+                :s
 
-              else	# accessor not specified. guess its value from property name
-                if isQuery
-                  accessor = 'b'
-                  redo
-                end
-
-                case propName
-                  when /Time$/
-                    accessor = 'd'
-                    redo
-
-                  when /Val$/
-                    accessor = 'l'
-                    redo
-
-                  when /Type$/, /Direction$/, /Index$/, /Size$/, /Strength\d?$/, /Polarity$/, /Edge$/, /Offset$/, /Mode$/, /LineNo$/
-                    accessor = 'i'
-                    redo
-
-                  when /Is[A-Z]/, /ed$/
-                    accessor = 'b'
-                    redo
-
-                  when /Name$/, /File$/, /Decompile$/
-                    accessor = 's'
-                    redo
-
-                  when /Parent$/, /Inst$/, /Range$/, /Driver$/, /Net$/, /Load$/, /Conn$/, /Bit$/, /Word$/, /[LR]hs$/, /(In|Out)$/, /Term$/, /Argument$/, /Condition$/, /Use$/, /Operand$/, /Stmt$/, /Expr$/, /Scope$/, /Memory$/, /Delay$/
-                    accessor = 'h'
-                    redo
-                end
+              when /Parent$/, /Inst$/, /Range$/, /Driver$/, /Net$/, /Load$/, /Conn$/, /Bit$/, /Word$/, /[LR]hs$/, /(In|Out)$/, /Term$/, /Argument$/, /Condition$/, /Use$/, /Operand$/, /Stmt$/, /Expr$/, /Scope$/, /Memory$/, /Delay$/
+                :h
             end
-
-            break
           end
         end
 
-      raise NoMethodError, "unable to access VPI property #{propName.inspect} through method #{aMsg.inspect} with arguments #{aArgs.inspect} for handle #{self}"
+      Property.new type, name, operation, accessor, isAssign
     end
   end
 end
