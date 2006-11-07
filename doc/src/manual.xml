@@ -468,25 +468,100 @@
                   </row>
                 </thead>
                 <tbody>
-                  <row>
-                    <entry><code><varname>handle</varname>.<function>each_vpiNet</function> {|<varname>net</varname>| <function>puts</function> <varname>net</varname>.<function>fullName</function>}</code></entry>
-                    <entry>each</entry>
-                    <entry>_</entry>
-                    <entry>vpiNet</entry>
-                    <entry></entry>
-                    <entry></entry>
-                    <entry></entry>
-                    <entry morerows="1">These expressions print the full name of each <constant>vpiNet</constant> object associated with the handle.</entry>
-                  </row>
-                  <row>
-                    <entry><code><varname>handle</varname>.<function>each_net</function> {|<varname>net</varname>| <function>puts</function> <varname>net</varname>.<function>fullName</function>}</code></entry>
-                    <entry>each</entry>
-                    <entry>_</entry>
-                    <entry>net</entry>
-                    <entry></entry>
-                    <entry></entry>
-                    <entry></entry>
-                  </row>
+                  <!-- each -->
+                    <row>
+                      <entry><code><varname>handle</varname>.<function>each_vpiNet</function> {|<varname>net</varname>| <function>puts</function> <varname>net</varname>.<function>fullName</function>}</code></entry>
+                      <entry>each</entry>
+                      <entry>_</entry>
+                      <entry>vpiNet</entry>
+                      <entry></entry>
+                      <entry></entry>
+                      <entry></entry>
+                      <entry morerows="1">These expressions print the full name of each <constant>vpiNet</constant> object associated with the handle.</entry>
+                    </row>
+                    <row>
+                      <entry><code><varname>handle</varname>.<function>each_net</function> {|<varname>net</varname>| <function>puts</function> <varname>net</varname>.<function>fullName</function>}</code></entry>
+                      <entry>each</entry>
+                      <entry>_</entry>
+                      <entry>net</entry>
+                      <entry></entry>
+                      <entry></entry>
+                      <entry></entry>
+                    </row>
+
+                  <!-- all? -->
+                    <row>
+                      <entry><code><varname>handle</varname>.<function>all_reg?</function> {|<varname>reg</varname>| <varname>reg</varname>.<function>size</function> == <literal>1</literal>}</code></entry>
+                      <entry>all?</entry>
+                      <entry>_</entry>
+                      <entry>vpiReg</entry>
+                      <entry></entry>
+                      <entry></entry>
+                      <entry></entry>
+                      <entry morerows="1">These expressions check if all registers associated with the handle are capable of storing only one bit.</entry>
+                    </row>
+
+                    <row>
+                      <entry><code><varname>handle</varname>.<function>all_reg?</function> {|<varname>reg</varname>| <varname>reg</varname>.<function>size</function> == <literal>1</literal>}</code></entry>
+                      <entry>all?</entry>
+                      <entry>_</entry>
+                      <entry>reg</entry>
+                      <entry></entry>
+                      <entry></entry>
+                      <entry></entry>
+                    </row>
+
+                  <!-- select -->
+                    <row>
+                      <entry><code><varname>handle</varname>.<function>select_vpiNet</function> {|<varname>net</varname>| <varname>net</varname>.<function>x?</function>}</code></entry>
+                      <entry>select</entry>
+                      <entry>_</entry>
+                      <entry>vpiReg</entry>
+                      <entry></entry>
+                      <entry></entry>
+                      <entry></entry>
+                      <entry morerows="4">These expressions return a list of nets whose logic value is <quote>don't care</quote>.</entry>
+                    </row>
+
+                    <row>
+                      <entry><code><varname>handle</varname>.<function>select_net</function> {|<varname>net</varname>| <varname>net</varname>.<function>x?</function>}</code></entry>
+                      <entry>select</entry>
+                      <entry>_</entry>
+                      <entry>net</entry>
+                      <entry></entry>
+                      <entry></entry>
+                      <entry></entry>
+                    </row>
+
+                    <row>
+                      <entry><code><varname>handle</varname>.<function>select</function>(<constant>VpiNet</constant>) {|<varname>net</varname>| <varname>net</varname>.<function>x?</function>}</code></entry>
+                      <entry>select</entry>
+                      <entry>_</entry>
+                      <entry></entry>
+                      <entry></entry>
+                      <entry></entry>
+                      <entry></entry>
+                    </row>
+
+                    <row>
+                      <entry><code><varname>handle</varname>.<function>select</function>(<literal>:VpiNet</literal>) {|<varname>net</varname>| <varname>net</varname>.<function>x?</function>}</code></entry>
+                      <entry>select</entry>
+                      <entry>_</entry>
+                      <entry></entry>
+                      <entry></entry>
+                      <entry></entry>
+                      <entry></entry>
+                    </row>
+
+                    <row>
+                      <entry><code><varname>handle</varname>.<function>select</function>(<literal>:net</literal>) {|<varname>net</varname>| <varname>net</varname>.<function>x?</function>}</code></entry>
+                      <entry>select</entry>
+                      <entry>_</entry>
+                      <entry></entry>
+                      <entry></entry>
+                      <entry></entry>
+                      <entry></entry>
+                    </row>
 
                   <row>
                     <entry><code><varname>handle</varname>.<function>vpiIntVal</function></code></entry>
