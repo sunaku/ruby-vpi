@@ -226,6 +226,8 @@ module SWIG
       %{#<#{vpiType_s} #{vpiFullName} #{items.join(', ')}>}
     end
 
+    alias to_s inspect
+
 
     @@propCache = Hash.new {|h, k| h[k] = Property.resolve(k)}
 
