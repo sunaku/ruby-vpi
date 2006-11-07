@@ -140,7 +140,6 @@ Rake::RDocTask.new 'ref/ruby' do |t|
   t.title = "#{PROJECT_NAME}: #{PROJECT_SUMMARY}"
   t.options.concat %w(--charset utf-8 --line-numbers)
   t.rdoc_files.include '{bin,lib/**}/*.rb'
-  t.main = 'SWIG::TYPE_p_unsigned_int'
 end
 
 

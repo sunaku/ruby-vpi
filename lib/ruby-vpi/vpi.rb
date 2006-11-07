@@ -20,45 +20,12 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
-module SWIG
-=begin rdoc
-  This class represents an object inside a Verilog simulation. Such an object is known as a _handle_ in Verilog jargon. See *vpiHandle* in IEEE Std. 1364-2005 for details.
+module Vpi
+  Handle = SWIG::TYPE_p_unsigned_int
 
-  = Reading and writing values
-  There are several ways to read and write a handle's value, depending on its representation.
-
-  == Using +S_vpi_value+ objects
-  You can read and write values using +S_vpi_value+ objects through the following methods.
-  * #get_value_wrapper
-  * Vpi::vpi_get_value
-  * Vpi::vpi_put_value
-
-  == Using values and formats
-  You can read and write values, while specifying their format, through the following methods.
-  * value = handle.#get_value(format)
-  * handle.#put_value(value, format)
-
-  == Using values directly
-  You can read and write values directly, while implicitly specifying their format, through several shortcut methods. The names of these methods can be determined by (1) taking the name of a VPI value format listed in the *VALUE_FORMAT_NAMES* array, (2) removing the "Vpi" prefix, and (3) converting the first character into lower-case.
-
-  For example, the shortcut methods for reading and writing values using the <tt><b>Vpi</b><em>I</em>ntVal</tt> format are:
-  * intVal
-  * intVal=
-
-  The methods shown above can be used like so:
-  * value = handle.#intVal
-  * handle.#intVal = value
-
-  == Examples of all approaches
-  To read a handle's value as an integer:
-  * handle.#get_value(VpiIntVal)
-  * handle.intVal
-
-  To write a handle's value as an integer:
-  * handle.#put_value(15, VpiIntVal)
-  * handle.intVal = 15
-=end
-  class TYPE_p_unsigned_int
+  # An object inside a Verilog simulation (see *vpiHandle* in IEEE Std. 1364-2005).
+  # * Learn how to read and write values to handles in the user manual.
+  class Handle
     include Vpi
 
     # inherit Enumerable methods, such as #each, #map, #select, etc.
@@ -285,9 +252,6 @@ module SWIG
         end
       end
     end
-
-
-    private
 
     Property = Struct.new :type, :name, :operation, :accessor, :assignment
 

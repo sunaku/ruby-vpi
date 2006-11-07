@@ -381,7 +381,7 @@
             <varlistentry>
               <term>Accessor</term>
               <listitem>
-                <para>This parameter suggests which &vpi; function should be used to access the &vpi; property. When this parameter is not specified, the &vpi; utility layer will attempt to <emphasis>guess</emphasis> the value of this parameter (<ulink url="../../ref/ruby/classes/SWIG/TYPE_p_unsigned_int.html">see the source code</ulink> of the <code><constant>SWIG</constant>::<constant>TYPE_p_unsigned_int</constant>#<function>method_missing</function></code> method for details).</para>
+                <para>This parameter suggests which &vpi; function should be used to access the &vpi; property. When this parameter is not specified, the &vpi; utility layer will attempt to <emphasis>guess</emphasis> the value of this parameter (<ulink url="../ref/ruby/classes/Vpi/Handle/Property.html">see the source code</ulink> of the <code><constant>Property</constant>.<function>resolve</function></code> method for details).</para>
 
                 <table frame='all'>
                   <title>Possible accessors and their implications</title>
