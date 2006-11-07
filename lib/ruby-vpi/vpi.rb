@@ -206,8 +206,19 @@ module SWIG
       handles
     end
 
-    def inspect
-      %{#<#{vpiType_s} #{vpiFullName} size=#{vpiSize}, file=#{vpiFile.inspect}, line=#{vpiLineNo}>}
+    # Inspects the given VPI property names in addition to those common to all handles. The same rules for accessing a handle's VPI properties (by calling methods) apply to the given property names. Thus, you can specify 'intVal' instead of 'VpiIntVal', and so on.
+    def inspect *aPropNames
+      items = [
+        "file=#{vpiFile.inspect}",
+        "line=#{vpiLineNo}",
+        "size=#{vpiSize}",
+      ]
+
+      aPropNames.inject items do |memo, name|
+        memo << "#{name}=#{self.send(name.to_sym)}"
+      end
+
+      %{#<#{vpiType_s} #{vpiFullName} #{items.join(', ')}>}
     end
 
 
