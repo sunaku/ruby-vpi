@@ -61,6 +61,17 @@ module SWIG
   class TYPE_p_unsigned_int
     include Vpi
 
+    # inherit Enumerable methods, such as #each, #map, #select, etc.
+    # our version of these methods accept a list of VPI type constants (see #[])
+      Enumerable.instance_methods.each do |meth|
+        # using a string because define_method does not accept a block until Ruby 1.9
+        class_eval %{
+          def #{meth} *args, &block
+            self[*args].send(:#{meth}, &block)
+          end
+        }
+      end
+
     # Tests if the logic value of this handle is "don't care" (x).
     def x?
       self.hexStrVal =~ /x/i
@@ -179,6 +190,26 @@ module SWIG
 
       aValue
     end
+
+    # Returns an array of child handles of the given VPI types.
+    def [] *aTypes
+      handles = []
+
+      aTypes.each do |t|
+        if itr = vpi_iterate(t, self)
+          while h = vpi_scan(itr)
+            handles << h
+          end
+        end
+      end
+
+      handles
+    end
+
+    def inspect
+      %{#<#{vpiType_s} #{vpiFullName} size=#{vpiSize}, file=#{vpiFile.inspect}, line=#{vpiLineNo}>}
+    end
+
 
     HINT_REGEXP = %r{_([a-z])$}
     ASSIGN_REGEXP = %r{=$}
@@ -309,28 +340,6 @@ module SWIG
         end
 
       raise NoMethodError, "unable to access VPI property #{propName.inspect} through method #{aMsg.inspect} with arguments #{aArgs.inspect} for handle #{self}"
-    end
-
-    # Returns an array of handles of the given type.
-    def [] aType
-      handles = []
-
-      if itr = vpi_iterate(aType, self)
-        while h = vpi_scan(itr)
-          handles << h
-        end
-      end
-
-      handles
-    end
-
-    # Iterates over all handles of the given type and executes the given block once for each handle.
-    def each aType, &aBlock	# :yields: handle
-      self[aType].each(&aBlock)
-    end
-
-    def inspect
-      %{#<#{vpiType_s} #{vpiFullName} size=#{vpiSize}, file=#{vpiFile.inspect}, line=#{vpiLineNo}>}
     end
   end
 end
