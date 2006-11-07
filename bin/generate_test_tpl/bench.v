@@ -31,7 +31,7 @@ module <%= aOutputInfo.verilogBenchName %>;
   // connect to the Ruby side of this bench
     initial begin
       <%= clockSignal %> = 0;
-      $ruby_init("ruby", "-w", "-rubygems", "-rruby-vpi", "<%= aOutputInfo.rubyBenchPath %>");
+      $ruby_init("ruby", "-w", "-rubygems", <%= aOutputInfo.rubyBenchPath.inspect %>);
     end
 
     always begin
