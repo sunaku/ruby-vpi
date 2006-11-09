@@ -12,6 +12,41 @@ We _strictly_ follow the RubyGems project's "rational versioning policy":http://
 fn1. C. Gross, "Explaining Open Source Version Numbers", [Online document], 2005 Nov 28, [cited 2006 Aug 27], Available HTTP: "http://ablog.apress.com/?p=738":http://ablog.apress.com/?p=738
 
 
+h1. Version 11.1.0 (2006-11-08)
+
+h2. Summary
+
+This release fixes a bug in generated benches, improves the "the @Vpi::Handle@ class":./ref/ruby/classes/Vpi/Handle.html, and improves performance by roughly 20%.
+
+h2. Acknowledgment
+
+Thanks to Matt Fischler for finding the bug in generated benches (see below).
+
+h2. Notice
+
+* A bug in generated Verilog and Ruby benches, which caused this error <pre>ruby: no such file to load -- ruby-vpi (LoadError)</pre> has been fixed.
+** Please regenerate your tests to apply this bug fix to your tests.
+
+h2. Detail
+
+* The class @SWIG::TYPE_p_unsigned_int@ has been aliased as @Vpi::Handle@ for easier access.
+
+* @Vpi::Handle#to_s@ and @Vpi::Handle#inspect@ now produce more informative output. For example, what used to appear as <pre>#<SWIG::TYPE_p_unsigned_int:0x2aaab6574fa0></pre> now appears as <pre>#<Vpi::Handle vpiModule fullName=counter_rspec_bench, size=-1, file=counter_rspec_bench.v, lineNo=2></pre> in this release.
+** You can also provide a list of VPI property/type names or integer constants to those methods to see additional information in the output.
+
+* @Vpi::Handle@ now implements all methods from @Enumerable@, such as @map@, @each@, @select@, and so on. However, unlike their counterparts in @Enumerable@, these methods also accept a list of VPI property/type names or integer constants. Thus, you are now able to write @handle.select(:reg, :net) {|h| h.size > 5}@ to obtain a list of child handles to registers and nets whose capacity is greater than 5 bits.
+
+* The @Vpi::Handle#[]@, @Vpi::Handle#get_value@, and @Vpi::Handle#put_value@ methods now accept names of VPI types/properties as well as their integer constants. Thus, you are now able to write @handle[:reg, :net]@ to obtain a list of handles to all child registers and nets.
+
+* @Vpi::Handle#method_missing@ has been refactored to cache queries. There is now, approximately, 20% improvement in performance.
+
+* @Vpi::Handle#method_missing@ has been fixed to accept operations with multiple underscores. For example, before this release, you could not write @handle.find_all_reg {|r| r.name =~ /foo/}@ because the "find_all_reg" method would be interpreted as the operation "find" and the VPI property "all_reg".
+
+* The @IntegerGenerator@ class, in the pipelined ALU example, has been fixed so that multiple instances do not interfere with the generation of each other's prime integers.
+
+* Due to a bug in the @Rakefile@, the reference documentation was not included in the previous few releases. This has been fixed.
+
+
 h1. Version 11.0.0 (2006-11-05)
 
 h2. Summary
@@ -77,7 +112,7 @@ h3. Automated test generator
 
 h3. User manual
 
-* Revised the stylesheet to make disjoint sections readily distinguishable from eachother, through generous spacing and minor coloring.
+* Revised the stylesheet to make disjoint sections readily distinguishable from each other, through generous spacing and minor coloring.
 
 * Added tips about @ruby-vpi/runner_proxy@, @rake -T@, and using *kdiff3* with *generate_test.rb*.
 
