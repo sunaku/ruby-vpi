@@ -16,25 +16,8 @@ h2. Features
 * Study, modify, or distribute this free software in accordance with the "GNU General Public License":http://www.gnu.org/copyleft/gpl.html.
 
 
-h1. Getting started
-
-* See the "user manual":./doc to begin using Ruby-VPI.
+h1. Release notes
 
 * See the "release history":./history.html to see what is new in this release.
 
-* See API documentation for the "C extension":./ref/c or "Ruby-VPI libraries":./ref/ruby.
-
-* Visit the "project website":http://ruby-vpi.rubyforge.org for additional resources.
-
-
-h1. Building release packages
-
-In addition to the "normal requirements":./doc/usage.requirements.html, you need the following software to build release packages:
-
-* "DocBook-XML":http://www.docbook.org/
-** xsltproc
-** xmlto
-* "RedCloth":http://rubyforge.org/projects/redcloth/
-* "SWIG":http://www.swig.org/
-
-Once you have satisfied these requirements, you can run @rake release@ to build the release packages. Also, see the output of @rake -T@ for more build options.
+* See the "project memo":./memo.html for a list of pending tasks.

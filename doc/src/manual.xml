@@ -1552,6 +1552,41 @@ Finished in 0.006766 seconds.
     </section>
   </chapter>
 
+  <chapter id="hacking">
+    <title>Hacking</title>
+
+    <section id="hacking.release-packages">
+      <title>Building release packages</title>
+      <para>In addition to the "normal requirements":./doc/usage.requirements.html, you need the following software to build release packages:
+
+      <variablelist>
+        <varlistentry>
+          <term><ulink url="http://www.docbook.org/">DocBook-XML</ulink></term>
+          <listitem><para/></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>xsltproc</term>
+          <listitem><para/></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>xmlto</term>
+          <listitem><para/></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><ulink url="http://rubyforge.org/projects/redcloth/">RedCloth</ulink></term>
+          <listitem><para/></listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><ulink url="http://www.swig.org/">SWIG</ulink></term>
+          <listitem><para/></listitem>
+        </varlistentry>
+      </variablelist>
+
+      Once you have satisfied these requirements, you can run <command>rake <action>release</action></command> to build the release packages. Also, see the output of <command>rake <option>-T</option></command> for more build options.</para>
+    </section>
+
+  </chapter>
+
   <chapter id="problems">
     <title>Known problems</title>
 
