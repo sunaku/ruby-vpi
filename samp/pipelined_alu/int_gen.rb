@@ -27,15 +27,14 @@ class IntegerGenerator
 
   attr_reader :bits
 
-  # Generates random integers representable by the given number of bits.
+  # Generates random integers that are representable by the given number of bits.
   def initialize aBits
     @bits = aBits
     @limit = 2 ** @bits
-
-    PRIMES.reject! {|i| i > @limit}
+    @primes = PRIMES.select {|i| i < @limit}
   end
 
-  # returns a random input sequence
+  # Returns a random integer.
   def random
     choices = [
       0,
@@ -48,12 +47,12 @@ class IntegerGenerator
     choices[rand(choices.length)]
   end
 
-  # returns a random prime integer
+  # Returns a random prime integer.
   def prime
-    PRIMES[rand(PRIMES.length)]
+    @primes[rand(@primes.length)]
   end
 
-  # returns a random power-of-two integer
+  # Returns a random power-of-two integer.
   def power_of_two
     2 ** rand(@bits)
   end
