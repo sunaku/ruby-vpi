@@ -17,7 +17,7 @@ module hw5_unit_test_bench;
   // connect to the Ruby side of this bench
     initial begin
       clk = 0;
-      $ruby_init("ruby", "-w", "-rubygems", "-rruby-vpi", "hw5_unit_test_bench.rb");
+      $ruby_init("ruby", "-w", "-rubygems", "hw5_unit_test_bench.rb");
     end
 
     always begin
