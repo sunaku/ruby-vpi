@@ -35,36 +35,26 @@
 <dt>
 <span class="term">
 <a href="http://rubyforge.org/projects/ruby-vpi" target="_top">
-Project</a>
+Facilities</a>
 </span>
 </dt>
 <dd>
 <p>
-Access project facilities, hosted generously by <a href="http://rubyforge.org" target="_top">
+Access the issue tracker, file downloads, support requests, discussion forums, and more at <a href="http://rubyforge.org" target="_top">
 RubyForge</a>.
 </p>
 </dd>
 
 <dt>
 <span class="term">
-<a href="http://rubyforge.org/tracker/?group_id=1339" target="_top">
-Tracker</a>
+<a href="http://ruby-vpi.rubyforge.org" target="_top">
+Project</a>
 </span>
 </dt>
 <dd>
 <p>
-Report problems, contribute patches, and more.</p>
-</dd>
-
-<dt>
-<span class="term">
-<a href="http://rubyforge.org/frs/?group_id=1339" target="_top">
-Releases</a>
-</span>
-</dt>
-<dd>
-<p>
-Download the newest releases.</p>
+Access more information at the project's home page.
+</p>
 </dd>
 
 <dt>
@@ -80,13 +70,24 @@ Browse or access the source code repository.</p>
 
 <dt>
 <span class="term">
-<a href="http://rubyforge.org/forum/?group_id=1339" target="_top">
-Forums</a>
+<a href="http://ruby-vpi.rubyforge.org/talks" target="_top">
+Talks</a>
 </span>
 </dt>
 <dd>
 <p>
-Ask for help, give feedback, or discuss.</p>
+Access public presentations about Ruby-VPI.</p>
+</dd>
+
+<dt>
+<span class="term">
+<a href="http://ruby-vpi.rubyforge.org/blog" target="_top">
+News</a>
+</span>
+</dt>
+<dd>
+<p>
+See what the developers are cooking up.</p>
 </dd>
 
 </dl>

@@ -1,16 +1,6 @@
-h1. Notes
-
-* When within Rake, rubygems is automatically available for use. no need to require() it again
-
-
 h1. Pending tasks
 
-* interactive console IRB wrapper for spec (just like Breakpoints in Rails)
-
-* add support for reading & writing vpi_delay values
-
-* define handled methods in Vpi::method_missing for faster response
-** this has been verified as bottleneck from profiling data
+* add support for reading & writing VPI delay values
 
 * GHDL simulator supports VPI
 ** need way to invoke VPI tasks from VHDL, like @$ruby_init();@
@@ -18,6 +8,10 @@ h1. Pending tasks
 * need to dump signal values when expectation fails in rSpec
 ** maybe a waveform dump will also help
 ** this will help in debugging the problem
+
+* add instructions for using *ruby-debug* with a graphical debugging tool or IDE like RadRails
+
+* make RCov correctly profile the code and report useful coverage metrics...
 
 
 h1. Finished tasks
@@ -41,10 +35,19 @@ h1. Finished tasks
 
 * method_missing for Design class
 
+* define handled methods in Vpi::method_missing for faster response
+** this has been verified as bottleneck from profiling data
+
 
 h1. Obsolete tasks
 
-* file bug report for Icarus 0.8 (l0_dcache)
-** try new icarus snapshot
-
 * smarter test generation, which adjusts to user modifications in previously generated output -- just use a smart merging tool like *kdiff3*
+
+* interactive console IRB wrapper for spec (just like Breakpoints in Rails)
+** use the *ruby-debug* library with "*debugger* command for breakpoints":http://www.datanoise.com/articles/category/ruby-debug instead!
+
+
+h1. Notes
+
+* When within Rake, rubygems is automatically available for use. no need to require() it again
+
