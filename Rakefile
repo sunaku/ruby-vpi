@@ -186,7 +186,7 @@ task :dist_info => distDocs
 
 
 desc "Prepare for distribution."
-task :dist => ['ext', :doc, :dist_info] do |t|
+task :dist => ['ext', 'ref', :doc, :dist_info] do |t|
   cd 'ext' do
     sh 'rake swig'
   end
