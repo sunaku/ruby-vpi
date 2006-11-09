@@ -24,7 +24,7 @@ module Vpi
   Handle = SWIG::TYPE_p_unsigned_int
 
   # An object inside a Verilog simulation (see *vpiHandle* in IEEE Std. 1364-2005).
-  # * VPI types and properties can be specified as names or integer constants.
+  # * VPI types and properties listed in ext/vpi_user.h can be specified by their names (strings or symbols) or integer constants.
   #   * example names:
   #     * "intVal"
   #     * :intVal
@@ -34,6 +34,8 @@ module Vpi
   #     * :VpiIntVal
   #   * example constants:
   #     * VpiIntVal
+  #     * VpiModule
+  #     * VpiReg
   class Handle
     include Vpi
 
@@ -204,7 +206,7 @@ module Vpi
 
     @@propCache = Hash.new {|h, k| h[k] = Property.resolve(k)}
 
-    # Enables access to this handle's
+    # Provides access to this handle's
     # 1. child handles
     # 2. VPI properties
     # through method calls. In the case that a child handle has the same name as a VPI property, the child handle will be accessed instead of the VPI property. However, you can still access the VPI property via #get_value and #put_value.
@@ -264,7 +266,7 @@ module Vpi
 
     Property = Struct.new :type, :name, :operation, :accessor, :assignment
 
-    # Resolves the given shorthand name into its VPI property.
+    # Resolves the given shorthand name into a description of its VPI property.
     def Property.resolve aName
       # parse the given property name
         tokens = aName.to_s.split(/_/)

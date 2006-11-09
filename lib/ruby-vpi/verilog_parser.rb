@@ -101,7 +101,7 @@ class VerilogParser
 end
 
 class String
-  # Converts this string containing Verilog code into loadable Ruby code.
+  # Converts this string containing Verilog code into syntactically correct Ruby code.
   def verilog_to_ruby
     content = self.dup
 

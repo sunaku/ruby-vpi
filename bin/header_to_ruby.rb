@@ -1,7 +1,7 @@
 #!/usr/bin/ruby -w
 # Transforms Verilog header files into Ruby.
-# * If no input files are specified, then the standard input stream is assumed to be the input.
-# * The resulting output is emitted to the standard output stream.
+# * The standard input stream is read if no input files are specified.
+# * Output is written to the standard output stream.
 
 =begin
   Copyright 2006 Suraj N. Kurapati

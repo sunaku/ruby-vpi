@@ -19,13 +19,13 @@
 =end
 
 module RubyVpi
-  # Initializes the current bench by loading:
+  # Initializes the bench by loading:
   # 1. the design.rb file
-  # 2. the proto.rb file (if prototyping is enabled)
+  # 2. the proto.rb file if prototyping is enabled
   # 3. the spec.rb file
   #
-  # aDesignId:: The name of the Ruby interface to the design under test.
-  # aSpecFormat:: The format of the specification.
+  # aDesignId:: The name of the Ruby design object.
+  # aSpecFormat:: The format being used by the specification.
   def RubyVpi.init_bench aDesignId, aSpecFormat
     if caller.find {|s| s =~ /^(.*?)_bench.rb:/}
       testName = $1
@@ -90,7 +90,7 @@ module RubyVpi
       require "#{testName}_spec.rb"
   end
 
-  # Provides information about the Ruby-VPI project's configuration.
+  # Provides information about this project's configuration.
   module Config
     PROJECT_ID = 'ruby-vpi'
     PROJECT_NAME = 'Ruby-VPI'
