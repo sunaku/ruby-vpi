@@ -18,28 +18,6 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
-=begin
-FORMATS = {
-  # format => xsltproc flag
-  'html' => 'xhtml',
-  'text' => 'txt',
-}
-
-task :default => FORMATS.keys
-
-FORMATS.each_pair do |fmt, flag|
-  desc "Generate documentation in #{fmt} format."
-  task fmt => ['src/manual.xml', 'src/manual.xsl'] do |t|
-    sh %{xmlto #{flag} -m #{t.prerequisites[1]} #{t.prerequisites[0]}}
-  end
-end
-
-CLOBBER.include '*.html', '*.txt'
-=end
-
-require 'rake/clean'
-require 'erb'
-
 
 ## text formatting
 
@@ -55,7 +33,6 @@ def add_table_of_contents aText
     text = aText.gsub /^(\s*h(\d))(\.|\(.*?\)\.)(.*)$/ do
       target = $~.dup
 
-      p target.to_a
       has_anchor = target[3] =~ /#([^#]+)\)/
       anchor = $1 || headings.length
 
@@ -104,7 +81,9 @@ end
   # end
 
 
-# generate the HTML files
+require 'rake/clean'
+require 'erb'
+
 FileList['*.erb'].each do |src|
   dst = File.basename(src, File.extname(src)) << '.html'
 
@@ -121,8 +100,7 @@ FileList['*.erb'].each do |src|
       f << content
     end
 
-    puts "#{src.inspect} => #{dst.inspect}"
-    at_exit {system 'echo -e "\a"'}
+    puts "#{src.inspect} => #{dst.inspect} \a"
   end
 
   task :default => dst
