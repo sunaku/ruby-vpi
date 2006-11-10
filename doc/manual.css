@@ -1,0 +1,151 @@
+body {
+  font-family: sans-serif;
+  line-height: 2em;
+
+  margin-left: 30%;
+  margin-right: 10%;
+
+}
+
+/* table of contents */
+
+  #toc:before {
+    content: "Table of contents";
+  }
+
+  #toc {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    bottom: 0px;
+
+    width: 20%;
+    padding: 1em;
+    overflow: auto;
+
+    background-color: white;
+  }
+
+  #toc li {
+    margin-left: -1.5em;
+  }
+
+/* admonitions */
+  .tip, .note, .important, .caution, .warning {
+    border: thin solid steelblue;
+    background-color: aliceblue;
+    padding: 1em;
+  }
+
+  .tip:before {
+    content: url("./images/tip.png") "Tip: ";
+  }
+
+  .note:before {
+    content: url("./images/note.png") "Note: ";
+  }
+
+  .important:before {
+    content: url("./images/important.png") "Important: ";
+  }
+
+  .caution:before {
+    content: url("./images/caution.png") "Caution: ";
+  }
+
+  .warning:before {
+    content: url("./images/warning.png") "Warning: ";
+  }
+
+/* headings */
+  th, h1, h2, h3, h4, h5, h6 {
+    font-family: serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 5em;
+    padding: 0.5em;
+  }
+
+  h1, h2, h3 {
+    text-align: center;
+  }
+
+  h1 {
+    padding: 1em;
+    background-color: mistyrose;
+  }
+
+  h2 {
+    background-color: bisque;
+  }
+
+  h3 {
+    background-color: oldlace;
+  }
+
+/* source code */
+  tt {
+    font-weight: bold;
+    background-color: whitesmoke;
+  }
+
+  pre {
+    background-color: mintcream;
+    border: thin solid silver;
+    padding: 1em;
+    line-height: normal;
+    display: block;
+    overflow: auto;
+  }
+
+  .CodeRay .code pre {
+    font-family: monospace;
+    background-color: ivory;
+  }
+
+/* tables */
+  th, td {
+    padding: 1em;
+    border: thin solid silver;
+  }
+
+  th {
+    background-color: whitesmoke;
+  }
+
+/* figures */
+  .figure {
+    margin: 1em;
+    text-align: center;
+  }
+
+  .caption:before {
+    content: "Figure " counter(figure) ". ";
+  }
+
+  .caption {
+    display: block;
+    font-size: larger;
+    counter-increment: figure;
+  }
+
+/* misc. */
+
+  .cover-page {
+    text-align: center;
+  }
+
+  a img {
+    border: none;
+  }
+
+  .tip, .note, .important, .caution, .warning, .caption {
+    margin-top: 3em;
+  }
+
+  td pre {
+    display: inline;
+    border: none;
+    padding: 0px;
+  }

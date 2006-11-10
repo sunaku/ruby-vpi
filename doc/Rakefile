@@ -18,8 +18,7 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
-require 'rake/clean'
-
+=begin
 FORMATS = {
   # format => xsltproc flag
   'html' => 'xhtml',
@@ -36,3 +35,97 @@ FORMATS.each_pair do |fmt, flag|
 end
 
 CLOBBER.include '*.html', '*.txt'
+=end
+
+require 'rake/clean'
+require 'erb'
+
+
+## text formatting
+
+require 'redcloth'
+
+Heading = Struct.new(:depth, :anchor, :title)
+
+# Adds a table of contents at the top of the given text and sufficent hyperlinks to access the various headings in the text.
+def add_table_of_contents aText
+  # determine structure of content and insert anchors where necessary
+    headings = []
+
+    text = aText.gsub /^(\s*h(\d))(\.|\(.*?\)\.)(.*)$/ do
+      target = $~.dup
+
+      p target.to_a
+      has_anchor = target[3] =~ /#([^#]+)\)/
+      anchor = $1 || headings.length
+
+      headings << Heading.new( target[2].to_i, anchor, target[4].strip )
+
+      if has_anchor
+        target.to_s
+      else
+        "#{target[1]}(##{anchor})#{target[3]}#{target[4]}"
+      end
+    end
+
+  # add table of contents at top of text
+    toc = headings.map do |h|
+      %{#{'*' * h.depth} "#{h.title}":##{h.anchor}}
+    end.join("\n")
+
+    text.insert 0, "\n\n\n"
+    text.insert 0, %{<div id="toc">\n\n#{toc}\n\n</div>}
+
+  text
+end
+
+require 'coderay'
+
+def add_syntax_coloring aText
+  aText.gsub %r{<(code).*?>(.*?)</\1>}m do
+    CodeRay.scan($2, :ruby).div
+  end
+end
+
+
+## utility methods for writing
+
+# admonitions
+  # [:tip, :note, :important, :caution, :warning].each do |a|
+  #   Kernel.class_eval do
+  #     define_method a do |text|
+  #       %{<div class="#{a}">\n\n#{text}\n\n</div>}
+  #     end
+  #   end
+  # end
+
+  # def tip *args
+  #   puts *args
+  # end
+
+
+# generate the HTML files
+FileList['*.erb'].each do |src|
+  dst = File.basename(src, File.extname(src)) << '.html'
+
+  file dst => src do
+    template = ERB.new(File.read(src))
+    content = template.result(binding)
+
+    content = add_table_of_contents(content)
+    content = RedCloth.new(content).to_html
+    content = add_syntax_coloring(content)
+
+
+    File.open(dst, 'w') do |f|
+      f << content
+    end
+
+    puts "#{src.inspect} => #{dst.inspect}"
+    at_exit {system 'echo -e "\a"'}
+  end
+
+  task :default => dst
+end
+
+CLEAN.include '*.html'
