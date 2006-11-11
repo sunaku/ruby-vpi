@@ -1,3 +1,0 @@
-<head>
-  <link rel="stylesheet" type="text/css" href="common.css" />
-</head>

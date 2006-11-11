@@ -235,12 +235,10 @@
     Thanks to Mauricio Fernandez for helping me use rcov without its runner.
 
   Detail: |
-    * Added initial[1] support for code coverage analysis, which can be enabled by setting the @COVERAGE@ environment variable to a non-empty value before running a test.
+    * Added initial support (full capabilites of the rcov library, such as its various analysis modes, are not yet utilized) for code coverage analysis, which can be enabled by setting the @COVERAGE@ environment variable to a non-empty value before running a test.
     ** For example, you can run a test with the GPL Cver simulator while enabling the generation of code coverage reports as follows: <pre>export COVERAGE=1; rake cver</pre>
 
     * Coverage reports are generated in text and HTML formats.
-
-    fn1. Full capabilites of the rcov library, such as its various analysis modes, are not yet utilized.
 
 
 -

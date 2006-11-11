@@ -1,34 +1,44 @@
 bq. Ruby-VPI is a "Ruby":http://www.ruby-lang.org interface to "Verilog VPI":http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945. It lets you create complex Verilog test benches easily and wholly in Ruby.
 
 
-h2(#intro.appetizers). Appetizers
-
-Here are some quick examples to whet your appetite.
-
-* Assign the value 2^2048^ to a register:
-  @some_register.intVal = 2 ** 2048@
-
-* Check if all registers in a module are currently at high impedance:
-  @some_module.all_reg? { |reg| reg.z? }@
-
-* Simulate until the _alert_ signal becomes 4'b1101:
-  @relay_verilog until alert.intVal == 0b1101@
-
-
 h2(#intro.features). Features
 
-* "Prototype":manual.html#usage.tutorial.implement-proto and verify Verilog designs _quickly_ using "BDD(behavior-driven development)":http://behaviour-driven.org, "TDD(test-driven development)":http://www.testdriven.com, and more.
+* Supports the _entire_ IEEE Std 1364-2005 VPI standard.
 
-* "Reuse":manual.html#usage.tutorial.test-proto the _same_ specification to verify both Ruby prototype and Verilog design _without_ having to modifiy any code.
+* Works with all "major Verilog simulators":manual.html#setup.reqs available today.
 
-* "Specifications":manual.html#usage.tutorial.specification are executable and human-readable.
+* Enables "agile practices":http://www.agilealliance.org/intro such as
+** "test-driven":http://www.testdriven.com development
+** "behavior-driven":http://behaviour-driven.org development
+** "rapid prototyping":manual.html#usage.tutorial.implement-proto for design exploration
 
-* Utilize the "power and elegance":http://www.ruby-lang.org/en/about/ of Ruby:
+* Eliminates unneccesary work:
+** "Specifications":manual.html#usage.tutorial.specification are _readable_, portable, and executable.
+** The "automated test generator":manual.html#usage.tools.generate-test helps you accomodate design changes with _minimal_ effort.
+
+* Utilizes the "power and elegance":http://www.ruby-lang.org/en/about/ of Ruby:
 ** Unlimited length integers
 ** Regular expressions
 ** Multi-threading
 ** System calls and I/O
-** "_ad infinium_":http://www.ruby-doc.org/whyruby
+** "_ad infinium_":http://rubyforge.org
 
-* Study, modify, and distribute this free software in accordance with the "GNU General Public License":http://www.gnu.org/copyleft/gpl.html.
+* Gives you the _freedom_ to study, modify, and distribute this software, in accordance with the "GNU General Public License":http://www.gnu.org/copyleft/gpl.html.
+
+
+h2(#intro.appetizers). Appetizers
+
+Here is a modest sampling to whet your appetite.
+
+* Assign the value 2^2048^ to a register:
+  @some_register.intVal = 2 ** 2048@
+
+* Check if all nets in a module are at high impedance:
+  @some_module.all_net? { |net| net.z? }@
+
+* Print a register's path, width, and location (file & line number):
+  @puts some_register@
+
+* Simulate fifteen clock cycles:
+  @15.times { relay_verilog }@
 

@@ -21,9 +21,7 @@
 require 'rubygems'
 
 
-## text formatting
-
-require 'redcloth'
+## text parsing
 
 Heading = Struct.new(:depth, :anchor, :title)
 
@@ -36,7 +34,7 @@ def build_table_of_contents aText
       target = $~.dup
 
       has_anchor = target[3] =~ /#([^#]+)\)/
-      anchor = $1 || headings.length
+      anchor = $1 || "anchor#{headings.length}"
 
       headings << Heading.new( target[2].to_i, anchor, target[4].strip )
 
@@ -52,31 +50,38 @@ def build_table_of_contents aText
       %{#{'*' * h.depth} "#{h.title}":##{h.anchor}}
     end.join("\n")
 
-  [toc, text]
+  [toc, text, headings]
 end
 
-# Adds a table of contents at the top of the given text.
-def add_table_of_contents aText
-  toc, text = build_table_of_contents(aText)
-  [ '<div id="toc">', toc, '</div>', text ].join("\n\n\n")
-end
+
+## text formatting
 
 require 'cgi'
 require 'coderay'
+require 'redcloth'
 
-# Adds syntax coloring to <code>...</code> elements in the given text.
-# If the <code> tag has an attribute lang="...", then that is considered the programming language for which appropriate syntax coloring should be applied. Otherwise, the programming language is assumed to be ruby.
-def add_syntax_coloring aText
-  aText.gsub %r{<(code)(.*?)>(.*?)</\1>}m do
-    code = CGI.unescapeHTML($3)
-    lang =
-      if $2 =~ /lang=('|")(.*?)\1/i
-        $2
-      else
-        :ruby
-      end
+class String
+  def redcloth
+    RedCloth.new(self).to_html
+  end
 
-    CodeRay.scan(code, lang).div
+  # Adds syntax coloring to <code>...</code> elements in the given text. If the <code> tag has an attribute lang="...", then that is considered the programming language for which appropriate syntax coloring should be applied. Otherwise, the programming language is assumed to be ruby.
+  def coderay
+    gsub %r{<(code)(.*?)>(.*?)</\1>}m do
+      code = CGI.unescapeHTML($3)
+      lang =
+        if $2 =~ /lang=('|")(.*?)\1/i
+          $2
+        else
+          :ruby
+        end
+
+      CodeRay.scan(code, lang).div
+    end
+  end
+
+  def to_html
+    redcloth.coderay
   end
 end
 
@@ -125,25 +130,31 @@ end
 require 'rake/clean'
 require 'erb'
 
+TEMPLATE_FILE = File.join(File.dirname(__FILE__), 'common.tpl')
+
 FileList['*.erb'].each do |src|
   prefix = File.basename(src, '.erb')
   helper = prefix + '.rb'
   dst = prefix + '.html'
 
-  file dst => src do
-    template = ERB.new(File.read(src), nil, nil, :@erbBuffer)
+  file dst => [src, TEMPLATE_FILE] do
+    @table_of_contents = true
+    @title = nil
 
-    if File.exist? helper
-      eval File.read(helper)
-    end
+    # evaluate the content
+      template = ERB.new(File.read(src), nil, nil, :@erbBuffer)
 
-    content = template.result(binding)
+      if File.exist? helper
+        eval File.read(helper)
+      end
 
+      content = template.result(binding)
 
-    content = add_table_of_contents(content)
-    content = RedCloth.new(content).to_html
-    content = add_syntax_coloring(content)
+    # evaluate the common template
+      toc, text, structure = build_table_of_contents(content)
 
+      template = ERB.new(File.read(TEMPLATE_FILE))
+      content = template.result(binding)
 
     File.open(dst, 'w') do |f|
       f << content
