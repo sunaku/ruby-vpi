@@ -40,9 +40,10 @@ require 'ruby-vpi/rake'
 include RubyVpi::Config
 PROJECT_SSH_URL = "snk@rubyforge.org:/var/www/gforge-projects/#{PROJECT_ID}"
 
-File.read('HISTORY') =~ /Version\s+([\d\.]+)\s*\((.*?)\)/
-PROJECT_VERSION = $1
-PROJECT_BIRTHDAY = $2
+load 'doc/history.rb'
+head = @history.first
+PROJECT_VERSION = head['Version']
+PROJECT_BIRTHDAY = head['Date']
 
 
 # Returns a temporary, unique path ready for use. No file exists at the returned path.
@@ -248,7 +249,7 @@ end
 
 
 desc "Configures the gem during installation."
-task :gem_config_inst => 'readme.html' do |t|
+task :gem_config_inst do |t|
   # make documentation available to gem_server
     gemDir = File.dirname(__FILE__)
     gemName = File.basename(gemDir)
@@ -256,9 +257,6 @@ task :gem_config_inst => 'readme.html' do |t|
 
     mkdir_p docDir
     ln_s gemDir, File.join(docDir, 'rdoc')
-
-    # gem_server doesn't dynamically generate directory index
-    cp t.prerequisites[0], 'index.html'
 end
 
 

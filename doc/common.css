@@ -4,7 +4,7 @@ body {
 
   margin-left: 30%;
   margin-right: 10%;
-
+  margin-bottom: 5em;
 }
 
 /* table of contents */
@@ -28,7 +28,6 @@ body {
 
   #toc li {
     margin-left: -1em;
-    counter-increment: section;
   }
 
 /* admonitions */

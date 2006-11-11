@@ -1,6 +1,4 @@
-<head>
-  <link rel="stylesheet" type="text/css" href="manual.css" />
-</head>
+<%= File.read 'common.inc' %>
 
 
 <div class="cover-page">
@@ -25,7 +23,7 @@ Admonition and navigation graphics are Copyright (c) 2005, 2006 "Tango Desktop P
 
 h1(#intro). Introduction
 
-Ruby-VPI is a "Ruby":http://ruby-lang.org interface to "VPI":http://en.wikipedia.org/wiki/Verilog. It lets you create complex Verilog test benches easily and wholly in Ruby.
+<%= File.read 'intro.inc' %>
 
 
 h2(#intro.license). License
@@ -381,7 +379,7 @@ Save the source code shown in "this figure":#fig..counter.v_decl into a file nam
 
 h3(#usage.tutorial.generate-test). Generate a test
 
-Now that we have a "design":#glossary.design to verify, let us generate a "test":#glossary.test for it using the "test-gen.link;. This tool allows us to implement our specification":#glossary.test-gen.link;. This tool allows us to implement our specification in either rSpec, xUnit, or our very own format. Each format represents a different software development methodology: rSpec represents "BDD":#glossary.BDD, xUnit represents "TDD":#glossary.TDD, and our own format can represent another methodology. Both rSpec and xUnit are presented in this tutorial.
+Now that we have a "design":#glossary.design to verify, let us generate a "test":#glossary.test for it using the "automated test generator":#usage.tools.generate-test. This tool allows us to implement our specification in either rSpec, xUnit, or our very own format. Each format represents a different software development methodology: rSpec represents "BDD":#glossary.BDD, xUnit represents "TDD":#glossary.TDD, and our own format can represent another methodology. Both rSpec and xUnit are presented in this tutorial.
 
 Once we have decided how we want to implement our specification, we can proceed to generate a test for our design. "this figure":#fig..generate-test.rspec and "this figure":#fig..generate-test.unit-test illustrate this process.
 
@@ -494,7 +492,8 @@ p(figure#fig..test-proto.rspec). Running a test with specification in rSpec form
 
 <pre>
 $ rake -f counter_rspec_runner.rake cver PROTOTYPE=1
-counter_rspec: verifying prototype instead of design
+
+Ruby-VPI: prototype has been enabled for test "counter_rspec"
 
 A resetted counter's value
 - should be zero
@@ -512,7 +511,8 @@ p(figure#fig..test-proto.unit-test). Running a test with specification in xUnit 
 
 <pre>
 $ rake -f counter_xunit_runner.rake cver PROTOTYPE=1
-counter_xunit: verifying prototype instead of design
+
+Ruby-VPI: prototype has been enabled for test "counter_xunit"
 
 Loaded suite counter_xunit_bench
 Started

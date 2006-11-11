@@ -18,6 +18,8 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
+require 'rubygems'
+
 
 ## text formatting
 
@@ -45,7 +47,7 @@ def build_table_of_contents aText
       end
     end
 
-  # add table of contents at top of text
+  # generate table of contents
     toc = headings.map do |h|
       %{#{'*' * h.depth} "#{h.title}":##{h.anchor}}
     end.join("\n")
@@ -79,39 +81,39 @@ def add_syntax_coloring aText
 end
 
 
-## ERB manipulation
+## ERB template manipulation
 
-$erbBuffer = ""  # this is specified in ERB.new below
+@erbBuffer = ""  # this is used by in ERB.new below
 
-# Returns an array containing (1) the contents of the ERB buffer thus far and (2) the new stuff that is to be added to the ERB buffer.
+# Returns an array containing (1) the contents of the ERB buffer thus far and (2) the text that is to be added to the ERB buffer.
 def erb_block_contents
-  buf = $erbBuffer
-  $erbBuffer = ""
+  # backup the buffer because yield is gonna append to it
+    buf = @erbBuffer
+    @erbBuffer = ""
 
-  new = yield
+  text = yield
 
-  $erbBuffer = buf
-  [buf, new]
+  # restore the backup
+    @erbBuffer = buf
+
+  [buf, text]
 end
-
-
-## custom ERB block methods
 
 # these methods create admonitions
 [:tip, :note, :important, :caution, :warning].each do |adm|
   # using a string because define_method does not accept a block until Ruby 1.9
   instance_eval %{
     def #{adm} aTitle = '', &aBlock
-      buf, new = erb_block_contents(&aBlock)
+      buf, text = erb_block_contents(&aBlock)
 
       buf << <<EOS
 <div class="#{adm}">
 
-!<images/#{adm}.png!
+!<images/#{adm}.png(#{adm})!
 
 p(title). #{adm.to_s.capitalize}: \#{aTitle}
 
-\#{new}
+\#{text}
 
 </div>
 EOS
@@ -129,7 +131,7 @@ FileList['*.erb'].each do |src|
   dst = prefix + '.html'
 
   file dst => src do
-    template = ERB.new(File.read(src), nil, nil, :$erbBuffer)
+    template = ERB.new(File.read(src), nil, nil, :@erbBuffer)
 
     if File.exist? helper
       eval File.read(helper)
@@ -147,7 +149,7 @@ FileList['*.erb'].each do |src|
       f << content
     end
 
-    puts "#{src.inspect} => #{dst.inspect}"
+    puts dst
   end
 
   task :default => dst
