@@ -164,30 +164,8 @@ end
 
 ## distribution
 
-DIST_INFO_HEADER = 'HEADER'
-
-distDocs = [DIST_INFO_HEADER, 'README', 'HISTORY', 'MEMO'].map do |src|
-  dst = src.downcase << '.html'
-  dstPartial = src.downcase << '.part.html'
-
-  file dst => [DIST_INFO_HEADER, src] do
-    sh "redcloth #{DIST_INFO_HEADER unless src == DIST_INFO_HEADER} #{src} > #{dst}"
-  end
-
-  file dstPartial => src do
-    sh "redcloth < #{src} > #{dstPartial}"
-  end
-
-  CLOBBER.include dst, dstPartial
-  [dst, dstPartial]
-end.flatten
-
-desc "Prepare distribution information."
-task :dist_info => distDocs
-
-
 desc "Prepare for distribution."
-task :dist => ['ext', 'ref', :doc, :dist_info] do |t|
+task :dist => ['ext', 'ref', :doc] do |t|
   cd 'ext' do
     sh 'rake swig'
   end
@@ -195,12 +173,7 @@ end
 
 
 desc 'Publish documentation to website.'
-task :web => [:web_info, :web_ref, :web_doc]
-
-desc "Publish distribution info."
-task :web_info => ['style.css', *distDocs] do |t|
-  upload PROJECT_SSH_URL, *t.prerequisites
-end
+task :web => [:web_ref, :web_doc]
 
 desc "Publish reference documentation."
 task :web_ref => 'ref' do |t|
