@@ -117,7 +117,7 @@ end
 ## documentation
 
 desc 'Generate user documentation.'
-task 'doc' do |t|
+task :doc do |t|
   cd t.name do
     sh 'rake'
   end

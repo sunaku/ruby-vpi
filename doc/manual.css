@@ -27,7 +27,8 @@ body {
   }
 
   #toc li {
-    margin-left: -1.5em;
+    margin-left: -1em;
+    counter-increment: section;
   }
 
 /* admonitions */
@@ -37,24 +38,8 @@ body {
     padding: 1em;
   }
 
-  .tip:before {
-    content: url("./images/tip.png") "Tip: ";
-  }
-
-  .note:before {
-    content: url("./images/note.png") "Note: ";
-  }
-
-  .important:before {
-    content: url("./images/important.png") "Important: ";
-  }
-
-  .caution:before {
-    content: url("./images/caution.png") "Caution: ";
-  }
-
-  .warning:before {
-    content: url("./images/warning.png") "Warning: ";
+  .tip img, .note img, .important img, .caution img, .warning img {
+    margin-right: 2em;
   }
 
 /* headings */
@@ -91,7 +76,7 @@ body {
   }
 
   pre {
-    background-color: mintcream;
+    background-color: whitesmoke;
     border: thin solid silver;
     padding: 1em;
     line-height: normal;
@@ -118,20 +103,19 @@ body {
   .figure {
     margin: 1em;
     text-align: center;
-  }
-
-  .caption:before {
-    content: "Figure " counter(figure) ". ";
-  }
-
-  .caption {
-    display: block;
-    font-size: larger;
     counter-increment: figure;
   }
 
-/* misc. */
+  .figure:before {
+    content: "Figure " counter(figure) ". ";
+  }
 
+  .figure, .title {
+    display: block;
+    font-size: larger;
+  }
+
+/* misc. */
   .cover-page {
     text-align: center;
   }
@@ -140,12 +124,15 @@ body {
     border: none;
   }
 
-  .tip, .note, .important, .caution, .warning, .caption {
-    margin-top: 3em;
-  }
-
   td pre {
     display: inline;
     border: none;
     padding: 0px;
+  }
+
+
+  /* spacing before admonitions & figures */
+
+  .tip, .note, .important, .caution, .warning, .figure {
+    margin-top: 3em;
   }

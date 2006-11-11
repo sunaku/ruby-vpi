@@ -18,9 +18,7 @@ class ResettedCounterValue < Test::Unit::TestCase
   def test_increment
     LIMIT.times do |i|
       assert_equal i, Counter.count.intVal
-
-      # advance the clock
-        relay_verilog
+      relay_verilog # increment the counter
     end
   end
 end
@@ -30,14 +28,12 @@ class MaximumCounterValue < Test::Unit::TestCase
     Counter.reset!
 
     # increment the counter to maximum value
-      MAX.times do relay_verilog end
-      assert_equal MAX, Counter.count.intVal
+    MAX.times {relay_verilog}
+    assert_equal MAX, Counter.count.intVal
   end
 
   def test_overflow
-    # increment the counter
-      relay_verilog
-
+    relay_verilog # increment the counter
     assert_equal 0, Counter.count.intVal
   end
 end

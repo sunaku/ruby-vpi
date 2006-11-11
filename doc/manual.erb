@@ -16,9 +16,9 @@ Suraj N. Kurapati
 </div>
 
 
-h2. Terms
+h2(#terms). Terms
 
-This documentation is Copyright (c) 2006 Suraj N. Kurapati. Permission is granted to copy, distribute and/or modify this document under the terms of the "GNU Free Documentation License":http://www.gnu.org/copyleft/fdl.html, Version 1.1 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts and no Back-Cover Texts.  A copy of the license is included in the the file named "LICENSE":./LICENSE.
+Permission is granted to copy, distribute and/or modify this document under the terms of the "GNU Free Documentation License":http://www.gnu.org/copyleft/fdl.html, Version 1.1 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts and no Back-Cover Texts.  A copy of the license is included in the the file named "LICENSE":./LICENSE.
 
 Admonition and navigation graphics are Copyright (c) 2005, 2006 "Tango Desktop Project":http://tango.freedesktop.org. They are licensed under "these terms":./images/LICENSE.
 
@@ -30,7 +30,7 @@ Ruby-VPI is a "Ruby":http://ruby-lang.org interface to "VPI":http://en.wikipedia
 
 h2(#intro.license). License
 
-Ruby-VPI is "free software":http://en.wikipedia.org/wiki/Free_software; you can redistribute it and/or modify it under the terms of the "GNU General Public License":http://www.gnu.org/copyleft/gpl.html as published by the "Free Software Foundation":http://www.fsf.org; either version 2 of the License, or (at your option) any later version.
+Ruby-VPI is "free software":http://en.wikipedia.org/wiki/Free_software ; you can redistribute it and/or modify it under the terms of the "GNU General Public License":http://www.gnu.org/copyleft/gpl.html as published by the "Free Software Foundation":http://www.fsf.org ; either version 2 of the License, or (at your option) any later version.
 
 
 h2(#intro.related-works). Related works
@@ -64,7 +64,9 @@ Ruby-VPI presents an open-ended interface to VPI. Thus, you can use any methodol
 
 h2(#background.vocab). Terminology
 
-p(tip). Have a look at the "this section":#glossary for definitions of terms used in this manual.
+<% tip do %>
+Have a look at the "this section":#glossary for definitions of terms used in this manual.
+<% end %>
 
 As a newcomer into the world of Verilog, I often heard the term *test bench*: "I ran the test bench, but it didn't work!" or "Are you crazy?!! You _still_ haven't written the test bench?", for example. I flipped through my textbook and surfed the Internet for a definition of the term, but it was to no avail. Instead, both resources nonchalantly employed the term _throughout_ their being, as if mocking my ignorance of what seems to be universal knowledge.
 
@@ -100,11 +102,11 @@ bq. For example, the s_vpi_value structure in C becomes the S_vpi_value class in
 
 bq. The reason for this limitation is that some C compilers have trouble with pointers to the va_list type. For these compilers, the second line in the code shown below causes a "type mismatch" error.
 
-<pre>
+<code lang="c">
 void foo(va_list ap) {
   va_list *p = &ap;
 }
-</pre>
+</code>
 
 
 h4(#background.org.vpi.util). VPI utility layer
@@ -116,7 +118,7 @@ The children of a handle are simply the handles that are immediately contained w
 In the event that a child handle has the same name as a VPI property, the child is given priority. However, you can always access VPI properties explicitly via the get_value and put_value methods.
 
 
-p(caption). Parts of speech for accessing a handle's VPI properties
+p(figure). Parts of speech for accessing a handle's VPI properties
 
 |_. Operation |_. _ |_. Property |_. _ |_. Accessor |_. Addendum |
 |\2. optional       | required   |\3. optional                   |
@@ -130,7 +132,7 @@ p(caption). Parts of speech for accessing a handle's VPI properties
 * *Addendum* suggests that the specified VPI property should be queried as a boolean value when it is a question mark (?). This suggestion is the same as specifying "b" for the Accessor parameter. Also, when this parameter is an equal sign (_=_), it suggests that the specified VPI property should be written to.
 
 
-p(caption). Possible accessors and their implications
+p(figure). Possible accessors and their implications
 
 |_. Accessor |_. Kind of value accessed |_. VPI functions used to access the value |
 | d | delay | @vpi_get_delays@, @vpi_put_delays@ |
@@ -141,7 +143,7 @@ p(caption). Possible accessors and their implications
 | h | handle | @vpi_handle@ |
 
 
-p(caption). Examples of accessing a handle's VPI properties
+p(figure). Examples of accessing a handle's VPI properties
 
 |_/2. Ruby expression |_\6. Parts of speech |_/2. Description |
 ||_. Operation |_. _ |_. Property |_. _ |_. Accessor |_. Addendum ||
@@ -284,7 +286,9 @@ h3(#setup.installation.windows). Installing on Windows
 ** If you are using Mentor Modelsim, the desired object file can be found at a path similar to <tt>C:\Modeltech\win32\libvsim.dll</tt>.
 ** If you are using GPL Cver, the desired object file can be found at a path similar to <tt>C:\gplcver\objs\v_vpi.o</tt>.
 
-bq(note). Since Ruby-VPI makes use of the VPI C-language interface, it links to symbols whose names begin with "_vpi". It is possible for these symbols to be undefined when Ruby-VPI is compiled under GNU/Linux and similar operating systems. In contrast, one "cannot compile a shared object file with references to undefined symbols under Windows":http://sourceware.org/ml/cygwin/2001-12/msg01293.html. Thus, we must find a Verilog simulator's shared object file, which contains definitions of all VPI symbols, and give this file to the linker when compiling Ruby-VPI.
+<% note do %>
+Since Ruby-VPI makes use of the VPI C-language interface, it links to symbols whose names begin with "_vpi". It is possible for these symbols to be undefined when Ruby-VPI is compiled under GNU/Linux and similar operating systems. In contrast, one "cannot compile a shared object file with references to undefined symbols under Windows":http://sourceware.org/ml/cygwin/2001-12/msg01293.html. Thus, we must find a Verilog simulator's shared object file, which contains definitions of all VPI symbols, and give this file to the linker when compiling Ruby-VPI.
+<% end %>
 
 * Assign the path of the object file (determined in the previous step) to the LDFLAGS environment variable. For example, if the object file's path is _/foo/bar/vpi.so_, then you would run the <pre>export LDFLAGS=/foo/bar/vpi.so</pre> command in Cygwin.
 
@@ -296,7 +300,9 @@ h2(#setup.maintenance). Maintenance
 * You can uninstall Ruby-VPI by running the <pre>gem uninstall ruby-vpi</pre> command.
 * You can upgrade to the latest release of Ruby-VPI by running the <pre>gem update ruby-vpi</pre> command.
 
-bq(note). Learn more about using and manipulating RubyGems in "the RubyGems user manual":http://www.rubygems.org.
+<% note do %>
+Learn more about using and manipulating RubyGems in "the RubyGems user manual":http://www.rubygems.org.
+<% end %>
 
 
 h1(#usage). Usage
@@ -318,8 +324,7 @@ The automated test generator (*generate_test.rb*) generates tests from Verilog 2
 
 The reason for dividing a single test into these parts is mainly to decouple the design from the specification. This allows you to focus on writing the specification while the remainder is automatically generated by the tool. For example, when the interface of a Verilog module changes, you would simply re-run this tool and incorporate those changes (using a "text merging tool":#setup.recom) into the test without diverting your focus from the specification.
 
-<div class="tip"> Using *kdiff3* with the automated test generator.
-
+<% tip "Using *kdiff3* with the automated test generator." do %>
 # Create a file named <tt>merge2</tt> with the following content: <pre>
 #!/bin/sh
 # arguments: old file, new file
@@ -330,7 +335,7 @@ kdiff3 --auto --merge --output "$2" "$@" 2>/dev/null
 # Assign the value "merge2" to the MERGER environment variable using your shell's *export* or *setenv* command.
 
 From now on, *kdiff3* will be invoked to help you transfer your changes between generated files. When you are finished transferring changes, simply issue the "save the file" command and terminate *kdiff3*. Or, if you do not want to transfer any changes, simply terminate *kdiff3*.
-</div>
+<% end %>
 
 
 h3(#usage.tools.verilog-ruby-conv). Verilog to Ruby conversion
@@ -358,9 +363,9 @@ First, we need a "design":#glossary.design to verify. In this tutorial, "this fi
 * *reset* causes the *count* register to become zero when asserted.
 * *count* is a register that contains the counter's value.
 
-p(caption#fig..counter.v_decl). Declaration of a simple up-counter with synchronous reset
+p(figure#fig..counter.v_decl). Declaration of a simple up-counter with synchronous reset
 
-<code>
+<code lang="verilog">
 module counter #(parameter Size = 5) (
   input clock,
   input reset,
@@ -369,7 +374,9 @@ module counter #(parameter Size = 5) (
 endmodule
 </code>
 
-bq(important). Save the source code shown in "this figure":#fig..counter.v_decl into a file named <tt>counter.v</tt>.
+<% important "Before we continue..." do %>
+Save the source code shown in "this figure":#fig..counter.v_decl into a file named <tt>counter.v</tt>.
+<% end %>
 
 
 h3(#usage.tutorial.generate-test). Generate a test
@@ -379,7 +386,7 @@ Now that we have a "design":#glossary.design to verify, let us generate a "test"
 Once we have decided how we want to implement our specification, we can proceed to generate a test for our design. "this figure":#fig..generate-test.rspec and "this figure":#fig..generate-test.unit-test illustrate this process.
 
 
-p(caption#fig..generate-test.rspec). Generating a test with specification in rSpec format
+p(figure#fig..generate-test.rspec). Generating a test with specification in rSpec format
 
 <pre>
 $ generate_test.rb counter.v --rspec --name rspec
@@ -394,7 +401,7 @@ $ generate_test.rb counter.v --rspec --name rspec
 </pre>
 
 
-p(caption#fig..generate-test.unit-test). Generating a test with specification in xUnit format
+p(figure#fig..generate-test.unit-test). Generating a test with specification in xUnit format
 
 <pre>
 $ generate_test.rb counter.v --xunit --name xunit
@@ -422,27 +429,28 @@ Here are some reasonable expectations for our simple counter:
 Now that we have identified a set of expectations for our design, we are ready to implement them in our specification. "this figure":#fig..counter_rspec_spec.rb and "this figure":#fig..counter_xunit_spec.rb illustrate this process. Note the striking similarities between our expectations and their implementation.
 
 
-p(caption#fig..counter_rspec_spec.rb). Specification implemented in rSpec format
+p(figure#fig..counter_rspec_spec.rb). Specification implemented in rSpec format
 
 <code><%= File.read '../samp/counter/counter_rspec_spec.rb' %></code>
 
-p(caption#fig..counter_xunit_spec.rb). Specification implemented in xUnit format
+p(figure#fig..counter_xunit_spec.rb). Specification implemented in xUnit format
 
 <code><%= File.read '../samp/counter/counter_xunit_spec.rb' %></code>
 
-<div class="important">Before we continue...
-
+<% important "Before we continue..." do %>
 # Replace the contents of the file named <tt>counter_rspec_spec.rb</tt> with the source code shown in "this figure":#fig..counter_rspec_spec.rb.
 # Replace the contents of the file named <tt>counter_xunit_spec.rb</tt> with the source code shown in "this figure":#fig..counter_xunit_spec.rb.
 # Replace the contents of the files named <tt>counter_rspec_design.rb</tt> and <tt>counter_xunit_design.rb</tt> with the following code. This code defines the reset! method which resets our Verilog design. <code>
 def Counter.reset!
   reset.intVal = 1
-  relay_verilog # advance the clock
+
+  # simulate one clock cycle
+  relay_verilog
+
   reset.intVal = 0
 end
 </code>
-
-</div>
+<% end %>
 
 
 h3(#usage.tutorial.implement-proto). Implement the prototype
@@ -451,7 +459,7 @@ h3(#usage.tutorial.implement-proto). Implement the prototype
 Now that we have a "specification":#glossary.specification against which to verify our "design":#glossary.design, let us build a prototype of our design. By doing so, we exercise our specification, experience potential problems that may arise when we later implement our design in Verilog, and gain confidence in our work. "this figure":#fig..counter_proto.rb shows the completed prototype for our design.
 
 
-p(caption#fig..counter_proto.rb). Ruby prototype of our Verilog design
+p(figure#fig..counter_proto.rb). Ruby prototype of our Verilog design
 
 <code>
 def Counter.simulate!
@@ -463,21 +471,26 @@ def Counter.simulate!
 end
 </code>
 
-bq(important). Replace the contents of the files named <tt>counter_rspec_proto.rb</tt> and <tt>counter_xunit_proto.rb</tt> with the source code shown in "this figure":#fig..counter_proto.rb.
+<% important "Before we continue..." do %>
+Replace the contents of the files named <tt>counter_rspec_proto.rb</tt> and <tt>counter_xunit_proto.rb</tt> with the source code shown in "this figure":#fig..counter_proto.rb.
+<% end %>
 
 
 h3(#usage.tutorial.test-proto). Verify the prototype
 
 Now that we have implemented our prototype, we are ready to verify it against our "specification":#glossary.specification by running the "test":#glossary.test. "this figure":#fig..test-proto.rspec and "this figure":#fig..test-proto.unit-test illustrate this process.
 
-bq(tip). The _same_ specification can be used to verify both prototype and design.
+<% tip "Reuse your specification." do %>
+The _same_ specification can be used to verify both prototype and design.
+<% end %>
 
 Here, the PROTOTYPE environment variable is assigned a non-empty value while running the test, so that, instead of our design, our prototype is verified against our specification. You can also assign a value to PROTOTYPE before running the test, by using your shell's *export* or *setenv* command. Finally, the Icarus Verilog simulator, denoted by _cver_, is used to run the simulation.
 
-bq(tip). What can the test runner do?
+<% tip "What can the test runner do?" do %>
 If you invoke the test runner (1) without any arguments or (2) with the *-T* option, it will show you a list of tasks that it can perform for you.
+<% end %>
 
-p(caption#fig..test-proto.rspec). Running a test with specification in rSpec format
+p(figure#fig..test-proto.rspec). Running a test with specification in rSpec format
 
 <pre>
 $ rake -f counter_rspec_runner.rake cver PROTOTYPE=1
@@ -495,7 +508,7 @@ Finished in 0.018199 seconds
 3 specifications, 0 failures
 </pre>
 
-p(caption#fig..test-proto.unit-test). Running a test with specification in xUnit format
+p(figure#fig..test-proto.unit-test). Running a test with specification in xUnit format
 
 <pre>
 $ rake -f counter_xunit_runner.rake cver PROTOTYPE=1
@@ -515,11 +528,13 @@ h3(#usage.tutorial.implement-design). Implement the design
 Now that we have implemented and verified our prototype, we are ready to implement our "design":#glossary.design. This is often quite simple because we translate _existing_ code from Ruby (our prototype) into Verilog (our design). "this figure":#fig..counter.v_impl illustrates the result of this process. Once again, note the striking similarities between the implementation of our prototype and design.
 
 
-p(caption#fig..counter.v_impl"). Implementation of a simple up-counter with synchronous reset
+p(figure#fig..counter.v_impl"). Implementation of a simple up-counter with synchronous reset
 
-<code><%= File.read '../samp/counter/counter.v' %></code>
+<code lang="verilog"><%= File.read '../samp/counter/counter.v' %></code>
 
-p(important). Replace the contents of the file named <tt>counter.v</tt> with the source code shown in "this figure":#fig..counter.v_impl.
+<% important "Before we continue..." do %>
+Replace the contents of the file named <tt>counter.v</tt> with the source code shown in "this figure":#fig..counter.v_impl.
+<% end %>
 
 
 h3(#usage.tutorial.test-design). Verify the design
@@ -528,17 +543,15 @@ Now that we have implemented our "design":#glossary.design, we are ready to veri
 
 Here, the PROTOTYPE environment variable is _not_ specified while running the test, so that our design, instead of our prototype, is verified against our specification. You can also achieve this effect by assigning an empty value to PROTOTYPE, or by using your shell's *unset* command. Finally, the GPL Cver Verilog simulator, denoted by _cver_, is used to run the simulation.
 
-<div class="tip">Running multiple tests
-
+<% tip "Running multiple tests at once." do %>
 Create a file named <tt>Rakefile</tt> containing the following line.
 
 @require 'ruby-vpi/runner_proxy'@
 
 Now you can invoke all test runners in the current directory simply by executing <pre>rake cver</pre> (where _cver_ denotes the GPL Cver simulator).
+<% end %>
 
-</div>
-
-p(caption#fig..test-design.rspec). Running a test with specification in rSpec format
+p(figure#fig..test-design.rspec). Running a test with specification in rSpec format
 
 <pre>
 $ rake -f counter_rspec_runner.rake cver
@@ -554,7 +567,7 @@ Finished in 0.005628 seconds
 3 specifications, 0 failures
 </pre>
 
-p(caption#fig..test-design.unit-test). Running a test with specification in xUnit format
+p(figure#fig..test-design.unit-test). Running a test with specification in xUnit format
 
 <pre>
 $ rake -f counter_xunit_runner.rake cver
@@ -599,14 +612,14 @@ h2(#problems.ruby). Ruby
 
 h3(#problems.ruby.SystemStackError). SystemStackError
 
-p(note). This problem was fixed in release 2.0.0 (2006-04-17).
+<%= @fixed_in_2_0_0 %>
 
 If a "stack level too deep (SystemStackError)" error occurs during the simulation, then increase the system-resource limit for stack-size by running the <pre>ulimit -s unlimited</pre> command before starting the simulation.
 
 
 h3(#problems.ruby.xUnit). test/unit
 
-p(note). This problem was fixed in release 2.0.0 (2006-04-17).
+<%= @fixed_in_2_0_0 %>
 
 If your specification employs Ruby's unit testing framework, then you will encounter an error saying "[BUG] cross-thread violation on rb_gc()".
 
@@ -623,9 +636,9 @@ In version 0.8 and snapshot 20061009 of Icarus Verilog, the vpi_handle_by_name f
 
 For example, consider "this section":#ex..TestFoo. Here, one needs to specify @TestFoo.my_foo.clk@ instead of @my_foo.clk@ in order to access the clk input of the my_foo module instance.
 
-p(caption#ex..TestFoo). Part of a bench which instantiates a Verilog design
+p(figure#ex..TestFoo). Part of a bench which instantiates a Verilog design
 
-<code>
+<code lang="verilog">
 module TestFoo;
   reg clk_reg;
   Foo my_foo(.clk(clk_reg));
@@ -641,21 +654,21 @@ For example, suppose you wanted to access the clk_reg register, from the bench s
 
 The solution is to change the design such that it appears like the one shown in "this section":#ex..TestFoo_fix where the register is connected to a wire, or "this section":#ex..TestFoo where the register is connected to a module instantiation.
 
-p(caption#ex..TestFoo_bad). Bad design with unconnected registers
+p(figure#ex..TestFoo_bad). Bad design with unconnected registers
 
 Here the clk_reg register is not connected to anything.
 
-<code>
+<code lang="verilog">
 module TestFoo;
   reg clk_reg;
 endmodule
 </code>
 
-p(caption#ex..TestFoo_fix). Fixed design with wired registers
+p(figure#ex..TestFoo_fix). Fixed design with wired registers
 
 Here the clk_reg register is connected to the clk_wire wire.
 
-<code>
+<code lang="verilog">
 module TestFoo;
   reg clk_reg;
   wire clk_wire;
@@ -676,7 +689,7 @@ h2(#problems.vsim). Mentor Modelsim
 
 h3(#problems.vsim.ruby_run). ruby_run();
 
-p(note). This problem was fixed in release 2.0.0 (2006-04-17).
+<%= @fixed_in_2_0_0 %>
 
 Version 6.1b of Mentor Modelsim doesn't play nicely with either an embedded Ruby interpreter or POSIX threads in a PLI application. When Ruby-VPI invokes the ruby_run function (which starts the Ruby interpreter), the simulator terminates immediately with an exit status of 0.
 

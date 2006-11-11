@@ -25,8 +25,8 @@ require 'redcloth'
 
 Heading = Struct.new(:depth, :anchor, :title)
 
-# Adds a table of contents at the top of the given text and sufficent hyperlinks to access the various headings in the text.
-def add_table_of_contents aText
+# Returns a table of contents for the given text and a modified version of the given text that has sufficient hyperlink anchors (so that the TOC can link to parts of the text).
+def build_table_of_contents aText
   # determine structure of content and insert anchors where necessary
     headings = []
 
@@ -50,46 +50,93 @@ def add_table_of_contents aText
       %{#{'*' * h.depth} "#{h.title}":##{h.anchor}}
     end.join("\n")
 
-    text.insert 0, "\n\n\n"
-    text.insert 0, %{<div id="toc">\n\n#{toc}\n\n</div>}
-
-  text
+  [toc, text]
 end
 
+# Adds a table of contents at the top of the given text.
+def add_table_of_contents aText
+  toc, text = build_table_of_contents(aText)
+  [ '<div id="toc">', toc, '</div>', text ].join("\n\n\n")
+end
+
+require 'cgi'
 require 'coderay'
 
+# Adds syntax coloring to <code>...</code> elements in the given text.
+# If the <code> tag has an attribute lang="...", then that is considered the programming language for which appropriate syntax coloring should be applied. Otherwise, the programming language is assumed to be ruby.
 def add_syntax_coloring aText
-  aText.gsub %r{<(code).*?>(.*?)</\1>}m do
-    CodeRay.scan($2, :ruby).div
+  aText.gsub %r{<(code)(.*?)>(.*?)</\1>}m do
+    code = CGI.unescapeHTML($3)
+    lang =
+      if $2 =~ /lang=('|")(.*?)\1/i
+        $2
+      else
+        :ruby
+      end
+
+    CodeRay.scan(code, lang).div
   end
 end
 
 
-## utility methods for writing
+## ERB manipulation
 
-# admonitions
-  # [:tip, :note, :important, :caution, :warning].each do |a|
-  #   Kernel.class_eval do
-  #     define_method a do |text|
-  #       %{<div class="#{a}">\n\n#{text}\n\n</div>}
-  #     end
-  #   end
-  # end
+$erbBuffer = ""  # this is specified in ERB.new below
 
-  # def tip *args
-  #   puts *args
-  # end
+# Returns an array containing (1) the contents of the ERB buffer thus far and (2) the new stuff that is to be added to the ERB buffer.
+def erb_block_contents
+  buf = $erbBuffer
+  $erbBuffer = ""
+
+  new = yield
+
+  $erbBuffer = buf
+  [buf, new]
+end
+
+
+## custom ERB block methods
+
+# these methods create admonitions
+[:tip, :note, :important, :caution, :warning].each do |adm|
+  # using a string because define_method does not accept a block until Ruby 1.9
+  instance_eval %{
+    def #{adm} aTitle = '', &aBlock
+      buf, new = erb_block_contents(&aBlock)
+
+      buf << <<EOS
+<div class="#{adm}">
+
+!<images/#{adm}.png!
+
+p(title). #{adm.to_s.capitalize}: \#{aTitle}
+
+\#{new}
+
+</div>
+EOS
+    end
+  }
+end
 
 
 require 'rake/clean'
 require 'erb'
 
 FileList['*.erb'].each do |src|
-  dst = File.basename(src, File.extname(src)) << '.html'
+  prefix = File.basename(src, '.erb')
+  helper = prefix + '.rb'
+  dst = prefix + '.html'
 
   file dst => src do
-    template = ERB.new(File.read(src))
+    template = ERB.new(File.read(src), nil, nil, :$erbBuffer)
+
+    if File.exist? helper
+      eval File.read(helper)
+    end
+
     content = template.result(binding)
+
 
     content = add_table_of_contents(content)
     content = RedCloth.new(content).to_html
@@ -100,7 +147,7 @@ FileList['*.erb'].each do |src|
       f << content
     end
 
-    puts "#{src.inspect} => #{dst.inspect} \a"
+    puts "#{src.inspect} => #{dst.inspect}"
   end
 
   task :default => dst
