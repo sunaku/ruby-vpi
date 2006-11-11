@@ -4,34 +4,33 @@
   Date: 2006-11-08
 
   Summary: |
-    This release fixes a bug in generated benches, improves the "the @Vpi::Handle@ class":./ref/ruby/classes/Vpi/Handle.html, and improves performance by roughly 20%.
+    This release fixes a bug in generated benches, improves the "the @Vpi::Handle@ class":../ref/ruby/classes/Vpi/Handle.html, and improves performance by roughly 20%.
 
   Acknowledgment: |
     Thanks to Matt Fischler for finding the bug in generated benches (see below).
 
   Notice: |
-    * A bug in generated Verilog and Ruby benches, which caused this error <pre>ruby: no such file to load -- ruby-vpi (LoadError)</pre> has been fixed.
-    ** Please regenerate your tests to apply this bug fix to your tests.
+    * A bug in generated Verilog and Ruby benches, which caused the <pre>ruby: no such file to load -- ruby-vpi (LoadError)</pre> error, has been fixed. Please regenerate your tests to apply this bug fix to your tests.
 
   Detail: |
     * The class @SWIG::TYPE_p_unsigned_int@ has been aliased as @Vpi::Handle@ for easier access.
 
-    * @Vpi::Handle#to_s@ and @Vpi::Handle#inspect@ now produce more informative output. For example, what used to appear as <pre>#<SWIG::TYPE_p_unsigned_int:0x2aaab6574fa0></pre> now appears as <pre>#<Vpi::Handle vpiModule fullName=counter_rspec_bench, size=-1, file=counter_rspec_bench.v, lineNo=2></pre> in this release.
-    ** You can also provide a list of VPI property/type names or integer constants to those methods to see additional information in the output.
+    * @Vpi::Handle.to_s@ and @Vpi::Handle.inspect@ now produce more informative output. For example, what used to appear as <pre>#<SWIG::TYPE_p_unsigned_int:0x2aaab6574fa0></pre> now appears as <pre>#<Vpi::Handle vpiModule fullName=counter_rspec_bench, size=-1, file=counter_rspec_bench.v, lineNo=2></pre> in this release.
+    ** You can also provide a list of VPI properties, as names or integer constants, to those methods to see additional information in the output.
 
-    * @Vpi::Handle@ now implements all methods from @Enumerable@, such as @map@, @each@, @select@, and so on. However, unlike their counterparts in @Enumerable@, these methods also accept a list of VPI property/type names or integer constants. Thus, you are now able to write @handle.select(:reg, :net) {|h| h.size > 5}@ to obtain a list of child handles to registers and nets whose capacity is greater than 5 bits.
+    * @Vpi::Handle@ now implements all methods from @Enumerable@, such as @map@, @each@, @select@, and so on. However, unlike their counterparts in @Enumerable@, these methods also accept a list of VPI properties, as names or integer constants. Thus, you are now able to write @handle.select(:reg, :net) {|h| h.size > 5}@ to obtain a list of child handles to registers and nets whose capacity is greater than 5 bits.
 
-    * The @Vpi::Handle#[]@, @Vpi::Handle#get_value@, and @Vpi::Handle#put_value@ methods now accept names of VPI types/properties as well as their integer constants. Thus, you are now able to write @handle[:reg, :net]@ to obtain a list of handles to all child registers and nets.
+    * The @Vpi::Handle.[]@, @Vpi::Handle.get_value@, and @Vpi::Handle.put_value@ methods now accept names of VPI properties as well as their integer constants. Thus, you are now able to write @handle[:reg, :net]@ to obtain a list of handles to all child registers and nets.
 
-    * @Vpi::Handle#method_missing@ has been refactored to cache queries. There is now, approximately, 20% improvement in performance.
+    * @Vpi::Handle.method_missing@ has been refactored to cache queries. There is now, approximately, 20% improvement in performance.
 
-    * @Vpi::Handle#method_missing@ has been fixed to accept operations with multiple underscores. For example, before this release, you could not write @handle.find_all_reg {|r| r.name =~ /foo/}@ because the "find_all_reg" method would be interpreted as the operation "find" and the VPI property "all_reg".
+    * @Vpi::Handle.method_missing@ has been fixed to accept operations with multiple underscores. For example, before this release, you could not write @handle.find_all_reg {|r| r.name =~ /foo/}@ because the "find_all_reg" method would be interpreted as the operation "find" and the VPI property "all_reg".
 
-    * @Vpi::Handle#method_missing@ no longer requires that the first letter of a method be lower case. For example, now you can now write @handle.IntVal@ in addition to @handle.intVal@.
+    * @Vpi::Handle.method_missing@ no longer requires that the first letter of a method be lower case. For example, now you can now write @handle.IntVal@ in addition to @handle.intVal@.
 
     * The @IntegerGenerator@ class, in the pipelined ALU example, has been fixed so that multiple instances do not interfere with the generation of each other's prime integers.
 
-    * Due to a bug in the @Rakefile@, the reference documentation was not included in the previous few releases. This has been fixed.
+    * Due to a bug in the <tt>Rakefile</tt>, the reference documentation was not included in the previous few releases. This has been fixed.
 
 
 -
@@ -43,7 +42,7 @@
     This release shortens generated Ruby benches and uses the less confusing notation for defining "singleton methods":http://wiki.rubygarden.org/Ruby/page/show/SingletonTutorial in generated designs and prototypes.
 
   Notice: |
-    * The arguments for the "@RubyVPI.init_bench@ method":ref/ruby/classes/RubyVpi.html have changed.
+    * The arguments for the "@RubyVPI.init_bench@ method":../ref/ruby/classes/RubyVpi.html have changed.
 
     * *generate_test.rb* no longer emits undocumented status indicators: _name_ and _format_.
 
@@ -52,13 +51,13 @@
   Detail: |
     * Generated Ruby benches have been shortened to just _one_ line of code!
 
-    * The less confusing notation of <pre>def some_object.a_singleton_method
+    * The less confusing notation of <code>def some_object.a_singleton_method
       do_stuff
-    end</pre> is now used instead of the <pre>class << some_object
+    end</code> is now used instead of the <code>class << some_object
       def a_singleton_method
         do_stuff
       end
-    end</pre> notation.
+    end</code> notation.
     ** The tutorial and examples have been updated accordingly.
 
     * The pipelined ALU example now has an updated @IntegerGenerator@ class.
@@ -76,12 +75,12 @@
     Thanks to Matt Fischler for finding the problem of misdirected compilation errors in Verilog benches.
 
   Notice: |
-    * The way in which Ruby-VPI and generated tests interact has changed: the design is now a VPI handle object and the @design.rb@ and @proto.rb@ files define "singleton methods":http://wiki.rubygarden.org/Ruby/page/show/SingletonTutorial for that object.
+    * The way in which Ruby-VPI and generated tests interact has changed: the design is now a VPI handle object and the <tt>design.rb</tt> and <tt>proto.rb</tt> files define "singleton methods":http://wiki.rubygarden.org/Ruby/page/show/SingletonTutorial for that object.
     ** I suggest that you regenerate your existing tests (just run *generate_test.rb* again) whilst employing the service of a text merging tool (see the user manual).
 
     * You can now access a handle's children by simply calling methods on it. In the event that a child handle has the same name as a VPI property, the child is given priority. However, you can always access VPI properties explicitly via the @get_value@ and @put_value@ methods.
 
-    * *generate_test.rb* no longer accepts the @-s@ and @-u@ options. Use their longer counterparts @--rspec@ and @--xunit@ instead.
+    * *generate_test.rb* no longer accepts the <pre>-s</pre> and <pre>-u</pre> options. Use their longer counterparts <pre>--rspec</pre> and <pre>--xunit</pre> instead.
 
 
   Detail: |
@@ -100,7 +99,7 @@
 
     * Revised the stylesheet to make disjoint sections readily distinguishable from each other, through generous spacing and minor coloring.
 
-    * Added tips about @ruby-vpi/runner_proxy@, @rake -T@, and using *kdiff3* with *generate_test.rb*.
+    * Added tips about <tt>ruby-vpi/runner_proxy</tt>, <pre>rake -T</pre>, and using *kdiff3* with *generate_test.rb*.
 
     * Moved installation information into a new "setup" chapter.
 
@@ -117,20 +116,20 @@
     Thanks to Matt Fischler for helping test and debug the installation of Ruby-VPI on Windows.
 
   Notice: |
-    * The command-line options for @generate_test.rb@ have changed. Run the command @generate_test.rb --help@ for details.
+    * The command-line options for *generate_test.rb* have changed. Run the command <pre>generate_test.rb --help</pre> for details.
 
   Detail: |
     * Test runners now attempt to resolve paths in @SIMULATOR_SOURCES@ by searching for them within the directories specified in @SIMULATOR_INCLUDES@.
 
-    * Synopsys VCS is now used in a better way (via the @-load@ option).
-    ** The old PLI table file (@synopsys_vcs.tab@) has been removed.
+    * Synopsys VCS is now used in a better way (via the <pre>-load</pre> option).
+    ** The old PLI table file (<tt>synopsys_vcs.tab</tt>) has been removed.
     ** The C extension has been revised accordingly.
 
     ** The C extension now compiles without errors in Cygwin.
 
     * The automated test generator now:
     ** Only creates output files when necessary.
-    ** Updates existing output files using "text merging tools":./doc/usage.recommendations.html if possible. (Refer to @MERGER@ in the help information of @generate_test.rb@.)
+    ** Updates existing output files using "text merging tools":manual.html#setup.recom if possible. (Refer to @MERGER@ in the help information of *generate_test.rb*.)
     ** Emits progress information similar to Ruby on Rails.
 
     * The user manual now:
@@ -149,7 +148,7 @@
     This release simplifies configuration of generated tests.
 
   Acknowledgment: |
-    Thanks to "students in CMPE-126":http://www.soe.ucsc.edu/classes/cmpe126/Fall06/ for their constructive criticism.
+    Thanks to "students in CMPE-126":http://www.soe.ucsc.edu/classes/cmpe126/Fall06/ for their comments.
 
   Notice: |
     * Generated runners now have a @SIMULATOR_INCLUDES@ array, whose entries specify places where Verilog source files, needed by the Verilog design, reside.
@@ -187,7 +186,7 @@
     * The @RubyVPI@ module has been renamed to @RubyVpi@.
 
     * The @PROTO@ environment variable has been renamed to @PROTOTYPE@.
-    ** In addition to using @unset@, you can now disable simulation of the prototype by assigning an empty value to this variable.
+    ** In addition to using *unset*, you can now disable simulation of the prototype by assigning an empty value to this variable.
 
   Detail: |
     * We now use "Darcs":http://darcs.net for revision control, instead of Subversion. The source repository can now be accessed at "http://ruby-vpi.rubyforge.org/src/ruby-vpi":http://ruby-vpi.rubyforge.org/src/ruby-vpi.
@@ -196,8 +195,8 @@
 
     * Some identifiers have been renamed for better consistency.
 
-    * The user manual now resides directly within the @doc/@ directory.
-    ** The integration of documentation in @gem_server@ has been improved.
+    * The user manual now resides directly within the <tt>doc/</tt> directory.
+    ** The integration of documentation in *gem_server* has been improved.
 
     * The glossary and tutorial in the user manual have been revised.
 
@@ -221,7 +220,7 @@
     * The test generator tool now provides parsed Verilog constants and include-directives in generated Verilog benches; and parsed Verilog constants in generated Ruby designs.
     ** The pipelined ALU example has been revised accordingly.
 
-    * A library for parsing Verilog source code has been added as @lib/ruby-vpi/verilog_parser.rb@.
+    * A library for parsing Verilog source code has been added as <tt>lib/ruby-vpi/verilog_parser.rb</tt>.
 
 
 -
@@ -237,7 +236,7 @@
 
   Detail: |
     * Added initial[1] support for code coverage analysis, which can be enabled by setting the @COVERAGE@ environment variable to a non-empty value before running a test.
-    ** For example, you can run a test with the GPL Cver simulator while enabling the generation of code coverage reports as follows: @export COVERAGE=1; rake cver@
+    ** For example, you can run a test with the GPL Cver simulator while enabling the generation of code coverage reports as follows: <pre>export COVERAGE=1; rake cver</pre>
 
     * Coverage reports are generated in text and HTML formats.
 
@@ -253,15 +252,15 @@
     This release simplifies running of multiple tests, restores compatibility with Synopsys VCS, and better integrates with RubyGems.
 
   Detail: |
-    * Added @lib/ruby-vpi/runner_proxy@ library which, when embedded into a Rakefile, runs all generated tests in the working directory with any specified arguments. For example, have a look at the @samp/counter/Rakefile@ file.
+    * Added <tt>lib/ruby-vpi/runner_proxy.rb</tt> library which, when embedded into a Rakefile, runs all generated tests in the working directory with any specified arguments. For example, have a look at the <tt>samp/counter/Rakefile</tt> file.
 
     * Fixed a bug that prevented one from running tests with Synopsys VCS.
 
-    * Ruby-VPI documentation is now available through RubyGems' "@gem_server@ web interface":http://docs.rubygems.org/read/chapter/2#page10.
+    * Ruby-VPI documentation is now available through RubyGems' "*gem_server* web interface":http://docs.rubygems.org/read/chapter/2#page10.
 
     * The user manual now discusses how to determine the location of a Ruby-VPI installation.
 
-    * The @tpl/@ directory has been removed.
+    * The <tt>tpl/</tt> directory has been removed.
 
 
 -
@@ -279,15 +278,15 @@
     ** Test runners no longer have to specify the path to Ruby-VPI installation directory. Instead, they simply @require 'ruby-vpi/runner'@. Thus, you can run your tests on any machine with Ruby-VPI without having to know where it is installed.
     ** Ruby benches now invoke @RubyVPI.init_bench@ instead of @require 'bench'; setup_bench@ to become initialized.
 
-    * All Ruby libraries in the @lib/@ directory have been moved into @lib/ruby-vpi/@ to prevent load-path clashes with other gems. You should access these libraries by prefixing their path with "ruby-vpi". For example, @require 'vpi_util'@ should now be written as @require 'ruby-vpi/vpi_util'@.
+    * All Ruby libraries in the <tt>lib/</tt> directory have been moved into <tt>lib/ruby-vpi/</tt> to prevent load-path clashes with other gems. You should access these libraries by prefixing their path with "ruby-vpi". For example, @require 'vpi_util'@ should now be written as @require 'ruby-vpi/vpi_util'@.
 
-    * The @src/@ directory has been renamed to @ext/@ to follow RubyGems convention.
+    * The <tt>src/</tt> directory has been renamed to <tt>ext/</tt> to follow RubyGems convention.
 
   Detail: |
-    * Ruby-VPI is now distributed only as a "source gem":http://www.rubygems.org. You can decompress the gem without installing it onto your system by running the command @gem install -i output_directory ruby-vpi-7.0.0.gem@. In addition, you can still obtain the source code directly from the Subversion repository.
+    * Ruby-VPI is now distributed only as a "source gem":http://www.rubygems.org. You can decompress the gem without installing it onto your system by running the command <pre>gem install -i output_directory ruby-vpi-7.0.0.gem</pre>. In addition, you can still obtain the source code directly from the Subversion repository.
 
-    * The tools in @bin/@ become available in your system's @bin/@ directory when the gem is installed.
-    ** Usage and help information has been added to the @header_to_ruby.rb@ tool.
+    * The tools in <tt>bin/</tt> become available in your system's <tt>bin/</tt> directory when the gem is installed.
+    ** Usage and help information has been added to the *header_to_ruby.rb* tool.
 
     * Incorrect spelling of GPL Cver (v should be uncapitalized) has been fixed.
 
@@ -380,11 +379,11 @@
 
   Notice: |
     * The directory structure has been reorganized as follows:
-    ** @ext@ &rarr; @src@
-    ** @tools@ &rarr; @bin@
-    ** @examples@ &rarr; @samp@
+    ** <tt>ext</tt> &rarr; <tt>src</tt>
+    ** <tt>tools</tt> &rarr; <tt>bin</tt>
+    ** <tt>examples</tt> &rarr; <tt>samp</tt>
 
-    * All template files have been moved into the @tpl@ directory.
+    * All template files have been moved into the <tt>tpl</tt> directory.
 
   Detail: |
     * Support for prototyping designs in Ruby, before they are implemented in Verilog, has been added.
@@ -409,7 +408,7 @@
   Detail: |
     * Source code comments in the user manual are now readable.
 
-    * The @README@ and @HISTORY@ files have been converted to "textile":http://www.textism.com/tools/textile/ format.
+    * The <tt>README</tt> and <tt>HISTORY</tt> files have been converted to "textile":http://www.textism.com/tools/textile/ format.
 
 
 -
@@ -434,13 +433,13 @@
 
     * A specification, expressed in unit test format, has been added to the counter example.
 
-    * The @--name@ and @-n@ options, which lets you specify an identifier for a generated test, have been added to the @generate_test.rb@ tool.
+    * The <pre>--name</pre> and <pre>-n</pre> options, which lets you specify an identifier for a generated test, have been added to the *generate_test.rb* tool.
 
-    * Running @rake clobber@ in an example directory no longer destroys documentation in the Ruby-VPI directory.
+    * Running <pre>rake clobber</pre> in an example directory no longer destroys documentation in the Ruby-VPI directory.
 
-    * The examples' Rakefiles now invoke all tests present in the directory via the @launcher_template.rake@ template.
+    * The examples' Rakefiles now invoke all tests present in the directory via the <tt>launcher_template.rake</tt> template.
 
-    * The Rake template for test runners (generated by @tools/generate_test.rb@) has moved from @examples/template.rake@ to @examples/runner_template.rake@.
+    * The Rake template for test runners (generated by <tt>tools/generate_test.rb</tt>) has moved from <tt>examples/template.rake</tt> to <tt>examples/runner_template.rake</tt>.
 
     h3. VPI utility layer
 
@@ -464,7 +463,7 @@
     * The @handle.value@ and @handle.value=@ methods have been removed.
 
   Detail: |
-    * The VPI utility layer provides access to VPI properties of handles in a "simpler, more powerful way":http://ruby-vpi.rubyforge.org/doc/background.organization.html#organization.vpi.
+    * The VPI utility layer provides access to VPI properties of handles in a "simpler, more powerful way":manual.html#background.org.vpi.
 
     ** All VPI properties, except delay values, are now accessible from a handle.
 
@@ -572,9 +571,9 @@
     ** The @VPI::Handle@ class has been removed.
     ** The @VPI::stop@, @VPI::finish@, and @VPI::reset@ methods have been removed.
 
-    * The "_final ballot_ version":http://www.boydtechinc.com/ptf/archive/ptf_2005/0737.html of the @vpi_user.h@ header file is now packaged along with and used by Ruby-VPI.
+    * The "_final ballot_ version":http://www.boydtechinc.com/ptf/archive/ptf_2005/0737.html of the <tt>vpi_user.h</tt> header file is now packaged along with and used by Ruby-VPI.
 
-    * The VPI module, its sub-classes, and its functionality have been replaced by the VPI utility layer (see @src/vpi_util.rb@).
+    * The VPI module, its sub-classes, and its functionality have been replaced by the VPI utility layer (see <tt>src/vpi_util.rb</tt>).
 
     * The examples now make use of the *test/unit* unit testing framework.
 
@@ -600,9 +599,9 @@
     * Removed @$ruby_task@ callback and ability to dynamically register system tasks from Ruby because inter-process communication is complicated at present.
 
   Detail: |
-    * The *cross-thread violation on rb_gc()* error has been fixed.
-    ** The *stack level too deep (SystemStackError)* error has been fixed.
-    ** The *test/unit* library can be used in Ruby test bench.
+    * The "cross-thread violation on rb_gc()" error has been fixed.
+    ** The "stack level too deep (SystemStackError)" error has been fixed.
+    ** The test/unit library can be used in Ruby test bench.
     ** Mentor Modelsim Verilog simulator works with Ruby-VPI.
 
     * Added piplelined ALU example.
@@ -633,10 +632,10 @@
     * Implemented some Verilog VPI functionality:
     ** @VPI::handle_by_name(string, VPI::Handle)@ &rarr; @VPI::Handle@
     ** @VPI::handle_by_name(string)@ &rarr; @VPI::Handle@
-    ** @VPI::Handle#put_value(integer)@
-    ** @VPI::Handle#value = integer@
-    ** @VPI::Handle#get_value@ &rarr; @integer@
-    ** @VPI::Handle#value@ &rarr; @integer@
+    ** @VPI::Handle.put_value(integer)@
+    ** @VPI::Handle.value = integer@
+    ** @VPI::Handle.get_value@ &rarr; @integer@
+    ** @VPI::Handle.value@ &rarr; @integer@
     ** @VPI::stop@
     ** @VPI::finish@
     ** @VPI::reset@
@@ -644,7 +643,7 @@
     * Implemented some additional functionality:
     ** @VPI::register_task(string, &proc)@
 
-    * Added ability to pass arbitrary command-line arguments to the Ruby interpreter (using @$ruby_init@). Now you can invoke any Ruby script you want, instead of @pli_init.rb@.
+    * Added ability to pass arbitrary command-line arguments to the Ruby interpreter (using @$ruby_init@). Now you can invoke any Ruby script you want, instead of <tt>pli_init.rb</tt>.
 
     * Added ability to dynamically register system tasks from Ruby, using @VPI::register_task("task name")@, and call them from Verilog, using @$ruby_task("task name")@.
 
