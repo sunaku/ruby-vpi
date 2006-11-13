@@ -36,11 +36,7 @@ body {
 
 /* table of contents */
 
-  #toc:before {
-    content: "Table of contents";
-  }
-
-  #toc {
+  #navigation {
     position: fixed;
     left: 0px;
     top: 0px;
@@ -53,8 +49,13 @@ body {
     background-color: white;
   }
 
-  #toc li {
+  #navigation li {
     margin-left: -1em;
+  }
+
+  #navigation h1 {
+    padding: 0.5em;
+    margin-top: 0px;
   }
 
 /* admonitions */
@@ -102,25 +103,29 @@ body {
     background-color: whitesmoke;
   }
 
-/* figures */
-  .figure {
+/* formal blocks; see http://www.sagehill.net/docbookxsl/FormalTitles.html */
+  .formal {
     margin: 1em;
   }
 
-  .figure table, .figure img {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .figure img {
-    display: block;
-  }
-
-  .figure .title {
+  .title {
     display: block;
     font-size: large;
-    text-align: center;
   }
+
+  .formal .title {
+    text-align: center
+  }
+
+  /* center-align any tables and images */
+    .formal table, .formal img {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .formal img {
+      display: block;
+    }
 
 /* misc. */
   .cover-page {

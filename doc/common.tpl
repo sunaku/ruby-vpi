@@ -14,8 +14,23 @@
   </head>
   <body>
 <% if @table_of_contents %>
-    <div id="toc">
+    <div id="navigation">
+      <h1>Table of contents</h1>
       <%= toc.redcloth %>
+<%
+  proxy.blocks.each_pair do |type, list|
+    unless list.empty?
+%>
+      <h2>List of <%= type.to_s %>s</h2>
+<%=
+      list.inject('') do |memo, block|
+        memo << "# #{(block.title || block.anchor).inspect}:##{block.anchor}\n"
+      end.redcloth
+%>
+<%
+    end
+  end
+%>
     </div>
 
     <%= text.to_html %>

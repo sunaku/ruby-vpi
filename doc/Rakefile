@@ -98,94 +98,73 @@ end
 
 ## ERB manipulation
 
-require 'erb'
-
-class ErbProxy < ERB
-  attr_reader :handlers, :buffer
-
-  def initialize *aErbArgs
-    @buffer = ""
-    @handlers = {}
-
-    aErbArgs[3] = :@buffer
-    super *aErbArgs
-  end
-
-  # Add a new handler method that can be called from your ERB template.
-  def add_handler aName, &aHandler
-    @handlers[aName] = aHandler
-
-    # using a string because define_method does not accept a block until Ruby 1.9
-    instance_eval %{
-      def #{aName} *args, &block
-        @handlers[#{aName.inspect}].call *handler_content(&block).concat(args)
-      end
-    }
-  end
-
-  # Returns an array containing (1) the contents of the ERB buffer thus far and (2) the text that is to be added to the ERB buffer.
-  def handler_content
-    # backup the buffer because 'yield' is gonna append to it
-      buf = @buffer
-      @buffer = ""
-
-    text = yield
-
-    # restore the backup
-      @buffer = buf
-
-    [buf, text]
-  end
-end
+require 'erb_proxy'
 
 # ERB proxy used to evaluate all documentation ERB templates.
 class DocProxy < ErbProxy
+  Block = Struct.new :anchor, :title, :type
+
+  attr_reader :blocks
+
   def initialize *aArgs
     super
+    @blocks = Hash.new {|h,k| h[k] = []}
 
-    @counters = Hash.new {|h, k| h[k] = 0}
-
-    [:tip, :note, :important, :caution, :warning].each do |adm|
-      add_handler adm do |buf, text, title|
-        buf << [
-
-          %{<div class="admonition">},
-            %{<div class="#{adm}">},
-
-              %{!<images/#{adm}.png(#{adm})!},
-
-              %{p(title). #{adm.to_s.capitalize}: #{title}},
-
-              text,
-
-            '</div>',
-          '</div>',
-
-        ].join("\n\n\n")
-      end
-    end
-
-    [:figure, :example, :table, :algorithm].each do |section|
-      add_handler section do |buf, text, title, id|
-        @counters[section] += 1
-
-        atts = {
-          :class => section,
-          :id => (id || '').sub(/^#+/, ''),
-        }.map {|k,v| "#{k}=#{v.to_s.inspect}"}.join(' ')
-
-        buf << [
-          %{<div #{atts}>},
-
-            %{p(title). #{section.to_s.capitalize} #{@counters[section]}. #{title}},
-
+    # admonitions
+      [:tip, :note, :important, :caution, :warning].each do |type|
+        add_block_handler :admonition, type do |index, title, text|
+          join_redcloth_elements [
+            %{!<images/#{type}.png(#{type})!},
+            %{p(title). #{type.to_s.capitalize}: #{title}},
             text,
-
-          '</div>',
-
-        ].join("\n\n\n")
+          ]
+        end
       end
+
+    # formal blocks; see http://www.sagehill.net/docbookxsl/FormalTitles.html
+      [:figure, :table, :example, :equation, :procedure].each do |type|
+        add_block_handler :formal, type do |index, title, text|
+          join_redcloth_elements [
+            %{p(title). #{type.to_s.capitalize} #{index}. #{title}},
+            text,
+          ]
+        end
+      end
+  end
+
+  private
+
+  # The category eases the task of customizing each type's appearance via CSS.
+  # This method must return the result of the handling of the input text.
+  def add_block_handler aCategory, aType
+    add_handler aType do |buf, text, title, anchor|
+      index = @blocks[aType].length + 1
+
+      if anchor
+        anchor.sub!(/^#+/, '')
+      else
+        anchor = "#{aType}#{index}"
+      end
+
+      @blocks[aType] << Block.new(anchor, title, aType)
+
+
+      elts = [
+        %{<div class="#{aCategory}">},
+          %{<div class="#{aType}" id="#{anchor}">},
+            yield(index, title, text),
+          '</div>',
+        '</div>',
+      ]
+
+      text = join_redcloth_elements(elts)
+      buf << text
+      text
     end
+  end
+
+  def join_redcloth_elements *args
+    args.join("\n\n\n")
   end
 end
 
@@ -206,7 +185,9 @@ FileList['*.erb'].each do |src|
     @title = nil
 
     # evaluate the documentation ERB template
-      content = DocProxy.new(File.read(src)).instance_eval do
+      proxy = DocProxy.new(File.read(src))
+
+      content = proxy.instance_eval do
         if File.exist? helper
           instance_eval File.read(helper)
         end
@@ -230,4 +211,4 @@ FileList['*.erb'].each do |src|
   task :default => dst
 end
 
-CLEAN.include '*.html'
+CLOBBER.include '*.html'
