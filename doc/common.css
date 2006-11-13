@@ -118,12 +118,12 @@ body {
   }
 
   /* center-align any tables and images */
-    .formal table, .formal img {
+    .formal table, .formal img, #navigation img {
       margin-left: auto;
       margin-right: auto;
     }
 
-    .formal img {
+    .formal img, #navigation img {
       display: block;
     }
 

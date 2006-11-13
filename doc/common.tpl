@@ -15,6 +15,8 @@
   <body>
 <% if @table_of_contents %>
     <div id="navigation">
+      <%= %{"!images/home.png(project home)!":readme.html}.redcloth %>
+
       <h1>Table of contents</h1>
       <%= toc.redcloth %>
 <%
