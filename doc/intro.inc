@@ -31,14 +31,18 @@ h2(#intro.appetizers). Appetizers
 Here is a modest sampling to whet your appetite.
 
 * Assign the value 2^2048^ to a register:
-  @some_register.intVal = 2 ** 2048@
+
+bq. @some_register.intVal = 2 ** 2048@
 
 * Check if all nets in a module are at high impedance:
-  @some_module.all_net? { |net| net.z? }@
 
-* Print a register's path, width, and location (file & line number):
-  @puts some_register@
+bq. @some_module.all_net? { |net| net.z? }@
+
+* See a register's path, width, and location (file & line number):
+
+bq. @puts some_register@
 
 * Simulate fifteen clock cycles:
-  @15.times { relay_verilog }@
+
+bq. @15.times { relay_verilog }@
 

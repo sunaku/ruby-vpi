@@ -31,13 +31,13 @@ body {
   }
 
 /* admonitions */
-  .tip, .note, .important, .caution, .warning {
+  .admonition {
     border: thin solid steelblue;
     background-color: aliceblue;
     padding: 1em;
   }
 
-  .tip img, .note img, .important img, .caution img, .warning img {
+  .admonition img {
     margin-right: 2em;
   }
 
@@ -74,19 +74,23 @@ body {
     background-color: lemonchiffon;
   }
 
-  pre {
-    background-color: honeydew;
-    border: thin solid silver;
+  pre, blockquote .code {
     padding: 1em;
     line-height: normal;
-    display: block;
     overflow: auto;
+    display: block;
   }
 
-  .CodeRay .code pre {
-    font-family: monospace;
+  pre {
+    border: thin solid darkgray;
+    background-color: whitesmoke;
+  }
+
+  .code {
+    border: thin solid darkkhaki;
     background-color: ivory;
   }
+
 
 /* tables */
   th, td {
@@ -123,15 +127,9 @@ body {
     border: none;
   }
 
-  td pre {
-    display: inline;
-    border: none;
-    padding: 0px;
-  }
 
+  /* extra spacing before big block elements */
 
-  /* spacing before admonitions & figures */
-
-  .tip, .note, .important, .caution, .warning, .figure {
+  .admonition, .figure {
     margin-top: 3em;
   }
