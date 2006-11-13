@@ -7,6 +7,33 @@ body {
   margin-bottom: 5em;
 }
 
+/* headings */
+  th, h1, h2, h3, h4, h5, h6, .title {
+    font-family: serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 5em;
+    padding: 0.5em;
+  }
+
+  h1, h2, h3 {
+    text-align: center;
+  }
+
+  h1 {
+    padding: 1em;
+    background-color: mistyrose;
+  }
+
+  h2 {
+    background-color: bisque;
+  }
+
+  h3 {
+    background-color: oldlace;
+  }
+
 /* table of contents */
 
   #toc:before {
@@ -39,33 +66,6 @@ body {
 
   .admonition img {
     margin-right: 2em;
-  }
-
-/* headings */
-  th, h1, h2, h3, h4, h5, h6 {
-    font-family: serif;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    margin-top: 5em;
-    padding: 0.5em;
-  }
-
-  h1, h2, h3 {
-    text-align: center;
-  }
-
-  h1 {
-    padding: 1em;
-    background-color: mistyrose;
-  }
-
-  h2 {
-    background-color: bisque;
-  }
-
-  h3 {
-    background-color: oldlace;
   }
 
 /* source code */
@@ -105,17 +105,26 @@ body {
 /* figures */
   .figure {
     margin: 1em;
-    text-align: center;
     counter-increment: figure;
   }
 
-  .figure:before {
+  .figure table, .figure img {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .figure img {
+    display: block;
+  }
+
+  .figure .title:before {
     content: "Figure " counter(figure) ". ";
   }
 
-  .figure, .title {
+  .figure .title {
     display: block;
-    font-size: larger;
+    font-size: large;
+    text-align: center;
   }
 
 /* misc. */

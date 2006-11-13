@@ -122,9 +122,9 @@ end
     def #{adm} aTitle = '', &aBlock
       buf, text = erb_block_contents(&aBlock)
 
-      buf << <<EOS
+      buf << %{
 <div class="admonition">
-<div class="#{adm}">
+  <div class="#{adm}">
 
 !<images/#{adm}.png(#{adm})!
 
@@ -132,11 +132,25 @@ p(title). #{adm.to_s.capitalize}: \#{aTitle}
 
 \#{text}
 
+  </div>
 </div>
-</div>
-EOS
+}
     end
   }
+end
+
+def figure aTitle, aId = '', &aBlock
+  buf, text = erb_block_contents(&aBlock)
+
+  buf << %{
+<div class="figure" id="#{aId.sub /^#+/, ''}">
+
+p(title). #{aTitle}
+
+#{text}
+
+</div>
+}
 end
 
 
