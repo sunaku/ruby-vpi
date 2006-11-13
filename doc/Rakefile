@@ -18,8 +18,6 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
-require 'rubygems'
-
 
 ## text parsing
 
@@ -57,6 +55,7 @@ end
 ## text formatting
 
 require 'cgi'
+require 'rubygems'
 require 'coderay'
 require 'redcloth'
 
@@ -97,90 +96,128 @@ class String
 end
 
 
-## ERB template manipulation
+## ERB manipulation
 
-@erbBuffer = ""  # this is used by in ERB.new below
-
-# Returns an array containing (1) the contents of the ERB buffer thus far and (2) the text that is to be added to the ERB buffer.
-def erb_block_contents
-  # backup the buffer because yield is gonna append to it
-    buf = @erbBuffer
-    @erbBuffer = ""
-
-  text = yield
-
-  # restore the backup
-    @erbBuffer = buf
-
-  [buf, text]
-end
-
-# these methods create admonitions
-[:tip, :note, :important, :caution, :warning].each do |adm|
-  # using a string because define_method does not accept a block until Ruby 1.9
-  instance_eval %{
-    def #{adm} aTitle = '', &aBlock
-      buf, text = erb_block_contents(&aBlock)
-
-      buf << %{
-<div class="admonition">
-  <div class="#{adm}">
-
-!<images/#{adm}.png(#{adm})!
-
-p(title). #{adm.to_s.capitalize}: \#{aTitle}
-
-\#{text}
-
-  </div>
-</div>
-}
-    end
-  }
-end
-
-def figure aTitle, aId = '', &aBlock
-  buf, text = erb_block_contents(&aBlock)
-
-  buf << %{
-<div class="figure" id="#{aId.sub /^#+/, ''}">
-
-p(title). #{aTitle}
-
-#{text}
-
-</div>
-}
-end
-
-
-require 'rake/clean'
 require 'erb'
 
-TEMPLATE_FILE = File.join(File.dirname(__FILE__), 'common.tpl')
+class ErbProxy < ERB
+  attr_reader :handlers, :buffer
+
+  def initialize *aErbArgs
+    @buffer = ""
+    @handlers = {}
+
+    aErbArgs[3] = :@buffer
+    super *aErbArgs
+  end
+
+  # Add a new handler method that can be called from your ERB template.
+  def add_handler aName, &aHandler
+    @handlers[aName] = aHandler
+
+    # using a string because define_method does not accept a block until Ruby 1.9
+    instance_eval %{
+      def #{aName} *args, &block
+        @handlers[#{aName.inspect}].call *handler_content(&block).concat(args)
+      end
+    }
+  end
+
+  # Returns an array containing (1) the contents of the ERB buffer thus far and (2) the text that is to be added to the ERB buffer.
+  def handler_content
+    # backup the buffer because 'yield' is gonna append to it
+      buf = @buffer
+      @buffer = ""
+
+    text = yield
+
+    # restore the backup
+      @buffer = buf
+
+    [buf, text]
+  end
+end
+
+# ERB proxy used to evaluate all documentation ERB templates.
+class DocProxy < ErbProxy
+  def initialize *aArgs
+    super
+
+    @counters = Hash.new {|h, k| h[k] = 0}
+
+    [:tip, :note, :important, :caution, :warning].each do |adm|
+      add_handler adm do |buf, text, title|
+        buf << [
+
+          %{<div class="admonition">},
+            %{<div class="#{adm}">},
+
+              %{!<images/#{adm}.png(#{adm})!},
+
+              %{p(title). #{adm.to_s.capitalize}: #{title}},
+
+              text,
+
+            '</div>',
+          '</div>',
+
+        ].join("\n\n\n")
+      end
+    end
+
+    [:figure, :example, :table, :algorithm].each do |section|
+      add_handler section do |buf, text, title, id|
+        @counters[section] += 1
+
+        atts = {
+          :class => section,
+          :id => (id || '').sub(/^#+/, ''),
+        }.map {|k,v| "#{k}=#{v.to_s.inspect}"}.join(' ')
+
+        buf << [
+          %{<div #{atts}>},
+
+            %{p(title). #{section.to_s.capitalize} #{@counters[section]}. #{title}},
+
+            text,
+
+          '</div>',
+
+        ].join("\n\n\n")
+      end
+    end
+  end
+end
+
+
+## the real Rake tasks
+
+require 'rake/clean'
+
+COMMON_HTML_TEMPLATE = File.join(File.dirname(__FILE__), 'common.tpl')
 
 FileList['*.erb'].each do |src|
   prefix = File.basename(src, '.erb')
   helper = prefix + '.rb'
   dst = prefix + '.html'
 
-  file dst => [src, TEMPLATE_FILE] do
+  file dst => [src, COMMON_HTML_TEMPLATE] do
     @table_of_contents = true
     @title = nil
 
-    # evaluate the content
-      template = ERB.new(File.read(src), nil, nil, :@erbBuffer)
+    # evaluate the documentation ERB template
+      content = DocProxy.new(File.read(src)).instance_eval do
+        if File.exist? helper
+          instance_eval File.read(helper)
+        end
 
-      if File.exist? helper
-        eval File.read(helper)
+        result(binding)
       end
 
-      content = template.result(binding)
-
-    # evaluate the common template
+    # evaluate the common HTML template
       toc, text, structure = build_table_of_contents(content)
 
-      template = ERB.new(File.read(TEMPLATE_FILE))
+      template = ERB.new(File.read(COMMON_HTML_TEMPLATE))
       content = template.result(binding)
 
     File.open(dst, 'w') do |f|
