@@ -160,12 +160,15 @@ class DocProxy < ErbProxy
           @references.map {|ref| ref.position}.inject(0) do |memo, pos|
             if t = targets.shift
               link = %{"the #{t.type} named &ldquo;#{t.title}&rdquo;":##{t.anchor}}
+            else
+              xref = @references[-targets.length.next]
+              link = %{"#{xref.target}":##{xref.target}}
 
-              @buffer.insert memo + pos, link
-              memo += link.length
+              warn "unresolved xref #{xref}"
             end
 
-            memo
+            @buffer.insert memo + pos, link
+            memo += link.length
           end
       end
 
