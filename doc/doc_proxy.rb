@@ -85,7 +85,7 @@ class DocProxy < ErbProxy
               xref = @references[-targets.length.next]
               link = %{"#{xref.target}":##{xref.target}}
 
-              warn "unresolved xref #{xref}"
+              warn "unresolved cross-reference to #{xref.target.inspect}"
             end
 
             @buffer.insert memo + pos, link

@@ -22,19 +22,19 @@ require 'rake/clean'
 require 'doc_proxy'
 require 'doc_format'
 
-COMMON_HTML_TEMPLATE = File.join(File.dirname(__FILE__), 'common.tpl')
-
 FileList['*.erb'].each do |src|
   prefix = File.basename(src, '.erb')
   helper = prefix + '.rb'
   dst = prefix + '.html'
 
-  file dst => [src, COMMON_HTML_TEMPLATE] do
-    @table_of_contents = true
-    @title = nil
-
-    # evaluate the documentation ERB template
+  desc "Process file #{src.inspect}."
+  file dst => [src, 'common.tpl'] do |t|
+    # process the documentation source file
       proxy = DocProxy.new(File.read(src))
+
+      # set default configuration
+        @table_of_contents = true
+        @title = nil
 
       content = proxy.instance_eval do
         if File.exist? helper
@@ -44,15 +44,15 @@ FileList['*.erb'].each do |src|
         result(binding)
       end
 
-    # evaluate the common HTML template
-      template = ERB.new(File.read(COMMON_HTML_TEMPLATE))
+    # store result using common HTML template
+      template = ERB.new(File.read(t.prerequisites[1]))
       content = template.result(binding)
 
-    File.open(dst, 'w') do |f|
-      f << content
-    end
+      File.open(dst, 'w') do |f|
+        f << content
+      end
 
-    puts dst
+      puts "wrote #{dst.inspect}"
   end
 
   task :default => dst
