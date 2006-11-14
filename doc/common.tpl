@@ -17,13 +17,13 @@
     <div id="navigation">
       <%= %{"!images/home.png(project home)!":readme.html}.redcloth %>
 
-      <h1>Table of contents</h1>
+      <h1>Contents</h1>
       <%= toc.redcloth %>
 <%
   proxy.blocks.each_pair do |type, list|
     unless list.empty?
 %>
-      <h2>List of <%= type.to_s %>s</h2>
+      <h2><%= type.to_s.capitalize %>s</h2>
 <%=
       list.inject('') do |memo, block|
         memo << "# #{(block.title || block.anchor).inspect}:##{block.anchor}\n"
