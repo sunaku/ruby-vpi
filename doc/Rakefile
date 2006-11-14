@@ -140,11 +140,10 @@ class DocProxy < ErbProxy
     add_handler aType do |buf, text, title, anchor|
       index = @blocks[aType].length + 1
 
-      if anchor
-        anchor.sub!(/^#+/, '')
-      else
+      unless anchor
         anchor = "#{aType}#{index}"
       end
+      anchor = unanchor(anchor)
 
       @blocks[aType] << Block.new(anchor, title, aType)
 
@@ -165,6 +164,10 @@ class DocProxy < ErbProxy
 
   def join_redcloth_elements *args
     args.join("\n\n\n")
+  end
+
+  def unanchor aAnchor
+    aAnchor.sub /^#+/, ''
   end
 end
 
