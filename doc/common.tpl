@@ -24,7 +24,9 @@
         end.join("\n").redcloth
       %>
 <%
-  proxy.blocks.each_pair do |type, list|
+  proxy.blocks.keys.sort_by {|k| k.to_s}.each do |type|
+    list = proxy.blocks[type]
+
     unless list.empty?
 %>
       <h2><%= type.to_s.capitalize %>s</h2>
