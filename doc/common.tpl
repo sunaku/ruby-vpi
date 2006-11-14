@@ -1,6 +1,6 @@
 <%
   unless @title
-    if h = structure.first
+    if h = proxy.headings.first
       @title = h.title
     end
   end
@@ -18,7 +18,11 @@
       <%= %{"!images/home.png(project home)!":readme.html}.redcloth %>
 
       <h1>Contents</h1>
-      <%= toc.redcloth %>
+      <%=
+        proxy.headings.map do |h|
+          %{#{'*' * h.depth} "#{h.title}":##{h.anchor}}
+        end.join("\n").redcloth
+      %>
 <%
   proxy.blocks.each_pair do |type, list|
     unless list.empty?
@@ -34,10 +38,7 @@
   end
 %>
     </div>
-
-    <%= text.to_html %>
-<% else %>
-    <%= content.to_html %>
 <% end %>
+    <%= content.to_html %>
   </body>
 </html>

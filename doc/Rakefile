@@ -18,40 +18,6 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
-
-## text parsing
-
-Heading = Struct.new(:depth, :anchor, :title)
-
-# Returns a table of contents for the given text and a modified version of the given text that has sufficient hyperlink anchors (so that the TOC can link to parts of the text).
-def build_table_of_contents aText
-  # determine structure of content and insert anchors where necessary
-    headings = []
-
-    text = aText.gsub /^(\s*h(\d))(\.|\(.*?\)\.)(.*)$/ do
-      target = $~.dup
-
-      has_anchor = target[3] =~ /#([^#]+)\)/
-      anchor = $1 || "anchor#{headings.length}"
-
-      headings << Heading.new( target[2].to_i, anchor, target[4].strip )
-
-      if has_anchor
-        target.to_s
-      else
-        "#{target[1]}(##{anchor})#{target[3]}#{target[4]}"
-      end
-    end
-
-  # generate table of contents
-    toc = headings.map do |h|
-      %{#{'*' * h.depth} "#{h.title}":##{h.anchor}}
-    end.join("\n")
-
-  [toc, text, headings]
-end
-
-
 ## text formatting
 
 require 'cgi'
@@ -103,9 +69,10 @@ require 'erb_proxy'
 # ERB proxy used to evaluate all documentation ERB templates.
 class DocProxy < ErbProxy
   Block = Struct.new :anchor, :title, :type
+  Heading = Struct.new :anchor, :title, :depth
   Reference = Struct.new :target, :position
 
-  attr_reader :blocks
+  attr_reader :blocks, :headings, :references
 
   def initialize *aArgs
     super
@@ -170,6 +137,24 @@ class DocProxy < ErbProxy
             @buffer.insert memo + pos, link
             memo += link.length
           end
+      end
+
+    # parse document structure and insert anchors where necessary
+      @headings = []
+
+      @buffer.gsub! /^(\s*h(\d))(\.|\(.*?\)\.)(.*)$/ do
+        target = $~.dup
+
+        hasAnchor = target[3] =~ /#([^#]+)\)/
+        anchor = $1 || "anchor#{headings.length}"
+
+        @headings << Heading.new(anchor, target[4].strip, target[2].to_i)
+
+        if hasAnchor
+          target.to_s
+        else
+          "#{target[1]}(##{anchor})#{target[3]}#{target[4]}"
+        end
       end
 
     @buffer
@@ -242,8 +227,6 @@ FileList['*.erb'].each do |src|
       end
 
     # evaluate the common HTML template
-      toc, text, structure = build_table_of_contents(content)
-
       template = ERB.new(File.read(COMMON_HTML_TEMPLATE))
       content = template.result(binding)
 
