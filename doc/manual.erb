@@ -58,7 +58,7 @@ Ruby-VPI presents an open-ended interface to VPI. Thus, you can use any methodol
 h2(#background.vocab). Terminology
 
 <% tip do %>
-Have a look at the "this section":#glossary for definitions of terms used in this manual.
+Have a look at the "glossary":#glossary for definitions of terms used in this manual.
 <% end %>
 
 As a newcomer into the world of Verilog, I often heard the term *test bench*: "I ran the test bench, but it didn't work!" or "Are you crazy?!! You _still_ haven't written the test bench?", for example. I flipped through my textbook and surfed the Internet for a definition of the term, but it was to no avail. Instead, both resources nonchalantly employed the term _throughout_ their being, as if mocking my ignorance of what seems to be universal knowledge.
@@ -72,20 +72,20 @@ Alright, now I remember what a laboratory bench is, but how does that compare wi
 
 h2(#background.org). Organization
 
-<% figure "Overall organization of a test" do %>
+<% figure "Overall organization of a test", "#fig..organization" do %>
 !figures/organization.png!
 <% end %>
 
-As "this figure":#fig..organization shows, a test is composed of a bench, a design, and a specification. To extend the "analogy of an electronics laboratory":#background.vocab, the first acts as the laboratory bench which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. And the third acts as the engineer who measures, manipulates, and verifies the electronic component.
+As <% xref "#fig..organization" %> shows, a test is composed of a bench, a design, and a specification. To extend the "analogy of an electronics laboratory":#background.vocab, the first acts as the laboratory bench which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. And the third acts as the engineer who measures, manipulates, and verifies the electronic component.
 
 
 h3(#background.org.vpi). Interface to VPI
 
-<% figure "Detailed organization of a test" do %>
+<% figure "Detailed organization of a test", "#fig..organization.detail" do %>
 !figures/organization_detailed.png!
 <% end %>
 
-In "this figure":#fig..organization.detail, Ruby-VPI acts as the bench, a Verilog simulator encapsulates the design, and a Ruby interpreter encapsulates the specification. Notice that Ruby-VPI encapsulates all communication between the Ruby interpreter and VPI. This allows the specification, or any Ruby program in general, to access VPI using nothing more than the Ruby language! Thus, Ruby-VPI removes the burden of having to write C programs in order to access VPI.
+In <% xref "#fig..organization.detail" %>, Ruby-VPI acts as the bench, a Verilog simulator encapsulates the design, and a Ruby interpreter encapsulates the specification. Notice that Ruby-VPI encapsulates all communication between the Ruby interpreter and VPI. This allows the specification, or any Ruby program in general, to access VPI using nothing more than the Ruby language! Thus, Ruby-VPI removes the burden of having to write C programs in order to access VPI.
 
 Furthermore, Ruby-VPI presents the _entire_ IEEE Std 1364-2005 VPI interface to the Ruby interpreter, but with the following minor changes.
 
@@ -124,7 +124,7 @@ In the event that a child handle has the same name as a VPI property, the child 
 * *Addendum* suggests that the specified VPI property should be queried as a boolean value when it is a question mark (?). This suggestion is the same as specifying "b" for the Accessor parameter. Also, when this parameter is an equal sign (=), it suggests that the specified VPI property should be written to.
 <% end %>
 
-<% figure "Possible accessors and their implications" do %>
+<% table "Possible accessors and their implications" do %>
 |_. Accessor |_. Kind of value accessed |_. VPI functions used to access the value |
 | d | delay | @vpi_get_delays@, @vpi_put_delays@ |
 | l | logic | @vpi_get_value@, @vpi_put_value@ |
@@ -134,7 +134,7 @@ In the event that a child handle has the same name as a VPI property, the child 
 | h | handle | @vpi_handle@ |
 <% end %>
 
-<% figure "Examples of accessing a handle's VPI properties" do %>
+<% example "Examples of accessing a handle's VPI properties" do %>
 |_/2. Ruby expression |_\6. Parts of speech |_/2. Description |
 ||_. Operation |_. _ |_. Property |_. _ |_. Accessor |_. Addendum ||
 | @handle.vpiIntVal@ | &nbsp; | &nbsp; | vpiIntVal | &nbsp; |  &nbsp; | &nbsp; |/4. These expressions access the logic value of the handle's vpiIntVal property. |
@@ -174,7 +174,7 @@ In the event that a child handle has the same name as a VPI property, the child 
 
 h2(#background.running-tests). Running a test
 
-Unlike an engineer who can verify an electronic component in real-time, the Verilog simulator and the Ruby interpreter (see "this figure":#fig..organization.detail) take turns working with objects in a simulation when a test is run. In particular, they take turns manipulating the design and transfer control to each other when appropriate.
+Unlike an engineer who can verify an electronic component in real-time, the Verilog simulator and the Ruby interpreter (see <% xref "#fig..organization.detail" %>) take turns working with objects in a simulation when a test is run. In particular, they take turns manipulating the design and transfer control to each other when appropriate.
 
 The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Either is able to inspect and modify the ball, but only when it is in hand.
 
@@ -185,7 +185,7 @@ h3(#background.running-tests.init). Initialization
 !figures/ruby_init.png!
 <% end %>
 
-A test is first initialized before it is "executed":#background.running-tests.exec. "this figure":#fig..ruby_init illustrates the initialization process "described below":#proc..ruby_init.
+A test is first initialized before it is "executed":#background.running-tests.exec. <% xref "#fig..ruby_init" %> illustrates the initialization process "described below":#proc..ruby_init.
 
 # The Verilog simulator initializes the Ruby interpreter by invoking the @$ruby_init;@ system task/function, whose parameters represent the command-line invocation of the Ruby interpreter. For example, one would specify @$ruby_init("ruby", "-w");@ in Verilog to achieve the same effect as specifying <pre>ruby -w</pre> at a command-prompt.
 # The Verilog simulator is paused and the Ruby interpreter is initialized with the arguments of the @$ruby_init;@ system task/function.
@@ -194,7 +194,7 @@ A test is first initialized before it is "executed":#background.running-tests.ex
 
 h3(#background.running-tests.exec). Execution
 
-After a test is "initialized":#background.running-tests.init, it is executed such that the design is verified against the specification. "this figure":#fig..ruby_relay illustrates the execution process "described below":#proc..ruby_relay.
+After a test is "initialized":#background.running-tests.init, it is executed such that the design is verified against the specification. <% xref "#fig..ruby_relay" %> illustrates the execution process "described below":#proc..ruby_relay.
 
 <% figure "Execution of a test", "#fig..ruby_relay" do %>
 !figures/ruby_relay.png!
@@ -216,8 +216,8 @@ When you extract a release package, the following is what you would expect to fi
 * <tt>ref</tt> contains reference API documentation in HTML format.
 * <tt>ext</tt> contains source code, written in the C language, for the "core of Ruby-VPI":#background.org.
 * <tt>lib</tt> contains Ruby libraries provided by Ruby-VPI.
-* <tt>bin</tt> contains various tools. See "this section":#usage.tools for more information.
-* <tt>samp</tt> contains example tests. See "this section":#usage.examples for more information.
+* <tt>bin</tt> contains various tools. See <% xref "#usage.tools" %> for more information.
+* <tt>samp</tt> contains example tests. See <% xref "#usage.examples" %> for more information.
 
 
 h2(#setup.reqs). Requirements
@@ -317,7 +317,7 @@ The <tt>bin</tt> directory contains various utilities which ease the process of 
 
 h3(#usage.tools.generate-test). Automated test generation
 
-The automated test generator (*generate_test.rb*) generates tests from Verilog 2001 module declarations, as demonstrated in "this section":#usage.tutorial.generate-test. A generated test is composed of the following parts:
+The automated test generator (*generate_test.rb*) generates tests from Verilog 2001 module declarations, as demonstrated "in the tutorial":#usage.tutorial.generate-test. A generated test is composed of the following parts:
 
 * Runner
   - written in Rake, this file builds and runs the test.
@@ -364,14 +364,14 @@ h2(#usage.tutorial). Tutorial
 
 h3(#usage.tutorial.declare-design). Start with a design
 
-First, we need a "design":#glossary.design to verify. In this tutorial, "this figure":#fig..counter.v_decl will serve as our design. Its interface is composed of the following parts:
+First, we need a "design":#glossary.design to verify. In this tutorial, <% xref "#fig..counter.v_decl" %> will serve as our design. Its interface is composed of the following parts:
 
 * @Size@ defines the number of bits used to represent the counter's value.
 * @clock@ causes the @count@ register to increment whenever it reaches a positive edge.
 * @reset@ causes the @count@ register to become zero when asserted.
 * @count@ is a register that contains the counter's value.
 
-<% figure "Declaration of a simple up-counter with synchronous reset", "#fig..counter.v_decl" do %>
+<% example "Declaration of a simple up-counter with synchronous reset", "#fig..counter.v_decl" do %>
 <code lang="verilog">
 module counter #(parameter Size = 5) (
   input clock,
@@ -383,7 +383,7 @@ endmodule
 <% end %>
 
 <% important "Before we continue..." do %>
-Save the source code shown in "this figure":#fig..counter.v_decl into a file named <tt>counter.v</tt>.
+Save the source code shown in <% xref "#fig..counter.v_decl" %> into a file named <tt>counter.v</tt>.
 <% end %>
 
 
@@ -398,9 +398,9 @@ Each format represents a different software development methodology:
 
 Both rSpec and xUnit are presented in this tutorial.
 
-Once we have decided how we want to implement our specification, we can proceed to generate a test for our design. "this figure":#fig..generate-test.rspec and "this figure":#fig..generate-test.unit-test illustrate this process.
+Once we have decided how we want to implement our specification, we can proceed to generate a test for our design. <% xref "#fig..generate-test.rspec" %> and <% xref "#fig..generate-test.unit-test" %> illustrate this process.
 
-<% figure "Generating a test with specification in rSpec format", "#fig..generate-test.rspec" do %>
+<% example "Generating a test with specification in rSpec format", "#fig..generate-test.rspec" do %>
 <pre>
 $ generate_test.rb counter.v --rspec --name rspec
 
@@ -414,7 +414,7 @@ $ generate_test.rb counter.v --rspec --name rspec
 </pre>
 <% end %>
 
-<% figure "Generating a test with specification in xUnit format", "#fig..generate-test.unit-test" do %>
+<% example "Generating a test with specification in xUnit format", "#fig..generate-test.unit-test" do %>
 <pre>
 $ generate_test.rb counter.v --xunit --name xunit
 
@@ -438,20 +438,20 @@ Here are some reasonable expectations for our simple counter:
 * A resetted counter's value should increment by one count upon each rising clock edge.
 * A counter with the maximum value should overflow upon increment.
 
-Now that we have identified a set of expectations for our design, we are ready to implement them in our specification. "this figure":#fig..counter_rspec_spec.rb and "this figure":#fig..counter_xunit_spec.rb illustrate this process. Note the striking similarities between our expectations and their implementation.
+Now that we have identified a set of expectations for our design, we are ready to implement them in our specification. <% xref "#fig..counter_rspec_spec.rb" %> and <% xref "#fig..counter_xunit_spec.rb" %> illustrate this process. Note the striking similarities between our expectations and their implementation.
 
 
-<% figure "Specification implemented in rSpec format", "#fig..counter_rspec_spec.rb" do %>
+<% example "Specification implemented in rSpec format", "#fig..counter_rspec_spec.rb" do %>
 <code><%= File.read '../samp/counter/counter_rspec_spec.rb' %></code>
 <% end %>
 
-<% figure "Specification implemented in xUnit format", "#fig..counter_xunit_spec.rb" do %>
+<% example "Specification implemented in xUnit format", "#fig..counter_xunit_spec.rb" do %>
 <code><%= File.read '../samp/counter/counter_xunit_spec.rb' %></code>
 <% end %>
 
 <% important "Before we continue..." do %>
-# Replace the contents of the file named <tt>counter_rspec_spec.rb</tt> with the source code shown in "this figure":#fig..counter_rspec_spec.rb.
-# Replace the contents of the file named <tt>counter_xunit_spec.rb</tt> with the source code shown in "this figure":#fig..counter_xunit_spec.rb.
+# Replace the contents of the file named <tt>counter_rspec_spec.rb</tt> with the source code shown in <% xref "#fig..counter_rspec_spec.rb" %>
+# Replace the contents of the file named <tt>counter_xunit_spec.rb</tt> with the source code shown in <% xref "#fig..counter_xunit_spec.rb" %>
 # Replace the contents of the files named <tt>counter_rspec_design.rb</tt> and <tt>counter_xunit_design.rb</tt> with the following code. This code defines the reset! method which resets our Verilog design. <code>
 def Counter.reset!
   reset.intVal = 1
@@ -468,10 +468,10 @@ end
 h3(#usage.tutorial.implement-proto). Implement the prototype
 
 
-Now that we have a "specification":#glossary.specification against which to verify our "design":#glossary.design, let us build a prototype of our design. By doing so, we exercise our specification, experience potential problems that may arise when we later implement our design in Verilog, and gain confidence in our work. "this figure":#fig..counter_proto.rb shows the completed prototype for our design.
+Now that we have a "specification":#glossary.specification against which to verify our "design":#glossary.design, let us build a prototype of our design. By doing so, we exercise our specification, experience potential problems that may arise when we later implement our design in Verilog, and gain confidence in our work. <% xref "#fig..counter_proto.rb" %> shows the completed prototype for our design.
 
 
-<% figure "Ruby prototype of our Verilog design", "#fig..counter_proto.rb" do %>
+<% example "Ruby prototype of our Verilog design", "#fig..counter_proto.rb" do %>
 <code>
 def Counter.simulate!
   if reset.intVal == 1
@@ -484,13 +484,13 @@ end
 <% end %>
 
 <% important "Before we continue..." do %>
-Replace the contents of the files named <tt>counter_rspec_proto.rb</tt> and <tt>counter_xunit_proto.rb</tt> with the source code shown in "this figure":#fig..counter_proto.rb.
+Replace the contents of the files named <tt>counter_rspec_proto.rb</tt> and <tt>counter_xunit_proto.rb</tt> with the source code shown in <% xref "#fig..counter_proto.rb" %>
 <% end %>
 
 
 h3(#usage.tutorial.test-proto). Verify the prototype
 
-Now that we have implemented our prototype, we are ready to verify it against our "specification":#glossary.specification by running the "test":#glossary.test. "this figure":#fig..test-proto.rspec and "this figure":#fig..test-proto.unit-test illustrate this process.
+Now that we have implemented our prototype, we are ready to verify it against our "specification":#glossary.specification by running the "test":#glossary.test. <% xref "#fig..test-proto.rspec" %> and <% xref "#fig..test-proto.unit-test" %> illustrate this process.
 
 <% tip "Reuse your specification." do %>
 The _same_ specification can be used to verify both prototype and design.
@@ -502,7 +502,7 @@ Here, the @PROTOTYPE@ environment variable is assigned a non-empty value while r
 If you invoke the test runner (1) without any arguments or (2) with the <tt>-T</tt> option, it will show you a list of tasks that it can perform for you.
 <% end %>
 
-<% figure "Running a test with specification in rSpec format", "#fig..test-proto.rspec" do %>
+<% example "Running a test with specification in rSpec format", "#fig..test-proto.rspec" do %>
 <pre>
 $ rake -f counter_rspec_runner.rake cver PROTOTYPE=1
 
@@ -521,7 +521,7 @@ Finished in 0.018199 seconds
 </pre>
 <% end %>
 
-<% figure "Running a test with specification in xUnit format", "#fig..test-proto.unit-test" do %>
+<% example "Running a test with specification in xUnit format", "#fig..test-proto.unit-test" do %>
 <pre>
 $ rake -f counter_xunit_runner.rake cver PROTOTYPE=1
 
@@ -539,21 +539,21 @@ Finished in 0.040668 seconds.
 
 h3(#usage.tutorial.implement-design). Implement the design
 
-Now that we have implemented and verified our prototype, we are ready to implement our "design":#glossary.design. This is often quite simple because we translate _existing_ code from Ruby (our prototype) into Verilog (our design). "this figure":#fig..counter.v_impl illustrates the result of this process. Once again, note the striking similarities between the implementation of our prototype and design.
+Now that we have implemented and verified our prototype, we are ready to implement our "design":#glossary.design. This is often quite simple because we translate _existing_ code from Ruby (our prototype) into Verilog (our design). <% xref "#fig..counter.v_impl" %> illustrates the result of this process. Once again, note the striking similarities between the implementation of our prototype and design.
 
 
-<% figure "Implementation of a simple up-counter with synchronous reset", "#fig..counter.v_impl" do %>
+<% example "Implementation of a simple up-counter with synchronous reset", "#fig..counter.v_impl" do %>
 <code lang="verilog"><%= File.read '../samp/counter/counter.v' %></code>
 <% end %>
 
 <% important "Before we continue..." do %>
-Replace the contents of the file named <tt>counter.v</tt> with the source code shown in "this figure":#fig..counter.v_impl.
+Replace the contents of the file named <tt>counter.v</tt> with the source code shown in <% xref "#fig..counter.v_impl" %>
 <% end %>
 
 
 h3(#usage.tutorial.test-design). Verify the design
 
-Now that we have implemented our "design":#glossary.design, we are ready to verify it against our "specification":#glossary.specification by running the "test":#glossary.test. "this figure":#fig..test-design.rspec and "this figure":#fig..test-design.unit-test illustrate this process.
+Now that we have implemented our "design":#glossary.design, we are ready to verify it against our "specification":#glossary.specification by running the "test":#glossary.test. <% xref "#fig..test-design.rspec" %> and <% xref "#fig..test-design.unit-test" %> illustrate this process.
 
 Here, the @PROTOTYPE@ environment variable is _not_ specified while running the test, so that our design, instead of our prototype, is verified against our specification. You can also achieve this effect by assigning an empty value to @PROTOTYPE@, or by using your shell's *unset* command. Finally, the GPL Cver Verilog simulator, denoted by _cver_, is used to run the simulation.
 
@@ -565,7 +565,7 @@ bq. @require 'ruby-vpi/runner_proxy'@
 Now you can invoke all test runners in the current directory simply by executing <pre>rake cver</pre> (where _cver_ denotes the GPL Cver simulator).
 <% end %>
 
-<% figure "Running a test with specification in rSpec format", "#fig..test-design.rspec" do %>
+<% example "Running a test with specification in rSpec format", "#fig..test-design.rspec" do %>
 <pre>
 $ rake -f counter_rspec_runner.rake cver
 
@@ -582,7 +582,7 @@ Finished in 0.005628 seconds
 </pre>
 <% end %>
 
-<% figure "Running a test with specification in xUnit format", "#fig..test-design.unit-test" do %>
+<% example "Running a test with specification in xUnit format", "#fig..test-design.unit-test" do %>
 <pre>
 $ rake -f counter_xunit_runner.rake cver
 
@@ -600,7 +600,7 @@ h2(#usage.examples). Examples
 
 The <tt>samp</tt> directory contains several example tests which illustrate how Ruby-VPI can be used. Each example has an associated <tt>Rakefile</tt> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the <pre>rake</pre> command to get started.
 
-Also, some example specifications make use of BDD through the rSpec library. See the "this section":#background.methodology for a discussion of rSpec.
+Also, some example specifications make use of BDD through the rSpec library. See <% xref "#background.methodology" %> for a discussion of rSpec.
 
 
 h1(#hacking). Hacking
@@ -648,9 +648,9 @@ h4(#problems.ivl.vpi_handle_by_name.absolute-paths). Give full paths to Verilog 
 
 In version 0.8 and snapshot 20061009 of Icarus Verilog, the @vpi_handle_by_name@ function requires an _absolute_ path (including the name of the bench which instantiates the design) to a Verilog object. In addition, @vpi_handle_by_name@ is unable to retrieve the handle for a module parameter.
 
-For example, consider "this figure":#fig..TestFoo. Here, one needs to specify @TestFoo.my_foo.clk@ instead of @my_foo.clk@ in order to access the clk input of the my_foo module instance.
+For example, consider <% xref "#ex..TestFoo" %> Here, one needs to specify @TestFoo.my_foo.clk@ instead of @my_foo.clk@ in order to access the clk input of the my_foo module instance.
 
-<% figure "Part of a bench which instantiates a Verilog design", "#fig..TestFoo" do %>
+<% example "Part of a bench which instantiates a Verilog design", "#ex..TestFoo" do %>
 <code lang="verilog">
 module TestFoo;
   reg clk_reg;
@@ -663,11 +663,11 @@ h4(#problems.ivl.vpi_handle_by_name.connect-registers). Registers must be connec
 
 In version 0.8 of Icarus Verilog, if you want to access a register in a design, then it must be connected to something (either assigned to a wire or passed as a parameter to a module instantiation). Otherwise, you will get a @nil@ value as the result of @vpi_handle_by_name@ method.
 
-For example, suppose you wanted to access the @clk_reg@ register, from the bench shown in "this figure":#fig..TestFoo_bad. If you execute the statement @clk_reg = vpi_handle_by_name("TestFoo.clk_reg", nil)@ in a specification, then you will discover that the @vpi_handle_by_name@ method returns @nil@ instead of a handle to the @clk_reg@ register.
+For example, suppose you wanted to access the @clk_reg@ register, from the bench shown in <% xref "#ex..TestFoo_bad" %> If you execute the statement @clk_reg = vpi_handle_by_name("TestFoo.clk_reg", nil)@ in a specification, then you will discover that the @vpi_handle_by_name@ method returns @nil@ instead of a handle to the @clk_reg@ register.
 
-The solution is to change the design such that it appears like the one shown in "this figure":#fig..TestFoo_fix where the register is connected to a wire, or "this figure":#fig..TestFoo where the register is connected to a module instantiation.
+The solution is to change the design such that it appears like the one shown in <% xref "#ex..TestFoo_fix" %> where the register is connected to a wire, or <% xref "#ex..TestFoo" %> where the register is connected to a module instantiation.
 
-<% figure "Bad design with unconnected registers", "#fig..TestFoo_bad" do %>
+<% example "Bad design with unconnected registers", "#ex..TestFoo_bad" do %>
 <code lang="verilog">
 module TestFoo;
   reg clk_reg;
@@ -677,7 +677,7 @@ endmodule
 Here the @clk_reg@ register is not connected to anything.
 <% end %>
 
-<% figure "Fixed design with wired registers", "#fig..TestFoo_fix" do %>
+<% example "Fixed design with wired registers", "#ex..TestFoo_fix" do %>
 <code lang="verilog">
 module TestFoo;
   reg clk_reg;
