@@ -31,26 +31,29 @@ class ErbProxy < ERB
     super *aErbArgs
   end
 
-  # Add a new handler method that can be called from your ERB template.
+  # Adds a new handler that can be invoked from a ERB template.
+  # The arguments passed to the handler are:
+  # 1. buffer containing, so far, the evaluated results of the ERB template
+  # 2. content that was passed to the handler from the ERB template
+  # 3. variable number of method arguments passed from the ERB template
   def add_handler aName, &aHandler
     @handlers[aName] = aHandler
 
     # using a string because define_method does not accept a block until Ruby 1.9
     instance_eval %{
       def #{aName} *args, &block
-        @handlers[#{aName.inspect}].call *handler_content(&block).concat(args)
+        args.unshift @buffer, handler_content(&block)
+        @handlers[#{aName.inspect}].call *args
       end
     }
   end
 
-  # Returns an array containing (1) the contents of the ERB buffer thus far and (2) the text that is to be added to the ERB buffer.
+  # Returns the content passed to a handler from an ERB template.
   def handler_content
-    text = if block_given?
+    if block_given?
       limit = @buffer.length
       yield # this will append stuff to the buffer
       @buffer.slice! limit..-1
     end
-
-    [@buffer, text]
   end
 end
