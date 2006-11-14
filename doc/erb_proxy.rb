@@ -45,15 +45,12 @@ class ErbProxy < ERB
 
   # Returns an array containing (1) the contents of the ERB buffer thus far and (2) the text that is to be added to the ERB buffer.
   def handler_content
-    # backup the buffer because 'yield' is gonna append to it
-      buf = @buffer
-      @buffer = ""
+    text = if block_given?
+      limit = @buffer.length
+      yield # this will append stuff to the buffer
+      @buffer.slice! limit..-1
+    end
 
-    text = yield rescue nil
-
-    # restore the backup
-      @buffer = buf
-
-    [buf, text]
+    [@buffer, text]
   end
 end
