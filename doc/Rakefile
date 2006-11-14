@@ -99,16 +99,19 @@ end
 ## ERB manipulation
 
 require 'erb_proxy'
+require 'enumerator'
 
 # ERB proxy used to evaluate all documentation ERB templates.
 class DocProxy < ErbProxy
   Block = Struct.new :anchor, :title, :type
+  Reference = Struct.new :target, :position
 
   attr_reader :blocks
 
   def initialize *aArgs
     super
     @blocks = Hash.new {|h,k| h[k] = []}
+    @references = []
 
     # admonitions
       [:tip, :note, :important, :caution, :warning].each do |type|
@@ -130,6 +133,55 @@ class DocProxy < ErbProxy
           ]
         end
       end
+
+    # references
+      add_handler :xref do |aBuf, aText, aTarget|
+        @references << Reference.new(unanchor(aTarget), aBuf.length)
+        nil
+      end
+
+    # footnotes
+  end
+
+  alias orig_result result
+
+  def result *aArgs
+    orig_result *aArgs
+
+    # expand cross references (xref) into links to their targets
+      unless @references.empty?
+        # resolve targets of xrefs
+          blocks = @blocks.values.flatten
+
+          targets = @references.map do |ref|
+            blocks.find {|b| b.anchor == ref.target}
+          end
+
+        # split the buffer into chunks (between every two chunks exists an xref)
+          cutPoints = @references.map {|ref| ref.position}
+          cutPoints.unshift 0
+          cutPoints.push @buffer.length
+
+          chunks = []
+          cutPoints.each_cons(2) do |a, b|
+            chunks << @buffer[a...b] # range is exclusive to avoid overlap between chunks
+          end
+
+        # reassemble the broken buffer by pasting in the expanded xrefs
+          newBuffer = ""
+
+          chunks.each do |c|
+            newBuffer << c
+
+            if t = targets.shift
+              newBuffer << %{"the #{t.type} named &ldquo;#{t.title}&rdquo;":##{t.anchor}}
+            end
+          end
+
+          @buffer = newBuffer
+      end
+
+    @buffer
   end
 
   private
