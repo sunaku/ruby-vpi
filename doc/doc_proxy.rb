@@ -68,6 +68,42 @@ class DocProxy < ErbProxy
   def result *aArgs
     orig_result *aArgs
 
+    # parse document structure and insert anchors (so that the table of contents can link directly to these headings) where necessary
+      @headings = []
+
+      @buffer.gsub! /^(\s*h(\d))(\.|\(.*?\)\.)(.*)$/ do
+        target = $~.dup
+
+        title = target[4].strip
+        depth = target[2].to_i
+
+        hasAnchor = target[3] =~ /#([^#]+)\)/
+        anchor = $1 || "anchor#{headings.length}"
+
+
+        @headings << Heading.new(anchor, title, depth)
+        @blocks[:section] << Block.new(anchor, title, :section)
+
+
+        if hasAnchor
+          target.to_s
+        else
+          repl = "#{target[1]}(##{anchor})#{target[3]}#{target[4]}"
+
+          # update positions of xrefs so that they are later inserted in correct place
+            replPos = target.pre_match.length
+
+            # because it's a replacement, we delete the match and insert the replacement
+            change = 0 - target.to_s.length + repl.length
+
+            @references.select {|ref| ref.position >= replPos}.each do |ref|
+              ref.position += change
+            end
+
+          repl
+        end
+      end
+
     # expand cross references (xref) into links to their targets
       unless @references.empty?
         # resolve the targets of the xrefs
@@ -91,24 +127,6 @@ class DocProxy < ErbProxy
             @buffer.insert memo + pos, link
             memo += link.length
           end
-      end
-
-    # parse document structure and insert anchors where necessary
-      @headings = []
-
-      @buffer.gsub! /^(\s*h(\d))(\.|\(.*?\)\.)(.*)$/ do
-        target = $~.dup
-
-        hasAnchor = target[3] =~ /#([^#]+)\)/
-        anchor = $1 || "anchor#{headings.length}"
-
-        @headings << Heading.new(anchor, target[4].strip, target[2].to_i)
-
-        if hasAnchor
-          target.to_s
-        else
-          "#{target[1]}(##{anchor})#{target[3]}#{target[4]}"
-        end
       end
 
     @buffer
