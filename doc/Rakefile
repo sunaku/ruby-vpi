@@ -99,7 +99,6 @@ end
 ## ERB manipulation
 
 require 'erb_proxy'
-require 'enumerator'
 
 # ERB proxy used to evaluate all documentation ERB templates.
 class DocProxy < ErbProxy
@@ -150,35 +149,24 @@ class DocProxy < ErbProxy
 
     # expand cross references (xref) into links to their targets
       unless @references.empty?
-        # resolve targets of xrefs
+        # resolve the targets of the xrefs
           blocks = @blocks.values.flatten
 
           targets = @references.map do |ref|
             blocks.find {|b| b.anchor == ref.target}
           end
 
-        # split the buffer into chunks (between every two chunks exists an xref)
-          cutPoints = @references.map {|ref| ref.position}
-          cutPoints.unshift 0
-          cutPoints.push @buffer.length
-
-          chunks = []
-          cutPoints.each_cons(2) do |a, b|
-            chunks << @buffer[a...b] # range is exclusive to avoid overlap between chunks
-          end
-
-        # reassemble the broken buffer by pasting in the expanded xrefs
-          newBuffer = ""
-
-          chunks.each do |c|
-            newBuffer << c
-
+        # expand the xrefs in-place within the buffer
+          @references.map {|ref| ref.position}.inject(0) do |memo, pos|
             if t = targets.shift
-              newBuffer << %{"the #{t.type} named &ldquo;#{t.title}&rdquo;":##{t.anchor}}
-            end
-          end
+              link = %{"the #{t.type} named &ldquo;#{t.title}&rdquo;":##{t.anchor}}
 
-          @buffer = newBuffer
+              @buffer.insert memo + pos, link
+              memo += link.length
+            end
+
+            memo
+          end
       end
 
     @buffer
