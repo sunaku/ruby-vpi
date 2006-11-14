@@ -49,7 +49,7 @@ class ErbProxy < ERB
       buf = @buffer
       @buffer = ""
 
-    text = yield
+    text = yield rescue nil
 
     # restore the backup
       @buffer = buf
