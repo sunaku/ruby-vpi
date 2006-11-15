@@ -20,18 +20,18 @@
 
 require 'erb_proxy'
 
-# ERB proxy used to evaluate all documentation ERB templates.
+# Processes ERB templates to produce documentation. Templates may contain "<xref...>" tags where the ... represents the target anchor of the cross-reference.
 class DocProxy < ErbProxy
   Block = Struct.new :anchor, :title, :type
   Heading = Struct.new :anchor, :title, :depth
-  Reference = Struct.new :target, :position
 
   attr_reader :blocks, :headings, :references
 
-  def initialize *aArgs
+  def initialize
     super
+
     @blocks = Hash.new {|h,k| h[k] = []}
-    @references = []
+    @headings = []
 
     # admonitions
       [:tip, :note, :important, :caution, :warning].each do |type|
@@ -53,25 +53,14 @@ class DocProxy < ErbProxy
           ]
         end
       end
-
-    # references
-      add_handler :xref do |aBuf, aText, aTarget|
-        @references << Reference.new(unanchor(aTarget), aBuf.length)
-        nil
-      end
-
-    # footnotes
   end
 
-  alias orig_result result
-
-  def result *aArgs
-    orig_result *aArgs
+  # Post-processes the given ERB template result by parsing the document structure and expanding cross-references, and returns the result.
+  def post_process! aResult
+    buffer = aResult
 
     # parse document structure and insert anchors (so that the table of contents can link directly to these headings) where necessary
-      @headings = []
-
-      @buffer.gsub! /^(\s*h(\d))(\.|\(.*?\)\.)(.*)$/ do
+      buffer.gsub! %r{^(\s*h(\d))(\.|\(.*?\)\.)(.*)$} do
         target = $~.dup
 
         title = target[4].strip
@@ -88,55 +77,36 @@ class DocProxy < ErbProxy
         if hasAnchor
           target.to_s
         else
-          repl = "#{target[1]}(##{anchor})#{target[3]}#{target[4]}"
-
-          # update positions of xrefs so that they are later inserted in correct place
-            replPos = target.pre_match.length
-
-            # because it's a replacement, we delete the match and insert the replacement
-            change = 0 - target.to_s.length + repl.length
-
-            @references.select {|ref| ref.position >= replPos}.each do |ref|
-              ref.position += change
-            end
-
-          repl
+          "#{target[1]}(##{anchor})#{target[3]}#{target[4]}"
         end
       end
 
-    # expand cross references (xref) into links to their targets
-      unless @references.empty?
-        # resolve the targets of the xrefs
-          blocks = @blocks.values.flatten
+    # expand cross-references into links to their targets
+      blocks = @blocks.values.flatten
 
-          targets = @references.map do |ref|
-            blocks.find {|b| b.anchor == ref.target}
-          end
+      buffer.gsub! %r{<xref\s*(.+?)\s*/?>} do
+        anchor = unanchor($1)
+        target = blocks.find {|b| b.anchor == anchor}
 
-        # expand the xrefs in-place within the buffer
-          @references.map {|ref| ref.position}.inject(0) do |memo, pos|
-            if t = targets.shift
-              link = %{"the #{t.type} named &ldquo;#{t.title}&rdquo;":##{t.anchor}}
-            else
-              xref = @references[-targets.length.next]
-              link = %{"#{xref.target}":##{xref.target}}
-
-              warn "unresolved cross-reference to #{xref.target.inspect}"
-            end
-
-            @buffer.insert memo + pos, link
-            memo += link.length
-          end
+        if target
+          %{"the #{target.type} named &ldquo;#{target.title}&rdquo;":##{target.anchor}}
+        else
+          warn "unresolved cross-reference to #{anchor}"
+          %{"#{anchor}":##{anchor}}
+        end
       end
 
-    @buffer
+    buffer
   end
 
-  private
-
-  # The category eases the task of customizing each type's appearance via CSS.
-  # This method must return the result of the handling of the input text.
+  # Adds a block handler for the given type of block and outputs the result in a <div> whose CSS class is the given category.
+  # The arguments for the block handler are:
+  # 1. number of the block
+  # 2. title of the block
+  # 3. content of the block
   def add_block_handler aCategory, aType
+    raise ArgumentError unless block_given?
+
     add_handler aType do |buf, text, title, anchor|
       index = @blocks[aType].length + 1
 
@@ -158,15 +128,33 @@ class DocProxy < ErbProxy
 
       text = join_redcloth_elements(elts)
       buf << text
-      text
     end
   end
 
+  private
+
+  # Joins the given elements by putting enough white-space between them so that RedCloth knows they're different elements.
   def join_redcloth_elements *args
-    args.join("\n\n\n")
+    args.join "\n\n\n"
   end
 
+  # Removes the # from a HTML anchor so that only its name is preserved.
   def unanchor aAnchor
-    aAnchor.sub /^#+/, ''
+    aAnchor.sub(/^#+/, '')
+  end
+
+  # update positions of xrefs so that they are later inserted in correct place
+  def update_xrefs aSrcPos, aSrcLen, aDstLen
+    # because it's a replacement, we delete the match and insert the replacement
+    change = 0 - aSrcLen + aDstLen
+
+    @references.select {|ref| ref.position >= aSrcPos}.each do |ref|
+      ref.position += change
+    end
+  end
+
+  def append_to_buffer aBuff, aText
+    update_xrefs aBuff.length, 0, aText.length
+    aBuff << aText
   end
 end

@@ -20,7 +20,6 @@
 
 require 'rake/clean'
 require 'doc_proxy'
-require 'doc_format'
 
 FileList['*.erb'].each do |src|
   prefix = File.basename(src, '.erb')
@@ -29,30 +28,31 @@ FileList['*.erb'].each do |src|
 
   desc "Process file #{src.inspect}."
   file dst => [src, 'common.tpl'] do |t|
-    # process the documentation source file
-      proxy = DocProxy.new(File.read(src))
+    content = DocProxy.new.instance_eval do
+      # default output configuration
+      table_of_contents = true
+      page_title = nil
 
-      # set default configuration
-        @table_of_contents = true
-        @title = nil
-
-      content = proxy.instance_eval do
+      # load the documentation's helper
         if File.exist? helper
           instance_eval File.read(helper)
         end
 
-        result(binding)
-      end
+      # evaluate the documentation file
+        template = ERB.new(File.read(src))
+        content = template.result(binding)
+        post_process! content
 
-    # store result using common HTML template
-      template = ERB.new(File.read(t.prerequisites[1]))
-      content = template.result(binding)
+      # fit result into common HTML format
+        template = ERB.new(File.read(t.prerequisites[1]))
+        template.result(binding)
+    end
 
-      File.open(dst, 'w') do |f|
-        f << content
-      end
+    File.open(dst, 'w') do |f|
+      f << content
+    end
 
-      puts "wrote #{dst.inspect}"
+    puts "wrote #{dst.inspect}"
   end
 
   task :default => dst

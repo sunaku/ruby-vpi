@@ -18,42 +18,31 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
-require 'erb'
+require 'erb_content'
 
-class ErbProxy < ERB
-  attr_reader :handlers, :buffer
+class ErbProxy
+  attr_reader :handlers
 
-  def initialize *aErbArgs
-    @buffer = ""
+  def initialize
     @handlers = {}
-
-    aErbArgs[3] = :@buffer
-    super *aErbArgs
   end
 
   # Adds a new handler that can be invoked from a ERB template.
   # The arguments passed to the handler are:
-  # 1. buffer containing, so far, the evaluated results of the ERB template
+  # 1. buffer containing the evaluated results of the ERB template (so far; at this point in time)
   # 2. content that was passed to the handler from the ERB template
   # 3. variable number of method arguments passed from the ERB template
-  def add_handler aName, &aHandler
+  def add_handler aName, &aHandler # :yields: buffer, content, *args
     @handlers[aName] = aHandler
 
     # using a string because define_method does not accept a block until Ruby 1.9
     instance_eval %{
       def #{aName} *args, &block
-        args.unshift @buffer, handler_content(&block)
-        @handlers[#{aName.inspect}].call *args
+        raise ArgumentError unless block_given?
+
+        args.unshift(*ERB.buffer_and_content(&block))
+        @handlers[#{aName.inspect}].call(*args)
       end
     }
-  end
-
-  # Returns the content passed to a handler from an ERB template.
-  def handler_content
-    if block_given?
-      limit = @buffer.length
-      yield # this will append stuff to the buffer
-      @buffer.slice! limit..-1
-    end
   end
 end
