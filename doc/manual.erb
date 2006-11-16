@@ -28,12 +28,11 @@ Ruby-VPI is "free software":http://en.wikipedia.org/wiki/Free_software ; you can
 
 h2(#intro.related-works). Related works
 
-You may wish to consider the following projects, which are similar to Ruby-VPI.
-
+* "JOVE":http://jove.sourceforge.net is a Java interface to VPI.
+* "Teal":http://teal.sourceforge.net is a C++ interface to VPI.
+* "ScriptEDA":http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/ is a Perl, Python, and Tcl interface to VPI.
 * "RHDL":http://rhdl.rubyforge.org is a hardware description and verification language based on Ruby.
 * "MyHDL":http://myhdl.jandecaluwe.com is a hardware description and verification language based on Python, which features conversion to Verilog and co-simulation.
-* "JOVE":http://jove.sourceforge.net is a java interface to VPI.
-* "ScriptEDA":http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/ is a perl, Python, and Tcl interface to VPI.
 
 
 h2(#intro.related-works.pli). Ye olde PLI
@@ -42,7 +41,7 @@ The following projects utilize the archaic *tf* and *acc* PLI interfaces, which 
 
 * "ScriptSim":http://www.nelsim.com is a Perl, Python, and Tcl/Tk interface to PLI.
 * "Verilog::Pli":http://www.veripool.com/verilog-pli.html is a Perl interface to PLI.
-* "JPLI":http://www.time-rover.com/jpli/ is a Java interface to PLI.
+* "JPLI":http://www.time-rover.com/jpli/ is a proprietary Java interface to PLI.
 
 
 h1(#background). Background
@@ -65,7 +64,7 @@ As a newcomer into the world of Verilog, I often heard the term *test bench*: "I
 
 Defeated, I turned to my inner faculties to determine the answer. Let's see, the term _test bench_ has the word _test_&mdash;so it has something to do with testing&mdash;and it has the word _bench_&mdash;so maybe it's referring to a table where the testing should occur. This reasoning grew increasingly familiar as my mind rummaged through towering stores of obsolescence and ultimately revealed dreaded memories of sleepless anguish: debugging electronics in the robotics laboratory.
 
-Aha!, I exclaimed hesitantly, trying to dismiss the past. The term has its roots in the testing of electronic devices, where an engineer would sit at a bench in an electronics laboratory and verify that an electronic component satisfies some criteria. The bench would be furnished with tools of measurement and manipulation&mdash;such as oscilloscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.
+Aha! I exclaimed hesitantly, trying to dismiss the past. The term has its roots in the testing of electronic devices, where an engineer would sit at a bench in an electronics laboratory and verify that an electronic component satisfies some criteria. The bench would be furnished with tools of measurement and manipulation&mdash;such as oscilloscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.
 
 Alright, now I remember what a laboratory bench is, but how does that compare with the term test bench? Surely they cannot have the same meaning, because it doesn't make sense to _run_ a laboratory bench or to _write_ one. Thus, to avoid propagating such confusion into this manual, I have attempted to clarify the terminology by "simplifying and reintroducing it in a new light":#glossary.
 
@@ -187,7 +186,7 @@ h3(#background.running-tests.init). Initialization
 
 A test is first initialized before it is "executed":#background.running-tests.exec. <xref #fig..ruby_init> illustrates the initialization process "described below":#proc..ruby_init.
 
-# The Verilog simulator initializes the Ruby interpreter by invoking the @$ruby_init;@ system task/function, whose parameters represent the command-line invocation of the Ruby interpreter. For example, one would specify @$ruby_init("ruby", "-w");@ in Verilog to achieve the same effect as specifying <pre>ruby -w</pre> at a command-prompt.
+# The Verilog simulator initializes the Ruby interpreter by invoking the @$ruby_init;@ system task/function, whose parameters represent the command-line invocation of the Ruby interpreter. For example, one would specify @$ruby_init("ruby", "-w");@ in Verilog to achieve the same effect as running <pre>ruby -w</pre> at a command-prompt.
 # The Verilog simulator is paused and the Ruby interpreter is initialized with the arguments of the @$ruby_init;@ system task/function.
 # When the Ruby interpreter invokes the @Vpi::relay_verilog@ method, it is paused and the Verilog simulator is given control.
 
@@ -450,8 +449,8 @@ Now that we have identified a set of expectations for our design, we are ready t
 <% end %>
 
 <% important "Before we continue..." do %>
-# Replace the contents of the file named <tt>counter_rspec_spec.rb</tt> with the source code shown in <xref #fig..counter_rspec_spec.rb>
-# Replace the contents of the file named <tt>counter_xunit_spec.rb</tt> with the source code shown in <xref #fig..counter_xunit_spec.rb>
+# Replace the contents of the file named <tt>counter_rspec_spec.rb</tt> with the source code shown in <xref #fig..counter_rspec_spec.rb>.
+# Replace the contents of the file named <tt>counter_xunit_spec.rb</tt> with the source code shown in <xref #fig..counter_xunit_spec.rb>.
 # Replace the contents of the files named <tt>counter_rspec_design.rb</tt> and <tt>counter_xunit_design.rb</tt> with the following code. This code defines the reset! method which resets our Verilog design. <code>
 def Counter.reset!
   reset.intVal = 1
