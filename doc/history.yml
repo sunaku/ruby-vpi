@@ -1,4 +1,24 @@
 -
+  Version: 11.1.1
+
+  Date: 2006-11-15
+
+  Summary: |
+    This release fixes a bug in the automated test generator and unifies the user manual and the website into a single documentation system.
+
+  Acknowledgment: |
+    Thanks to John Burr for finding the bug in the automated test generator.
+
+  Notice: |
+    * The user manual is now available _only_ in HTML format. If you still wish to have a plain-text version, you can use a text-based browser, such as "lynx":http://lynx.browser.org/, to perform the necessary conversion.
+
+  Detail: |
+    * The automated test generator no longer crashes when parsing a Verilog module declaration that contains multiple module parameters.
+
+    * The user manual and the website are now written using a custom documentation system based on RedCloth and ERB instead of DocBook-XML. This makes it easier to edit the user manual and reuse its content in other areas of the website.
+
+
+-
   Version: 11.1.0
 
   Date: 2006-11-08
