@@ -4,7 +4,7 @@
   Date: 2006-11-15
 
   Summary: |
-    This release fixes a bug in the automated test generator and unifies the user manual and the website into a single documentation system.
+    This release fixes a bug in the automated test generator, unifies the user manual and the website into a single documentation system, and adds support for rSpec 0.7.2.
 
   Acknowledgment: |
     Thanks to John Burr for finding the bug in the automated test generator.

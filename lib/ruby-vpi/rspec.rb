@@ -28,5 +28,10 @@ require 'spec'
 # prevent RSpec termination when no arguments are provided
   ARGV.unshift ''
 
-$context_runner = ::Spec::Runner::OptionParser.create_context_runner(ARGV, false, STDERR, STDOUT)
+# in rspec 0.7.2, they changed create_context_runner from a class method into an instance methed
+  op = ::Spec::Runner::OptionParser
+  op = op.new unless op.respond_to? :create_context_runner
+
+$context_runner = op.create_context_runner(ARGV, false, STDERR, STDOUT)
+
 at_exit {$context_runner.run false}
