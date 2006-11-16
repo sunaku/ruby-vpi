@@ -55,11 +55,12 @@ class VerilogParser
       @decl =~ %r{module\s+(\w+)\s*(\#\((.*?)\))?\s*\((.*?)\)\s*;}m
       @name, paramDecls, portDecls = $1, $3 || '', $4
 
-      @parameters = paramDecls.split(/,/).map! do |decl|
+      paramDecls =~ %r{\bparameter\b(.*)$}
+      @parameters = $1.split(',').map! do |decl|
         Parameter.new decl
       end
 
-      @ports = portDecls.split(/,/).map! do |decl|
+      @ports = portDecls.split(',').map! do |decl|
         Port.new decl
       end
     end
@@ -69,9 +70,7 @@ class VerilogParser
 
       def initialize aDecl
         @decl = aDecl.strip
-
-        @decl =~ %r{\bparameter\b(.*)$}
-        @name, @value = $1.split(/=/).map! {|s| s.strip}
+        @name, @value = @decl.split('=').map! {|s| s.strip}
       end
     end
 

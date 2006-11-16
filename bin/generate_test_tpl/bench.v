@@ -13,7 +13,7 @@ module <%= aOutputInfo.verilogBenchName %>;
 
   // instantiate the design under test
 <% aModuleInfo.parameters.each do |param| %>
-    <%= param.decl %>;
+    parameter <%= param.decl %>;
 <% end %>
 <% aModuleInfo.ports.each do |port| %>
     <%= port.input? ? 'reg' : 'wire' %> <%= port.size %> <%= port.name %>;
