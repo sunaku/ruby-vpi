@@ -49,6 +49,9 @@ void relay_verilog() {
   pthread_mutex_lock(&relay__rubyLock);
 }
 
+/**
+  Stores command-line options for the Ruby interpreter.
+*/
 typedef struct {
   PLI_BYTE8** mArgs;	/// Array of command-line arguments.
   unsigned int mCount;	/// Number of command-line arguments.
@@ -59,13 +62,12 @@ typedef struct {
   @note	The structure will be freed *deeply* after use.
 */
 void* ruby_run_handshake(void* apRubyOptions) {
-  // initialize Ruby interpreter
   ruby_init();
   ruby_init_loadpath();
 
   swig_init();
 
-    // pass command-line arguments to the interpreter
+  // pass command-line arguments to the interpreter
     relay__RubyOptions__def* pRubyOptions = (relay__RubyOptions__def*) apRubyOptions;
 
     PLI_BYTE8** argv = pRubyOptions->mArgs;
@@ -73,7 +75,7 @@ void* ruby_run_handshake(void* apRubyOptions) {
 
     ruby_options(argc, argv);
 
-    // free the memory used by command-line options
+  // free the memory used by command-line options
     unsigned int i;
     for (i = 0; i < argc; i++) {
       free(argv[i]);
@@ -82,13 +84,9 @@ void* ruby_run_handshake(void* apRubyOptions) {
     free(argv);
     free(pRubyOptions);
 
-
-  // start Ruby interpreter
   ruby_run();
-
-
-  // Ruby interpreter is now finished, so clean it up before terminating this thread
   ruby_finalize();
+
   return NULL;
 }
 
@@ -100,34 +98,32 @@ void relay_ruby_run() {
     pRubyOptions->mCount = 0;
 
     // transform the arguments passed to this function by Verilog into command-line arguments for Ruby interpeter
-    vpiHandle vCall = vpi_handle(vpiSysTfCall, NULL);
+      vpiHandle vCall = vpi_handle(vpiSysTfCall, NULL);
 
-    if (vCall) {
-      vpiHandle vCallArgs = vpi_iterate(vpiArgument, vCall);
+      if (vCall) {
+        vpiHandle vCallArgs = vpi_iterate(vpiArgument, vCall);
 
-      if (vCallArgs) {
-        vpiHandle vArg;
-        s_vpi_value argVal;
-        argVal.format = vpiStringVal;
+        if (vCallArgs) {
+          vpiHandle vArg;
+          s_vpi_value argVal;
+          argVal.format = vpiStringVal;
 
-        while ((vArg = vpi_scan(vCallArgs)) != NULL) {
-          vpi_get_value(vArg, &argVal);
+          while (vArg = vpi_scan(vCallArgs)) {
+            pRubyOptions->mCount++;
 
-          pRubyOptions->mCount++;
+            // grow the options struct to hold more options
+              if (pRubyOptions->mArgs == NULL)
+                pRubyOptions->mArgs = malloc(sizeof(PLI_BYTE8*) * pRubyOptions->mCount);
+              else
+                pRubyOptions->mArgs = realloc(pRubyOptions->mArgs, sizeof(PLI_BYTE8*) * pRubyOptions->mCount);
 
+              assert(pRubyOptions->mArgs != NULL);
 
-          if (pRubyOptions->mArgs == NULL)
-            pRubyOptions->mArgs = malloc(sizeof(PLI_BYTE8*) * pRubyOptions->mCount);
-          else
-            pRubyOptions->mArgs = realloc(pRubyOptions->mArgs, sizeof(PLI_BYTE8*) * pRubyOptions->mCount);
-
-          assert(pRubyOptions->mArgs != NULL);
-
-
-          pRubyOptions->mArgs[pRubyOptions->mCount-1] = strdup(argVal.value.str);
+            vpi_get_value(vArg, &argVal);
+            pRubyOptions->mArgs[pRubyOptions->mCount - 1] = strdup(argVal.value.str);
+          }
         }
       }
-    }
 
     pthread_create(&relay__rubyThread, 0, ruby_run_handshake, pRubyOptions);
     return;

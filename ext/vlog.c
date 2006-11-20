@@ -25,25 +25,14 @@
 #include <stdlib.h>
 
 
-verilog_tf_funcSig(vlog_ruby_relay) {
-  // transfer control to ruby
-  relay_ruby();
-
-
-  // transfer control to verilog
+verilog_tf_funcSig(vlog_ruby_init) {
+  relay_init();
+  relay_ruby_run();
   verilog_tf_funcReturn(0);
 }
 
-verilog_tf_funcSig(vlog_ruby_init) {
-  // setup control transfer mechanism
-  relay_init();
-
-
-  // start ruby interpreter and transfer control to it
-  relay_ruby_run();
-
-
-  // transfer control to verilog
+verilog_tf_funcSig(vlog_ruby_relay) {
+  relay_ruby();
   verilog_tf_funcReturn(0);
 }
 
