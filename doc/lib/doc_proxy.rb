@@ -142,19 +142,4 @@ class DocProxy < ErbProxy
   def unanchor aAnchor
     aAnchor.sub(/^#+/, '')
   end
-
-  # update positions of xrefs so that they are later inserted in correct place
-  def update_xrefs aSrcPos, aSrcLen, aDstLen
-    # because it's a replacement, we delete the match and insert the replacement
-    change = 0 - aSrcLen + aDstLen
-
-    @references.select {|ref| ref.position >= aSrcPos}.each do |ref|
-      ref.position += change
-    end
-  end
-
-  def append_to_buffer aBuff, aText
-    update_xrefs aBuff.length, 0, aText.length
-    aBuff << aText
-  end
 end
