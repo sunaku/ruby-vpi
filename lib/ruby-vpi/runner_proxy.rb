@@ -20,11 +20,20 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
-# invoke each test runner with the command-line args
-  FileList['*.rake', '*.rk'].each do |runner|
-    sh 'rake', '-f', runner, *ARGV
+# supress errors about nonexistent tasks
+  task :default
+
+  ARGV.each do |t|
+    task t
   end
 
-# supress errors about non-existant tasks
-  ARGV.each do |t| task t end
-  task :default
+# invoke each test runner with the command-line args
+  at_exit do
+    FileList['**/*.rake'].each do |path|
+      parent, runner = File.dirname(path), File.basename(path)
+
+      cd parent do
+        sh 'rake', '-f', runner, *ARGV
+      end
+    end
+  end
