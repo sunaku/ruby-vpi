@@ -6,6 +6,7 @@ h2(#intro.features). Features
 * Supports the _entire_ IEEE Std 1364-2005 VPI standard.
 
 * Works with all "major Verilog simulators":manual.html#setup.reqs available today.
+** Compile _once_ (during "installation":manual.html#setup.installation) and use forever!
 
 * Enables "agile practices":http://www.agilealliance.org/intro such as
 ** "test-driven":http://www.testdriven.com development
@@ -21,7 +22,7 @@ h2(#intro.features). Features
 ** Regular expressions
 ** Multi-threading
 ** System calls and I/O
-** "_ad infinium_":http://rubyforge.org
+** "_ad infinitum_":http://rubyforge.org
 
 * Gives you the _freedom_ to study, modify, and distribute this software, in accordance with the "GNU General Public License":http://www.gnu.org/copyleft/gpl.html.
 
