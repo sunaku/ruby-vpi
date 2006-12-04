@@ -56,7 +56,7 @@ Ruby-VPI presents an open-ended interface to VPI. Thus, you can use any methodol
 
 h2(#background.vocab). Terminology
 
-<% tip do %>
+<% note do %>
 Have a look at the "glossary":#glossary for definitions of terms used in this manual.
 <% end %>
 
@@ -625,14 +625,18 @@ h2(#problems.ruby). Ruby
 
 h3(#problems.ruby.SystemStackError). SystemStackError
 
-<%= @fixed_in_2_0_0 %>
+<% note "Fixed in 2.0.0." do %>
+This problem was fixed in release 2.0.0 (2006-04-17).
+<% end %>
 
 If a "stack level too deep (SystemStackError)" error occurs during the simulation, then increase the system-resource limit for stack-size by running the <pre>ulimit -s unlimited</pre> command before starting the simulation.
 
 
 h3(#problems.ruby.xUnit). test/unit
 
-<%= @fixed_in_2_0_0 %>
+<% note "Fixed in 2.0.0." do %>
+This problem was fixed in release 2.0.0 (2006-04-17).
+<% end %>
 
 If your specification employs Ruby's unit testing framework, then you will encounter an error saying "[BUG] cross-thread violation on rb_gc()".
 
@@ -701,7 +705,9 @@ h2(#problems.vsim). Mentor Modelsim
 
 h3(#problems.vsim.ruby_run). ruby_run();
 
-<%= @fixed_in_2_0_0 %>
+<% note "Fixed in 2.0.0." do %>
+This problem was fixed in release 2.0.0 (2006-04-17).
+<% end %>
 
 Version 6.1b of Mentor Modelsim doesn't play nicely with either an embedded Ruby interpreter or POSIX threads in a PLI application. When Ruby-VPI invokes the ruby_run function (which starts the Ruby interpreter), the simulator terminates immediately with an exit status of 0.
 
