@@ -49,14 +49,24 @@ module Vpi
         }
       end
 
-    # Tests if the logic value of this handle is "don't care" (x).
+    # Tests if the logic value of this handle is unknown (x).
     def x?
       self.hexStrVal =~ /x/i
+    end
+
+    # Sets the logic value of this handle to unknown (x).
+    def x!
+      self.hexStrVal = 'x'
     end
 
     # Tests if the logic value of this handle is high impedance (z).
     def z?
       self.hexStrVal =~ /z/i
+    end
+
+    # Sets the logic value of this handle to high impedance (z).
+    def z!
+      self.hexStrVal = 'z'
     end
 
     # Reads the value using the given format (integer constant) and returns a +S_vpi_value+ object.
