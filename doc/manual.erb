@@ -282,15 +282,17 @@ h3(#setup.installation.windows). Installing on Windows
 
 * Install "Cygwin":http://www.cygwin.com, the Linux-like environment for Windows.
 
+<% note "Undefined symbols in Windows" do %>
+After it is compiled, Ruby-VPI is linked to symbols whose names begin with <tt>_vpi</tt>. In GNU/Linux and similar operating systems, these symbols are allowed to be undefined. However, one "cannot compile a shared object file with references to undefined symbols in Windows":http://sourceware.org/ml/cygwin/2001-12/msg01293.html.
+
+We can work around this problem by supplying the Verilog simulator's VPI object file, which contains definitions of all VPI symbols, to the linker. The following steps illustrate this process.
+<% end %>
+
 * Search for object files whose names end with <tt>.so</tt>, <tt>.o</tt>, or <tt>.dll</tt> in your Verilog simulator's installation directory.
 
-* Determine which object files, among those found in the previous step, contain symbols whose names begin with "_vpi" by running the <pre>for x in *.{o,so,dll}; do nm $x | grep -q '[Tt] _vpi' > /dev/null && echo $x; done</pre> command in Cygwin.
+* Determine which object files, among those found in the previous step, contain symbols whose names begin with "_vpi" by running the <pre>for x in *.{o,so,dll}; do nm $x | grep -q '[Tt] _vpi' && echo $x; done</pre> command in Cygwin.
 ** If you are using Mentor Modelsim, the desired object file can be found at a path similar to <tt>C:\Modeltech\win32\libvsim.dll</tt>.
 ** If you are using GPL Cver, the desired object file can be found at a path similar to <tt>C:\gplcver\objs\v_vpi.o</tt>.
-
-<% note do %>
-Since Ruby-VPI makes use of the VPI C-language interface, it links to symbols whose names begin with "_vpi". It is possible for these symbols to be undefined when Ruby-VPI is compiled under GNU/Linux and similar operating systems. In contrast, one "cannot compile a shared object file with references to undefined symbols under Windows":http://sourceware.org/ml/cygwin/2001-12/msg01293.html. Thus, we must find a Verilog simulator's shared object file, which contains definitions of all VPI symbols, and give this file to the linker when compiling Ruby-VPI.
-<% end %>
 
 * Assign the path of the object file (determined in the previous step) to the @LDFLAGS@ environment variable. For example, if the object file's path is <tt>/foo/bar/vpi.so</tt>, then you would run the <pre>export LDFLAGS=/foo/bar/vpi.so</pre> command in Cygwin.
 
