@@ -16,7 +16,7 @@
     <title><%= page_title %></title>
   </head>
   <body>
-<% if table_of_contents %>
+  <% if table_of_contents %>
     <div id="navigation">
       <%= %{"!images/home.png(project home)!":readme.html}.redcloth %>
 
@@ -26,24 +26,23 @@
           %{#{'*' * h.depth} "#{h.title}":##{h.anchor}}
         end.join("\n").redcloth
       %>
-<%
-    @blocks.keys.sort_by {|k| k.to_s}.each do |type|
-      list = @blocks[type]
 
-      unless list.empty?
-%>
-      <h2><%= type.to_s.capitalize %>s</h2>
-<%=
-      list.inject('') do |memo, block|
-        memo << "# #{(block.title || block.anchor).inspect}:##{block.anchor}\n"
-      end.redcloth
-%>
-<%
-    end
-  end
-%>
+      <% DocProxy::CATEGORIES.each_pair do |cat, types| %>
+        <h1><%= cat.to_s.capitalize %>s</h1>
+
+        <% types.each do |type| list = @blocks[type] %>
+          <% unless list.empty? %>
+            <h2><%= type.to_s.capitalize %>s</h2>
+            <%=
+              list.inject('') do |memo, block|
+                memo << "# #{(block.title || block.anchor).inspect}:##{block.anchor}\n"
+              end.redcloth
+            %>
+          <% end %>
+        <% end %>
+      <% end %>
     </div>
-<% end %>
+  <% end %>
     <%= content.to_html %>
   </body>
 </html>

@@ -25,6 +25,13 @@ class DocProxy < ErbProxy
   Block = Struct.new :anchor, :title, :type
   Heading = Struct.new :anchor, :title, :depth
 
+  CATEGORIES = {
+    :admonition => [:tip, :note, :important, :caution, :warning],
+
+    # formal blocks; see http://www.sagehill.net/docbookxsl/FormalTitles.html
+    :formal => [:figure, :table, :example, :equation, :procedure],
+  }
+
   attr_reader :blocks, :headings, :references
 
   def initialize
@@ -33,26 +40,24 @@ class DocProxy < ErbProxy
     @blocks = Hash.new {|h,k| h[k] = []}
     @headings = []
 
-    # admonitions
-      [:tip, :note, :important, :caution, :warning].each do |type|
-        add_block_handler :admonition, type do |index, title, text|
-          join_redcloth_elements [
-            %{!<images/#{type}.png(#{type})!},
-            %{p(title). #{type.to_s.capitalize}: #{title}},
-            text,
-          ]
-        end
+    CATEGORIES[:admonition].each do |type|
+      add_block_handler :admonition, type do |index, title, text|
+        join_redcloth_elements [
+          %{!<images/#{type}.png(#{type})!},
+          %{p(title). #{type.to_s.capitalize}: #{title}},
+          text,
+        ]
       end
+    end
 
-    # formal blocks; see http://www.sagehill.net/docbookxsl/FormalTitles.html
-      [:figure, :table, :example, :equation, :procedure].each do |type|
-        add_block_handler :formal, type do |index, title, text|
-          join_redcloth_elements [
-            %{p(title). #{type.to_s.capitalize} #{index}. #{title}},
-            text,
-          ]
-        end
+    CATEGORIES[:formal].each do |type|
+      add_block_handler :formal, type do |index, title, text|
+        join_redcloth_elements [
+          %{p(title). #{type.to_s.capitalize} #{index}. #{title}},
+          text,
+        ]
       end
+    end
   end
 
   # Post-processes the given ERB template result by parsing the document structure and expanding cross-references, and returns the result.
