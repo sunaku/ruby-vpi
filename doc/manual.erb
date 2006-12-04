@@ -651,9 +651,9 @@ h3(#problems.ivl.vpi_handle_by_name). Vpi::vpi_handle_by_name
 
 h4(#problems.ivl.vpi_handle_by_name.absolute-paths). Give full paths to Verilog objects
 
-In version 0.8 and snapshot 20061009 of Icarus Verilog, the @vpi_handle_by_name@ function requires an _absolute_ path (including the name of the bench which instantiates the design) to a Verilog object. In addition, @vpi_handle_by_name@ is unable to retrieve the handle for a module parameter.
+In version 0.8 and snapshot 20061009 of Icarus Verilog, the @vpi_handle_by_name@ function requires an _absolute_ path (including the name of the bench which instantiates the design) to a Verilog object. In addition, @vpi_handle_by_name@ always returns @nil@ when its second parameter is specified.
 
-For example, consider <xref #ex..TestFoo> Here, one needs to specify @TestFoo.my_foo.clk@ instead of @my_foo.clk@ in order to access the clk input of the my_foo module instance.
+For example, consider <xref #ex..TestFoo> Here, one must write @vpi_handle_by_name("TestFoo.my_foo.clk", nil)@ instead of @vpi_handle_by_name("my_foo.clk", TestFoo)@ in order to access the @clk@ input of the @my_foo@ module instance.
 
 <% example "Part of a bench which instantiates a Verilog design", "#ex..TestFoo" do %>
 <code lang="verilog">
@@ -663,6 +663,7 @@ module TestFoo;
 endmodule
 </code>
 <% end %>
+
 
 h4(#problems.ivl.vpi_handle_by_name.connect-registers). Registers must be connected
 
