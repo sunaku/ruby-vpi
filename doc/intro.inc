@@ -27,6 +27,19 @@ h2(#intro.features). Features
 * Gives you the _freedom_ to study, modify, and distribute this software, in accordance with the "GNU General Public License":http://www.gnu.org/copyleft/gpl.html.
 
 
+h3(#intro.applications). Possible applications
+
+* Writing hardware models in the scripting language
+* Dumping/processing netlist data from Verilog database
+* Dumping/processing simulation data
+* Feeding dynamic simulation stimuli
+* Backannotating delay information
+* Interactive logic simulation (with readline features from the scripting languages)
+* Building distributed simulation (with the help of (XML-)RPC call in the scripting languages)
+
+bq>. -- "Pin Hong":http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/
+
+
 h2(#intro.appetizers). Appetizers
 
 Here is a modest sampling to whet your appetite.
