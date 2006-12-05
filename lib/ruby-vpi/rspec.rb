@@ -1,8 +1,8 @@
 # Bootstraps the RSpec library from within Ruby.
 
 =begin
+  Copyright 2006 rSpec project <http://rspec.rubyforge.org>
   Copyright 2006 Suraj N. Kurapati
-  Copyright 2006 RSpec project
 
   This file is part of Ruby-VPI.
 
