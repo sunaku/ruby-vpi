@@ -29,4 +29,10 @@ SIMULATOR_ARGS = {
   :vsim => '',
 }
 
+# This task is invoked _before_ the simulator runs.
+# See http://docs.rubyrake.org/read/chapter/4#page16
+task :setup do
+  # actions
+end
+
 require 'ruby-vpi/runner'
