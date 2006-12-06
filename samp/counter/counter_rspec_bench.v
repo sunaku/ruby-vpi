@@ -12,7 +12,7 @@ module counter_rspec_bench;
   // connect to the Ruby side of this bench
     initial begin
       clock = 0;
-      $ruby_init("ruby", "-w", "-rubygems", "counter_rspec_bench.rb");
+      $ruby_init("ruby", "-rubygems", "counter_rspec_bench.rb");
     end
 
     always begin
