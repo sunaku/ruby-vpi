@@ -29,11 +29,13 @@
 
 # invoke each test runner with the command-line args
   at_exit do
-    FileList['**/*.rake'].each do |path|
-      parent, runner = File.dirname(path), File.basename(path)
+    unless ARGV.empty?
+      FileList['**/*.rake'].each do |path|
+        parent, runner = File.dirname(path), File.basename(path)
 
-      cd parent do
-        sh 'rake', '-f', runner, *ARGV
+        cd parent do
+          sh 'rake', '-f', runner, *ARGV
+        end
       end
     end
   end
