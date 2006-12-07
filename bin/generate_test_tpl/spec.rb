@@ -11,13 +11,14 @@ class <%= aOutputInfo.specClassName %> < Test::Unit::TestCase
 <% aModuleInfo.ports.each do |port| %>
 
   def test_<%= port.name %>
+    # assert <%= aOutputInfo.designClassName %>.<%= port.name %> ..., "<%= port.name %> should ..."
   end
 <% end %>
 end
 <%
    when :rSpec, :tSpec
 %>
-context "A new <%= aOutputInfo.designClassName %>" do
+context "A resetted <%= aOutputInfo.designClassName %>" do
   setup do
     <%= aOutputInfo.designClassName %>.reset!
   end
@@ -29,11 +30,8 @@ end
 <%
   else
 %>
-class <%= aOutputInfo.specClassName %>
-  def initialize
-    <%= aOutputInfo.designClassName %>.reset!
-  end
-end
+<%= aOutputInfo.designClassName %>.reset!
+# raise "should ..." unless <%= aOutputInfo.designClassName %> ...
 <%
   end
 %>
