@@ -30,16 +30,13 @@ module <%= aOutputInfo.verilogBenchName %>;
 
   // connect to the Ruby side of this bench
     initial begin
-      <%= clockSignal %> = 0;
       $ruby_init("ruby", "-rubygems", <%= aOutputInfo.rubyBenchPath.inspect %>);
     end
 
     always begin
-      #5 <%= clockSignal %> = ~<%= clockSignal %>;
-    end
-
-    always @(posedge <%= clockSignal %>) begin
+      #1 <%= clockSignal %> = 0;
       #1 $ruby_relay;
+      #1 <%= clockSignal %> = 1;
     end
 
 endmodule
