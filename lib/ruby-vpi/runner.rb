@@ -3,7 +3,7 @@
 # = Required variables
 # SIMULATOR_SOURCES:: Array of paths to source files needed by the simulator.
 # SIMULATOR_TARGET:: Name of the Verilog module to be simulated.
-# SIMULATOR_ARGS:: A hash containing keys for each simulator task (same as Rakefile task names) and values containing command-line arguments for each simulator.
+# SIMULATOR_ARGUMENTS:: A hash containing keys for each simulator task (same as Rakefile task names) and values containing command-line arguments for each simulator.
 
 =begin
   Copyright 2006 Suraj N. Kurapati
@@ -29,7 +29,7 @@
   raise ArgumentError, "All required variables must be defined." unless
     defined?(SIMULATOR_SOURCES) &&
     defined?(SIMULATOR_TARGET) &&
-    defined?(SIMULATOR_ARGS)
+    defined?(SIMULATOR_ARGUMENTS)
 
   SIMULATOR_INCLUDES = [] unless defined? SIMULATOR_INCLUDES
 
@@ -96,7 +96,7 @@ end
 
 desc "Simulate with GPL Cver."
 task :cver => :setup do
-  sh 'cver', SIMULATOR_ARGS[:cver], "+loadvpi=#{object_file_path(:cver)}:#{BOOTSTAP_FUNC}", expand_include_dir_options(:cver), SIMULATOR_SOURCES
+  sh 'cver', SIMULATOR_ARGUMENTS[:cver], "+loadvpi=#{object_file_path(:cver)}:#{BOOTSTAP_FUNC}", expand_include_dir_options(:cver), SIMULATOR_SOURCES
 end
 
 CLOBBER.include 'verilog.log'
@@ -105,7 +105,7 @@ CLOBBER.include 'verilog.log'
 desc "Simulate with Icarus Verilog."
 task :ivl => :setup do
   cp object_file_path(:ivl), 'ruby-vpi.vpi'
-  sh 'iverilog', SIMULATOR_ARGS[:ivl], '-mruby-vpi', expand_include_dir_options(:ivl), SIMULATOR_SOURCES
+  sh 'iverilog', SIMULATOR_ARGUMENTS[:ivl], '-mruby-vpi', expand_include_dir_options(:ivl), SIMULATOR_SOURCES
   sh 'vvp -M. a.out'
 end
 
@@ -114,7 +114,7 @@ CLEAN.include 'ruby-vpi.vpi', 'a.out'
 
 desc "Simulate with Synopsys VCS."
 task :vcs => :setup do
-  sh %w(vcs -R +v2k +vpi), SIMULATOR_ARGS[:vcs], '-load', "#{object_file_path(:vcs)}:#{BOOTSTAP_FUNC}", expand_include_dir_options(:vcs), SIMULATOR_SOURCES
+  sh %w(vcs -R +v2k +vpi), SIMULATOR_ARGUMENTS[:vcs], '-load', "#{object_file_path(:vcs)}:#{BOOTSTAP_FUNC}", expand_include_dir_options(:vcs), SIMULATOR_SOURCES
 end
 
 CLEAN.include 'csrc', 'simv*'
@@ -124,7 +124,7 @@ desc "Simulate with Mentor Modelsim."
 task :vsim => :setup do
   sh 'vlib work'
   sh 'vlog', expand_include_dir_options(:vsim), SIMULATOR_SOURCES
-  sh 'vsim', SIMULATOR_ARGS[:vsim], '-c', SIMULATOR_TARGET, '-pli', object_file_path(:vsim), '-do', 'run -all'
+  sh 'vsim', SIMULATOR_ARGUMENTS[:vsim], '-c', SIMULATOR_TARGET, '-pli', object_file_path(:vsim), '-do', 'run -all'
 end
 
 CLEAN.include 'work'

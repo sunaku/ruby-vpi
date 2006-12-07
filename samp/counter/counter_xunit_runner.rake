@@ -21,7 +21,7 @@ SIMULATOR_TARGET = 'counter_xunit_bench'
 #   :cver => ['these', 'are', 'separate', 'arguments'],
 #   :cver => %w[these are also separate arguments],
 #
-SIMULATOR_ARGS = {
+SIMULATOR_ARGUMENTS = {
   # GPL Cver
   :cver => '',
 

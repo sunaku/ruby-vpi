@@ -21,7 +21,7 @@ SIMULATOR_TARGET = '<%= aOutputInfo.verilogBenchName %>'
 #   :cver => ['these', 'are', 'separate', 'arguments'],
 #   :cver => %w[these are also separate arguments],
 #
-SIMULATOR_ARGS = {
+SIMULATOR_ARGUMENTS = {
   # GPL Cver
   :cver => '',
 
