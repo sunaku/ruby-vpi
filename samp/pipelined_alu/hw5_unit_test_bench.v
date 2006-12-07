@@ -16,16 +16,13 @@ module hw5_unit_test_bench;
 
   // connect to the Ruby side of this bench
     initial begin
-      clk = 0;
       $ruby_init("ruby", "-rubygems", "hw5_unit_test_bench.rb");
     end
 
     always begin
-      #5 clk = ~clk;
-    end
-
-    always @(posedge clk) begin
+      #1 clk = 0;
       #1 $ruby_relay;
+      #1 clk = 1;
     end
 
 endmodule

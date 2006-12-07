@@ -11,16 +11,13 @@ module counter_rspec_bench;
 
   // connect to the Ruby side of this bench
     initial begin
-      clock = 0;
       $ruby_init("ruby", "-rubygems", "counter_rspec_bench.rb");
     end
 
     always begin
-      #5 clock = ~clock;
-    end
-
-    always @(posedge clock) begin
+      #1 clock = 0;
       #1 $ruby_relay;
+      #1 clock = 1;
     end
 
 endmodule
