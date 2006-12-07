@@ -8,7 +8,7 @@ h2(#intro.features). Features
 * Works with all "major Verilog simulators":manual.html#setup.reqs available today.
 ** Compile _once_ (during "installation":manual.html#setup.installation) and use forever!
 
-* Enables "agile practices":http://www.agilealliance.org/intro such as
+* Enables "agile practices":http://agilemanifesto.org/ such as
 ** "test-driven":http://www.testdriven.com development
 ** "behavior-driven":http://behaviour-driven.org development
 ** "rapid prototyping":manual.html#usage.tutorial.implement-proto for design exploration
@@ -27,22 +27,22 @@ h2(#intro.features). Features
 * Gives you the _freedom_ to study, modify, and distribute this software, in accordance with the "GNU General Public License":http://www.gnu.org/copyleft/gpl.html.
 
 
-h3(#intro.applications). Possible applications
+h3(#intro.applications). Applications
 
-* Writing hardware models in the scripting language
+Here is a modest sampling of tasks, paraphrased from "Pin Hong":http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/, that Ruby-VPI can be used to perform.
+
+* Writing hardware models in Ruby
 * Dumping/processing netlist data from Verilog database
 * Dumping/processing simulation data
 * Feeding dynamic simulation stimuli
-* Backannotating delay information
-* Interactive logic simulation (with readline features from the scripting languages)
-* Building distributed simulation (with the help of (XML-)RPC call in the scripting languages)
-
-bq>. -- "Pin Hong":http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/
+* Back-annotating delay information
+* Interactive logic simulation
+* Building a distributed simulation
 
 
-h2(#intro.appetizers). Appetizers
+h3(#intro.appetizers). Appetizers
 
-Here is a modest sampling to whet your appetite.
+Here is a modest sampling of code to whet your appetite.
 
 * Assign the value 2^2048^ to a register:
 

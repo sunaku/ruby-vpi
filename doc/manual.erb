@@ -35,7 +35,7 @@ h2(#intro.related-works). Related works
 * "MyHDL":http://myhdl.jandecaluwe.com is a hardware description and verification language based on Python, which features conversion to Verilog and co-simulation.
 
 
-h2(#intro.related-works.pli). Ye olde PLI
+h3(#intro.related-works.pli). Ye olde PLI
 
 The following projects utilize the archaic *tf* and *acc* PLI interfaces, which have been officially deprecated in IEEE Std 1364-2005.
 
@@ -51,7 +51,7 @@ Ruby-VPI is a "bench":#glossary.bench which lets you "test":#glossary.test Veril
 
 h2(#background.methodology). Methodology
 
-Ruby-VPI presents an open-ended interface to VPI. Thus, you can use any methodology you wish when writing tests.
+Ruby-VPI presents an open-ended interface to VPI. Thus, you can use any methodology you wish when writing tests. However, being an agile language, Ruby makes it _very_ easy to use agile development practies such as "TDD":#glossary.TDD and "BDD":#glossary.BDD.
 
 
 h2(#background.vocab). Terminology
@@ -60,11 +60,11 @@ h2(#background.vocab). Terminology
 Have a look at the "glossary":#glossary for definitions of terms used in this manual.
 <% end %>
 
-As a newcomer into the world of Verilog, I often heard the term *test bench*: "I ran the test bench, but it didn't work!" or "Are you crazy?!! You _still_ haven't written the test bench?", for example. I flipped through my textbook and surfed the Internet for a definition of the term, but it was to no avail. Instead, both resources nonchalantly employed the term _throughout_ their being, as if mocking my ignorance of what seems to be universal knowledge.
+As a newcomer into the world of Verilog, I often heard the term *test bench*: "I ran the test bench, but it didn't work!" or "Are you crazy?!! You _still_ haven't written the test bench?", for example. I poured through my textbook for a definition of the term, but it was to no avail. Instead, it nonchalantly employed the term _throughout_ its being, as if mocking my ignorance of what seems to be universal knowledge.
 
 Defeated, I turned to my inner faculties to determine the answer. Let's see, the term _test bench_ has the word _test_&mdash;so it has something to do with testing&mdash;and it has the word _bench_&mdash;so maybe it's referring to a table where the testing should occur. This reasoning grew increasingly familiar as my mind rummaged through towering stores of obsolescence and ultimately revealed dreaded memories of sleepless anguish: debugging electronics in the robotics laboratory.
 
-Aha! I exclaimed hesitantly, trying to dismiss the past. The term has its roots in the testing of electronic devices, where an engineer would sit at a bench in an electronics laboratory and verify that an electronic component satisfies some criteria. The bench would be furnished with tools of measurement and manipulation&mdash;such as oscilloscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.
+Aha! I exclaimed, hesitantly, rushing to dismiss the past. The term has its roots in the testing of electronic devices, where an engineer would sit at a bench in an electronics laboratory and verify that an electronic component satisfies some criteria. The bench would be furnished with tools of measurement and manipulation&mdash;such as oscilloscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.
 
 Alright, now I remember what a laboratory bench is, but how does that compare with the term test bench? Surely they cannot have the same meaning, because it doesn't make sense to _run_ a laboratory bench or to _write_ one. Thus, to avoid propagating such confusion into this manual, I have attempted to clarify the terminology by "simplifying and reintroducing it in a new light":#glossary.
 
@@ -75,7 +75,9 @@ h2(#background.org). Organization
 !figures/organization.png!
 <% end %>
 
-As <xref #fig..organization> shows, a test is composed of a bench, a design, and a specification. To extend the "analogy of an electronics laboratory":#background.vocab, the first acts as the laboratory bench which provides measurement and manipulation tools. The second acts as the electronic component being verified by the engineer. And the third acts as the engineer who measures, manipulates, and verifies the electronic component.
+As <xref #fig..organization> shows, a "test":#glossary.test is composed of a "bench":#glossary.bench, a "design":#glossary.design, and a "specification":#glossary.specification.
+
+To extend the "analogy of an electronics laboratory":#background.vocab, the _bench_ acts as the laboratory bench which provides measurement and manipulation tools. The _design_ acts as the electronic component being verified by the engineer. And the _specification_ acts as the engineer who measures, manipulates, and verifies the electronic component.
 
 
 h3(#background.org.vpi). Interface to VPI
@@ -84,7 +86,9 @@ h3(#background.org.vpi). Interface to VPI
 !figures/organization_detailed.png!
 <% end %>
 
-In <xref #fig..organization.detail>, Ruby-VPI acts as the bench, a Verilog simulator encapsulates the design, and a Ruby interpreter encapsulates the specification. Notice that Ruby-VPI encapsulates all communication between the Ruby interpreter and VPI. This allows the specification, or any Ruby program in general, to access VPI using nothing more than the Ruby language! Thus, Ruby-VPI removes the burden of having to write C programs in order to access VPI.
+In <xref #fig..organization.detail>, Ruby-VPI acts as the _bench_, a Verilog simulator encapsulates the _design_, and a Ruby interpreter encapsulates the _specification_.
+
+Notice that Ruby-VPI encapsulates all communication between the Ruby interpreter and VPI. This allows the specification, or any Ruby program in general, to access VPI using nothing more than the Ruby language! Thus, Ruby-VPI removes the burden of having to write C programs in order to access VPI.
 
 Furthermore, Ruby-VPI presents the _entire_ IEEE Std 1364-2005 VPI interface to the Ruby interpreter, but with the following minor changes.
 
@@ -103,9 +107,9 @@ void foo(va_list ap) {
 
 h4(#background.org.vpi.util). VPI utility layer
 
-From a user's perspective, the VPI utility layer greatly enhances the ability to interact with handles. One simply invokes a handle's methods, which are carefully named in the following manner, to access either (1) its children or (2) its VPI properties.
+From a user's perspective, the VPI utility layer (see <xref #fig..organization.detail>) greatly enhances the ability to interact with "handles":#glossary.handle. One simply invokes a handle's methods, which are carefully named in the following manner, to access either (1) its children or (2) its VPI properties.
 
-The children of a handle are simply the handles that are immediately contained within it in. For example, suppose that you had a Verilog module that contains some registers. The children, of a handle to the module, would be handles to the registers.
+The children of a handle are simply the handles that are _immediately_ contained within it in. For example, suppose that you had a Verilog module that contains some registers. The children of a handle to that module would be handles to that module's registers.
 
 In the event that a child handle has the same name as a VPI property, the child is given priority. However, you can always access VPI properties explicitly via the @Vpi::Handle.get_value@ and @Vpi::Handle.put_value@ methods.
 
@@ -173,35 +177,35 @@ In the event that a child handle has the same name as a VPI property, the child 
 
 h2(#background.running-tests). Running a test
 
-Unlike an engineer who can verify an electronic component in real-time, the Verilog simulator and the Ruby interpreter (see <xref #fig..organization.detail>) take turns working with objects in a simulation when a test is run. In particular, they take turns manipulating the design and transfer control to each other when appropriate.
+Unlike an engineer who can verify an electronic component in real-time, the Verilog simulator and the Ruby interpreter (see <xref #fig..organization.detail>) take turns working with "handles":#glossary.handle when a "test":#glossary.test is run. In particular, they take turns manipulating the Verilog "design":#glossary.design and transfer control to each other when appropriate.
 
 The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Either is able to inspect and modify the ball, but only when it is in hand.
 
 
 h3(#background.running-tests.init). Initialization
 
+A "test":#glossary.test is first initialized before it is "executed":#background.running-tests.exec. This process is illustrated by <xref #fig..ruby_init>.
+
 <% figure "Initialization of a test", "#fig..ruby_init" do %>
 !figures/ruby_init.png!
-<% end %>
-
-A test is first initialized before it is "executed":#background.running-tests.exec. <xref #fig..ruby_init> illustrates the initialization process "described below":#proc..ruby_init.
 
 # The Verilog simulator initializes the Ruby interpreter by invoking the @$ruby_init;@ system task/function, whose parameters represent the command-line invocation of the Ruby interpreter. For example, one would specify @$ruby_init("ruby", "-w");@ in Verilog to achieve the same effect as running <pre>ruby -w</pre> at a command-prompt.
 # The Verilog simulator is paused and the Ruby interpreter is initialized with the arguments of the @$ruby_init;@ system task/function.
 # When the Ruby interpreter invokes the @Vpi::relay_verilog@ method, it is paused and the Verilog simulator is given control.
+<% end %>
 
 
 h3(#background.running-tests.exec). Execution
 
-After a test is "initialized":#background.running-tests.init, it is executed such that the design is verified against the specification. <xref #fig..ruby_relay> illustrates the execution process "described below":#proc..ruby_relay.
+After a "test":#glossary.test is "initialized":#background.running-tests.init, it is executed such that the design is verified against the "specification":#glossary.specification. This process is illustrated by <xref #fig..ruby_relay>.
 
 <% figure "Execution of a test", "#fig..ruby_relay" do %>
 !figures/ruby_relay.png!
-<% end %>
 
 # The Verilog simulator transfers control to the Ruby interpreter by invoking the @$ruby_relay;@ system task/function.
 # The Verilog simulator is paused and the Ruby interpreter is given control.
 # When the Ruby interpreter invokes the @Vpi::relay_verilog@ method, it is paused and the Verilog simulator is given control.
+<% end %>
 
 
 h1(#setup). Setup
@@ -223,20 +227,20 @@ h2(#setup.reqs). Requirements
 
 The following software is necessary in order to use Ruby-VPI.
 
-<% tip "Add support for your Verilog simulator" do %>
-Write a "support request":http://rubyforge.org/tracker/?group_id=1339 for your simulator, while providing a sample transcript of the commands you use to run a test with your simulator, and we will add support for your simulator in the next release!
-<% end %>
-
 * Verilog simulator
   - Ruby-VPI is known to work with the following simulators. However, you should be able to use it with any Verilog simulator that supports VPI.
 ** "GPL Cver":http://www.pragmatic-c.com/gpl-cver/
   - version 2.11a or newer is acceptable.
 ** "Icarus Verilog":http://www.icarus.com/eda/Verilog/
-  - version 0.8 is _mostly_ acceptable -- you *will not* be able to "access child handles through method calls":#background.org.vpi.util. The reason for this limitation is explained in <xref #problems.ivl.vpi_handle_by_name.absolute-paths>. Also, due to this limitation, you are encouraged to use the excellent GPL Cver simulator instead.
+  - version 0.8 is _mostly_ acceptable -- you *will not* be able to "access child handles through method calls":#background.org.vpi.util. The reason for this limitation is explained in <xref #problems.ivl.vpi_handle_by_name.absolute-paths>.
 ** "Synopsys VCS":http://www.synopsys.com/products/simulation/simulation.html
   - any version that supports the <tt>-load</tt> option is acceptable.
 ** "Mentor Modelsim":http://www.model.com
   - any version that supports the <tt>-pli</tt> option is acceptable.
+
+<% tip "Add support for your Verilog simulator" do %>
+Write a "support request":http://rubyforge.org/tracker/?group_id=1339 for your simulator, while providing a sample transcript of the commands you use to run a test with your simulator, and we will add support for your simulator in the next release!
+<% end %>
 
 * *make*
   - any distribution should be acceptable.
@@ -287,9 +291,9 @@ h3(#setup.installation.windows). Installing on Windows
 * Install "Cygwin":http://www.cygwin.com, the Linux-like environment for Windows.
 
 <% note "Undefined symbols in Windows" do %>
-After it is compiled, Ruby-VPI is linked to symbols whose names begin with <tt>_vpi</tt>. In GNU/Linux and similar operating systems, these symbols are allowed to be undefined. However, one "cannot compile a shared object file with references to undefined symbols in Windows":http://sourceware.org/ml/cygwin/2001-12/msg01293.html.
+After Ruby-VPI is compiled, it is linked to symbols whose names begin with <tt>_vpi</tt>. In GNU/Linux and similar operating systems, these symbols are allowed to be undefined. However, one "cannot compile a shared object file with references to undefined symbols in Windows":http://sourceware.org/ml/cygwin/2001-12/msg01293.html.
 
-We can work around this problem by supplying the Verilog simulator's VPI object file, which contains definitions of all VPI symbols, to the linker. The following steps illustrate this process.
+One solution is to supply the Verilog simulator's VPI object file, which contains definitions of all VPI symbols, to the linker. The following steps illustrate this process.
 <% end %>
 
 * Search for object files whose names end with <tt>.so</tt>, <tt>.o</tt>, or <tt>.dll</tt> in your Verilog simulator's installation directory.
@@ -317,7 +321,7 @@ h1(#usage). Usage
 
 h2(#usage.tools). Tools
 
-The <tt>bin</tt> directory contains various utilities which ease the process of writing tests. Each tool provides help and usage information invoked with the <tt>--help</tt> option.
+The <tt>bin</tt> directory contains various utilities which ease the process of writing tests. Each tool provides help and usage information invoked with the <tt>-h</tt> option.
 
 
 h3(#usage.tools.generate-test). Automated test generation
@@ -325,7 +329,7 @@ h3(#usage.tools.generate-test). Automated test generation
 The automated test generator (*generate_test.rb*) generates tests from Verilog 2001 module declarations, as demonstrated "in the tutorial":#usage.tutorial.generate-test. A generated test is composed of the following parts:
 
 * Runner
-  - written in Rake, this file builds and runs the test.
+  - written in "Rake":#glossary.rake, this file builds and runs the test.
 * Bench
   - written in Verilog and Ruby, these files define the testing environment.
 * Design
@@ -335,7 +339,7 @@ The automated test generator (*generate_test.rb*) generates tests from Verilog 2
 * Specification
   - written in Ruby, this file describes the expected behavior of the design.
 
-The reason for dividing a single test into these parts is mainly to decouple the design from the specification. This allows you to focus on writing the specification while the remainder is automatically generated by the tool. For example, when the interface of a Verilog module changes, you would simply re-run this tool and incorporate those changes (using a "text merging tool":#setup.recom) into the test without diverting your focus from the specification.
+The reason for dividing a single test into these parts is mainly to decouple the design from the specification. This allows you to focus on writing the specification while the remainder is automatically generated by the tool. For example, when the interface of a Verilog module changes, you would simply re-run this tool and incorporate those changes (using a "text merging tool":#setup.recom.merger) into the test without diverting your focus from the specification.
 
 <% tip "Using *kdiff3* with the automated test generator." do %>
 # Create a file named <tt>merge2</tt> with the following content: <code>
@@ -347,13 +351,15 @@ kdiff3 --auto --output "$2" "$@"
 # Place the file somewhere accessible by your @PATH@ environment variable.
 # Assign the value "merge2" to the @MERGER@ environment variable using your shell's *export* or *setenv* command.
 
-From now on, *kdiff3* will be invoked to help you transfer your changes between generated files. When you are finished transferring changes, simply issue the "save the file" command and terminate *kdiff3*. Or, if you do not want to transfer any changes, simply terminate *kdiff3*.
+From now on, *kdiff3* will be invoked to help you transfer your changes between generated files. When you are finished transferring changes, simply issue the "save the file" command and quit *kdiff3*. Or, if you do not want to transfer any changes, simply quit *kdiff3* _without_ saving the file.
 <% end %>
 
 
 h3(#usage.tools.verilog-ruby-conv). Verilog to Ruby conversion
 
 The *header_to_ruby.rb* tool can be used to convert Verilog header files into Ruby. You can try it by running the <pre>header_to_ruby.rb --help</pre> command.
+
+By converting Verilog header files into Ruby, your "test":#glossary.test can utilize the same @`define@ constants that are used in the Verilog "design":#glossary.design.
 
 
 h2(#usage.tutorial). Tutorial
@@ -401,9 +407,11 @@ Each format represents a different software development methodology:
 * xUnit represents "TDD":#glossary.TDD
 * our own format can represent another methodology
 
-Both rSpec and xUnit are presented in this tutorial.
+<% note do %>
+Both rSpec and xUnit formats are presented in this tutorial.
+<% end %>
 
-Once we have decided how we want to implement our specification, we can proceed to generate a test for our design. <xref #fig..generate-test.rspec> and <xref #fig..generate-test.unit-test> illustrate this process.
+Once we have decided how we want to implement our specification, we can proceed to generate a test for our design. This process is illustrated by <xref #fig..generate-test.rspec> and <xref #fig..generate-test.unit-test>.
 
 <% example "Generating a test with specification in rSpec format", "#fig..generate-test.rspec" do %>
 <pre>
@@ -443,8 +451,7 @@ Here are some reasonable expectations for our simple counter:
 * A resetted counter's value should increment by one count upon each rising clock edge.
 * A counter with the maximum value should overflow upon increment.
 
-Now that we have identified a set of expectations for our design, we are ready to implement them in our specification. <xref #fig..counter_rspec_spec.rb> and <xref #fig..counter_xunit_spec.rb> illustrate this process. Note the striking similarities between our expectations and their implementation.
-
+Now that we have identified a set of expectations for our design, we are ready to implement them in our specification. This process is illustrated by <xref #fig..counter_rspec_spec.rb> and <xref #fig..counter_xunit_spec.rb>.
 
 <% example "Specification implemented in rSpec format", "#fig..counter_rspec_spec.rb" do %>
 <code><%= File.read '../samp/counter/counter_rspec_spec.rb' %></code>
@@ -457,24 +464,13 @@ Now that we have identified a set of expectations for our design, we are ready t
 <% important "Before we continue..." do %>
 # Replace the contents of the file named <tt>counter_rspec_spec.rb</tt> with the source code shown in <xref #fig..counter_rspec_spec.rb>.
 # Replace the contents of the file named <tt>counter_xunit_spec.rb</tt> with the source code shown in <xref #fig..counter_xunit_spec.rb>.
-# Replace the contents of the files named <tt>counter_rspec_design.rb</tt> and <tt>counter_xunit_design.rb</tt> with the following code. This code defines the reset! method which resets our Verilog design. <code>
-def Counter.reset!
-  reset.intVal = 1
-
-  # simulate one clock cycle
-  relay_verilog
-
-  reset.intVal = 0
-end
-</code>
+# Replace the contents of the files named <tt>counter_rspec_design.rb</tt> and <tt>counter_xunit_design.rb</tt> with the following code. <code><%= File.read '../samp/counter/counter_rspec_design.rb' %></code>
 <% end %>
 
 
 h3(#usage.tutorial.implement-proto). Implement the prototype
 
-
-Now that we have a "specification":#glossary.specification against which to verify our "design":#glossary.design, let us build a prototype of our design. By doing so, we exercise our specification, experience potential problems that may arise when we later implement our design in Verilog, and gain confidence in our work. <xref #fig..counter_proto.rb> shows the completed prototype for our design.
-
+Now that we have a "specification":#glossary.specification against which to verify our "design":#glossary.design, let us build a prototype of our design. By doing so, we exercise our specification, experience potential problems that may arise when we later implement our design in Verilog, and gain confidence in our work. The result of this proceess is illustrated by <xref #fig..counter_proto.rb>.
 
 <% example "Ruby prototype of our Verilog design", "#fig..counter_proto.rb" do %>
 <code>
@@ -495,17 +491,7 @@ Replace the contents of the files named <tt>counter_rspec_proto.rb</tt> and <tt>
 
 h3(#usage.tutorial.test-proto). Verify the prototype
 
-Now that we have implemented our prototype, we are ready to verify it against our "specification":#glossary.specification by running the "test":#glossary.test. <xref #fig..test-proto.rspec> and <xref #fig..test-proto.unit-test> illustrate this process.
-
-<% tip "Reuse your specification." do %>
-The _same_ specification can be used to verify both prototype and design.
-<% end %>
-
-Here, the @PROTOTYPE@ environment variable is assigned a non-empty value while running the test, so that, instead of our design, our prototype is verified against our specification. You can also assign a value to @PROTOTYPE@ before running the test, by using your shell's *export* or *setenv* command. Finally, the Icarus Verilog simulator, denoted by _cver_, is used to run the simulation.
-
-<% tip "What can the test runner do?" do %>
-If you invoke the test runner (1) without any arguments or (2) with the <tt>-T</tt> option, it will show you a list of tasks that it can perform for you.
-<% end %>
+Now that we have implemented our prototype, we are ready to verify it against our "specification":#glossary.specification by running the "test":#glossary.test. This process is illustrated by <xref #fig..test-proto.rspec> and <xref #fig..test-proto.unit-test>.
 
 <% example "Running a test with specification in rSpec format", "#fig..test-proto.rspec" do %>
 <pre>
@@ -541,10 +527,16 @@ Finished in 0.040668 seconds.
 </pre>
 <% end %>
 
+In these examples, the @PROTOTYPE@ environment variable is assigned a non-empty value while running the test so that, instead of our design, our prototype is verified against our specification. You can also assign a value to @PROTOTYPE@ before running the test, by using your shell's *export* or *setenv* command. Finally, the "GPL Cver simulator":#setup.reqs, denoted by _cver_, is used to run the simulation.
+
+<% tip "What can the test runner do?" do %>
+If you invoke the test runner (1) without any arguments or (2) with the <tt>-T</tt> option, it will show you a list of tasks that it can perform for you.
+<% end %>
+
 
 h3(#usage.tutorial.implement-design). Implement the design
 
-Now that we have implemented and verified our prototype, we are ready to implement our "design":#glossary.design. This is often quite simple because we translate _existing_ code from Ruby (our prototype) into Verilog (our design). <xref #fig..counter.v_impl> illustrates the result of this process. Once again, note the striking similarities between the implementation of our prototype and design.
+Now that we have implemented and verified our prototype, we are ready to implement our "design":#glossary.design. This is often quite simple because we translate _existing_ code from Ruby (our prototype) into Verilog (our design). The result of this process is illustrated by <xref #fig..counter.v_impl>.
 
 
 <% example "Implementation of a simple up-counter with synchronous reset", "#fig..counter.v_impl" do %>
@@ -559,16 +551,6 @@ Replace the contents of the file named <tt>counter.v</tt> with the source code s
 h3(#usage.tutorial.test-design). Verify the design
 
 Now that we have implemented our "design":#glossary.design, we are ready to verify it against our "specification":#glossary.specification by running the "test":#glossary.test. <xref #fig..test-design.rspec> and <xref #fig..test-design.unit-test> illustrate this process.
-
-Here, the @PROTOTYPE@ environment variable is _not_ specified while running the test, so that our design, instead of our prototype, is verified against our specification. You can also achieve this effect by assigning an empty value to @PROTOTYPE@, or by using your shell's *unset* command. Finally, the GPL Cver Verilog simulator, denoted by _cver_, is used to run the simulation.
-
-<% tip "Running multiple tests at once." do %>
-Create a file named <tt>Rakefile</tt> containing the following line.
-
-bq. @require 'ruby-vpi/runner_proxy'@
-
-Now you can invoke all test runners in the current directory simply by executing <pre>rake cver</pre> (where _cver_ denotes the GPL Cver simulator).
-<% end %>
 
 <% example "Running a test with specification in rSpec format", "#fig..test-design.rspec" do %>
 <pre>
@@ -600,19 +582,27 @@ Finished in 0.006766 seconds.
 </pre>
 <% end %>
 
+In these examples, the @PROTOTYPE@ environment variable is _not_ specified while running the test, so that our design, instead of our prototype, is verified against our specification. You can also achieve this effect by assigning an empty value to @PROTOTYPE@, or by using your shell's *unset* command. Finally, the "GPL Cver simulator":#setup.reqs, denoted by _cver_, is used to run the simulation.
+
+<% tip "Running multiple tests at once." do %>
+Create a file named <tt>Rakefile</tt> containing the following line.
+
+bq. @require 'ruby-vpi/runner_proxy'@
+
+Now you can invoke all test runners in the current directory simply by executing <pre>rake cver</pre> (where _cver_ denotes the "GPL Cver simulator":#setup.reqs).
+<% end %>
+
 
 h2(#usage.examples). Examples
 
 The <tt>samp</tt> directory contains several example tests which illustrate how Ruby-VPI can be used. Each example has an associated <tt>Rakefile</tt> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the <pre>rake</pre> command to get started.
-
-Also, some example specifications make use of BDD through the rSpec library. See <xref #background.methodology> for a discussion of rSpec.
 
 
 h1(#hacking). Hacking
 
 h2(#hacking.release-packages). Building release packages
 
-In addition to the "normal requirements":./doc/usage.requirements.html, you need the following software to build release packages:
+In addition to the "normal requirements":#setup.reqs, you need the following software to build release packages:
 
 * "SWIG":http://www.swig.org/
 * "RedCloth":http://rubyforge.org/projects/redcloth/
@@ -657,7 +647,7 @@ h4(#problems.ivl.vpi_handle_by_name.absolute-paths). Give full paths to Verilog 
 
 In version 0.8 and snapshot 20061009 of Icarus Verilog, the @vpi_handle_by_name@ function requires an _absolute_ path (including the name of the bench which instantiates the design) to a Verilog object. In addition, @vpi_handle_by_name@ always returns @nil@ when its second parameter is specified.
 
-For example, consider <xref #ex..TestFoo> Here, one must write @vpi_handle_by_name("TestFoo.my_foo.clk", nil)@ instead of @vpi_handle_by_name("my_foo.clk", TestFoo)@ in order to access the @clk@ input of the @my_foo@ module instance.
+For example, consider <xref #ex..TestFoo>. Here, one must write @vpi_handle_by_name("TestFoo.my_foo.clk", nil)@ instead of @vpi_handle_by_name("my_foo.clk", TestFoo)@ in order to access the @clk@ input of the @my_foo@ module instance.
 
 <% example "Part of a bench which instantiates a Verilog design", "#ex..TestFoo" do %>
 <code lang="verilog">
@@ -727,16 +717,16 @@ h2(#glossary.bench). Bench
 An environment in which a "design":#glossary.design is verified against a "specification":#glossary.specification. Often, it is used to emulate conditions in which the design will be eventually deployed.
 
 
-h2(#glossary.BDD). BDD
+h2(#glossary.BDD). Behavior driven development (BDD)
 
-Behavior driven development.
+An "agile software development methodology":http://agilemanifesto.org/ which emphasizes thinking in terms of behavior when designing, implementing, and verifying software.
 
-A software development methodology which emphasizes thinking in terms of behavior when designing, implementing, and verifying software. See the "official wiki":http://behaviour-driven.org/ for more information.
+See the "official wiki":http://behaviour-driven.org/ for more information.
 
 
 h2(#glossary.design). Design
 
-An idea or entity that is verified against a "specification":#glossary.specification in order to ensure correctness or soundness of its being. In other words, it is the thing being checked: does it work or not?
+A Verilog module that is verified against a "specification":#glossary.specification in order to ensure correctness or soundness of its being. In other words, it is the thing being checked: does it work or not?
 
 
 h2(#glossary.expectation). Expectation
@@ -746,29 +736,33 @@ The desired response to some stimulus.
 
 h2(#glossary.handle). Handle
 
-An object in a Verilog simulation. For example, a handle can represent a wire, register, module, if-statement, expression, and so on.
+A reference to an object inside the Verilog simulation that was obtained through the @vpi_handle_by_name@ function.
 
 
 h2(#glossary.rake). Rake
 
-bq. Rake is a build tool, written in Ruby, using Ruby as a build language. Rake is similar to make in scope and purpose. -- "Rake documentation":http://docs.rubyrake.org
+bq. Rake is a build tool, written in Ruby, using Ruby as a build language. Rake is similar to *make* in scope and purpose.
 
-See the "Rake website":http://rake.rubyforge.org for more information.
+bq>. --"Rake documentation":http://docs.rubyrake.org
 
 
 h2(#glossary.rspec). rSpec
 
-Ruby framework for BDD. See the "rSpec website":http://rspec.rubyforge.org and "tutorial":http://rspec.rubyforge.org/tutorials/index.html for more information.
+The "BDD":#glossary.BDD framework for Ruby.
+
+See the "rSpec website":http://rspec.rubyforge.org and "tutorial":http://rspec.rubyforge.org/tutorials/index.html for more information.
 
 
 h2(#glossary.specification). Specification
 
-A set of "expectation":#glossary.expectations which define the desired behavior of a "design":#glossary.design when it is subjected to certain conditions.
+A set of "expectations":#glossary.expectations which define the desired behavior of a "design":#glossary.design when it is subjected to certain stimulus.
 
 
-h2(#glossary.TDD). TDD
+h2(#glossary.TDD). Test driven development (TDD)
 
-Test Driven Development.
+An "agile software development methodology":http://agilemanifesto.org/ which emphasizes (1) testing functionality before implementing it and (2) refactoring.
+
+See "this introductory article":http://www.agiledata.org/essays/tdd.html for more information.
 
 
 h2(#glossary.test). Test
