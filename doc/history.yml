@@ -1,4 +1,53 @@
 -
+  Version: 12.0.0
+
+  Date: 2006-12-07
+
+  Summary: |
+    This release adds support for the "test/spec":http://chneukirchen.org/blog/archive/2006/10/announcing-test-spec-0-2-a-bdd-interface-for-test-unit.html library, fixes some bugs, and improves the user manual and generated tests.
+
+  Notice: |
+    * Icarus Verilog 0.8 has been demoted to a "mostly acceptable":manual.html#setup.reqs status.
+
+    * Generated Verilog benches no longer supply the <tt>-w</tt> option to the @$ruby_init@ task.
+
+    * The @ruby-vpi/runner_proxy@ library now invokes test runners
+    ** just before exiting. Thus, you can invoke tasks in the main <tt>Rakefile</tt> before the test runners are invoked.
+    ** located within any directory that is a descendant of the current working directory.
+
+    * The @SIMULATOR_ARGS@ parameter of generated runners has been renamed to @SIMULATOR_ARGUMENTS@ for clarity.
+
+    * The automated test generator
+    ** no longer displays the *backup* status indicator.
+    ** now supplies a third argument to the @MERGER@ command.
+    ** no longer replaces existing files with newly generated content during the *update* action. Instead, it now writes the newly generated output to a <tt>.new</tt> file and then invokes the @MERGER@ command.
+
+  Detail: |
+    * The @Vpi::Handle@ class has two new methods: @x!@ and @z!@, which set the handle's logic value to _unknown_ and _high impedance_ respectively.
+
+    * The tests for the simple up-counter example were randomly failing because the specifications were not asserting the design's @reset@ signal long enough. So the design was getting into weird states and behaving in a non-deterministic way. This problem has been fixed.
+
+    * The user manual has been revised and some minor issues have been fixed.
+
+    h3. Test generation
+
+    * The automated test generator accepts new command-line options:
+    ** <tt>--test-unit</tt>
+    ** <tt>--test-spec</tt>
+    ** <tt>--tspec</tt>
+
+    * The automated test generator was crashing when parsing module parameters of an input file which did not have any module parameters. This has been fixed.
+
+    * Generated Verilog benches now contain simpler clock generation code.
+
+    * Generated runners now contain
+    ** a @:setup@ task which is invoked before the simulator runs. It can be used to make preprations, such as converting Verilog header files into Ruby, for the simulation.
+    ** better explanations to accomodate new users.
+
+    * Specifications generated in the *generic* format no longer contain a class that is instantiated in the generated Ruby bench.
+
+
+-
   Version: 11.1.1
 
   Date: 2006-11-15
