@@ -88,7 +88,7 @@ class OutputInfo
   VERILOG_EXT = '.v'
   RUNNER_EXT = '.rake'
 
-  SPEC_FORMATS = [:rSpec, :xUnit, :generic]
+  SPEC_FORMATS = [:rSpec, :tSpec, :xUnit, :generic]
 
   attr_reader :verilogBenchName, :verilogBenchPath, :rubyBenchName, :rubyBenchPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :runnerName, :runnerPath, :protoName, :protoPath
 
@@ -160,12 +160,16 @@ if File.basename($0) == File.basename(__FILE__)
       exit
     end
 
-    opts.on '--xunit', 'use xUnit specification format' do |val|
+    opts.on '--xunit', '--test-unit', 'use xUnit (Test::Unit) specification format' do |val|
       optSpecFmt = :xUnit if val
     end
 
     opts.on '--rspec', 'use rSpec specification format' do |val|
       optSpecFmt = :rSpec if val
+    end
+
+    opts.on '--tspec', '--test-spec', 'use test/spec specification format' do |val|
+      optSpecFmt = :tSpec if val
     end
 
     opts.on '-n', '--name NAME', 'insert NAME into the names of generated files' do |val|

@@ -48,6 +48,10 @@ module RubyVpi
         when :rSpec
           ARGV.concat %w[-f s]
           require 'ruby-vpi/rspec'
+
+        when :tSpec
+          ARGV << '-rs'
+          require 'test/spec'
       end
 
     # service the $ruby_init() task

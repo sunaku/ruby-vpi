@@ -15,7 +15,7 @@ class <%= aOutputInfo.specClassName %> < Test::Unit::TestCase
 <% end %>
 end
 <%
-   when :rSpec
+   when :rSpec, :tSpec
 %>
 context "A new <%= aOutputInfo.designClassName %>" do
   setup do
