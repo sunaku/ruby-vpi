@@ -5,13 +5,12 @@
 #
 # = Progress indicators
 # module:: A Verilog module has been identified.
-# backup:: A backup copy of a file is being made.
 # create:: A file is being created because it does not exist.
 # skip:: A file is being skipped because it is already up to date.
-# update:: A file will be updated because it is out of date. A backup copy will be made before the file is updated. Use a text merging tool (see MERGER) or manually transfer any necessary information from the backup copy to the updated file.
+# update:: A file will be updated because it is out of date. A text merging tool (see MERGER) will be launched to transfer content from the old file (*.old) and the new file (*.new) to the out of date file. If a text merging tool is not specified, then you will have to do the merging by hand.
 #
 # = Environment variables
-# MERGER:: A command that invokes a text merging tool with two arguments: (1) old file, (2) new file. The tool's output should be written to the new file.
+# MERGER:: A command that invokes a text merging tool with three arguments: (1) old file, (2) new file, (3) output file. The tool's output should be written to the output file.
 
 
 =begin
@@ -53,16 +52,14 @@ def write_file aPath, aContent
     if oldDigest == newDigest
       notify :skip, aPath
     else
-      old, new = "#{aPath}.old", aPath
-
-      notify :backup, old
-      FileUtils.cp aPath, old, :preserve => true
-
       notify :update, aPath
+      cur, old, new = aPath, "#{aPath}.old", "#{aPath}.new"
+
+      FileUtils.cp cur, old, :preserve => true
       File.open(new, 'w') {|f| f << aContent}
 
       if m = ENV['MERGER']
-        system "#{m} #{old.inspect} #{new.inspect}"
+        system "#{m} #{old.inspect} #{new.inspect} #{cur.inspect}"
       end
     end
   else
