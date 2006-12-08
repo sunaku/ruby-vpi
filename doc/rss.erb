@@ -1,0 +1,35 @@
+<%
+  $: << File.join(File.dirname(__FILE__), '..', 'lib')
+  require 'ruby-vpi'
+  include RubyVpi::Config
+  HISTORY_URL = PROJECT_URL + "/doc/history.html"
+
+  require 'history'
+  require 'lib/doc_format'
+
+  require 'date'
+  require 'time'
+%>
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+<channel>
+  <title><%= PROJECT_NAME %></title>
+  <link><%= PROJECT_URL %></link>
+  <description><%= PROJECT_DETAIL %></description>
+<%
+  @history.each do |entry|
+    link = HISTORY_URL + '#' + entry['Version']
+
+    stamp = Time.parse entry['Date'].to_s
+    rfc822 = stamp.strftime "%a, %d %b %Y 00:00:00 %Z"
+%>
+  <item>
+    <title>Version <%= entry['Version'] %> released</title>
+    <link><%= link %></link>
+    <guid><%= link %></guid>
+    <description><%= entry['Summary'].redcloth.escape_html %></description>
+    <pubDate><%= rfc822 %></pubDate>
+  </item>
+<% end %>
+</channel>
+</rss>

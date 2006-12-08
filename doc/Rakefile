@@ -18,18 +18,20 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
-$: << File.join(File.dirname(__FILE__), 'lib')
-
 require 'rake/clean'
+
+$: << File.join(File.dirname(__FILE__), 'lib')
 require 'doc_proxy'
+
 
 FileList['*.doc'].each do |src|
   prefix = File.basename(src, File.extname(src))
   helper = prefix + '.rb'
   dst = prefix + '.html'
+  deps = FileList[prefix + '*'].exclude(src, dst)
 
   desc "Process file #{src.inspect}."
-  file dst => [src, 'common.tpl'] do |t|
+  file dst => [src, 'common.tpl', *deps] do |t|
     content = DocProxy.new.instance_eval do
       # default output configuration
       table_of_contents = true
@@ -52,12 +54,26 @@ FileList['*.doc'].each do |src|
 
     File.open(dst, 'w') do |f|
       f << content
+      puts f.path
     end
-
-    puts "wrote #{dst.inspect}"
   end
 
   task :default => dst
+  CLOBBER.include dst
 end
 
-CLOBBER.include '*.html'
+
+desc "Generate RSS feed."
+file 'rss.xml' => FileList['rss.erb', 'history*'] do |t|
+  template = ERB.new(File.read(t.prerequisites[0]))
+  content = template.result
+  content.lstrip! # XML declaration must be at start of file
+
+  File.open(t.name, 'w') do |f|
+    f << content
+    puts f.path
+  end
+end
+
+task :default => 'rss.xml'
+CLOBBER.include 'rss.xml'

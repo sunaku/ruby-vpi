@@ -32,7 +32,7 @@ class String
   # Adds syntax coloring to <code>...</code> elements in the given text. If the <code> tag has an attribute lang="...", then that is considered the programming language for which appropriate syntax coloring should be applied. Otherwise, the programming language is assumed to be ruby.
   def coderay
     gsub %r{<(code)(.*?)>(.*?)</\1>}m do
-      code = CGI.unescapeHTML($3)
+      code = $3.unescape_html
       atts = $2
       lang =
         if $2 =~ /lang=('|")(.*?)\1/i
@@ -57,6 +57,14 @@ class String
 
   def to_html
     redcloth.coderay
+  end
+
+  def escape_html
+    CGI.escapeHTML self
+  end
+
+  def unescape_html
+    CGI.unescapeHTML self
   end
 end
 
