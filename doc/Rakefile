@@ -23,8 +23,8 @@ $: << File.join(File.dirname(__FILE__), 'lib')
 require 'rake/clean'
 require 'doc_proxy'
 
-FileList['*.erb'].each do |src|
-  prefix = File.basename(src, '.erb')
+FileList['*.doc'].each do |src|
+  prefix = File.basename(src, File.extname(src))
   helper = prefix + '.rb'
   dst = prefix + '.html'
 
