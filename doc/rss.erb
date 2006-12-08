@@ -1,8 +1,5 @@
 <%
-  $: << File.join(File.dirname(__FILE__), '..', 'lib')
-  require 'ruby-vpi'
-  include RubyVpi::Config
-  HISTORY_URL = PROJECT_URL + "/doc/history.html"
+  # note: this file depends on constants defined in Rakefile
 
   require 'history'
   require 'lib/doc_format'

@@ -32,5 +32,7 @@
 
 
 h1. Welcome to Ruby-VPI
+<a type="application/rss+xml" href="<%= RSS_URL %>">!images/feed-icon.png(<%= RSS_INFO %>)!</a>
+
 
 <%= File.read 'intro.inc' %>

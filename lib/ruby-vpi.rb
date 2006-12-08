@@ -99,6 +99,7 @@ module RubyVpi
     PROJECT_ID = 'ruby-vpi'
     PROJECT_NAME = 'Ruby-VPI'
     PROJECT_URL = "http://#{PROJECT_ID}.rubyforge.org"
+    WEBSITE_URL = PROJECT_URL + "/doc"
     PROJECT_SUMMARY = "Ruby interface to IEEE 1364-2005 Verilog VPI"
     PROJECT_DETAIL = "#{PROJECT_NAME} is a #{PROJECT_SUMMARY}. It lets you create complex Verilog test benches easily and wholly in Ruby."
 

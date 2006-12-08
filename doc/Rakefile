@@ -20,6 +20,17 @@
 
 require 'rake/clean'
 
+
+$: << File.join(File.dirname(__FILE__), '..', 'lib')
+require 'ruby-vpi'
+include RubyVpi::Config
+HISTORY_URL = WEBSITE_URL + "/history.html"
+RSS_URL = WEBSITE_URL + '/rss.xml'
+RSS_INFO = "RSS feed for this project."
+
+require 'ruby-vpi/erb'
+
+
 $: << File.join(File.dirname(__FILE__), 'lib')
 require 'doc_proxy'
 
@@ -67,7 +78,6 @@ desc "Generate RSS feed."
 file 'rss.xml' => FileList['rss.erb', 'history*'] do |t|
   template = ERB.new(File.read(t.prerequisites[0]))
   content = template.result
-  content.lstrip! # XML declaration must be at start of file
 
   File.open(t.name, 'w') do |f|
     f << content
