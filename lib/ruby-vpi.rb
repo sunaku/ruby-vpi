@@ -99,7 +99,7 @@ module RubyVpi
     PROJECT_ID = 'ruby-vpi'
     PROJECT_NAME = 'Ruby-VPI'
     PROJECT_URL = "http://#{PROJECT_ID}.rubyforge.org"
-    PROJECT_SUMMARY = "Ruby interface to Verilog VPI."
+    PROJECT_SUMMARY = "Ruby interface to Verilog VPI"
     PROJECT_DETAIL = "#{PROJECT_NAME} is a #{PROJECT_SUMMARY}. It lets you create complex Verilog test benches easily and wholly in Ruby."
 
     Simulator = Struct.new(:id, :name, :compiler_args, :linker_args)
