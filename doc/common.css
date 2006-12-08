@@ -22,6 +22,8 @@ h1, h2, h3, h4, h5, h6 {
 
 h1, h2, h3 {
   text-align: center;
+  -moz-border-radius: 1em;
+  border-radius: 1em;
 }
 
 h1 {
