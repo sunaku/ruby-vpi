@@ -161,6 +161,22 @@ file 'ref/c' do |t|
 end
 
 
+desc 'Generate release announcement.'
+task :ann => 'doc/history.rb' do |t|
+  require t.prerequisites[0]
+  text = format_history_entry @history.first
+
+  require 'doc/lib/doc_format'
+  html = text.redcloth
+
+  IO.popen('w3m -T text/html -dump -cols 60', 'w+') do |pipe|
+    pipe.write html
+    pipe.close_write
+    puts pipe.read
+  end
+end
+
+
 
 ## distribution
 
