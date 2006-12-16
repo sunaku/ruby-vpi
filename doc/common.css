@@ -1,6 +1,5 @@
 body {
   font-family: sans-serif;
-  line-height: 2em;
 
   margin-left: 275px;
   margin-right: 50px;
@@ -16,7 +15,7 @@ th, h1, h2, h3, h4, h5, h6, .title {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  margin-top: 5em;
+  margin-top: 3em;
   padding: 0.5em;
 }
 
@@ -74,7 +73,7 @@ h3 {
 }
 
 .admonition img {
-  margin-right: 2em;
+  margin-right: 1em;
 }
 
 
