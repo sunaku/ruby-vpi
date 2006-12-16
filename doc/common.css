@@ -152,6 +152,10 @@ a img {
   border: none;
 }
 
+em, strong {
+  font-family: serif;
+}
+
 
   /* extra spacing before big block elements */
 
