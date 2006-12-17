@@ -2,8 +2,6 @@
   # note: this file depends on constants defined in Rakefile
 
   require 'history'
-  require 'lib/doc_format'
-
   require 'date'
   require 'time'
 %>
@@ -24,7 +22,7 @@
     <title>Version <%= entry['Version'] %> released</title>
     <link><%= link %></link>
     <guid><%= link %></guid>
-    <description><%= entry['Summary'].redcloth.escape_html %></description>
+    <description><%=ERB::Util.h entry['Summary'].redcloth %></description>
     <pubDate><%= rfc822 %></pubDate>
   </item>
 <% end %>

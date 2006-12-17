@@ -321,7 +321,7 @@ h1(#usage). Usage
 
 h2(#usage.tools). Tools
 
-The <tt>bin</tt> directory contains various utilities which ease the process of writing tests. Each tool provides help and usage information invoked with the <tt>-h</tt> option.
+The <tt>bin</tt> directory contains various utilities which ease the process of writing tests. Each tool provides help and usage information invoked with the <tt>--help</tt> option.
 
 
 h3(#usage.tools.generate-test). Automated test generation
@@ -530,7 +530,7 @@ Finished in 0.040668 seconds.
 In these examples, the @PROTOTYPE@ environment variable is assigned a non-empty value while running the test so that, instead of our design, our prototype is verified against our specification. You can also assign a value to @PROTOTYPE@ before running the test, by using your shell's *export* or *setenv* command. Finally, the "GPL Cver simulator":#setup.reqs, denoted by _cver_, is used to run the simulation.
 
 <% tip "What can the test runner do?" do %>
-If you invoke the test runner (1) without any arguments or (2) with the <tt>-T</tt> option, it will show you a list of tasks that it can perform for you.
+If you invoke the test runner (1) without any arguments or (2) with the <tt>--tasks</tt> option, it will show you a list of tasks that it can perform for you.
 <% end %>
 
 

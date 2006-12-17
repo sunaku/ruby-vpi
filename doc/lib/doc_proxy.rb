@@ -24,6 +24,7 @@ require 'erb_proxy'
 class DocProxy < ErbProxy
   Block = Struct.new :anchor, :title, :type
   Heading = Struct.new :anchor, :title, :depth
+  @@anchorNum = 0
 
   CATEGORIES = {
     :admonition => [:tip, :note, :important, :caution, :warning],
@@ -65,25 +66,25 @@ class DocProxy < ErbProxy
     buffer = aResult
 
     # parse document structure and insert anchors (so that the table of contents can link directly to these headings) where necessary
-      buffer.gsub! %r{^(\s*h(\d))(\.|\(.*?\)\.)(.*)$} do
-        target = $~.dup
+      buffer.gsub! %r{^(\s*h(\d))(.*)$} do
+        head, depth, rest = $1, $2, $3
 
-        title = target[4].strip
-        depth = target[2].to_i
+        # parse title and class attributes
+          rest =~ /^([\{\(\[].*?[\]\)\}])?\.(.*)$/
+          atts, title = $1, $2.strip
 
-        hasAnchor = target[3] =~ /#([^#]+)\)/
-        anchor = $1 || "anchor#{headings.length}"
+        # parse and insert anchor if necessary
+          if atts =~ /#(.*?)\)/
+            anchor = $1
+          else
+            anchor = "anchor#{@@anchorNum += 1}"
+            rest.insert 0, "(##{anchor})"
+          end
 
-
-        @headings << Heading.new(anchor, title, depth)
+        @headings << Heading.new(anchor, title, depth.to_i)
         @blocks[:section] << Block.new(anchor, title, :section)
 
-
-        if hasAnchor
-          target.to_s
-        else
-          "#{target[1]}(##{anchor})#{target[3]}#{target[4]}"
-        end
+        head + rest
       end
 
     # expand cross-references into links to their targets
