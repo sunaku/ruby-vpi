@@ -118,7 +118,7 @@ In the event that a child handle has the same name as a VPI property, the child 
 |_. Operation |_. _ |_. Property |_. _ |_. Accessor |_. Addendum |
 |\2. optional       | required   |\3. optional                   |
 
-* *Operation* suggests a method that should be invoked in the context of the Property parameter.
+* *Operation* suggests a method that should be invoked in the context of the Property parameter. All "methods in the Enumerable module":http://www.ruby-doc.org/core/classes/Enumerable.html are available as operations.
 
 * *Property* suggests a VPI property that should be accessed. The "vpi" prefix, which is common to all VPI properties, can be omitted if you wish. For example, the VPI property "vpiFullName" is considered equivalent to "fullName" and "FullName", but not equivalent "full_name".
 

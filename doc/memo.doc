@@ -11,8 +11,6 @@ h1. Pending tasks
 
 * add instructions for using *ruby-debug* with a graphical debugging tool or IDE like RadRails
 
-* make RCov correctly profile the code and report useful coverage metrics...
-
 
 h1. Finished tasks
 
@@ -37,6 +35,8 @@ h1. Finished tasks
 
 * define handled methods in Vpi::method_missing for faster response
 ** this has been verified as bottleneck from profiling data
+
+* make RCov correctly profile the code and report useful coverage metrics...
 
 
 h1. Obsolete tasks

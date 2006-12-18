@@ -3,7 +3,7 @@ bq. Ruby-VPI is a "Ruby":http://www.ruby-lang.org interface to "Verilog VPI":htt
 
 h2(#intro.features). Features
 
-* Supports the _entire_ IEEE Std 1364-2005 VPI standard.
+* Supports the _entire_ "IEEE Std 1364-2005"::http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945 VPI standard.
 
 * Works with all "major Verilog simulators":manual.html#setup.reqs available today.
 ** Compile _once_ (during "installation":manual.html#setup.installation) and use forever!

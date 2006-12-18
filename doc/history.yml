@@ -1,4 +1,21 @@
 -
+  Version: 12.0.1
+
+  Date: 2006-12-18
+
+  Summary: |
+    This release fixes a problem in code coverage analysis.
+
+  Acknowledgment: |
+    Thanks to Mauricio Fernandez for helping me solve the problem.
+
+  Detail: |
+    Previously, code coverage reports were not providing any useful information because they were being generated _before_ the test had a chance to run. This problem has been fixed -- code coverage reports are now generated _after_ the test has finished running.
+
+    This problem was wholly due to programmer error (i.e. my mistake @;-)@) because I had forgotten that @Kernel.at_exit@ invokes the blocks passed to it in _reverse_ order. So, the coverage report was being generated before Test::Unit had a chance to run (it also uses @Kernel.at_exit@).
+
+
+-
   Version: 12.0.0
 
   Date: 2006-12-07
@@ -298,7 +315,7 @@
   Date: 2006-09-15
 
   Summary: |
-    This release adds initial[1] support for code coverage analysis via the "rcov library":http://eigenclass.org/hiki.rb?rcov.
+    This release adds initial support for code coverage analysis via the "rcov library":http://eigenclass.org/hiki.rb?rcov.
 
   Acknowledgment: |
     Thanks to Mauricio Fernandez for helping me use rcov without its runner.
