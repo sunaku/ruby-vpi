@@ -1,4 +1,13 @@
 -
+  Version: 12.0.2
+
+  Date: 2006-12-18
+
+  Summary: |
+    This release fixes a problem in the 12.0.1 gem, where the *generate_test.rb* and *header_to_ruby.rb* tools were not being installed properly.
+
+
+-
   Version: 12.0.1
 
   Date: 2006-12-18
