@@ -40,20 +40,6 @@ module RubyVpi
         include Vpi
       end
 
-    # set up the specification library
-      case aSpecFormat
-        when :xUnit
-          require 'test/unit'
-
-        when :rSpec
-          ARGV.concat %w[-f s]
-          require 'ruby-vpi/rspec'
-
-        when :tSpec
-          ARGV << '-rs'
-          require 'test/spec'
-      end
-
     # service the $ruby_init() task
       relay_verilog
 
@@ -67,6 +53,20 @@ module RubyVpi
             Rcov::HTMLCoverage.new(:destdir => "#{testName}_coverage")
           ]
         end
+      end
+
+    # set up the specification library
+      case aSpecFormat
+        when :xUnit
+          require 'test/unit'
+
+        when :rSpec
+          ARGV.concat %w[-f s]
+          require 'ruby-vpi/rspec'
+
+        when :tSpec
+          ARGV << '-rs'
+          require 'test/spec'
       end
 
     # load the design under test
