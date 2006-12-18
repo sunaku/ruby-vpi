@@ -228,8 +228,16 @@ spec = Gem::Specification.new do |s|
 
   s.files = FileList['**/*'].exclude('_darcs')
   s.autorequire = PROJECT_ID
-  s.executables = FileList['bin/*'].select {|f| File.executable?( f ) && File.file?( f )}.map {|f| File.basename f}
   s.extensions << 'gem_extconf.rb'
+
+  # make tools executable
+    tools = FileList['bin/*.rb']
+
+    tools.each do |f|
+      chmod 0755, f
+    end
+
+  s.executables = tools.map {|f| File.basename f}
 end
 
 Rake::GemPackageTask.new(spec) do |pkg|
