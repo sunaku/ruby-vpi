@@ -56,16 +56,6 @@ class Operation
 
       when OP_MULT
         @arg1 * @arg2
-
-      when OP_NOP
-        nil
-
-      else
-        raise
     end
-  end
-
-  def compute!
-    @result = compute
   end
 end
