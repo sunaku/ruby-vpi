@@ -33,15 +33,8 @@ module RubyVpi
       raise 'Unable to determine name of test.'
     end
 
-    # set up the VPI utility layer
-      require 'ruby-vpi/vpi'
-
-      Object.class_eval do
-        include Vpi
-      end
-
     # service the $ruby_init() task
-      relay_verilog
+      Vpi::relay_verilog
 
     # set up code coverage analysis
       unless (ENV['COVERAGE'] || '').empty?
@@ -67,6 +60,13 @@ module RubyVpi
         when :tSpec
           ARGV << '-rs'
           require 'test/spec'
+      end
+
+    # set up the VPI utility layer
+      require 'ruby-vpi/vpi'
+
+      Object.class_eval do
+        include Vpi
       end
 
     # load the design under test
