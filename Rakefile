@@ -222,6 +222,7 @@ spec = Gem::Specification.new do |s|
   s.add_dependency 'rspec', '>= 0.5.4'
   s.add_dependency 'rake', '>= 0.7.0'
   s.add_dependency 'rcov', '>= 0.7.0'
+  s.add_dependency 'xx' # needed by rcov
 
   s.requirements << "POSIX threads library"
   s.requirements << "C language compiler"

@@ -21,8 +21,8 @@
 
 require 'rcov'
 
-# satisfy 'rcov/report' dependencies
-  require 'ruby-vpi/xx'
+# satisfy dependencies of 'rcov/report'
+  require 'xx'
 
   module XX
     module XMLish
