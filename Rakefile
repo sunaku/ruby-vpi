@@ -219,8 +219,8 @@ spec = Gem::Specification.new do |s|
   s.homepage = PROJECT_URL
   s.version = PROJECT_VERSION
 
-  s.add_dependency 'rspec', '>= 0.5.4'
   s.add_dependency 'rake', '>= 0.7.0'
+  s.add_dependency 'rspec', '>= 0.7.0'
   s.add_dependency 'rcov', '>= 0.7.0'
   s.add_dependency 'xx' # needed by rcov
 
