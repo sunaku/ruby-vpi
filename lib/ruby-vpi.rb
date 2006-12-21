@@ -62,6 +62,14 @@ module RubyVpi
           require 'test/spec'
       end
 
+    # set up the interactive debugger
+      unless (ENV['DEBUG'] || '').empty?
+        require 'ruby-debug'
+
+        Debugger.start
+        Debugger.post_mortem
+      end
+
     # set up the VPI utility layer
       require 'ruby-vpi/vpi'
 
