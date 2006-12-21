@@ -62,7 +62,7 @@ module RubyVpi
 
         when :rSpec
           ARGV.concat %w[-f s]
-          require 'ruby-vpi/rspec'
+          require 'spec'
 
         when :tSpec
           ARGV << '-rs'
