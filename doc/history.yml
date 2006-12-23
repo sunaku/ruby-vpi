@@ -7,16 +7,16 @@
     This release adds interactive debugging support, adds new sections to the user manual, and cleanses some internals.
 
   Notice: |
-    * The <tt>lib/ruby-vpi/rspec.rb</tt> and <tt>lib/ruby-vpi/xx.rb</tt> files has been removed because they are no longer necessary.
+    * The <tt>lib/ruby-vpi/rspec.rb</tt> and <tt>lib/ruby-vpi/xx.rb</tt> files have been removed because they are no longer necessary.
 
-    * rSpec 0.7.0 or newer is now required because the sample tests utilize the @should ==@ syntax -- which was introduced in rSpec 0.7.0.
+    * rSpec 0.7.0 or newer is now required because the sample tests utilize the @should ==@ syntax.
 
   Detail: |
     * Test runners now support the @DEBUG@ environment variable, which enables the interactive debugger (ruby-debug) in "post-mortem debugging mode":http://www.datanoise.com/articles/2006/12/20/post-mortem-debugging.
-    ** The @debugger@ can now be used when @DEBUG@ environment variable is not activated.
+    ** The @debugger@ command can also be used when the @DEBUG@ environment variable is not activated.
     ** ruby-debug is now a gem dependency for Ruby-VPI.
 
-    * Status messages, which are shown during initialization of a Ruby bench, now appear in simulators' log files.
+    * Status messages, which are shown during initialization of a Ruby bench, now appear in your simulator's log files.
 
     * Added documentation about "test runners":manual.html#usage.test-runner and the "interactive debugger":manual.html#usage.debugger in the user manual.
 
