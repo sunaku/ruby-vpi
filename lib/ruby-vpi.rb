@@ -74,6 +74,15 @@ module RubyVpi
         Debugger.post_mortem
       end
 
+      # suppress undefined method errors when debugger is not enabled
+        unless Kernel.respond_to? :debugger
+          Kernel.class_eval do
+            define_method :debugger do
+              # this is a dummy method!
+            end
+          end
+        end
+
     # set up the VPI utility layer
       require 'ruby-vpi/vpi'
 
