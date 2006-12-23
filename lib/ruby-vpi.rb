@@ -33,11 +33,15 @@ module RubyVpi
       raise 'Unable to determine name of test.'
     end
 
+    useDebugger = !(ENV['DEBUG'] || '').empty?
+    useCoverage = !(ENV['COVERAGE'] || '').empty?
+    usePrototype = !(ENV['PROTOTYPE'] || '').empty?
+
     # service the $ruby_init() task
       Vpi::relay_verilog
 
     # set up code coverage analysis
-      unless (ENV['COVERAGE'] || '').empty?
+      if useCoverage
         require 'ruby-vpi/rcov'
 
         RubyVpi.with_coverage_analysis do |a|
@@ -63,7 +67,7 @@ module RubyVpi
       end
 
     # set up the interactive debugger
-      unless (ENV['DEBUG'] || '').empty?
+      if useDebugger
         require 'ruby-debug'
 
         Debugger.start
@@ -86,7 +90,7 @@ module RubyVpi
       require "#{testName}_design.rb"
 
     # load the design's prototype
-      unless (ENV['PROTOTYPE'] || '').empty?
+      if usePrototype
         require "#{testName}_proto.rb"
 
         Vpi.class_eval do
