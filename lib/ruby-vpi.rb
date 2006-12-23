@@ -50,6 +50,8 @@ module RubyVpi
             Rcov::HTMLCoverage.new(:destdir => "#{testName}_coverage")
           ]
         end
+
+        Vpi::vpi_printf "#{Config::PROJECT_NAME}: coverage analysis is enabled for test #{testName.inspect}\n"
       end
 
     # set up the specification library
@@ -72,6 +74,8 @@ module RubyVpi
 
         Debugger.start
         Debugger.post_mortem
+
+        Vpi::vpi_printf "#{Config::PROJECT_NAME}: debugger is enabled for test #{testName.inspect}\n"
       end
 
       # suppress undefined method errors when debugger is not enabled
@@ -108,7 +112,7 @@ module RubyVpi
           end
         end
 
-        puts "#{Config::PROJECT_NAME}: prototype has been enabled for test #{testName.inspect}"
+        Vpi::vpi_printf "#{Config::PROJECT_NAME}: prototype is enabled for test #{testName.inspect}\n"
       end
 
     # load the design's specification
