@@ -1,6 +1,6 @@
 =begin
-  Copyright 2006 Suraj N. Kurapati
   Copyright 2004 Dave Thomas
+  Copyright 2006 Suraj N. Kurapati
 
   This file is part of Ruby-VPI.
 
