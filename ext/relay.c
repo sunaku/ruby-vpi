@@ -108,7 +108,7 @@ void relay_ruby_run() {
           s_vpi_value argVal;
           argVal.format = vpiStringVal;
 
-          while (vArg = vpi_scan(vCallArgs)) {
+          while ((vArg = vpi_scan(vCallArgs))) {
             pRubyOptions->mCount++;
 
             // grow the options struct to hold more options
