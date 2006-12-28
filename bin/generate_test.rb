@@ -39,12 +39,12 @@ require 'digest/md5'
 
 
 # Notify the user about some action being performed.
-def notify *args
+def notify *args # :nodoc:
   printf "%8s  %s\n", *args
 end
 
 # Writes the given contents to the file at the given path. If the given path already exists, then a backup is created before invoking the merging tool.
-def write_file aPath, aContent
+def write_file aPath, aContent # :nodoc:
   if File.exist? aPath
     oldDigest = Digest::MD5.digest(File.read(aPath))
     newDigest = Digest::MD5.digest(aContent)
@@ -72,7 +72,7 @@ end
 require 'ruby-vpi/erb'
 
 # Template used for generating output.
-class Template < ERB
+class Template < ERB # :nodoc:
   TEMPLATE_PATH = __FILE__.sub %r{\.rb$}, '_tpl'
 
   def initialize aName
@@ -83,7 +83,7 @@ end
 
 
 # Holds information about the output destinations of a parsed Verilog module.
-class OutputInfo
+class OutputInfo # :nodoc:
   RUBY_EXT = '.rb'
   VERILOG_EXT = '.v'
   RUNNER_EXT = '.rake'

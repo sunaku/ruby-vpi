@@ -66,7 +66,7 @@ BOOTSTAP_FUNC = 'vlog_startup_routines_bootstrap'
 
 
 # Returns the path to the Ruby-VPI object file for the given simulator.
-def object_file_path aSimId
+def object_file_path aSimId # :nodoc:
   path = File.join(OBJECT_PATH, "#{PROJECT_ID}.#{aSimId}.so")
 
   unless File.exist? path
@@ -77,7 +77,7 @@ def object_file_path aSimId
 end
 
 # Returns an array of include-directory options.
-def expand_include_dir_options aSimId, aIncludes = SIMULATOR_INCLUDES
+def expand_include_dir_options aSimId, aIncludes = SIMULATOR_INCLUDES # :nodoc:
   prefix = case aSimId
     when :ivl
       '-I'

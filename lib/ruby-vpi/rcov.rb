@@ -24,7 +24,7 @@ require 'rcov'
 # satisfy dependencies of 'rcov/report'
   require 'xx'
 
-  module XX
+  module XX # :nodoc: all
     module XMLish
       include Markup
 
@@ -53,8 +53,8 @@ module RubyVpi
     end
   end
 
-  # Invokes the given block after code coverage analysis has completed.
-  def RubyVpi.with_coverage_analysis &aBlock # :yields: Rcov::CodeCoverageAnalyzer
+  # Invokes the given block, which yields COVERAGE_ANALYSIS, after code coverage analysis has completed.
+  def RubyVpi.with_coverage_analysis &aBlock # :nodoc:
     if aBlock
       COVERAGE_ANALYSIS_HANDLERS << aBlock
     end

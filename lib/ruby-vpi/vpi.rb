@@ -277,7 +277,7 @@ module Vpi
     Property = Struct.new :type, :name, :operation, :accessor, :assignment
 
     # Resolves the given shorthand name into a description of its VPI property.
-    def Property.resolve aName
+    def Property.resolve aName # :nodoc:
       # parse the given property name
         tokens = aName.to_s.split(/_/)
 
