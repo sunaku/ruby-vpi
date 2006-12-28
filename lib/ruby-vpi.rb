@@ -123,7 +123,7 @@ module RubyVpi
         require "#{testName}_proto.rb"
 
         Vpi.module_eval do
-          def relay_verilog # :nodoc:
+          define_method :relay_verilog do
             design.simulate!
           end
         end
