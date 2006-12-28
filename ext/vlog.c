@@ -23,7 +23,7 @@
 #include "relay.h"
 
 
-verilog_cb_funcSig(vlog_init_ruby) {
+verilog_cb_funcSig(vlog_relay_main) {
   relay_init();
   relay_main();
   verilog_cb_funcReturn(0);
@@ -36,13 +36,13 @@ verilog_cb_funcSig(vlog_relay_ruby) {
 
 
 /**
-  Registers a callback at start of simulation to vlog_init_ruby();
+  Registers a callback at start of simulation to vlog_relay_main();
 */
 void vlog_startup() {
   s_cb_data call;
 
   call.reason = cbStartOfSimulation;
-  call.cb_rtn = vlog_init_ruby;
+  call.cb_rtn = vlog_relay_main;
   call.obj = NULL;
   call.time = NULL;
   call.value = NULL;

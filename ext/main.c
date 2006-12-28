@@ -25,7 +25,7 @@
 #include <stdio.h>
 
 
-/* load the SWIG-generated Ruby interface to VPI */
+// load the SWIG-generated Ruby interface to VPI
 #include "swig_wrap.cin"
 
 
@@ -33,11 +33,11 @@ void main_init() {
   ruby_init();
   ruby_init_loadpath();
 
-  /* load the VPI interface for Ruby */
+  // load the VPI interface for Ruby
     Init_vpi();
     rb_define_module_function(mVpi, "relay_verilog", main_relay_verilog, 0);
 
-  /* initialize the Ruby bench */
+  // initialize the Ruby bench
     char* benchFile = getenv("RUBY_VPI__RUBY_BENCH_FILE");
 
     if (benchFile != NULL) {
@@ -50,7 +50,7 @@ void main_init() {
 
     ruby_script(benchFile);
 
-  /* run the test bench */
+  // run the test bench
     ruby_run();
 
   ruby_finalize();

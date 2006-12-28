@@ -28,9 +28,9 @@
   #include "verilog.h"
 
   /**
-    Initializes and starts the Ruby interpreter.
+    Relays control to the main layer.
   */
-  verilog_cb_funcSig(vlog_init_ruby);
+  verilog_cb_funcSig(vlog_relay_main);
 
   /**
     Relays control from Verilog to Ruby.
