@@ -48,6 +48,8 @@ void main_init() {
       exit(EXIT_FAILURE);
     }
 
+    ruby_script(benchFile);
+
   /* run the test bench */
     ruby_run();
 
