@@ -1,5 +1,7 @@
 h1. Pending tasks
 
+* add support for VPI callbacks which execute Ruby blocks
+
 * add support for reading & writing VPI delay values
 
 * GHDL simulator supports VPI
