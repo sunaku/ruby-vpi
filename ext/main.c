@@ -41,14 +41,13 @@ void main_init() {
     char* benchFile = getenv("RUBY_VPI__RUBY_BENCH_FILE");
 
     if (benchFile != NULL) {
+      ruby_script(benchFile);
       rb_load_file(benchFile);
     }
     else {
-      common_printf("error: environment variable RUBY_VPI__RUBY_BENCH_FILE is not set.");
+      common_printf("error: environment variable RUBY_VPI__RUBY_BENCH_FILE is uninitialized.");
       exit(EXIT_FAILURE);
     }
-
-    ruby_script(benchFile);
 
   // run the test bench
     ruby_run();
