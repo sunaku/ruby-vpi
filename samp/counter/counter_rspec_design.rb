@@ -2,8 +2,8 @@
 
 # This method resets the design under test.
 def Counter.reset!
-  # assert the reset signal for five clock cycles
+  # assert the reset signal for two clock cycles
   reset.intVal = 1
-  5.times {relay_verilog}
+  2.times {relay_verilog}
   reset.intVal = 0
 end
