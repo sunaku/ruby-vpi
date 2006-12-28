@@ -132,7 +132,8 @@ module RubyVpi
 
     # trigger relay_verilog according to aClockTrigger
       else
-        clock = design[VpiReg].first
+        regs = design[VpiReg].sort_by {|h| h.lineNo}
+        clock = regs.first
 
         Vpi.module_eval do
           # register callback for relay_verilog
