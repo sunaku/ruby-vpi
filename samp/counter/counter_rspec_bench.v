@@ -1,4 +1,4 @@
-/* This file is the Verilog side of the bench. */
+// This file is the Verilog side of the bench.
 module counter_rspec_bench;
 
   // instantiate the design under test
@@ -9,15 +9,8 @@ module counter_rspec_bench;
 
     counter #(.Size(Size)) counter_rspec_bench_design(.clock(clock), .reset(reset), .count(count));
 
-  // connect to the Ruby side of this bench
-    initial begin
-      $ruby_init("ruby", "-rubygems", "counter_rspec_bench.rb");
-    end
-
-    always begin
-      #1 clock = 0;
-      #1 $ruby_relay;
-      #1 clock = 1;
-    end
+  // generate clock for the design under test
+    initial clock = 0;
+    always #5 clock = !clock;
 
 endmodule

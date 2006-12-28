@@ -1,4 +1,4 @@
-/* This file is the Verilog side of the bench. */
+// This file is the Verilog side of the bench.
 module hw5_unit_test_bench;
 
   // instantiate the design under test
@@ -14,15 +14,8 @@ module hw5_unit_test_bench;
 
     hw5_unit  hw5_unit_test_bench_design(.clk(clk), .reset(reset), .in_databits(in_databits), .a(a), .b(b), .in_op(in_op), .res(res), .out_databits(out_databits), .out_op(out_op));
 
-  // connect to the Ruby side of this bench
-    initial begin
-      $ruby_init("ruby", "-rubygems", "hw5_unit_test_bench.rb");
-    end
-
-    always begin
-      #1 clk = 0;
-      #1 $ruby_relay;
-      #1 clk = 1;
-    end
+  // generate clock for the design under test
+    initial clk = 0;
+    always #5 clk = !clk;
 
 endmodule
