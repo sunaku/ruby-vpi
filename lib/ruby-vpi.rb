@@ -164,7 +164,7 @@ module RubyVpi
         end
 
         # XXX: this completes the handshake with pthread_mutex_lock() in relay_main() in the C extension
-        Vpi::relay_verilog
+        relay_verilog_old
       end
 
     # load the design's specification
