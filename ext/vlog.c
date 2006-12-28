@@ -20,42 +20,35 @@
 */
 
 #include "vlog.h"
-
 #include "relay.h"
-#include <stdlib.h>
 
 
-verilog_tf_funcSig(vlog_ruby_init) {
+verilog_cb_funcSig(vlog_init_ruby) {
   relay_init();
-  relay_ruby_run();
-  verilog_tf_funcReturn(0);
+  relay_main();
+  verilog_cb_funcReturn(0);
 }
 
-verilog_tf_funcSig(vlog_ruby_relay) {
+verilog_cb_funcSig(vlog_relay_ruby) {
   relay_ruby();
-  verilog_tf_funcReturn(0);
+  verilog_cb_funcReturn(0);
 }
 
-void vlog_bind_task(PLI_BYTE8* apTaskName, verilog_tf_funcPtr(apTaskDef)) {
-  s_vpi_systf_data tf;
-
-  tf.type = vpiSysTask;
-  tf.sysfunctype = 0;
-  tf.tfname = apTaskName;
-  tf.calltf = (verilog_tf_funcPtr_strict())apTaskDef;
-  tf.compiletf = NULL;
-  tf.sizetf = NULL;
-  tf.user_data = NULL;
-
-  vpi_register_systf(&tf);
-}
 
 /**
-  Binds the default VPI tasks (provided by Ruby-VPI) before the Verilog simulator begins to simulate.
+  Registers a callback at start of simulation to vlog_init_ruby();
 */
 void vlog_startup() {
-  vlog_bind_task("$ruby_init", vlog_ruby_init);
-  vlog_bind_task("$ruby_relay", vlog_ruby_relay);
+  s_cb_data call;
+
+  call.reason = cbStartOfSimulation;
+  call.cb_rtn = vlog_init_ruby;
+  call.obj = NULL;
+  call.time = NULL;
+  call.value = NULL;
+  call.user_data = NULL;
+
+  vpi_free_object(vpi_register_cb(&call));
 }
 
 void (*vlog_startup_routines[])() = { vlog_startup, 0 };

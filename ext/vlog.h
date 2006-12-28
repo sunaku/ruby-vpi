@@ -24,31 +24,17 @@
 #ifndef VLOG_H
 #define VLOG_H
 
+  #include "common.h"
   #include "verilog.h"
 
+  /**
+    Initializes and starts the Ruby interpreter.
+  */
+  verilog_cb_funcSig(vlog_init_ruby);
 
   /**
-    Callback for the $ruby_relay VPI task. Transfers control from Verilog to Ruby code.
+    Relays control from Verilog to Ruby.
   */
-  verilog_tf_funcSig(vlog_ruby_relay);
-
-  /**
-    Callback for the $ruby_init VPI task. Initializes and starts the Ruby interpreter with the same arguments as those given to the VPI task-call.
-
-    For example, to start the Ruby interpreter with the "-w" option and with the "hello_world.rb" script, the Verilog code would have a statement like this:
-      - <tt>$ruby_init("-w", "hello_world.rb");</tt>
-  */
-  verilog_tf_funcSig(vlog_ruby_init);
-
-  /**
-    Binds a C function to a VPI task, so that Verilog code can invoke the C function by calling the VPI task.
-
-    For example, if we bound a VPI task named "$hello_world" to the C function hello_world(), then the hello_world() function would be invoked whenever Verilog code called the "$hello_world" VPI task.
-
-    @param	apTaskName	Name of the VPI task. For example, "$hello_world".
-
-    @param	apTaskDef	The C function which you want to associate with the given VPI task. For example, hello_world().
-  */
-  void vlog_bind_task(PLI_BYTE8* apTaskName, verilog_tf_funcPtr(apTaskDef));
+  verilog_cb_funcSig(vlog_relay_ruby);
 
 #endif

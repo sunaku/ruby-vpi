@@ -28,15 +28,8 @@ module <%= aOutputInfo.verilogBenchName %>;
 
     %> <%= aOutputInfo.verilogBenchName %>_design(<%= make_inst_param_decl(aModuleInfo.ports) %>);
 
-  // connect to the Ruby side of this bench
-    initial begin
-      $ruby_init("ruby", "-rubygems", <%= aOutputInfo.rubyBenchPath.inspect %>);
-    end
-
-    always begin
-      #1 <%= clockSignal %> = 0;
-      #1 $ruby_relay;
-      #1 <%= clockSignal %> = 1;
-    end
+  // generate clock for the design under test
+    initial <%= clockSignal %> = 0;
+    always #5 <%= clockSignal %> = !<%= clockSignal %>;
 
 endmodule

@@ -26,19 +26,35 @@ module RubyVpi
   #
   # aDesignId:: The name of the Ruby design object.
   # aSpecFormat:: The format being used by the specification.
-  def RubyVpi.init_bench aDesignId, aSpecFormat
+  # aClockTrigger:: When the return value of this block is +true+, then the relay_verilog method returns. This block is given one argument: a handle to the clock signal that drives the design under test. If this block is not specified, relay_verilog will always return upon the next positive edge of the clock signal.
+  #
+  #   # return upon positive edge
+  #   RubyVpi.init_bench ... |clk|
+  #     clk.intVal == 1
+  #   end
+  #
+  #   # return upon negative edge
+  #   RubyVpi.init_bench ... do |clk|
+  #     clk.intVal == 0
+  #   end
+  #
+  #   # return whenever clock changes
+  #   RubyVpi.init_bench ... do |clk|
+  #     true
+  #   end
+  #
+  def RubyVpi.init_bench aDesignId, aSpecFormat, &aClockTrigger # :yields: clock_signal
     if caller.find {|s| s =~ /^(.*?)_bench.rb:/}
       testName = $1
     else
       raise 'Unable to determine name of test.'
     end
 
+    aClockTrigger ||= lambda {|clk| clk.intVal == 1}
+
     useDebugger = !(ENV['DEBUG'] || '').empty?
     useCoverage = !(ENV['COVERAGE'] || '').empty?
     usePrototype = !(ENV['PROTOTYPE'] || '').empty?
-
-    # service the $ruby_init() task
-      Vpi::relay_verilog
 
     # set up code coverage analysis
       if useCoverage
@@ -106,13 +122,48 @@ module RubyVpi
       if usePrototype
         require "#{testName}_proto.rb"
 
-        Vpi.class_eval do
-          define_method :relay_verilog do
+        Vpi.module_eval do
+          def relay_verilog # :nodoc:
             design.simulate!
           end
         end
 
         Vpi::vpi_printf "#{Config::PROJECT_NAME}: prototype is enabled for test #{testName.inspect}\n"
+
+    # trigger relay_verilog according to aClockTrigger
+      else
+        clock = design[VpiReg].first
+
+        Vpi.module_eval do
+          # register callback for relay_verilog
+            time = S_vpi_time.new
+            time.type = VpiSuppressTime
+
+            value = S_vpi_value.new
+            value.format = VpiSuppressVal
+
+            alarm = S_cb_data.new
+            alarm.reason = CbValueChange
+            alarm.cb_rtn = Vlog_relay_ruby
+            alarm.obj = clock
+            alarm.time = time
+            alarm.value = value
+            alarm.index = 0
+            alarm.user_data = nil
+
+            vpi_free_object(vpi_register_cb(alarm))
+
+          alias_method :relay_verilog_old, :relay_verilog
+
+          define_method :relay_verilog do
+            begin
+              relay_verilog_old
+            end until aClockTrigger.call(clock)
+          end
+        end
+
+        # XXX: this completes the handshake with pthread_mutex_lock() in relay_main() in the C extension
+        Vpi::relay_verilog
       end
 
     # load the design's specification

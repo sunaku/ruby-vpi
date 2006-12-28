@@ -18,22 +18,23 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 /**\file
-  C interface to the SWIG-generated VPI interface.
+  The C extension for Ruby-VPI.
 */
 
-#ifndef SWIG_H
-#define SWIG_H
+#ifndef MAIN_H
+#define MAIN_H
 
+  #include "common.h"
   #include <ruby.h>
 
   /**
-    Registers the SWIG-generated VPI interface with Ruby, so that Ruby code can access it.
+    Runs the test bench.
   */
-  void swig_init();
+  void main_init();
 
   /**
-    Transfers control from Ruby code to Verilog code.
+    Transfers control from Ruby to Verilog.
   */
-  VALUE swig_rb_relay_verilog(VALUE arSelf);
+  VALUE main_relay_verilog(VALUE arSelf);
 
 #endif

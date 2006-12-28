@@ -19,18 +19,42 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-#include "swig.h"
-
+#include "main.h"
 #include "relay.h"
+#include <stdlib.h>
+#include <stdio.h>
+
+
+/* load the SWIG-generated Ruby interface to VPI */
 #include "swig_wrap.cin"
 
 
-void swig_init() {
-  Init_vpi();
-  rb_define_module_function(mVpi, "relay_verilog", swig_rb_relay_verilog, 0);
+void main_init() {
+  ruby_init();
+  ruby_init_loadpath();
+
+  /* load the VPI interface for Ruby */
+    Init_vpi();
+    rb_define_module_function(mVpi, "relay_verilog", main_relay_verilog, 0);
+
+  /* initialize the Ruby bench */
+    char* benchFile = getenv("RUBY_VPI__RUBY_BENCH_FILE");
+
+    if (benchFile != NULL) {
+      rb_load_file(benchFile);
+    }
+    else {
+      common_printf("error: environment variable RUBY_VPI__RUBY_BENCH_FILE is not set.");
+      exit(EXIT_FAILURE);
+    }
+
+  /* run the test bench */
+    ruby_run();
+
+  ruby_finalize();
 }
 
-VALUE swig_rb_relay_verilog(VALUE arSelf) {
+VALUE main_relay_verilog(VALUE arSelf) {
   relay_verilog();
   return arSelf;
 }

@@ -25,24 +25,26 @@
 #ifndef RELAY_H
 #define RELAY_H
 
+  #include "common.h"
+
   /**
-    Initialize the relay mechanism, which enables Verilog code to transfer control to Ruby code and vice versa.
+    Initialize the relay mechanism, which enables Verilog to transfer control to Ruby and vice versa.
   */
   void relay_init();
 
   /**
-    Transfers control to Ruby code.
+    Transfers control to Ruby.
   */
   void relay_ruby();
 
   /**
-    Transfers control to Verilog code.
+    Transfers control to Verilog.
   */
   void relay_verilog();
 
   /**
-    Starts the Ruby interpreter.
+    Transfers control to the main layer.
   */
-  inline void relay_ruby_run();
+  void relay_main();
 
 #endif

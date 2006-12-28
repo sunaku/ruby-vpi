@@ -20,12 +20,8 @@
 */
 
 #include "relay.h"
-
-#include "swig.h"
-#include "common.h"
+#include "main.h"
 #include <pthread.h>
-#include <ruby.h>
-#include <assert.h>
 
 
 pthread_t relay__rubyThread;
@@ -49,86 +45,14 @@ void relay_verilog() {
   pthread_mutex_lock(&relay__rubyLock);
 }
 
-/**
-  Stores command-line options for the Ruby interpreter.
-*/
-typedef struct {
-  PLI_BYTE8** mArgs;	/// Array of command-line arguments.
-  unsigned int mCount;	/// Number of command-line arguments.
-} relay__RubyOptions__def;
-
-/**
-  @param	apRubyOptions	relay__RubyOptions__def structure which contains command-line options passsed to the Ruby interpreter.
-  @note	The structure will be freed *deeply* after use.
-*/
-void* ruby_run_handshake(void* apRubyOptions) {
-  ruby_init();
-  ruby_init_loadpath();
-
-  swig_init();
-
-  // pass command-line arguments to the interpreter
-    relay__RubyOptions__def* pRubyOptions = (relay__RubyOptions__def*) apRubyOptions;
-
-    PLI_BYTE8** argv = pRubyOptions->mArgs;
-    unsigned int argc = pRubyOptions->mCount;
-
-    ruby_options(argc, argv);
-
-  // free the memory used by command-line options
-    unsigned int i;
-    for (i = 0; i < argc; i++) {
-      free(argv[i]);
-    }
-
-    free(argv);
-    free(pRubyOptions);
-
-  ruby_run();
-  ruby_finalize();
-
+void* relay_main_handshake(void* aDummy) {
+  main_init();
   return NULL;
 }
 
-void relay_ruby_run() {
-  relay__RubyOptions__def* pRubyOptions = malloc(sizeof(relay__RubyOptions__def));
+void relay_main() {
+  pthread_create(&relay__rubyThread, 0, relay_main_handshake, NULL);
 
-  if (pRubyOptions) {
-    pRubyOptions->mArgs = NULL;
-    pRubyOptions->mCount = 0;
-
-    // transform the arguments passed to this function by Verilog into command-line arguments for Ruby interpeter
-      vpiHandle vCall = vpi_handle(vpiSysTfCall, NULL);
-
-      if (vCall) {
-        vpiHandle vCallArgs = vpi_iterate(vpiArgument, vCall);
-
-        if (vCallArgs) {
-          vpiHandle vArg;
-          s_vpi_value argVal;
-          argVal.format = vpiStringVal;
-
-          while ((vArg = vpi_scan(vCallArgs))) {
-            pRubyOptions->mCount++;
-
-            // grow the options struct to hold more options
-              if (pRubyOptions->mArgs == NULL)
-                pRubyOptions->mArgs = malloc(sizeof(PLI_BYTE8*) * pRubyOptions->mCount);
-              else
-                pRubyOptions->mArgs = realloc(pRubyOptions->mArgs, sizeof(PLI_BYTE8*) * pRubyOptions->mCount);
-
-              assert(pRubyOptions->mArgs != NULL);
-
-            vpi_get_value(vArg, &argVal);
-            pRubyOptions->mArgs[pRubyOptions->mCount - 1] = strdup(argVal.value.str);
-          }
-        }
-      }
-
-    pthread_create(&relay__rubyThread, 0, ruby_run_handshake, pRubyOptions);
-    return;
-  }
-
-  common_printf("error: unable to allocate memory for Ruby's command-line arguments.");
-  exit(EXIT_FAILURE);
+  // XXX: freezee verilog because RubyVpi.init_bench will call relay_verilog (which assumes that verilog is frozen)
+  pthread_mutex_lock(&relay__verilogLock);
 }
