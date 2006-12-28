@@ -10,23 +10,31 @@
 * "Reference":../ref/
   - API documentation for Ruby libraries and C extension.
 
-* "History":history.html
-  - record of all release notes.
-
-* "Memo":memo.html
-  - pending tasks for future releases.
 
 * "Facilities":http://rubyforge.org/projects/ruby-vpi
-  - issue tracker, file downloads, support requests, discussion forums, and more.
+** "Downloads":http://rubyforge.org/frs/?group_id=1339
+** "Bugs":http://rubyforge.org/tracker/?group_id=1339
+** "Patches":http://rubyforge.org/tracker/?group_id=1339
+** "Requests":http://rubyforge.org/tracker/?group_id=1339
+** "Forums":http://rubyforge.org/forum/?group_id=1339
 
 * "Sources":http://ruby-vpi.rubyforge.org/src/ruby-vpi
   - browse or access the "Darcs":http://abridgegame.org/darcs/ source code repository.
 
-* "Talks":http://ruby-vpi.rubyforge.org/talks
-  - slides from public presentations about Ruby-VPI.
 
 * "News":http://ruby-vpi.rubyforge.org/news
   - see what's cooking for the next release.
+
+* "Talks":http://ruby-vpi.rubyforge.org/talks
+  - slides from public presentations about Ruby-VPI.
+
+
+* "Memo":memo.html
+  - pending tasks for future releases.
+
+* "History":history.html
+  - record of all release notes.
+
 
 </div>
 
