@@ -1,4 +1,3 @@
-#!/usr/bin/ruby -w
 # Generates Ruby-VPI tests from Verilog 2001 module declarations.
 # * The standard input stream is read if no input files are specified.
 # * The first input signal in a module's declaration is assumed to be the clocking signal.
