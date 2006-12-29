@@ -456,4 +456,16 @@ module Vpi
     # relay to verilog
       relay_verilog_proxy
   end
+
+
+  ## utility
+
+  # Returns the current simulation time as a 64-bit integer.
+  def simulation_time
+    t = S_vpi_time.new
+    t.type = VpiSimTime
+
+    vpi_get_time nil, t
+    (t.high << INTEGER_BITS) | t.low
+  end
 end
