@@ -164,7 +164,12 @@ end
 desc 'Generate release announcement.'
 task :ann => 'doc/history.rb' do |t|
   require t.prerequisites[0]
-  text = format_history_entry @history.first
+  text = [
+    PROJECT_DETAIL,
+    "* " + PROJECT_URL,
+    "---",
+    format_history_entry(@history.first)
+  ].join "\n\n"
 
   require 'doc/lib/doc_format'
   html = text.redcloth
