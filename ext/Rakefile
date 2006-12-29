@@ -54,12 +54,7 @@ file 'swig_wrap.cin' => 'swig_vpi.i' do |t|
   sh %w{swig -ruby -o}, t.name, t.prerequisites[0]
 end
 
-file 'swig_vpi.i' => 'swig_vpi.h'
-
-file 'swig_vpi.h' => 'vpi_user.h' do |t|
-  # avoid problems with SWIG-generated wrapper for VPI vprintf functions which use va_list
-  ruby %{-pe 'gsub /\\bva_list\\b/, "int"' #{t.prerequisites[0]} > #{t.name}}
-end
+file 'swig_vpi.i' => 'vpi_user.h'
 
 # NOTE: since SWIG is not a requirement for users, we should not clobber these generated files
 #CLOBBER.include 'swig_wrap.cin', 'swig_vpi.h'

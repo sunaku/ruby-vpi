@@ -94,16 +94,6 @@ Furthermore, Ruby-VPI presents the _entire_ IEEE Std 1364-2005 VPI interface to 
 
 * The first letter in the name of every function, type, structure, and constant becomes capitalized. For example, the @s_vpi_value@ structure in C becomes the @S_vpi_value@ class in Ruby. Likewise, the @vpiIntVal@ constant in C becomes the @VpiIntVal@ constant in Ruby.
 
-* The VPI functions @vpi_vprintf@ and @vpi_mcd_vprintf@ are not made accessible to Ruby. However, this isn't a big problem because you can use Ruby's printf method instead.
-
-bq. The reason for this limitation is that some C compilers have trouble with pointers to the va_list type. For these compilers, the second line in the code shown below causes a "type mismatch" error.
-
-<code lang="c">
-void foo(va_list ap) {
-  va_list *p = &ap;
-}
-</code>
-
 
 h4(#background.org.vpi.util). VPI utility layer
 
