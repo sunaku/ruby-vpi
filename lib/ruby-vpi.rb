@@ -19,38 +19,23 @@
 =end
 
 module RubyVpi
-  # Initializes the bench by loading:
-  # 1. the design.rb file
-  # 2. the proto.rb file if prototyping is enabled
-  # 3. the spec.rb file
+  # Initializes the bench by setting up code coverage, the interactive debugger, and so on:
+  # 1. loads the design.rb file
+  # 2. loads the proto.rb file if prototyping is enabled
+  # 3. loads the spec.rb file
   #
-  # aDesignId:: The name of the Ruby design object.
-  # aSpecFormat:: The format being used by the specification.
-  # aClockTrigger:: When the return value of this block is +true+, then the relay_verilog method returns. This block is given one argument: a handle to the clock signal that drives the design under test. If this block is not specified, relay_verilog will always return upon the next positive edge of the clock signal.
+  # aDesignId:: The name of the Ruby object which gives access to the design under test.
+  # aSpecFormat:: The name of the format being used by the specification.
+  # aSimulationCycle:: A block that simulates the design under test by, for example, toggling the clock signal.
   #
-  #   # return upon positive edge
-  #   RubyVpi.init_bench ... |clk|
-  #     clk.intVal == 1
-  #   end
-  #
-  #   # return upon negative edge
-  #   RubyVpi.init_bench ... do |clk|
-  #     clk.intVal == 0
-  #   end
-  #
-  #   # return whenever clock changes
-  #   RubyVpi.init_bench ... do |clk|
-  #     true
-  #   end
-  #
-  def RubyVpi.init_bench aDesignId, aSpecFormat, &aClockTrigger # :yields: clock_signal
+  def RubyVpi.init_bench aDesignId, aSpecFormat, &aSimulationCycle
+    raise ArgumentError, "block must be given" unless block_given?
+
     if caller.find {|s| s =~ /^(.*?)_bench.rb:/}
       testName = $1
     else
       raise 'Unable to determine name of test.'
     end
-
-    aClockTrigger ||= lambda {|clk| clk.intVal == 1}
 
     useDebugger = !(ENV['DEBUG'] || '').empty?
     useCoverage = !(ENV['COVERAGE'] || '').empty?
@@ -123,48 +108,24 @@ module RubyVpi
         require "#{testName}_proto.rb"
 
         Vpi.module_eval do
-          define_method :relay_verilog do
+          define_method :simulate do
             design.simulate!
+          end
+
+          define_method :vpi_register_cb do
+            warn "vpi_register_cb: callbacks not allowed when prototyping"
           end
         end
 
         Vpi::vpi_printf "#{Config::PROJECT_NAME}: prototype is enabled for test #{testName.inspect}\n"
 
-    # trigger relay_verilog according to aClockTrigger
       else
-        regs = design[VpiReg].sort_by {|h| h.lineNo}
-        clock = regs.first
-
         Vpi.module_eval do
-          # register callback for relay_verilog
-            time = S_vpi_time.new
-            time.type = VpiSuppressTime
-
-            value = S_vpi_value.new
-            value.format = VpiSuppressVal
-
-            alarm = S_cb_data.new
-            alarm.reason = CbValueChange
-            alarm.cb_rtn = Vlog_relay_ruby
-            alarm.obj = clock
-            alarm.time = time
-            alarm.value = value
-            alarm.index = 0
-            alarm.user_data = nil
-
-            vpi_free_object(vpi_register_cb(alarm))
-
-          alias_method :relay_verilog_old, :relay_verilog
-
-          define_method :relay_verilog do
-            begin
-              relay_verilog_old
-            end until aClockTrigger.call(clock)
-          end
+          define_method :simulate, &aSimulationCycle
         end
 
-        # XXX: this completes the handshake with pthread_mutex_lock() in relay_main() in the C extension
-        relay_verilog_old
+        # XXX: this completes the handshake, by calling relay_verilog, with pthread_mutex_lock() in relay_main() in the C extension
+        advance_time
       end
 
     # load the design's specification

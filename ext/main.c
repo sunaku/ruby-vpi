@@ -36,6 +36,8 @@ void main_init() {
   // load the VPI interface for Ruby
     Init_vpi();
     rb_define_module_function(mVpi, "relay_verilog", main_relay_verilog, 0);
+    rb_define_module_function(mVpi, "relay_ruby_reason", main_relay_ruby_reason, 0);
+
 
   // initialize the Ruby bench
     char* benchFile = getenv("RUBY_VPI__RUBY_BENCH_FILE");
@@ -58,4 +60,8 @@ void main_init() {
 VALUE main_relay_verilog(VALUE arSelf) {
   relay_verilog();
   return arSelf;
+}
+
+VALUE main_relay_ruby_reason(VALUE arSelf) {
+  return SWIG_NewPointerObj(vlog_relay_ruby_reason(), SWIGTYPE_p_t_cb_data, 0);
 }

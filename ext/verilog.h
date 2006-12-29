@@ -55,7 +55,7 @@
     #define verilog_tf_funcPtr verilog_tf_funcPtr_strict
 
     #define verilog_tf_funcSig(aFuncName) \
-      PLI_INT32 aFuncName(PLI_BYTE8* aArg)
+      PLI_INT32 aFuncName(PLI_BYTE8* aCallbackData)
 
     #define verilog_tf_funcReturn(aReturnVal) \
       return aReturnVal
@@ -66,7 +66,7 @@
     PLI_INT32 (*aPtrName)(p_cb_data)
 
   #define verilog_cb_funcSig(aFuncName) \
-    PLI_INT32 aFuncName(p_cb_data aArg)
+    PLI_INT32 aFuncName(p_cb_data aCallbackData)
 
   #define verilog_cb_funcReturn(aReturnVal) \
     return aReturnVal

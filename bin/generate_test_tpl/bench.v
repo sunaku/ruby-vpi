@@ -5,31 +5,22 @@
       ".#{param.name}(#{param.name})"
     end.join(', ')
   end
-
-  clockSignal = aModuleInfo.ports.first.name
 %>
 // This file is the Verilog side of the bench.
 module <%= aOutputInfo.verilogBenchName %>;
-
-  // instantiate the design under test
 <% aModuleInfo.parameters.each do |param| %>
-    parameter <%= param.decl %>;
+  parameter <%= param.decl %>;
 <% end %>
 <% aModuleInfo.ports.each do |port| %>
-    <%= port.input? ? 'reg' : 'wire' %> <%= port.size %> <%= port.name %>;
+  <%= port.input? ? 'reg' : 'wire' %> <%= port.size %> <%= port.name %>;
 <% end %>
 
-    <%= aModuleInfo.name %> <%
-      instConfigDecl = make_inst_param_decl(aModuleInfo.parameters)
+  <%= aModuleInfo.name %> <%
+    instConfigDecl = make_inst_param_decl(aModuleInfo.parameters)
 
-      unless instConfigDecl.empty?
-      %>#(<%= instConfigDecl %>)<%
-      end
+    unless instConfigDecl.empty?
+    %>#(<%= instConfigDecl %>)<%
+    end
 
-    %> <%= aOutputInfo.verilogBenchName %>_design(<%= make_inst_param_decl(aModuleInfo.ports) %>);
-
-  // generate clock for the design under test
-    initial <%= clockSignal %> = 0;
-    always #5 <%= clockSignal %> = !<%= clockSignal %>;
-
+  %> <%= aOutputInfo.verilogBenchName %>_design(<%= make_inst_param_decl(aModuleInfo.ports) %>);
 endmodule

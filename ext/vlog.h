@@ -28,13 +28,13 @@
   #include "verilog.h"
 
   /**
-    Relays control to the main layer.
-  */
-  verilog_cb_funcSig(vlog_relay_main);
-
-  /**
     Relays control from Verilog to Ruby.
   */
   verilog_cb_funcSig(vlog_relay_ruby);
+
+  /**
+    Returns the data corresponding to the callback that caused the relay from Verilog to Ruby.
+  */
+  s_cb_data* vlog_relay_ruby_reason();
 
 #endif

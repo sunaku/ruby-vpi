@@ -23,7 +23,7 @@ def Hw5_unit.reset!
   reset.intVal = 1
 
   RESET_DELAY.times do
-    relay_verilog
+    simulate
   end
 
   reset.intVal = 0

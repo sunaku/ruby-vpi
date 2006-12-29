@@ -60,7 +60,7 @@ class Hw5_unit_test_spec < Test::Unit::TestCase
           numIssued += 1
         end
 
-      relay_verilog
+      simulate
 
       # verify result of finished operation
         unless Hw5_unit.out_databits.x?

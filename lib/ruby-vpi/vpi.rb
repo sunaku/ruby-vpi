@@ -21,6 +21,18 @@
 =end
 
 module Vpi
+  # Number of bits in PLI_INT32.
+  INTEGER_BITS = 32
+
+  # Lowest upper bound of PLI_INT32.
+  INTEGER_LIMIT = 2 ** INTEGER_BITS
+
+  # Bit-mask capable of capturing PLI_INT32.
+  INTEGER_MASK = INTEGER_LIMIT - 1
+
+
+  ## handles
+
   Handle = SWIG::TYPE_p_unsigned_int
 
   # An object inside a Verilog simulation (see *vpiHandle* in IEEE Std. 1364-2005).
@@ -214,6 +226,8 @@ module Vpi
     alias to_s inspect
 
 
+    ## properties
+
     @@propCache = Hash.new {|h, k| h[k] = Property.resolve(k)}
 
     # Provides access to this handle's
@@ -353,5 +367,93 @@ module Vpi
         @@propCache[aNameOrType.to_sym].type
       end
     end
+  end
+
+
+  ## callbacks
+
+  Callback = Struct.new :handler, :token #:nodoc:
+  @@callbacks = {}
+
+  alias vpi_register_cb_old vpi_register_cb
+
+  # This is a Ruby version of the vpi_register_cb C function. It is identical to the C function, except for the following differences:
+  # * This method accepts a block (callback handler) which is executed whenever the callback occurs.
+  # * This method overwrites the +cb_rtn+ and +user_data+ fields of the given +S_cb_data+ object.
+  def vpi_register_cb aData, &aHandler # :yields: Vpi::S_cb_data
+    raise ArgumentError, "block must be given" unless block_given?
+
+    key = aHandler.object_id.to_s
+
+    # register the callback with Verilog
+      aData.user_data = key
+      aData.cb_rtn = Vlog_relay_ruby
+      token = vpi_register_cb_old(aData)
+
+    @@callbacks[key] = Callback.new(aHandler, token)
+    token
+  end
+
+  alias vpi_remove_cb_old vpi_remove_cb
+
+  def vpi_remove_cb aData # :nodoc:
+    key = aData.user_data
+
+    if c = @@callbacks[key]
+      vpi_remove_cb_old c.token
+      @@callbacks.delete key
+    end
+  end
+
+  # Proxy for relay_verilog which supports callbacks.
+  # This method should NOT be invoked from callback handlers (see vpi_register_cb) and threads -- otherwise the situation will be like seven remote controls changing the channel on a single television set!
+  def relay_verilog_proxy # :nodoc:
+    loop do
+      relay_verilog
+
+      if reason = relay_ruby_reason # might be nil
+        dst = reason.user_data
+
+        if c = @@callbacks[dst]
+          c.handler.call reason
+        else
+          break # main thread is receiver
+        end
+      end
+    end
+  end
+
+
+  ## simulation control
+
+  # Simulates the design under test according to RubyVpi.init_bench.
+  def simulate
+    # this is a dummy method!
+  end
+
+  # Advances the simulation by the given number of steps.
+  def advance_time aNumSteps = 1
+    # schedule wake-up callback from verilog
+      time = S_vpi_time.new
+      time.low = aNumSteps & INTEGER_MASK
+      time.high = (aNumSteps >> INTEGER_BITS) & INTEGER_MASK
+      time.type = VpiSimTime
+
+      value = S_vpi_value.new
+      value.format = VpiSuppressVal
+
+      alarm = S_cb_data.new
+      alarm.reason = CbAfterDelay
+      alarm.cb_rtn = Vlog_relay_ruby
+      alarm.obj = nil
+      alarm.time = time
+      alarm.value = value
+      alarm.index = 0
+      alarm.user_data = nil
+
+      vpi_free_object(vpi_register_cb_old(alarm))
+
+    # relay to verilog
+      relay_verilog_proxy
   end
 end

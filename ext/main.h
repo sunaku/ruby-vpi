@@ -37,4 +37,9 @@
   */
   VALUE main_relay_verilog(VALUE arSelf);
 
+  /**
+    Gets the reason (Vpi::S_cb_data) why Verilog relayed to Ruby.
+  */
+  VALUE main_relay_ruby_reason(VALUE arSelf);
+
 #endif

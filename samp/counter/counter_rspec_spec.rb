@@ -18,7 +18,7 @@ context "A resetted counter's value" do
   specify "should increment by one count upon each rising clock edge" do
     LIMIT.times do |i|
       Counter.count.intVal.should == i
-      relay_verilog # increment the counter
+      simulate # increment the counter
     end
   end
 end
@@ -28,12 +28,12 @@ context "A counter with the maximum value" do
     Counter.reset!
 
     # increment the counter to maximum value
-    MAX.times {relay_verilog}
+    MAX.times {simulate}
     Counter.count.intVal.should == MAX
   end
 
   specify "should overflow upon increment" do
-    relay_verilog # increment the counter
+    simulate # increment the counter
     Counter.count.intVal.should == 0
   end
 end
