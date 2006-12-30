@@ -245,12 +245,12 @@ For example, the @s_vpi_value@ structure becomes the @S_vpi_value@ class in Ruby
 Note that this capitalization rule does *not* apply to VPI functions; their names remain _unchanged_ in Ruby.
 
 
-h2(#usage.vpi.handles). Handles
+h3(#usage.vpi.handles). Handles
 
-A "handle":#glossary.handle is a reference to an object, such as a module, register, wire, and so on, inside the Verilog simulation. In short, handles allow you to inspect and manipulate the design under test and its components.
+A _handle_ is a reference to an object, such as a module, register, wire, and so on, inside the Verilog simulation. In short, handles allow you to inspect and manipulate the design under test and its components.
 
 <% note do %>
-Handles are are instances of the @Vpi::Handle@ class (see "reference documentation here":../ref/ruby/classes/Vpi/Handle.html) in Ruby-VPI.
+Handles are instances of the @Vpi::Handle@ class (see "reference documentation":../ref/ruby/classes/Vpi/Handle.html for details) in Ruby-VPI.
 <% end %>
 
 Handles have various _properties_, which provide different kinds of information (see the "Kind of value accessed" column in <xref #tbl..accessors>) about the underlying Verilog object represented by a handle. These properties are accessed through various functions, which are listed in the "VPI functions used to access the value" column in <xref #tbl..accessors>.
@@ -258,11 +258,12 @@ Handles have various _properties_, which provide different kinds of information 
 Handles are typically obtained through the @vpi_handle_by_name@ and @vpi_handle@ functions. These functions are hierarchical in nature, because they allow you to obtain new handles that are related to existing handles. For example, to obtain a handle to a register inside a module, you would typically write: @some_reg = vpi_handle(VpiReg, some_handle)@.
 
 
-h3. Shortcuts
+p(title). Shortcuts for productivity
 
 Given a handle, Ruby-VPI allows you to access (1) its relatives and (2) its properties by simply invoking its methods.
 
 If a handle's relative happens to have the same name as one of the handle's properties, then the relative is given preference. However, if  you _really_ need to access a handle's property in such a situation, then you can use the @Vpi::Handle.get_value@ and @Vpi::Handle.put_value@ methods.
+
 
 h4. Accessing a handle's relatives
 
@@ -299,7 +300,6 @@ To access a handle's properties, invoke the proprty name, using the following fo
 
   Also, when this parameter is an equal sign @=@, it suggests that the specified VPI property should be written to.
 <% end %>
-
 
 <% table "Possible accessors and their implications", "tbl..accessors" do %>
 |_. Accessor |_. Kind of value accessed |_. VPI functions used to access the value |
@@ -349,7 +349,140 @@ To access a handle's properties, invoke the proprty name, using the following fo
 <% end %>
 
 
-h2(#usage.vpi.callbacks). Callbacks
+h3(#usage.vpi.callbacks). Callbacks
+
+A _callback_ is a mechanism that makes the Verilog simuluator execute a block of code, which is known as a "callback handler", when some prescribed event occurs in the simulation. They are set up via the @vpi_register_cb@ function and torn down via the @vpi_remove_cb@ function.
+
+<% example "Using a callback for value change notification", "ex..callback" do %>
+This example shows how to use a callback for notification of changes in a handle's @VpiIntVal@ property. When you no longer need this callback, you can tear it down using @vpi_remove_cb(cb_handle)@.
+
+In this example, the handle being monitored is the @Counter.count@ signal from <xref#fig..counter.v_decl>.
+
+<code>
+cb_time           = S_vpi_time.new
+cb_time.type      = VpiSimTime
+cb_time.low       = 0
+cb_time.high      = 0
+
+cb_value          = S_vpi_value.new
+cb_value.format   = VpiIntVal
+
+cb_data           = S_cb_data.new
+cb_data.reason    = CbValueChange
+cb_data.obj       = Counter.count
+cb_data.time      = cb_time
+cb_data.value     = cb_value
+cb_data.index     = 0
+
+cb_handle = vpi_register_cb(cb_data) do |data|
+
+  time = (data.time.high << 32) | data.time.low
+  count = data.value.value.integer
+
+  puts "hello from callback! time=#{time} count=#{count}"
+
+end
+</code>
+
+To see this code in action, append it to the <tt>counter_rspec_spec.rb</tt> and <tt>counter_xunit_spec.rb</tt> files, which are provided in <xref#usage.examples> and discussed in <xref#usage.tutorial.specification>.
+<% end %>
+
+<% figure "Output from <xref#ex..callback>" do %>
+Shown below is the output from running the "counter_rspec test":#usage.tutorial after appending the code shown in <xref#ex..callback> to the <tt>counter_rspec_spec.rb</tt> file.
+
+<pre>
+$ rake -f counter_rspec_runner.rake cver
+
+(in /home/sun/src/ruby-vpi/samp/counter)
+cver +loadvpi=/home/sun/src/ruby-vpi/lib/ruby-vpi/../../obj/ruby-vpi.cver.so:vlog_startup_routines_bootstrap counter.v counter_rspec_bench.v
+GPLCVER_2.11a of 07/05/05 (Linux-elf).
+Copyright (c) 1991-2005 Pragmatic C Software Corp.
+  All Rights reserved.  Licensed under the GNU General Public License (GPL).
+  See the 'COPYING' file for details.  NO WARRANTY provided.
+Today is Sat Dec 30 09:24:09 2006.
+Compiling source file "counter.v"
+Compiling source file "counter_rspec_bench.v"
+Highest level modules:
+counter_rspec_bench
+
+
+A resetted counter's value
+hello from callback! time=1 count=0
+- should be zero
+hello from callback! time=5 count=1
+hello from callback! time=7 count=2
+hello from callback! time=9 count=3
+hello from callback! time=11 count=4
+hello from callback! time=13 count=5
+hello from callback! time=15 count=6
+hello from callback! time=17 count=7
+hello from callback! time=19 count=8
+hello from callback! time=21 count=9
+hello from callback! time=23 count=10
+hello from callback! time=25 count=11
+hello from callback! time=27 count=12
+hello from callback! time=29 count=13
+hello from callback! time=31 count=14
+hello from callback! time=33 count=15
+hello from callback! time=35 count=16
+hello from callback! time=37 count=17
+hello from callback! time=39 count=18
+hello from callback! time=41 count=19
+hello from callback! time=43 count=20
+hello from callback! time=45 count=21
+hello from callback! time=47 count=22
+hello from callback! time=49 count=23
+hello from callback! time=51 count=24
+hello from callback! time=53 count=25
+hello from callback! time=55 count=26
+hello from callback! time=57 count=27
+hello from callback! time=59 count=28
+hello from callback! time=61 count=29
+hello from callback! time=63 count=30
+hello from callback! time=65 count=31
+hello from callback! time=67 count=0
+- should increment by one count upon each rising clock edge
+
+A counter with the maximum value
+hello from callback! time=71 count=1
+hello from callback! time=73 count=2
+hello from callback! time=75 count=3
+hello from callback! time=77 count=4
+hello from callback! time=79 count=5
+hello from callback! time=81 count=6
+hello from callback! time=83 count=7
+hello from callback! time=85 count=8
+hello from callback! time=87 count=9
+hello from callback! time=89 count=10
+hello from callback! time=91 count=11
+hello from callback! time=93 count=12
+hello from callback! time=95 count=13
+hello from callback! time=97 count=14
+hello from callback! time=99 count=15
+hello from callback! time=101 count=16
+hello from callback! time=103 count=17
+hello from callback! time=105 count=18
+hello from callback! time=107 count=19
+hello from callback! time=109 count=20
+hello from callback! time=111 count=21
+hello from callback! time=113 count=22
+hello from callback! time=115 count=23
+hello from callback! time=117 count=24
+hello from callback! time=119 count=25
+hello from callback! time=121 count=26
+hello from callback! time=123 count=27
+hello from callback! time=125 count=28
+hello from callback! time=127 count=29
+hello from callback! time=129 count=30
+hello from callback! time=131 count=31
+hello from callback! time=133 count=0
+- should overflow upon increment
+
+Finished in 0.042328 seconds
+
+3 specifications, 0 failures
+</pre>
+<% end %>
 
 
 h2(#usage.prototyping). Prototyping
