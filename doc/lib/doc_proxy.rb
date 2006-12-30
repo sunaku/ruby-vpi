@@ -141,7 +141,7 @@ class DocProxy < ErbProxy
 
   # Joins the given elements by putting enough white-space between them so that RedCloth knows they're different elements.
   def join_redcloth_elements *args
-    args.join "\n\n\n"
+    args.join("\n\n\n") << "\n\n\n"
   end
 
   # Removes the # from a HTML anchor so that only its name is preserved.
