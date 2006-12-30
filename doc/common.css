@@ -1,9 +1,8 @@
 body {
   font-family: sans-serif;
 
-  margin-left: 275px;
-  margin-right: 50px;
-  margin-bottom: 5em;
+  margin: 1em;
+  margin-left: 30%;
   max-width: 600px;
 }
 
@@ -28,19 +27,17 @@ h1, h2, h3, h4, h5, h6 {
   top: 0px;
   bottom: 0px;
 
-  max-width: 200px;
+  max-width: 25%;
   padding: 1em;
   overflow: auto;
-
-  background-color: white;
 }
 
 #navigation h1, #navigation h2, #navigation h3, #navigation h4, #navigation h5, #navigation h6 {
   font-size: smaller;
 }
 
-#navigation li {
-  margin-left: -1.25em;
+#navigation ul {
+  margin-left: -1.75em;
 }
 
 
