@@ -42,8 +42,6 @@ The following projects utilize the archaic *tf* and *acc* PLI interfaces, which 
 
 h1(#background). Background
 
-Ruby-VPI is a "bench":#glossary.bench which lets you "test":#glossary.test Verilog modules using the Ruby language.
-
 
 h2(#background.methodology). Methodology
 
@@ -75,47 +73,33 @@ As <xref #fig..organization> shows, a "test":#glossary.test is composed of a "be
 
 To extend the "analogy of an electronics laboratory":#background.vocab, the _bench_ acts as the laboratory bench which provides measurement and manipulation tools. The _design_ acts as the electronic component being verified by the engineer. And the _specification_ acts as the engineer who measures, manipulates, and verifies the electronic component.
 
-Now, let us take a more detailed look at this organization.
-
 <% figure "Detailed organization of a test", "#fig..organization.detail" do %>
 !figures/organization_detailed.png!
 <% end %>
 
-In <xref #fig..organization.detail>, Ruby-VPI acts as the _bench_, a Verilog simulator encapsulates the _design_, and a Ruby interpreter encapsulates the _specification_.
+Now, let us take a more detailed look at this organization, as illustrated in <xref #fig..organization.detail>.
 
-Notice that Ruby-VPI encapsulates all communication between the Ruby interpreter and VPI. This allows the specification, or any Ruby program in general, to access VPI using nothing more than the Ruby language! Thus, Ruby-VPI removes the burden of having to write C programs in order to access VPI.
-
-
-h2(#background.running-tests). Running a test
-
-Unlike an engineer who can verify an electronic component in real-time, the Verilog simulator and the Ruby interpreter (see <xref #fig..organization.detail>) take turns working with "handles":#glossary.handle when a "test":#glossary.test is run. In particular, they take turns manipulating the Verilog "design":#glossary.design and transfer control to each other when appropriate.
-
-The situation is similar to a pair of friends playing catch. One friend throws a ball to the other, and the other throws it back. Either is able to inspect and modify the ball, but only when it is in hand.
+Notice that Ruby-VPI encapsulates all communication between the Ruby interpreter and VPI. This allows the specification, or any Ruby program in general, to access VPI using nothing more than the Ruby language! Thus, Ruby-VPI removes the burden of having to write C programs in order to use VPI.
 
 
-h3(#background.running-tests.init). Initialization
+h2(#background.relay). Ruby/Verilog interaction
 
-A "test":#glossary.test is first initialized before it is "executed":#background.running-tests.exec. This process is illustrated by <xref #fig..ruby_init>.
+In a typical VPI application written in C, the _Verilog simulator_ is in charge. Verilog code temporarily transfers control to C by invoking C functions, which return control to Verilog when they finish.
 
-<% figure "Initialization of a test", "#fig..ruby_init" do %>
-!figures/ruby_init.png!
+In contrast, Ruby-VPI puts the _specification_ in charge. The specification temporarily transfers control to the Verilog simulator by invoking the @Vpi::advance_time@ method, which returns control to the specification when it finishes. This process is illustrated in <xref#fig..ruby_relay>.
 
-# The Verilog simulator initializes the Ruby interpreter by invoking the @$ruby_init;@ system task/function, whose parameters represent the command-line invocation of the Ruby interpreter. For example, one would specify @$ruby_init("ruby", "-w");@ in Verilog to achieve the same effect as running <pre>ruby -w</pre> at a command-prompt.
-# The Verilog simulator is paused and the Ruby interpreter is initialized with the arguments of the @$ruby_init;@ system task/function.
-# When the Ruby interpreter invokes the @Vpi::simulate@ method, it is paused and the Verilog simulator is given control.
-<% end %>
+Ruby-VPI's approach is the same as any software testing framework, where the _specification_ drives the design under test. Whereas, the typical VPI & C approach is literally _backwards_ because the design under test drives the specification.
 
-
-h3(#background.running-tests.exec). Execution
-
-After a "test":#glossary.test is "initialized":#background.running-tests.init, it is executed such that the design is verified against the "specification":#glossary.specification. This process is illustrated by <xref #fig..ruby_relay>.
-
-<% figure "Execution of a test", "#fig..ruby_relay" do %>
+<% figure "Interaction between Ruby and Verilog", "#fig..ruby_relay" do %>
 !figures/ruby_relay.png!
 
-# The Verilog simulator transfers control to the Ruby interpreter by invoking the @$ruby_relay;@ system task/function.
-# The Verilog simulator is paused and the Ruby interpreter is given control.
-# When the Ruby interpreter invokes the @Vpi::simulate@ method, it is paused and the Verilog simulator is given control.
+# The current simulation time is _X_.
+# The specification invokes the @Vpi::advance_time@ method with parameter _Y_, which specifies the number of simulation time steps to be simulated.
+# The Verilog simulator is now in control (temporarily).
+# The current simulation time has _not_ changed; it is still _X_.
+# The Verilog simulator simulates _Y_ simulation time steps.
+# The current simulation time is now _X + Y_.
+# The Verilog simulator returns control back to the specification.
 <% end %>
 
 
@@ -347,7 +331,7 @@ To access a handle's properties, invoke the proprty name, using the following fo
 
 h3(#usage.vpi.callbacks). Callbacks
 
-A _callback_ is a mechanism that makes the Verilog simuluator execute a block of code, which is known as a "callback handler", when some prescribed event occurs in the simulation. They are set up via the @vpi_register_cb@ function and torn down via the @vpi_remove_cb@ function.
+A _callback_ is a mechanism that makes the Verilog simuluator execute a block of code, which is known as a "callback handler", when some prescribed event occurs in the simulation. They are set up using the @vpi_register_cb@ function and torn down using the @vpi_remove_cb@ function.
 
 <% example "Using a callback for value change notification", "ex..callback" do %>
 This example shows how to use a callback for notification of changes in a handle's @VpiIntVal@ property. When you no longer need this callback, you can tear it down using @vpi_remove_cb(cb_handle)@.
@@ -481,10 +465,77 @@ Finished in 0.042328 seconds
 <% end %>
 
 
-h2(#usage.prototyping). Prototyping
+h2(#usage.debugger). Debugging
+
+The "ruby-debug project":http://www.datanoise.com/articles/category/ruby-debug serves as the interactive debugger for Ruby-VPI.
+
+# Enable the debugger by activating the @DEBUG@ environment variable (see <xref #usage.test-runner> for details).
+# Put the @debugger@ command in your code -- anywhere you wish to activate an interactive debugging session. These commands are automatically ignored when the debugger is disabled; so you can safely leave them in your code, if you wish.
 
 
-h2(#usage.debugging). Debugging
+h3(#usage.debugger.init). Advanced initialization
+
+By default, Ruby-VPI enables the debugger by invoking the @Debugger.start@ method. If you wish to perform more advanced initialization, such as having the debugger accept remote network connections for interfacing with a remote debugging session or perhaps with an IDE (see "the ruby-debug documentation":http://www.datanoise.com/articles/category/ruby-debug for details), then:
+
+# Deactivate the @DEBUG@ environment variable.
+# Put your own code, which initializes the debugger, above the @RubyVpi.init_bench@ line in your generated <tt>spec.rb</tt> file.
+
+
+h2(#usage.test-runner). Test runner
+
+A test runner is a file, generated by the "automated test generator":#usage.tools.generate-test, whose name ends with <tt>.rake</tt>. It helps you run generated tests -- you can think of it as a _makefile_ if you are familiar with C programming in a UNIX environment.
+
+<% example "Seeing what a test runner can do" do %>
+When you invoke a test runner without any arguments, it will show you a list of available tasks:
+<pre>$ rake -f some_test_runner.rake
+
+<%= `rake -f ../samp/counter/counter_rspec_runner.rake` %></pre>
+<% end %>
+
+<% tip "Running multiple tests at once." do %>
+Create a file named <tt>Rakefile</tt> containing the following line.
+
+bq. @require 'ruby-vpi/runner_proxy'@
+
+Now you can invoke all test runners in the current directory simply by executing <pre>rake cver</pre> (where _cver_ denotes the "GPL Cver simulator":#setup.reqs).
+<% end %>
+
+
+h3(#usage.test-runner.env-vars). Environment variables
+
+Test runners support the following _environment_ variables, which allow you to easily change the behavior of the test runner.
+
+* @COVERAGE@ enables code coverage analysis and generation of code coverage reports.
+* @DEBUG@ enables the "interactive debugger":#usage.debugger in its "post-mortem debugging mode":http://www.datanoise.com/articles/2006/12/20/post-mortem-debugging.
+* @PROTOTYPE@ enables the Ruby prototype for the design under test.
+
+To activate these variables, simply assign a non-empty value to them. For example, @DEBUG=1@ and @DEBUG=yes@ and @DEBUG=foo_bar_baz@ all activate the @DEBUG@ variable.
+
+To deactivate these variables, simply assign an _empty_ value to them, *unset* them in your shell, or do not specify them as command-line arguments to rake. For example, both @DEBUG=@ dectivates the @DEBUG@ variable.
+
+In addition, you can specify variable assignments as arguments to the *rake* command. For example, <pre>rake DEBUG=1</pre> is equivalent to <pre>
+$ DEBUG=1
+$ export DEBUG
+$ rake
+</pre> in Bourne shell or <pre>
+% setenv DEBUG 1
+% rake
+</pre> in C shell.
+
+<% example "Running a test with environment variables" do %>
+
+Here we enable the prototype and code coverage analysis:
+<pre>rake -f some_test_runner.rake PROTOTYPE=1 COVERAGE=1</pre>
+
+Here we _disable_ the prototype and enable the code coverage analysis. Note that both of these invocations are equivalent:
+<pre>rake -f some_test_runner.rake PROTOTYPE= COVERAGE=1</pre>
+<pre>rake -f some_test_runner.rake COVERAGE=1</pre>
+<% end %>
+
+
+h2(#usage.examples). Sample tests
+
+The <tt>samp</tt> directory contains several sample tests which illustrate how Ruby-VPI can be used. Each sample has an associated <tt>Rakefile</tt> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the <pre>rake</pre> command to get started.
 
 
 h2(#usage.tools). Tools
@@ -751,80 +802,6 @@ Finished in 0.006766 seconds.
 <% end %>
 
 In these examples, the @PROTOTYPE@ environment variable is _not_ specified while running the test, so that our design, instead of our prototype, is verified against our specification. You can also achieve this effect by assigning an empty value to @PROTOTYPE@, or by using your shell's *unset* command. Finally, the "GPL Cver simulator":#setup.reqs, denoted by _cver_, is used to run the simulation.
-
-
-h2(#usage.test-runner). Test runner
-
-A test runner is a file, generated by the "automated test generator":#usage.tools.generate-test, whose name ends with <tt>.rake</tt>. It helps you run generated tests -- you can think of it as a _makefile_ if you are familiar with C programming in a UNIX environment.
-
-<% example "Seeing what a test runner can do" do %>
-When you invoke a test runner without any arguments, it will show you a list of available tasks:
-<pre>$ rake -f some_test_runner.rake
-
-<%= `rake -f ../samp/counter/counter_rspec_runner.rake` %></pre>
-<% end %>
-
-<% tip "Running multiple tests at once." do %>
-Create a file named <tt>Rakefile</tt> containing the following line.
-
-bq. @require 'ruby-vpi/runner_proxy'@
-
-Now you can invoke all test runners in the current directory simply by executing <pre>rake cver</pre> (where _cver_ denotes the "GPL Cver simulator":#setup.reqs).
-<% end %>
-
-
-h3(#usage.test-runner.env-vars). Environment variables
-
-Test runners support the following _environment_ variables, which allow you to easily change the behavior of the test runner.
-
-* @COVERAGE@ enables code coverage analysis and generation of code coverage reports.
-* @DEBUG@ enables the "interactive debugger":#usage.debugger in its "post-mortem debugging mode":http://www.datanoise.com/articles/2006/12/20/post-mortem-debugging.
-* @PROTOTYPE@ enables the Ruby prototype for the design under test.
-
-To activate these variables, simply assign a non-empty value to them. For example, @DEBUG=1@ and @DEBUG=yes@ and @DEBUG=foo_bar_baz@ all activate the @DEBUG@ variable.
-
-To deactivate these variables, simply assign an _empty_ value to them, *unset* them in your shell, or do not specify them as command-line arguments to rake. For example, both @DEBUG=@ dectivates the @DEBUG@ variable.
-
-In addition, you can specify variable assignments as arguments to the *rake* command. For example, <pre>rake DEBUG=1</pre> is equivalent to <pre>
-$ DEBUG=1
-$ export DEBUG
-$ rake
-</pre> in Bourne shell or <pre>
-% setenv DEBUG 1
-% rake
-</pre> in C shell.
-
-<% example "Running a test with environment variables" do %>
-
-Here we enable the prototype and code coverage analysis:
-<pre>rake -f some_test_runner.rake PROTOTYPE=1 COVERAGE=1</pre>
-
-Here we _disable_ the prototype and enable the code coverage analysis. Note that both of these invocations are equivalent:
-<pre>rake -f some_test_runner.rake PROTOTYPE= COVERAGE=1</pre>
-<pre>rake -f some_test_runner.rake COVERAGE=1</pre>
-<% end %>
-
-
-h2(#usage.debugger). Interactive debugger
-
-The "ruby-debug project":http://www.datanoise.com/articles/category/ruby-debug serves as the interactive debugger for Ruby-VPI.
-
-# Enable the debugger by activating the @DEBUG@ environment variable (see <xref #usage.test-runner> for details).
-# Put the @debugger@ command in your code -- anywhere you wish to activate an interactive debugging session. These commands are automatically ignored when the debugger is disabled; so you can safely leave them in your code, if you wish.
-
-
-h3(#usage.debugger.init). Advanced initialization
-
-By default, Ruby-VPI enables the debugger by invoking the @Debugger.start@ method. If you wish to perform more advanced initialization, such as having the debugger accept remote network connections for interfacing with a remote debugging session or perhaps with an IDE (see "the ruby-debug documentation":http://www.datanoise.com/articles/category/ruby-debug for details), then:
-
-# Deactivate the @DEBUG@ environment variable.
-# Put your own code, which initializes the debugger, above the @RubyVpi.init_bench@ line in your generated <tt>spec.rb</tt> file.
-
-
-
-h2(#usage.examples). Sample tests
-
-The <tt>samp</tt> directory contains several sample tests which illustrate how Ruby-VPI can be used. Each sample has an associated <tt>Rakefile</tt> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the <pre>rake</pre> command to get started.
 
 
 h1(#hacking). Hacking
