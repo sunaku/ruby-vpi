@@ -69,7 +69,10 @@ h3 {
   border: thin solid steelblue;
   background-color: aliceblue;
   padding: 1em;
-  padding-top: 0px;
+  margin-bottom: 1em;
+  margin-top: 1em;
+
+  min-height: 170px;
 }
 
 .admonition img {
@@ -152,9 +155,6 @@ em, strong {
   font-family: serif;
 }
 
-
-  /* extra spacing before big block elements */
-
-  .admonition, .figure {
-    margin-top: 3em;
-  }
+.formal .title {
+  margin-top: 3em;
+}
