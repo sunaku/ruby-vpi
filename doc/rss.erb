@@ -22,7 +22,7 @@
     <title>Version <%= entry['Version'] %> released</title>
     <link><%= link %></link>
     <guid><%= link %></guid>
-    <description><%=ERB::Util.h entry['Summary'].redcloth %></description>
+    <description><%=ERB::Util.h format_history_entry(entry).to_html %></description>
     <pubDate><%= rfc822 %></pubDate>
   </item>
 <% end %>
