@@ -79,8 +79,7 @@ As <xref #fig..organization> shows, a "test":#glossary.test is composed of a "be
 
 To extend the "analogy of an electronics laboratory":#background.vocab, the _bench_ acts as the laboratory bench which provides measurement and manipulation tools. The _design_ acts as the electronic component being verified by the engineer. And the _specification_ acts as the engineer who measures, manipulates, and verifies the electronic component.
 
-
-h3(#background.org.vpi). Interface to VPI
+Now, let us take a more detailed look at this organization.
 
 <% figure "Detailed organization of a test", "#fig..organization.detail" do %>
 !figures/organization_detailed.png!
@@ -89,80 +88,6 @@ h3(#background.org.vpi). Interface to VPI
 In <xref #fig..organization.detail>, Ruby-VPI acts as the _bench_, a Verilog simulator encapsulates the _design_, and a Ruby interpreter encapsulates the _specification_.
 
 Notice that Ruby-VPI encapsulates all communication between the Ruby interpreter and VPI. This allows the specification, or any Ruby program in general, to access VPI using nothing more than the Ruby language! Thus, Ruby-VPI removes the burden of having to write C programs in order to access VPI.
-
-Furthermore, Ruby-VPI presents the _entire_ IEEE Std 1364-2005 VPI interface to the Ruby interpreter, but with the following minor changes.
-
-* The first letter in the name of every function, type, structure, and constant becomes capitalized. For example, the @s_vpi_value@ structure in C becomes the @S_vpi_value@ class in Ruby. Likewise, the @vpiIntVal@ constant in C becomes the @VpiIntVal@ constant in Ruby.
-
-
-h4(#background.org.vpi.util). VPI utility layer
-
-From a user's perspective, the VPI utility layer (see <xref #fig..organization.detail>) greatly enhances the ability to interact with "handles":#glossary.handle. One simply invokes a handle's methods, which are carefully named in the following manner, to access either (1) its children or (2) its VPI properties.
-
-The children of a handle are simply the handles that are _immediately_ contained within it in. For example, suppose that you had a Verilog module that contains some registers. The children of a handle to that module would be handles to that module's registers.
-
-In the event that a child handle has the same name as a VPI property, the child is given priority. However, you can always access VPI properties explicitly via the @Vpi::Handle.get_value@ and @Vpi::Handle.put_value@ methods.
-
-
-<% figure "Parts of speech for accessing a handle's VPI properties" do %>
-|_. Operation |_. _ |_. Property |_. _ |_. Accessor |_. Addendum |
-|\2. optional       | required   |\3. optional                   |
-
-* *Operation* suggests a method that should be invoked in the context of the Property parameter. All "methods in the Enumerable module":http://www.ruby-doc.org/core/classes/Enumerable.html are available as operations.
-
-* *Property* suggests a VPI property that should be accessed. The "vpi" prefix, which is common to all VPI properties, can be omitted if you wish. For example, the VPI property "vpiFullName" is considered equivalent to "fullName" and "FullName", but not equivalent "full_name".
-
-* *Accessor* suggests a VPI function that should be used in order to access the VPI property. When this parameter is not specified, the VPI utility layer will attempt to _guess_ the value of this parameter ("see the source code":../ref/ruby/classes/Vpi/Handle/Property.html of the @Property.resolve@ method for details).
-
-* *Addendum* suggests that the specified VPI property should be queried as a boolean value when it is a question mark (?). This suggestion is the same as specifying "b" for the Accessor parameter. Also, when this parameter is an equal sign (=), it suggests that the specified VPI property should be written to.
-<% end %>
-
-<% table "Possible accessors and their implications" do %>
-|_. Accessor |_. Kind of value accessed |_. VPI functions used to access the value |
-| d | delay | @vpi_get_delays@, @vpi_put_delays@ |
-| l | logic | @vpi_get_value@, @vpi_put_value@ |
-| i | integer | @vpi_get@ |
-| b | boolean | @vpi_get@ |
-| s | string | @vpi_get_str@ |
-| h | handle | @vpi_handle@ |
-<% end %>
-
-<% example "Examples of accessing a handle's VPI properties" do %>
-|_/2. Ruby expression |_\6. Parts of speech |_/2. Description |
-||_. Operation |_. _ |_. Property |_. _ |_. Accessor |_. Addendum ||
-| @handle.vpiIntVal@ | &nbsp; | &nbsp; | vpiIntVal | &nbsp; |  &nbsp; | &nbsp; |/4. These expressions access the logic value of the handle's vpiIntVal property. |
-| @handle.vpiIntVal_l@ | &nbsp; | &nbsp; | vpiIntVal | _ | l | &nbsp; |
-| @handle.intVal@ | &nbsp; | &nbsp; | intVal | &nbsp; | &nbsp; | &nbsp; |
-| @handle.intVal_l@ | &nbsp; | &nbsp; | intVal | _ | l | &nbsp; |
-| @handle.vpiIntVal = 15@ | &nbsp; | &nbsp; | vpiIntVal | &nbsp; | &nbsp; | = |/4. These expressions assign the number 15 to the logic value of the handle's vpiIntVal property. |
-| @handle.vpiIntVal_l = 15@ | &nbsp; | &nbsp; | vpiIntVal | _ | l | = |
-| @handle.intVal = 15@ | &nbsp; | &nbsp; | intVal | &nbsp; | &nbsp; | = |
-| @handle.intVal_l = 15@ | &nbsp; | &nbsp; | intVal | _ | l | = |
-| @handle.vpiType@ | &nbsp; | &nbsp; | vpiType | &nbsp; | &nbsp; | &nbsp; |/4. These expressions access the integer value of the handle's vpiType property. |
-| @handle.vpiType_i@ | &nbsp; | &nbsp; | vpiType | _ | i | &nbsp; |
-| @handle.type@ | &nbsp; | &nbsp; | type | &nbsp; | &nbsp; | &nbsp; |
-| @handle.type_i@ | &nbsp; | &nbsp; | type | _ | i | &nbsp; |
-| @handle.vpiProtected@ | &nbsp; | &nbsp; | vpiProtected | &nbsp; | &nbsp; | &nbsp; |/6. These expressions access the boolean value of the handle's vpiProtected property. |
-| @handle.vpiProtected_b@ | &nbsp; | &nbsp; | vpiProtected | _ | b | &nbsp; |
-| @handle.vpiProtected?@ | &nbsp; | &nbsp; | vpiProtected | &nbsp; | &nbsp; | ? |
-| @handle.protected@ | &nbsp; | &nbsp; | protected | &nbsp; | &nbsp; | &nbsp; |
-| @handle.protected_b@ | &nbsp; | &nbsp; | protected | _ | b | &nbsp; |
-| @handle.protected?@ | &nbsp; | &nbsp; | protected | &nbsp; | &nbsp; | ? |
-| @handle.vpiFullName@ | &nbsp; | &nbsp; | vpiFullName | &nbsp; | &nbsp; | &nbsp; |/4. These expressions access the string value of the handle's vpiFullName property. |
-| @handle.vpiFullName_s@ | &nbsp; | &nbsp; | vpiFullName | _ | s | &nbsp; |
-| @handle.fullName@ | &nbsp; | &nbsp; | fullName | &nbsp; | &nbsp; | &nbsp; |
-| @handle.fullName_s@ | &nbsp; | &nbsp; | fullName | _ | s | &nbsp; |
-| @handle.vpiParent@ | &nbsp; | &nbsp; | vpiParent | &nbsp; | &nbsp; | &nbsp; |/4. These expressions access the handle value of the handle's vpiParent property. |
-| @handle.vpiParent_h@ | &nbsp; | &nbsp; | vpiParent | _ | h | &nbsp; |
-| @handle.parent@ | &nbsp; | &nbsp; | parent | &nbsp; | &nbsp; | &nbsp; |
-| @handle.parent_h@ | &nbsp; | &nbsp; | parent | _ | h | &nbsp; |
-| <code>handle.each_vpiNet {|net| puts net.fullName}</code> | each | _ | vpiNet | &nbsp; | &nbsp; | &nbsp; |/2. These expressions print the full name of each vpiNet object associated with the handle. |
-| <code>handle.each_net {|net| puts net.fullName}</code> | each | _ | net | &nbsp; | &nbsp; | &nbsp; |
-| <code>handle.all_vpiReg? {|reg| reg.size == 1}</code> | all? | _ | vpiReg | &nbsp; | &nbsp; | &nbsp; |/2. These expressions check if all registers associated with the handle are capable of storing only one bit. |
-| <code>handle.all_reg? {|reg| reg.size == 1}</code> | all? | _ | reg | &nbsp; | &nbsp; | &nbsp; |
-| <code>handle.select_vpiNet {|net| net.x?}</code> | select | _ | VpiNet | &nbsp; | &nbsp; | &nbsp; |/2. These expressions return a list of nets whose logic value is unknown or "don't care" (x).|
-| <code>handle.select_net {|net| net.x?}</code> | select | _ | net | &nbsp; | &nbsp; | &nbsp; |
-<% end %>
 
 
 h2(#background.running-tests). Running a test
@@ -181,7 +106,7 @@ A "test":#glossary.test is first initialized before it is "executed":#background
 
 # The Verilog simulator initializes the Ruby interpreter by invoking the @$ruby_init;@ system task/function, whose parameters represent the command-line invocation of the Ruby interpreter. For example, one would specify @$ruby_init("ruby", "-w");@ in Verilog to achieve the same effect as running <pre>ruby -w</pre> at a command-prompt.
 # The Verilog simulator is paused and the Ruby interpreter is initialized with the arguments of the @$ruby_init;@ system task/function.
-# When the Ruby interpreter invokes the @Vpi::relay_verilog@ method, it is paused and the Verilog simulator is given control.
+# When the Ruby interpreter invokes the @Vpi::simulate@ method, it is paused and the Verilog simulator is given control.
 <% end %>
 
 
@@ -194,7 +119,7 @@ After a "test":#glossary.test is "initialized":#background.running-tests.init, i
 
 # The Verilog simulator transfers control to the Ruby interpreter by invoking the @$ruby_relay;@ system task/function.
 # The Verilog simulator is paused and the Ruby interpreter is given control.
-# When the Ruby interpreter invokes the @Vpi::relay_verilog@ method, it is paused and the Verilog simulator is given control.
+# When the Ruby interpreter invokes the @Vpi::simulate@ method, it is paused and the Verilog simulator is given control.
 <% end %>
 
 
@@ -309,6 +234,129 @@ Learn more about using and manipulating RubyGems in "the RubyGems user manual":h
 
 
 h1(#usage). Usage
+
+
+h2(#usage.vpi). VPI in Ruby
+
+The _entire_ IEEE Std 1364-2005 VPI interface is available in Ruby, but with one minor difference: the names of all VPI types, structures, and constants become _capitalized_ because Ruby requires that the names of constants begin with a capital letter.
+
+For example, the @s_vpi_value@ structure becomes the @S_vpi_value@ class in Ruby. Likewise, the @vpiIntVal@ constant becomes the @VpiIntVal@ constant in Ruby.
+
+Note that this capitalization rule does *not* apply to VPI functions; their names remain _unchanged_ in Ruby.
+
+
+h2(#usage.vpi.handles). Handles
+
+A "handle":#glossary.handle is a reference to an object, such as a module, register, wire, and so on, inside the Verilog simulation. In short, handles allow you to inspect and manipulate the design under test and its components.
+
+<% note do %>
+Handles are are instances of the @Vpi::Handle@ class (see "reference documentation here":../ref/ruby/classes/Vpi/Handle.html) in Ruby-VPI.
+<% end %>
+
+Handles have various _properties_, which provide different kinds of information (see the "Kind of value accessed" column in <xref #tbl..accessors>) about the underlying Verilog object represented by a handle. These properties are accessed through various functions, which are listed in the "VPI functions used to access the value" column in <xref #tbl..accessors>.
+
+Handles are typically obtained through the @vpi_handle_by_name@ and @vpi_handle@ functions. These functions are hierarchical in nature, because they allow you to obtain new handles that are related to existing handles. For example, to obtain a handle to a register inside a module, you would typically write: @some_reg = vpi_handle(VpiReg, some_handle)@.
+
+
+h3. Shortcuts
+
+Given a handle, Ruby-VPI allows you to access (1) its relatives and (2) its properties by simply invoking its methods.
+
+If a handle's relative happens to have the same name as one of the handle's properties, then the relative is given preference. However, if  you _really_ need to access a handle's property in such a situation, then you can use the @Vpi::Handle.get_value@ and @Vpi::Handle.put_value@ methods.
+
+h4. Accessing a handle's relatives
+
+To access a handle's relative (a handle related to it), simply invoke the relative's name as a method on the handle.
+
+For example, to access the @reset@ signal of the @counter@ module shown in <xref #fig..counter.v_decl>, you would write the following:
+
+<code>
+counter_module = vpi_handle_by_name("counter", nil)
+
+reset_signal = counter_module.reset # <== shortcut!
+</code>
+
+In this code, the shortcut is that you simply wrote @counter_module.reset@ instead of having to write @vpi_handle_by_name("reset", counter_module)@.
+
+
+h4. Accessing a handle's properties
+
+To access a handle's properties, invoke the proprty name, using the following format, as a method on the handle. <xref ex..properties> shows how this naming format is used.
+
+<% figure "Method naming format for accessing a handle's properties" do %>
+|_. Operation |_. _ |_. Property |_. _ |_. Accessor |_. Addendum |
+|\2. optional       | required   |\3. optional                   |
+
+* *Operation* suggests a method that should be invoked in the context of the Property parameter. All "methods in the Enumerable module":http://www.ruby-doc.org/core/classes/Enumerable.html are valid _operations_.
+
+* *Property* suggests a VPI property that should be accessed. The "vpi" prefix, which is common to all VPI properties, can be omitted if you wish. For example, the VPI property "vpiFullName" is considered equivalent to "fullName" and "FullName", but not equivalent "full_name".
+
+* *Accessor* suggests a VPI function that should be used in order to access the VPI property. When this parameter is not specified, Ruby-VPI will attempt to _guess_ the value of this parameter.
+
+  <xref #tbl..accessors> shows a list of valid accessors and how they affect the access to a property.
+
+* *Addendum* suggests that the specified VPI property should be queried as a boolean value when it is a question mark @?@. This suggestion is the same as specifying @b@ for the Accessor parameter.
+
+  Also, when this parameter is an equal sign @=@, it suggests that the specified VPI property should be written to.
+<% end %>
+
+
+<% table "Possible accessors and their implications", "tbl..accessors" do %>
+|_. Accessor |_. Kind of value accessed |_. VPI functions used to access the value |
+| d | delay | @vpi_get_delays@, @vpi_put_delays@ |
+| l | logic | @vpi_get_value@, @vpi_put_value@ |
+| i | integer | @vpi_get@ |
+| b | boolean | @vpi_get@ |
+| s | string | @vpi_get_str@ |
+| h | handle | @vpi_handle@ |
+<% end %>
+
+<% example "Examples of accessing a handle's properties", "ex..properties" do %>
+|_/2. Ruby expression |_\6. Parts of speech |_/2. Description |
+||_. Operation |_. _ |_. Property |_. _ |_. Accessor |_. Addendum ||
+| @handle.vpiIntVal@ | &nbsp; | &nbsp; | vpiIntVal | &nbsp; |  &nbsp; | &nbsp; |/4. These expressions access the logic value of the handle's vpiIntVal property. |
+| @handle.vpiIntVal_l@ | &nbsp; | &nbsp; | vpiIntVal | _ | l | &nbsp; |
+| @handle.intVal@ | &nbsp; | &nbsp; | intVal | &nbsp; | &nbsp; | &nbsp; |
+| @handle.intVal_l@ | &nbsp; | &nbsp; | intVal | _ | l | &nbsp; |
+| @handle.vpiIntVal = 15@ | &nbsp; | &nbsp; | vpiIntVal | &nbsp; | &nbsp; | = |/4. These expressions assign the number 15 to the logic value of the handle's vpiIntVal property. |
+| @handle.vpiIntVal_l = 15@ | &nbsp; | &nbsp; | vpiIntVal | _ | l | = |
+| @handle.intVal = 15@ | &nbsp; | &nbsp; | intVal | &nbsp; | &nbsp; | = |
+| @handle.intVal_l = 15@ | &nbsp; | &nbsp; | intVal | _ | l | = |
+| @handle.vpiType@ | &nbsp; | &nbsp; | vpiType | &nbsp; | &nbsp; | &nbsp; |/4. These expressions access the integer value of the handle's vpiType property. |
+| @handle.vpiType_i@ | &nbsp; | &nbsp; | vpiType | _ | i | &nbsp; |
+| @handle.type@ | &nbsp; | &nbsp; | type | &nbsp; | &nbsp; | &nbsp; |
+| @handle.type_i@ | &nbsp; | &nbsp; | type | _ | i | &nbsp; |
+| @handle.vpiProtected@ | &nbsp; | &nbsp; | vpiProtected | &nbsp; | &nbsp; | &nbsp; |/6. These expressions access the boolean value of the handle's vpiProtected property. |
+| @handle.vpiProtected_b@ | &nbsp; | &nbsp; | vpiProtected | _ | b | &nbsp; |
+| @handle.vpiProtected?@ | &nbsp; | &nbsp; | vpiProtected | &nbsp; | &nbsp; | ? |
+| @handle.protected@ | &nbsp; | &nbsp; | protected | &nbsp; | &nbsp; | &nbsp; |
+| @handle.protected_b@ | &nbsp; | &nbsp; | protected | _ | b | &nbsp; |
+| @handle.protected?@ | &nbsp; | &nbsp; | protected | &nbsp; | &nbsp; | ? |
+| @handle.vpiFullName@ | &nbsp; | &nbsp; | vpiFullName | &nbsp; | &nbsp; | &nbsp; |/4. These expressions access the string value of the handle's vpiFullName property. |
+| @handle.vpiFullName_s@ | &nbsp; | &nbsp; | vpiFullName | _ | s | &nbsp; |
+| @handle.fullName@ | &nbsp; | &nbsp; | fullName | &nbsp; | &nbsp; | &nbsp; |
+| @handle.fullName_s@ | &nbsp; | &nbsp; | fullName | _ | s | &nbsp; |
+| @handle.vpiParent@ | &nbsp; | &nbsp; | vpiParent | &nbsp; | &nbsp; | &nbsp; |/4. These expressions access the handle value of the handle's vpiParent property. |
+| @handle.vpiParent_h@ | &nbsp; | &nbsp; | vpiParent | _ | h | &nbsp; |
+| @handle.parent@ | &nbsp; | &nbsp; | parent | &nbsp; | &nbsp; | &nbsp; |
+| @handle.parent_h@ | &nbsp; | &nbsp; | parent | _ | h | &nbsp; |
+| <code>handle.each_vpiNet {|net| puts net.fullName}</code> | each | _ | vpiNet | &nbsp; | &nbsp; | &nbsp; |/2. These expressions print the full name of each vpiNet object associated with the handle. |
+| <code>handle.each_net {|net| puts net.fullName}</code> | each | _ | net | &nbsp; | &nbsp; | &nbsp; |
+| <code>handle.all_vpiReg? {|reg| reg.size == 1}</code> | all? | _ | vpiReg | &nbsp; | &nbsp; | &nbsp; |/2. These expressions check if all registers associated with the handle are capable of storing only one bit. |
+| <code>handle.all_reg? {|reg| reg.size == 1}</code> | all? | _ | reg | &nbsp; | &nbsp; | &nbsp; |
+| <code>handle.select_vpiNet {|net| net.x?}</code> | select | _ | VpiNet | &nbsp; | &nbsp; | &nbsp; |/2. These expressions return a list of nets whose logic value is unknown or "don't care" (x).|
+| <code>handle.select_net {|net| net.x?}</code> | select | _ | net | &nbsp; | &nbsp; | &nbsp; |
+<% end %>
+
+
+h2(#usage.vpi.callbacks). Callbacks
+
+
+h2(#usage.prototyping). Prototyping
+
+
+h2(#usage.debugging). Debugging
+
 
 h2(#usage.tools). Tools
 
