@@ -24,7 +24,7 @@
       <h1>Contents</h1>
       <%=
         @headings.map do |h|
-          %{#{'*' * h.depth} "#{h.title}":##{h.anchor}}
+          %{#{'*' * h.depth} #{h.index} "#{h.title}":##{h.anchor}}
         end.join("\n").redcloth
       %>
 
