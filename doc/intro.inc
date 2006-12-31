@@ -29,15 +29,25 @@ h2(#intro.features). Features
 
 h3(#intro.applications). Applications
 
-Here is a modest sampling of tasks, paraphrased from "Pin Hong":http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/, that Ruby-VPI can be used to perform.
+Here is a modest sampling of tasks that Ruby-VPI can be used to perform.
 
-* Writing hardware models in Ruby
-* Dumping/processing netlist data from Verilog database
-* Dumping/processing simulation data
-* Feeding dynamic simulation stimuli
-* Back-annotating delay information
-* Interactive logic simulation
-* Building a distributed simulation
+* From the second edition of "_The Verilog PLI Handbook_":http://www.sutherland-hdl.com/publications.html:
+** C language bus-functional models
+** Reading test vector files
+** Delay calculation
+** Custom output displays
+** Co-simulation
+** Design debug utilities
+** Simulation analysis
+
+* Adapted from "Pin Hong's":http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/ observations:
+** Writing hardware models in Ruby
+** Dumping or processing netlist data from Verilog database
+** Dumping or processing simulation data
+** Feeding dynamic simulation stimuli
+** Back-annotating delay information
+** Interactive logic simulation
+** Building a distributed simulation
 
 
 h3(#intro.appetizers). Appetizers
