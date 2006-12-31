@@ -2,6 +2,12 @@ h1. Ruby-VPI user manual
 
 This manual was last updated on <%= Time.now %>.
 
+It is meant to be read in conjunction with the "reference documentation for Ruby-VPI":../ref/ruby/index.html. In addition, if you are new to "the Ruby language":http://www.ruby-lang.org, you are encouraged to "explore its documentation":http://www.ruby-lang.org/en/documentation/ alongside this manual.
+
+You can give feedback about this manual and, in general, any aspect of the Ruby-VPI project on the "project forums":http://rubyforge.org/forum/?group_id=1339.
+
+_Happy reading!_
+
 
 h2(#terms). Terms
 
@@ -136,7 +142,6 @@ The following software is necessary in order to use Ruby-VPI.
 <% tip "Add support for your Verilog simulator" do %>
 Write a "support request":http://rubyforge.org/tracker/?group_id=1339 for your simulator, while providing a sample transcript of the commands you use to run a test with your simulator, and we will add support for your simulator in the next release!
 <% end %>
-
 
 * *make*
   - any distribution should be acceptable.
