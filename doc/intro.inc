@@ -3,10 +3,14 @@ bq. Ruby-VPI is a "Ruby":http://www.ruby-lang.org interface to "Verilog VPI":htt
 
 h2(#intro.features). Features
 
+h3. Portable
+
 * Supports the _entire_ "IEEE Std 1364-2005"::http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945 VPI standard.
 
 * Works with all "major Verilog simulators":manual.html#setup.reqs available today.
-** Compile _once_ (during "installation":manual.html#setup.installation) and use forever!
+** Compiled _just once_ during "installation":manual.html#setup.installation and used forever!
+
+h3. Agile
 
 * Enables "agile practices":http://agilemanifesto.org/ such as
 ** "test-driven":http://www.testdriven.com development
@@ -14,20 +18,28 @@ h2(#intro.features). Features
 ** "rapid prototyping":manual.html#usage.tutorial.implement-proto for design exploration
 
 * Eliminates unneccesary work:
-** "Specifications":manual.html#usage.tutorial.specification are _readable_, portable, and executable.
+** "Specifications":manual.html#usage.tutorial.specification are readable, portable, and _executable_.
 ** The "automated test generator":manual.html#usage.tools.generate-test helps you accomodate design changes with _minimal_ effort.
+** There is absolutely _no compiling_!
 
-* Utilizes the "power and elegance":http://www.ruby-lang.org/en/about/ of Ruby:
+h3. Powerful
+
+* Inherits the "power and elegance":http://www.ruby-lang.org/en/about/ of Ruby:
 ** Unlimited length integers
 ** Regular expressions
 ** Multi-threading
 ** System calls and I/O
 ** "_ad infinitum_":http://rubyforge.org
 
+* Uses "ruby-debug":http://rubyforge.org/projects/ruby-debug/ for "interactive debugging":manual.html#usage.debugger.
+* Uses "rcov":http://eigenclass.org/hiki.rb?rcov for test "coverage analysis and report generation":manual.html#usage.test-runner.env-vars.
+
+h3. Free
+
 * Gives you the _freedom_ to study, modify, and distribute this software, in accordance with the "GNU General Public License":http://www.gnu.org/copyleft/gpl.html.
 
 
-h3(#intro.applications). Applications
+h2(#intro.applications). Applications
 
 Here is a modest sampling of tasks that Ruby-VPI can be used to perform.
 
@@ -50,7 +62,7 @@ Here is a modest sampling of tasks that Ruby-VPI can be used to perform.
 ** Building a distributed simulation
 
 
-h3(#intro.appetizers). Appetizers
+h2(#intro.appetizers). Appetizers
 
 Here is a modest sampling of code to whet your appetite.
 
