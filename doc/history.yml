@@ -1,4 +1,44 @@
 -
+  Version: 14.0.0
+
+  Date: 2006-12-30
+
+  Summary: |
+    This release adds support for simulation callbacks, renders Verilog benches _fully simplified_, and revises the user manual to reflect major changes.
+
+  Notice: |
+    * The @Vpi::relay_verilog@ method has been replaced by @Vpi::simulate@.
+
+      Please update you tests accordingly, because invoking the @Vpi::relay_verilog@ method directly will cause your tests to freeze/hang.
+
+    * Verilog benches no longer contain any clock generation code. They are now mere skeletons, whose _only_ purpose is to instantiate the design under test.
+
+      The clock generation code is now contained in the Ruby bench.
+
+    h3. New features
+
+    * The @RubyVpi::init_bench@ method now gives you _complete control_ over performing a clock/operation/whatever cycle for your design. This feature allows you to work with multi-clocked designs.
+
+    * Callbacks are now supported through the @Vpi::vpi_register_cb@ method. See "the callbacks section in the user manual":manual.html#usage.vpi.callbacks for details.
+
+    * Added the @Vpi::advance_time@ method, which makes the Verilog simulator simulate a given number of time steps.
+
+    * Added the @Vpi::simulation_time@ method, which gives you the current simulation time as a 64-bit integer.
+
+  Details: |
+    * Removed the monkey patch for the SWIG @va_list@ problem -- it no longer occurs.
+
+    * Cleansed the appearance of the user documentation.
+    ** Added indices to section headings, just like LaTeX.
+    ** Admonition boxes no longer interfere with surrounding text, and they don't have big gap above them.
+    ** Navigation menu is now elastic (fluid layout).
+
+    * Revised the user manual and added new content.
+    ** Moved "VPI utility layer" section from background chapter into usage chapter in user manual.
+    ** Added a nice introduction to entire manual with links to reference documentation.
+
+
+-
   Version: 13.0.0
 
   Date: 2006-12-27

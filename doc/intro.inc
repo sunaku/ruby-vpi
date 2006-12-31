@@ -1,4 +1,4 @@
-bq. Ruby-VPI is a "Ruby":http://www.ruby-lang.org interface to "Verilog VPI":http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945. It lets you create complex Verilog test benches easily and wholly in Ruby.
+Ruby-VPI is a "Ruby":http://www.ruby-lang.org interface to "IEEE 1364-2005 Verilog VPI":http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945. It lets you create complex Verilog test benches easily and wholly in Ruby.
 
 
 h2(#intro.features). Features
@@ -80,5 +80,5 @@ bq. @puts some_register@
 
 * Simulate fifteen clock cycles:
 
-bq. @15.times { relay_verilog }@
+bq. @15.times { simulate }@
 

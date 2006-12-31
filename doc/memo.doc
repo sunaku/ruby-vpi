@@ -1,17 +1,16 @@
 h1. Pending tasks
 
-* add support for VPI callbacks which execute Ruby blocks
-
 * add support for reading & writing VPI delay values
 
 * GHDL simulator supports VPI
-** need way to invoke VPI tasks from VHDL, like @$ruby_init();@
-
-* need to dump signal values when expectation fails in rSpec
-** maybe a waveform dump will also help
-** this will help in debugging the problem
+** -need way to invoke VPI tasks from VHDL, like @$ruby_init();@-
+No need for tasks; Ruby-VPI uses callbacks now!
 
 * add instructions for using *ruby-debug* with a graphical debugging tool or IDE like RadRails
+
+* write section about code coverage and prototyping in manual
+
+* clean up the teriminology section... unnecessary
 
 
 h1. Finished tasks
@@ -40,16 +39,17 @@ h1. Finished tasks
 
 * make RCov correctly profile the code and report useful coverage metrics...
 
+* add support for VPI callbacks which execute Ruby blocks
+
 
 h1. Obsolete tasks
 
-* smarter test generation, which adjusts to user modifications in previously generated output -- just use a smart merging tool like *kdiff3*
+* -smarter test generation, which adjusts to user modifications in previously generated output-
+Just use a smart merging tool like *kdiff3*.
 
-* interactive console IRB wrapper for spec (just like Breakpoints in Rails)
-** use the *ruby-debug* library with "*debugger* command for breakpoints":http://www.datanoise.com/articles/category/ruby-debug instead!
+* -interactive console IRB wrapper for spec (just like Breakpoints in Rails)- Use the *ruby-debug* library with "*debugger* command for breakpoints":http://www.datanoise.com/articles/category/ruby-debug instead!
 
-
-h1. Notes
-
-* When within Rake, rubygems is automatically available for use. no need to require() it again
-
+* -need to dump signal values when expectation fails in rSpec-
+You can use the interactive debugger instead.
+** -maybe a waveform dump will also help-
+After reading some RTL verification books, this is not necessarily true.
