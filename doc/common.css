@@ -61,8 +61,7 @@ h1, h2, h3, h4, h5, h6 {
 /* source code */
 
 tt {
-  font-weight: bold;
-  background-color: lemonchiffon;
+  background-color: #cfc;
 }
 
 pre, blockquote .code {
