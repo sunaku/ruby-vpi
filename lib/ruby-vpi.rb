@@ -42,6 +42,9 @@ module RubyVpi
     usePrototype = !(ENV['PROTOTYPE'] || '').empty?
 
     # set up code coverage analysis
+      # XXX: this is loaded *before* RCov to prevent coverage statistics about it
+      require 'ruby-vpi/vpi'
+
       if useCoverage
         require 'ruby-vpi/rcov'
 
@@ -89,8 +92,6 @@ module RubyVpi
         end
 
     # set up the VPI utility layer
-      require 'ruby-vpi/vpi'
-
       Object.class_eval do
         include Vpi
       end
