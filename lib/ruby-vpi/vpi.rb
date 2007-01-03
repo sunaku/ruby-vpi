@@ -435,8 +435,7 @@ module Vpi
   def advance_time aNumSteps = 1
     # schedule wake-up callback from verilog
       time = S_vpi_time.new
-      time.low = aNumSteps & INTEGER_MASK
-      time.high = (aNumSteps >> INTEGER_BITS) & INTEGER_MASK
+      time.integer = aNumSteps
       time.type = VpiSimTime
 
       value = S_vpi_value.new
@@ -460,12 +459,29 @@ module Vpi
 
   ## utility
 
-  # Returns the current simulation time as a 64-bit integer.
+  # Returns the current simulation time as an integer.
   def simulation_time
     t = S_vpi_time.new
     t.type = VpiSimTime
 
     vpi_get_time nil, t
-    (t.high << INTEGER_BITS) | t.low
+    t.to_i
+  end
+
+
+  class S_vpi_time
+    # Returns the high and low portions of this time as a single 64-bit integer.
+    def integer
+      (self.high << INTEGER_BITS) | self.low
+    end
+
+    # Sets the high and low portions of this time from the given 64-bit integer.
+    def integer= aValue
+      self.low = aValue & INTEGER_MASK
+      self.high = (aValue >> INTEGER_BITS) & INTEGER_MASK
+    end
+
+    alias to_i integer
+    alias to_f real
   end
 end
