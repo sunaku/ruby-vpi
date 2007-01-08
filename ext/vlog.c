@@ -58,7 +58,7 @@ void vlog_startup() {
   vpi_free_object(vpi_register_cb(&call));
 }
 
-void (*vlog_startup_routines[])() = { vlog_startup, 0 };
+void (*vlog_startup_routines[])() = { vlog_startup, NULL };
 
 #if defined(PRAGMATIC_CVER) || defined(SYNOPSYS_VCS)
   /**
