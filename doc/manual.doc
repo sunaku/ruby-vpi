@@ -712,15 +712,7 @@ h3(#usage.tutorial.implement-proto). Implement the prototype
 Now that we have a "specification":#glossary.specification against which to verify our "design":#glossary.design, let us build a prototype of our design. By doing so, we exercise our specification, experience potential problems that may arise when we later implement our design in Verilog, and gain confidence in our work. The result of this proceess is illustrated by <xref #fig..counter_proto.rb>.
 
 <% example "Ruby prototype of our Verilog design", "#fig..counter_proto.rb" do %>
-<code>
-def Counter.simulate!
-  if reset.intVal == 1
-    count.intVal = 0
-  else
-    count.intVal += 1
-  end
-end
-</code>
+<code><%= File.read '../samp/counter/counter_rspec_proto.rb' %></code>
 <% end %>
 
 <% important "Before we continue..." do %>

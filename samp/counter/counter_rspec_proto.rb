@@ -3,7 +3,7 @@
 # When prototyping is enabled, Vpi::advance_time invokes this
 # method instead of transferring control to the Verilog simulator.
 def Counter.simulate!
-  if clock.intVal == 1
+  if clock.posedge?
     if reset.intVal == 1
       count.intVal = 0
     else

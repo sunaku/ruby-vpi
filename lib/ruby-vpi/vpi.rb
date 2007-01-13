@@ -81,6 +81,22 @@ module Vpi
       self.hexStrVal = 'z'
     end
 
+    # Tests if the logic value of this handle is currently at a positive edge.
+    def posedge?
+      old = @lastVal
+      new = @lastVal = self.intVal
+
+      old == 0 && new == 1
+    end
+
+    # Tests if the logic value of this handle is currently at a negative edge.
+    def negedge?
+      old = @lastVal
+      new = @lastVal = self.intVal
+
+      old == 1 && new == 0
+    end
+
     # Reads the value using the given format (integer constant) and returns a +S_vpi_value+ object.
     def get_value_wrapper aFormat
       val = S_vpi_value.new
