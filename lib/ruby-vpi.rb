@@ -96,6 +96,10 @@ module RubyVpi
         include Vpi
       end
 
+      Vpi.module_eval do
+        define_method :simulate, &aSimulationCycle
+      end
+
     # load the design under test
       unless design = vpi_handle_by_name("#{testName}_bench", nil)
         raise "Verilog bench for test #{testName.inspect} is inaccessible."
@@ -109,8 +113,8 @@ module RubyVpi
         require "#{testName}_proto.rb"
 
         Vpi.module_eval do
-          define_method :simulate do
-            design.simulate!
+          define_method :advance_time do |*args|
+            Integer(args.first || 1).times { design.simulate! }
           end
 
           define_method :vpi_register_cb do
@@ -121,10 +125,6 @@ module RubyVpi
         Vpi::vpi_printf "#{Config::PROJECT_NAME}: prototype is enabled for test #{testName.inspect}\n"
 
       else
-        Vpi.module_eval do
-          define_method :simulate, &aSimulationCycle
-        end
-
         # XXX: this completes the handshake, by calling relay_verilog, with pthread_mutex_lock() in relay_main() in the C extension
         advance_time
       end

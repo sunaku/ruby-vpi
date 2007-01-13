@@ -1,14 +1,16 @@
 # This is a prototype of the design under test.
 
-# When prototyping is enabled, Vpi::simulate invokes this method
-# instead of transferring control to the Verilog simulator.
+# When prototyping is enabled, Vpi::advance_time invokes this
+# method instead of transferring control to the Verilog simulator.
 def <%= aOutputInfo.designClassName %>.simulate!
-  # discard old outputs
+  if <%= aModuleInfo.ports.first.name %>.intVal == 1
+    # discard old outputs
 <% aModuleInfo.ports.reject { |p| p.input? }.each do |port| %>
-    <%= port.name %>.hexStrVal = 'x'
+      <%= port.name %>.hexStrVal = 'x'
 <% end %>
 
-  # process new inputs
+    # process new inputs
 
-  # produce new outputs
+    # produce new outputs
+  end
 end
