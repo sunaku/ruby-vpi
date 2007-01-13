@@ -484,4 +484,18 @@ module Vpi
     alias to_i integer
     alias to_f real
   end
+
+  class S_vpi_value
+    def to_i
+      value.integer
+    end
+
+    def to_f
+      value.real
+    end
+
+    def to_s
+      value.str
+    end
+  end
 end
