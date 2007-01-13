@@ -470,6 +470,21 @@ Finished in 0.042328 seconds
 <% end %>
 
 
+h2(#usage.prototyping). Prototyping
+
+Ruby-VPI enables you to rapidly prototype your designs in Ruby without having to do full-scale implementations in Verilog. This lets you explore and evaluate different design choices quickly.
+
+In order to create a prototype,
+# "Determine the *interface*":#usage.tutorial.declare-design (Verilog module declaration) of your design.
+# "Generate a test":#usage.tutorial.generate-test for that interface.
+# "Implement the prototype":#usage.tutorial.implement-proto in the generated <tt>proto.rb</tt> file.
+# "Verify the prototype":#usage.tutorial.test-proto against its specification.
+
+Once you are satisfied with your prototype, you can proceed to "implement your design in Verilog":#usage.tutorial.implement-design. This process is often a simple translation your Ruby prototype into your Verilog. At the very least, your prototype serves as a reference while you are implementing your Verilog design.
+
+Once your design has been implemented in Verilog, you can use the _same_ specification, which was originally used to verify your prototype, to verify your Verilog design.
+
+
 h2(#usage.debugger). Debugging
 
 The "ruby-debug project":http://www.datanoise.com/articles/category/ruby-debug serves as the interactive debugger for Ruby-VPI.
