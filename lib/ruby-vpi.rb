@@ -118,7 +118,7 @@ module RubyVpi
           end
 
           define_method :vpi_register_cb do
-            warn "vpi_register_cb: callbacks not allowed when prototyping"
+            warn "vpi_register_cb: callbacks are ignored when prototype is enabled"
           end
         end
 

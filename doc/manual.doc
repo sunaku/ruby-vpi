@@ -227,7 +227,7 @@ The _entire_ IEEE Std 1364-2005 VPI interface is available in Ruby, but with one
 
 For example, the @s_vpi_value@ structure becomes the @S_vpi_value@ class in Ruby. Likewise, the @vpiIntVal@ constant becomes the @VpiIntVal@ constant in Ruby.
 
-Note that this capitalization rule does *not* apply to VPI functions; their names remain _unchanged_ in Ruby.
+Note that this capitalization rule does _not_ apply to VPI functions; their names remain unchanged in Ruby.
 
 
 h3(#usage.vpi.handles). Handles
@@ -267,7 +267,7 @@ In this code, the shortcut is that you simply wrote @counter_module.reset@ inste
 
 h4. Accessing a handle's properties
 
-To access a handle's properties, invoke the proprty name, using the following format, as a method on the handle. <xref ex..properties> shows how this naming format is used.
+To access a handle's properties, invoke the property name, using the following format, as a method on the handle. <xref ex..properties> shows how this naming format is used.
 
 <% figure "Method naming format for accessing a handle's properties" do %>
 |_. Operation |_. _ |_. Property |_. _ |_. Accessor |_. Addendum |
@@ -344,22 +344,22 @@ This example shows how to use a callback for notification of changes in a handle
 In this example, the handle being monitored is the @Counter.count@ signal from <xref#fig..counter.v_decl>.
 
 <code>
-cb_time           = S_vpi_time.new
-cb_time.type      = VpiSimTime
-cb_time.low       = 0
-cb_time.high      = 0
+cbTime           = S_vpi_time.new
+cbTime.type      = VpiSimTime
+cbTime.low       = 0
+cbTime.high      = 0
 
-cb_value          = S_vpi_value.new
-cb_value.format   = VpiIntVal
+cbValue          = S_vpi_value.new
+cbValue.format   = VpiIntVal
 
-cb_data           = S_cb_data.new
-cb_data.reason    = CbValueChange
-cb_data.obj       = Counter.count
-cb_data.time      = cb_time
-cb_data.value     = cb_value
-cb_data.index     = 0
+cbData           = S_cb_data.new
+cbData.reason    = CbValueChange
+cbData.obj       = Counter.count
+cbData.time      = cbTime
+cbData.value     = cbValue
+cbData.index     = 0
 
-cb_handle = vpi_register_cb(cb_data) do |data|
+cbHandle = vpi_register_cb(cbData) do |data|
 
   time = (data.time.high << 32) | data.time.low
   count = data.value.value.integer
@@ -724,6 +724,8 @@ h3(#usage.tutorial.test-proto). Verify the prototype
 
 Now that we have implemented our prototype, we are ready to verify it against our "specification":#glossary.specification by running the "test":#glossary.test. This process is illustrated by <xref #fig..test-proto.rspec> and <xref #fig..test-proto.unit-test>.
 
+In these examples, the @PROTOTYPE@ environment variable is assigned a non-empty value while running the test so that, instead of our design, our prototype is verified against our specification. You can also assign a value to @PROTOTYPE@ before running the test, by using your shell's *export* or *setenv* command. Finally, the "GPL Cver simulator":#setup.reqs, denoted by _cver_, is used to run the simulation.
+
 <% example "Running a test with specification in rSpec format", "#fig..test-proto.rspec" do %>
 <pre>
 $ rake -f counter_rspec_runner.rake cver PROTOTYPE=1
@@ -758,8 +760,6 @@ Finished in 0.040668 seconds.
 </pre>
 <% end %>
 
-In these examples, the @PROTOTYPE@ environment variable is assigned a non-empty value while running the test so that, instead of our design, our prototype is verified against our specification. You can also assign a value to @PROTOTYPE@ before running the test, by using your shell's *export* or *setenv* command. Finally, the "GPL Cver simulator":#setup.reqs, denoted by _cver_, is used to run the simulation.
-
 <% tip "What can the test runner do?" do %>
 If you invoke the test runner (1) without any arguments or (2) with the <tt>--tasks</tt> option, it will show you a list of tasks that it can perform for you.
 <% end %>
@@ -782,6 +782,8 @@ Replace the contents of the file named <tt>counter.v</tt> with the source code s
 h3(#usage.tutorial.test-design). Verify the design
 
 Now that we have implemented our "design":#glossary.design, we are ready to verify it against our "specification":#glossary.specification by running the "test":#glossary.test. <xref #fig..test-design.rspec> and <xref #fig..test-design.unit-test> illustrate this process.
+
+In these examples, the @PROTOTYPE@ environment variable is _not_ specified while running the test, so that our design, instead of our prototype, is verified against our specification. You can also achieve this effect by assigning an empty value to @PROTOTYPE@, or by using your shell's *unset* command. Finally, the "GPL Cver simulator":#setup.reqs, denoted by _cver_, is used to run the simulation.
 
 <% example "Running a test with specification in rSpec format", "#fig..test-design.rspec" do %>
 <pre>
@@ -812,8 +814,6 @@ Finished in 0.006766 seconds.
 3 tests, 35 assertions, 0 failures, 0 errors
 </pre>
 <% end %>
-
-In these examples, the @PROTOTYPE@ environment variable is _not_ specified while running the test, so that our design, instead of our prototype, is verified against our specification. You can also achieve this effect by assigning an empty value to @PROTOTYPE@, or by using your shell's *unset* command. Finally, the "GPL Cver simulator":#setup.reqs, denoted by _cver_, is used to run the simulation.
 
 
 h1(#hacking). Hacking
@@ -910,7 +910,9 @@ Here the @clk_reg@ register is connected to the @clk_wire@ wire.
 
 h3(#problems.ivl.vpi_reset). Vpi::reset
 
-<div class="caution">The @vpi_control@ method was removed in release 3.0.0 (2006-04-23). Please use @Vpi::vpi_control(VpiReset)@ instead.</div>
+<% caution do %>
+The @vpi_control@ method was removed in release 3.0.0 (2006-04-23). Please use @Vpi::vpi_control(VpiReset)@ instead.
+<% end %>
 
 In version 0.8 of Icarus Verilog, the @vpi_control(vpiReset)@ VPI function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.
 
