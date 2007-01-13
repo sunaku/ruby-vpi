@@ -5,7 +5,7 @@ h2(#intro.features). Features
 
 h3. Portable
 
-* Supports the _entire_ "IEEE Std 1364-2005"::http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945 VPI standard.
+* Supports the _entire_ "IEEE Std 1364-2005":http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945 VPI standard.
 
 * Works with all "major Verilog simulators":manual.html#setup.reqs available today.
 ** Compiled _just once_ during "installation":manual.html#setup.installation and used forever!

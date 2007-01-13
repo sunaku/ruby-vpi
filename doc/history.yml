@@ -851,7 +851,7 @@
   Date: 1999-10-31
 
   Summary: |
-    This is Kazuhiro HIWADA's initial testing release of Ruby-VPI. See its "original announcement":http://www.ruby-talk.org/cgi-bin/scat.rb/ruby/ruby-list/18193 and "source code":http://easter.kuee.kyoto-u.ac.jp/~hiwada/ruby/memo/src/ruby-vpi-test.tgz.
+    This is Kazuhiro HIWADA's initial testing release of Ruby-VPI. See its "original announcement":http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/18193 and "source code":http://rubyforge.org/frs/?group_id=1339&release_id=8852.
 
   Details: |
     * Added ability to relay control from Verilog test bench to Ruby (using @$ruby_callback@) and vice versa (using @PLI::relay_Verilog@).
