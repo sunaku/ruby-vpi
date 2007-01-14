@@ -3,10 +3,9 @@
 
 /* Parse the header file to generate wrappers */
 %{
-#include "vpi_user.h"
+#include "swig_vpi.h"
 %}
-%include "vpi_user.h"
-
+%include "swig_vpi.h"
 
 /* allows us to set S_cb_data.cb_rtn = Vpi::Vlog_relay_ruby from Ruby */
 %{
