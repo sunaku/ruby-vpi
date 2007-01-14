@@ -12,7 +12,8 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <link rel="stylesheet" type="text/css" href="common.css" />
+    <link rel="stylesheet" type="text/css" href="common.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="print.css" media="print" />
     <link rel="alternate" type="application/rss+xml" href="<%= RSS_URL %>" title="<%= RSS_INFO %>" />
     <title><%= page_title %></title>
   </head>

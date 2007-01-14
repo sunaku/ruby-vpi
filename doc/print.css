@@ -1,0 +1,10 @@
+@import "common.css";
+
+body {
+  margin: 0;
+  max-width: none;
+}
+
+#menu, #index {
+  display: none;
+}
