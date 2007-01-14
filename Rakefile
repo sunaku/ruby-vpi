@@ -54,7 +54,7 @@ end
 
 # uploads the given sources to the given destination URL
 def upload aDestUrl, *aSources
-  sh 'scp', '-Cr', aSources, aDestUrl
+  sh 'rsync', '-avz', '--delete', aSources, aDestUrl
 end
 
 
@@ -202,7 +202,7 @@ task :web_ref => 'ref' do |t|
 end
 
 desc "Publish user documentation."
-task :web_doc => :doc do |t|
+task :web_doc => 'doc' do |t|
   upload PROJECT_SSH_URL, *t.prerequisites
 end
 
