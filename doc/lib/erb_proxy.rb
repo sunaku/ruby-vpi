@@ -45,4 +45,9 @@ class ErbProxy
       end
     }
   end
+
+  # Evaluates the given ERB template. Used to dynamically include one template within another.
+  def import aErbFile
+    ERB.new(File.read(aErbFile)).result
+  end
 end
