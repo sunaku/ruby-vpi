@@ -1,7 +1,53 @@
 Ruby-VPI is a "Ruby":http://www.ruby-lang.org interface to "IEEE 1364-2005 Verilog VPI":http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945. It lets you create complex Verilog test benches easily and wholly in Ruby.
 
 
-h2(#intro.features). Features
+p(title). Documentation
+
+* "Tutorial":manual.html#usage.tutorial
+  - learn how to use Ruby-VPI quickly.
+* "Manual":manual.html
+  - complete documentation for users. _Start here!_
+* "Reference":../ref/
+  - API documentation for Ruby libraries and C extension.
+
+
+p(title). Records
+
+* <a type="application/rss+xml" href="<%= RSS_URL %>">!images/feed-icon.png(RSS feed icon)! RSS feed</a>
+  - keep track of new releases at your leisure.
+* "Release history":history.html
+  - record of all release notes.
+* "Memorandum":memo.html
+  - pending tasks for future releases.
+
+
+p(title). Facilities
+
+* "Project portal":http://rubyforge.org/projects/ruby-vpi
+  - hosted generously by "RubyForge":http://rubyforge.org.
+* "Source code":http://ruby-vpi.rubyforge.org/src/ruby-vpi
+  - browse online or obtain through "Darcs":http://abridgegame.org/darcs/.
+* "Downloads":http://rubyforge.org/frs/?group_id=1339
+  - obtain release packages.
+* "Bugs":http://rubyforge.org/tracker/?group_id=1339
+  - report defects in the software.
+* "Patches":http://rubyforge.org/tracker/?group_id=1339
+  - submit patches to source code.
+* "Requests":http://rubyforge.org/tracker/?group_id=1339
+  - request new features or get support.
+* "Forums":http://rubyforge.org/forum/?group_id=1339
+  - discuss things and ask questions.
+
+
+p(title). Outreach
+
+* "News":http://ruby-vpi.rubyforge.org/news
+  - see what's cooking for the next release.
+* "Talks":http://ruby-vpi.rubyforge.org/talks
+  - materials from presentations and seminars.
+
+
+h2(#intro.features). Prominent features
 
 h3. Portable
 
@@ -81,4 +127,3 @@ bq. @puts some_register@
 * Simulate fifteen clock cycles:
 
 bq. @15.times { simulate }@
-

@@ -20,7 +20,7 @@ The admonition and navigation graphics used in this manual are Copyright (c) 200
 
 h1(#intro). Introduction
 
-<%= File.read 'intro.inc' %>
+<%= import 'intro.inc' %>
 
 
 h2(#intro.license). License
