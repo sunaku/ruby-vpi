@@ -24,6 +24,7 @@ require 'erb_proxy'
 class DocProxy < ErbProxy
   Block = Struct.new :anchor, :title, :type
   Heading = Struct.new :anchor, :title, :depth, :index
+  Index = Struct.new :name, :items
   @@anchorNum = 0
 
   CATEGORIES = {
@@ -40,6 +41,7 @@ class DocProxy < ErbProxy
 
     @blocks = Hash.new {|h,k| h[k] = []}
     @headings = []
+    @indexes = Hash.new {|h,k| h[k] = []}
 
     CATEGORIES[:admonition].each do |type|
       add_block_handler :admonition, type do |index, title, text|
@@ -119,6 +121,20 @@ class DocProxy < ErbProxy
         else
           warn "unresolved cross-reference to #{anchor}"
           %{"#{anchor}":##{anchor}}
+        end
+      end
+
+    # determine index listings
+      DocProxy::CATEGORIES.each_pair do |cat, types|
+        category = cat.to_s.capitalize << 's'
+
+        types.each do |type|
+          items = @blocks[type]
+
+          unless items.empty?
+            name = type.to_s.capitalize << 's'
+            @indexes[category] << Index.new(name, items)
+          end
         end
       end
 

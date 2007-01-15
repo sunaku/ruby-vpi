@@ -1,8 +1,3 @@
-<% table_of_contents = false %>
-<div id="navigation">
-
-<a type="application/rss+xml" href="<%= RSS_URL %>">!images/feed-icon.png(<%= RSS_INFO %>)!</a>
-
 * "Tutorial":manual.html#usage.tutorial
   - learn how to use Ruby-VPI quickly.
 
@@ -14,15 +9,23 @@
 
 
 * "Facilities":http://rubyforge.org/projects/ruby-vpi
+  - access the main project portal, hosted generously by !http://rubyforge.org/themes/gforge/images/logo.png(RubyForge logo)!:http://rubyforge.org
+** "Source code (browse online) ":http://ruby-vpi.rubyforge.org/src/ruby-vpi
+  - access the "Darcs":http://abridgegame.org/darcs/ source code repository.
 ** "Downloads":http://rubyforge.org/frs/?group_id=1339
+  - obtain release packages.
 ** "Bugs":http://rubyforge.org/tracker/?group_id=1339
+  - report defects in the software.
 ** "Patches":http://rubyforge.org/tracker/?group_id=1339
+  - submit patches to source code.
 ** "Requests":http://rubyforge.org/tracker/?group_id=1339
+  - request new features or get support.
 ** "Forums":http://rubyforge.org/forum/?group_id=1339
+  - discuss things and ask questions.
 
-* "Sources":http://ruby-vpi.rubyforge.org/src/ruby-vpi
-  - browse or access the "Darcs":http://abridgegame.org/darcs/ source code repository.
 
+* <a type="application/rss+xml" href="<%= RSS_URL %>">!images/feed-icon.png(<%= RSS_INFO %>)! RSS feed</a>
+  - keep track of new releases at your leisure.
 
 * "News":http://ruby-vpi.rubyforge.org/news
   - see what's cooking for the next release.
@@ -36,9 +39,6 @@
 
 * "History":history.html
   - record of all release notes.
-
-
-</div>
 
 
 h1. Welcome to Ruby-VPI

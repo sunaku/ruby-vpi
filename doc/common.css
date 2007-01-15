@@ -1,9 +1,8 @@
 body {
   font-family: sans-serif;
 
-  margin: 1em;
-  margin-left: 30%;
-  margin-bottom: 3em;
+  margin-left: auto;
+  margin-right: auto;
   max-width: 600px;
 }
 
@@ -22,23 +21,16 @@ h1, h2, h3, h4, h5, h6 {
 
 /* table of contents */
 
-#navigation {
+#menu {
   position: fixed;
   left: 0px;
   top: 0px;
-  bottom: 0px;
 
-  max-width: 25%;
-  padding: 1em;
-  overflow: auto;
-}
+  background-color: ghostwhite;
+  border-bottom: thin solid lavender;
+  width: 100%;
 
-#navigation h1, #navigation h2, #navigation h3, #navigation h4, #navigation h5, #navigation h6 {
-  font-size: smaller;
-}
-
-#navigation ul {
-  margin-left: -1.75em;
+  text-align: center;
 }
 
 
@@ -113,12 +105,12 @@ th {
 
   /* center-align any tables and images */
 
-  .formal table, .formal img, #navigation img {
+  .formal table, .formal img {
     margin-left: auto;
     margin-right: auto;
   }
 
-  .formal img, #navigation img {
+  .formal img {
     display: block;
   }
 

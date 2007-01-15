@@ -18,10 +18,24 @@
     <title><%= page_title %></title>
   </head>
   <body>
-  <% if table_of_contents %>
-    <div id="navigation">
-      <%= %{"!images/home.png(project home)!":readme.html}.redcloth %>
 
+  <% if table_of_contents %>
+    <br/><br/> <!-- give space below #menu -->
+
+    <%= %{p=. !images/home.png(Return to main page)!:readme.html}.redcloth %>
+
+    <div id="menu">
+      <%=
+        links = @indexes.values.flatten.map do |i|
+          %{<a href="##{i.name.downcase}">#{i.name}</a>}
+        end
+        links.unshift %{<a href="#index">Contents</a>}
+
+        links.join ' &middot; '
+      %>
+    </div>
+
+    <div id="index">
       <h1>Contents</h1>
       <%=
         @headings.map do |h|
@@ -29,18 +43,16 @@
         end.join("\n").redcloth
       %>
 
-      <% DocProxy::CATEGORIES.each_pair do |cat, types| %>
-        <h1><%= cat.to_s.capitalize %>s</h1>
+      <% @indexes.each_pair do |cat, lists| %>
+        <h1><%= cat %></h1>
 
-        <% types.each do |type| list = @blocks[type] %>
-          <% unless list.empty? %>
-            <h2><%= type.to_s.capitalize %>s</h2>
-            <%=
-              list.inject('') do |memo, block|
-                memo << "# #{(block.title || block.anchor).inspect}:##{block.anchor}\n"
-              end.redcloth
-            %>
-          <% end %>
+        <% lists.each do |list| %>
+          <h2 id="<%= list.name.downcase %>"><%= list.name %></h2>
+          <%=
+            list.items.inject('') do |memo, block|
+              memo << "# #{(block.title || block.anchor).inspect}:##{block.anchor}\n"
+            end.redcloth
+          %>
         <% end %>
       <% end %>
     </div>
