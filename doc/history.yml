@@ -1,4 +1,23 @@
 -
+  Version: 15.0.1
+
+  Date: 2007-01-15
+
+  Summary: |
+    This release fixes a problem with compilation of the C extension and improves the user documentation's appearance.
+
+  Acknowledgment: |
+    Thanks to Derek Graham for reporting the problem.
+
+  Details: |
+    * Restored the monkey patch, which was removed in release 14.0.0, for the SWIG @va_list@ problem.
+
+    * Made table of contents in-line with the content in user documentation.
+
+    * Added printer-friendly stylesheet for user documentation.
+
+
+-
   Version: 15.0.0
 
   Date: 2007-01-13
