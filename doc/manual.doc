@@ -11,7 +11,7 @@ _Happy reading!_
 
 h2(#terms). Terms
 
-Copyright (c) 2006 Suraj N. Kurapati.
+Copyright (c) 2006, 2007 Suraj N. Kurapati.
 
 Permission is granted to copy, distribute and/or modify this document under the terms of the "GNU Free Documentation License":http://www.gnu.org/copyleft/fdl.html, Version 1.1 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts and no Back-Cover Texts.  A copy of the license is included in the the file named "LICENSE":./LICENSE.
 
@@ -56,7 +56,7 @@ Ruby-VPI presents an open-ended interface to VPI. Thus, you can use any methodol
 
 h2(#background.vocab). Terminology
 
-<% note do %>
+<% note "Glossary has definitions" do %>
 Have a look at the "glossary":#glossary for definitions of terms used in this manual.
 <% end %>
 
@@ -213,9 +213,7 @@ h2(#setup.maintenance). Maintenance
 * You can uninstall Ruby-VPI by running the <pre>gem uninstall ruby-vpi</pre> command.
 * You can upgrade to the latest release of Ruby-VPI by running the <pre>gem update ruby-vpi</pre> command.
 
-<% note do %>
 Learn more about using and manipulating RubyGems in "the RubyGems user manual":http://www.rubygems.org.
-<% end %>
 
 
 h1(#usage). Usage
@@ -223,18 +221,37 @@ h1(#usage). Usage
 
 h2(#usage.vpi). VPI in Ruby
 
-The _entire_ IEEE Std 1364-2005 VPI interface is available in Ruby, but with one minor difference: the names of all VPI types, structures, and constants become _capitalized_ because Ruby requires that the names of constants begin with a capital letter.
+The _entire_ IEEE Std 1364-2005 VPI interface is available in Ruby, but with a few minor differences.
+
+p(title). Capitalize those names!
+
+The names of all VPI types, structures, and constants become _capitalized_ because Ruby requires that the names of constants begin with a capital letter.
 
 For example, the @s_vpi_value@ structure becomes the @S_vpi_value@ class in Ruby. Likewise, the @vpiIntVal@ constant becomes the @VpiIntVal@ constant in Ruby.
 
-Note that this capitalization rule does _not_ apply to VPI functions; their names remain unchanged in Ruby.
+<% note "No capitalization for VPI functions" do %>
+Ruby's capitalization rule does _not_ apply to VPI functions--their names remain unchanged in Ruby.
+<% end %>
+
+p(title). Use Ruby's @printf@
+
+The VPI functions @vpi_vprintf@ and @vpi_mcd_vprintf@ are not made accessible to Ruby. However, this isn't a big problem because you can use Ruby's @printf@ method instead.
+
+The reason for this limitation is that some C compilers have trouble with pointers to the @va_list@ type. For these compilers, the third line of source code shown below causes a "type mismatch" error.
+
+<code lang="c">
+#include <stdarg.h>
+void foo(va_list ap) {
+  va_list *p = &ap;
+}
+</code>
 
 
 h3(#usage.vpi.handles). Handles
 
 A _handle_ is a reference to an object, such as a module, register, wire, and so on, inside the Verilog simulation. In short, handles allow you to inspect and manipulate the design under test and its components.
 
-<% note do %>
+<% note "@Vpi::Handle@ heritage" do %>
 Handles are instances of the @Vpi::Handle@ class (see "reference documentation":../ref/ruby/classes/Vpi/Handle.html for details) in Ruby-VPI.
 <% end %>
 
@@ -297,31 +314,31 @@ To access a handle's properties, invoke the property name, using the following f
 <% end %>
 
 <% example "Examples of accessing a handle's properties", "ex..properties" do %>
-|_/2. Ruby expression |_\6. Parts of speech |_/2. Description |
+|_/2. Ruby expression |_\6. Method naming format |_/2. Description |
 ||_. Operation |_. _ |_. Property |_. _ |_. Accessor |_. Addendum ||
-| @handle.vpiIntVal@ | &nbsp; | &nbsp; | vpiIntVal | &nbsp; |  &nbsp; | &nbsp; |/4. These expressions access the logic value of the handle's vpiIntVal property. |
+| @handle.vpiIntVal@ | &nbsp; | &nbsp; | vpiIntVal | &nbsp; |  &nbsp; | &nbsp; |/4. These expressions access the *logic value* of the handle's @VpiIntVal@ property. |
 | @handle.vpiIntVal_l@ | &nbsp; | &nbsp; | vpiIntVal | _ | l | &nbsp; |
 | @handle.intVal@ | &nbsp; | &nbsp; | intVal | &nbsp; | &nbsp; | &nbsp; |
 | @handle.intVal_l@ | &nbsp; | &nbsp; | intVal | _ | l | &nbsp; |
-| @handle.vpiIntVal = 15@ | &nbsp; | &nbsp; | vpiIntVal | &nbsp; | &nbsp; | = |/4. These expressions assign the number 15 to the logic value of the handle's vpiIntVal property. |
+| @handle.vpiIntVal = 15@ | &nbsp; | &nbsp; | vpiIntVal | &nbsp; | &nbsp; | = |/4. These expressions assign the number 15 to the *logic value* of the handle's @VpiIntVal@ property. |
 | @handle.vpiIntVal_l = 15@ | &nbsp; | &nbsp; | vpiIntVal | _ | l | = |
 | @handle.intVal = 15@ | &nbsp; | &nbsp; | intVal | &nbsp; | &nbsp; | = |
 | @handle.intVal_l = 15@ | &nbsp; | &nbsp; | intVal | _ | l | = |
-| @handle.vpiType@ | &nbsp; | &nbsp; | vpiType | &nbsp; | &nbsp; | &nbsp; |/4. These expressions access the integer value of the handle's vpiType property. |
+| @handle.vpiType@ | &nbsp; | &nbsp; | vpiType | &nbsp; | &nbsp; | &nbsp; |/4. These expressions access the *integer value* of the handle's @VpiType@ property. |
 | @handle.vpiType_i@ | &nbsp; | &nbsp; | vpiType | _ | i | &nbsp; |
 | @handle.type@ | &nbsp; | &nbsp; | type | &nbsp; | &nbsp; | &nbsp; |
 | @handle.type_i@ | &nbsp; | &nbsp; | type | _ | i | &nbsp; |
-| @handle.vpiProtected@ | &nbsp; | &nbsp; | vpiProtected | &nbsp; | &nbsp; | &nbsp; |/6. These expressions access the boolean value of the handle's vpiProtected property. |
+| @handle.vpiProtected@ | &nbsp; | &nbsp; | vpiProtected | &nbsp; | &nbsp; | &nbsp; |/6. These expressions access the *boolean value* of the handle's @VpiProtected@ property. |
 | @handle.vpiProtected_b@ | &nbsp; | &nbsp; | vpiProtected | _ | b | &nbsp; |
 | @handle.vpiProtected?@ | &nbsp; | &nbsp; | vpiProtected | &nbsp; | &nbsp; | ? |
 | @handle.protected@ | &nbsp; | &nbsp; | protected | &nbsp; | &nbsp; | &nbsp; |
 | @handle.protected_b@ | &nbsp; | &nbsp; | protected | _ | b | &nbsp; |
 | @handle.protected?@ | &nbsp; | &nbsp; | protected | &nbsp; | &nbsp; | ? |
-| @handle.vpiFullName@ | &nbsp; | &nbsp; | vpiFullName | &nbsp; | &nbsp; | &nbsp; |/4. These expressions access the string value of the handle's vpiFullName property. |
+| @handle.vpiFullName@ | &nbsp; | &nbsp; | vpiFullName | &nbsp; | &nbsp; | &nbsp; |/4. These expressions access the *string value* of the handle's @VpiFullName@ property. |
 | @handle.vpiFullName_s@ | &nbsp; | &nbsp; | vpiFullName | _ | s | &nbsp; |
 | @handle.fullName@ | &nbsp; | &nbsp; | fullName | &nbsp; | &nbsp; | &nbsp; |
 | @handle.fullName_s@ | &nbsp; | &nbsp; | fullName | _ | s | &nbsp; |
-| @handle.vpiParent@ | &nbsp; | &nbsp; | vpiParent | &nbsp; | &nbsp; | &nbsp; |/4. These expressions access the handle value of the handle's vpiParent property. |
+| @handle.vpiParent@ | &nbsp; | &nbsp; | vpiParent | &nbsp; | &nbsp; | &nbsp; |/4. These expressions access the *handle value* of the handle's @VpiParent@ property. |
 | @handle.vpiParent_h@ | &nbsp; | &nbsp; | vpiParent | _ | h | &nbsp; |
 | @handle.parent@ | &nbsp; | &nbsp; | parent | &nbsp; | &nbsp; | &nbsp; |
 | @handle.parent_h@ | &nbsp; | &nbsp; | parent | _ | h | &nbsp; |
@@ -369,11 +386,7 @@ cbHandle = vpi_register_cb(cbData) do |data|
 end
 </code>
 
-To see this code in action, append it to the <tt>counter_rspec_spec.rb</tt> and <tt>counter_xunit_spec.rb</tt> files, which are provided in <xref#usage.examples> and discussed in <xref#usage.tutorial.specification>.
-<% end %>
-
-<% figure "Output from <xref#ex..callback>" do %>
-Shown below is the output from running the "counter_rspec test":#usage.tutorial after appending the code shown in <xref#ex..callback> to the <tt>counter_rspec_spec.rb</tt> file.
+Shown below is the result of appending this code to the <tt>counter_rspec_spec.rb</tt> file (provided in <xref#usage.examples> and discussed in <xref#usage.tutorial.specification>) and running the "counter_rspec test":#usage.tutorial.
 
 <pre>
 $ rake -f counter_rspec_runner.rake cver
@@ -474,7 +487,7 @@ h2(#usage.prototyping). Prototyping
 
 Ruby-VPI enables you to rapidly prototype your designs in Ruby without having to do full-scale implementations in Verilog. This lets you explore and evaluate different design choices quickly.
 
-In order to create a prototype,
+To create a prototype,
 # "Determine the *interface*":#usage.tutorial.declare-design (Verilog module declaration) of your design.
 # "Generate a test":#usage.tutorial.generate-test for that interface.
 # "Implement the prototype":#usage.tutorial.implement-proto in the generated <tt>proto.rb</tt> file.
@@ -603,7 +616,7 @@ By converting Verilog header files into Ruby, your "test":#glossary.test can uti
 
 h2(#usage.tutorial). Tutorial
 
-# "Declare the design":#usage.tutorial.declare-design, which is a Verilog module, using Verilog 2001 syntax.
+# "Declare a design":#usage.tutorial.declare-design using Verilog 2001 syntax.
 # "Generate a test":#usage.tutorial.generate-test for the design using the "automated test generator":#usage.tools.generate-test tool.
 # "Identify your expectations":#usage.tutorial.specification for the design and implement them in the specification.
 # (Optional) "Implement the prototype":#usage.tutorial.implement-proto of the design in Ruby.
@@ -909,10 +922,6 @@ Here the @clk_reg@ register is connected to the @clk_wire@ wire.
 
 
 h3(#problems.ivl.vpi_reset). Vpi::reset
-
-<% caution do %>
-The @vpi_control@ method was removed in release 3.0.0 (2006-04-23). Please use @Vpi::vpi_control(VpiReset)@ instead.
-<% end %>
 
 In version 0.8 of Icarus Verilog, the @vpi_control(vpiReset)@ VPI function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.
 
