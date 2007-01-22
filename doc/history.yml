@@ -1,4 +1,18 @@
 -
+  Version: 15.0.2
+
+  Date: 2007-01-22
+
+  Summary: |
+    This release fixes problems with linking of the C extension and installation of the gem.
+
+  Details: |
+    * Added checks for POSIX threads & Ruby libraries before creating makefile. Otherwise the <tt>.so</tt> files were not being linked to those libraries on the MASC machine!
+
+    * The *make* program on the MASC machine does not like an empty Makefile. It was causing gem installation to fail.
+
+
+-
   Version: 15.0.1
 
   Date: 2007-01-15
