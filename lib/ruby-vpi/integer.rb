@@ -66,25 +66,6 @@ class Integer
   alias to_max to_mask
 
 
-  # Ensures that this integer is no less than the given limit.
-  def ensure_min aLimit
-    if self < aLimit
-      aLimit
-    else
-      self
-    end
-  end
-
-  # Ensures that this integer is no greater than the given limit.
-  def ensure_max aLimit
-    if self > aLimit
-      aLimit
-    else
-      self
-    end
-  end
-
-
   # Transforms this infinite-length Ruby integer into a fixed-length integer (represented in two's complement form) that has the given width (number of bits).
   def pack aPackedWidth
     bits = length
