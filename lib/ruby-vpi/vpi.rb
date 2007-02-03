@@ -514,4 +514,19 @@ module Vpi
       value.str
     end
   end
+
+  # make VPI structs more accessible by allowing their members to be initialized through the constructor
+    constants.grep(/^S_/).each do |s|
+      const_get(s).class_eval do
+        alias old_initialize initialize
+
+        def initialize aMembers = {}
+          old_initialize
+
+          aMembers.each_pair do |k, v|
+            __send__ k.to_s << '=', v
+          end
+        end
+      end
+    end
 end
