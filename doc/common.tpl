@@ -18,9 +18,8 @@
     <title><%= page_title %></title>
   </head>
   <body>
-
   <% if table_of_contents %>
-    <br/><br/> <!-- give space below #menu -->
+    <h1 style="margin-top: 0"><%= page_title %></h1>
 
     <%= %{p=. !images/home.png(Return to main page)!:readme.html}.redcloth %>
 
