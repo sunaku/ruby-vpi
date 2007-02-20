@@ -4,6 +4,8 @@ body {
   margin-left: auto;
   margin-right: auto;
   max-width: 600px;
+
+  margin-bottom: 5em; /* give space for #menu */
 }
 
 
@@ -24,13 +26,16 @@ h1, h2, h3, h4, h5, h6 {
 #menu {
   position: fixed;
   left: 0px;
-  top: 0px;
-
-  background-color: ghostwhite;
-  border-bottom: thin solid lavender;
+  bottom: 0px;
   width: 100%;
 
+  background-color: whitesmoke;
+  border-top: thin solid silver;
   text-align: center;
+}
+
+#menu a {
+  color: black;
 }
 
 
