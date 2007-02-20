@@ -13,7 +13,7 @@ p(title). Documentation
 
 p(title). Records
 
-* <a type="application/rss+xml" href="<%= RSS_URL %>">!images/feed-icon.png(RSS feed icon)! RSS feed</a>
+* <a type="application/rss+xml" href="<%= RSS_URL %>">!images/mozilla/feed-icon.png(RSS feed icon)! RSS feed</a>
   - keep track of new releases at your leisure.
 * "Release history":history.html
   - record of all release notes.

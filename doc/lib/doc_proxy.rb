@@ -46,7 +46,7 @@ class DocProxy < ErbProxy
     CATEGORIES[:admonition].each do |type|
       add_block_handler :admonition, type do |index, title, text|
         join_redcloth_elements [
-          %{!<images/#{type}.png(#{type})!},
+          %{!<images/tango/#{type}.png(#{type})!},
           %{p(title). #{type.to_s.capitalize}: #{title}},
           text,
         ]
