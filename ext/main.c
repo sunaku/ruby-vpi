@@ -40,7 +40,7 @@ void main_init() {
 
 
   // initialize the Ruby bench
-    char* benchFile = getenv("RUBY_VPI__RUBY_BENCH_FILE");
+    char* benchFile = getenv("RUBYVPI_BOOTSTRAP");
 
     if (benchFile != NULL) {
       ruby_script(benchFile);

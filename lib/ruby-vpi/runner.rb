@@ -52,7 +52,7 @@
   end
 
 # prepare hook for rb_load_file() in main.c
-  ENV['RUBY_VPI__RUBY_BENCH_FILE'] = SIMULATOR_TARGET + '.rb'
+  ENV['RUBYVPI_BOOTSTRAP'] = SIMULATOR_TARGET + '.rb'
 
 
 require 'rake/clean'
