@@ -88,13 +88,13 @@ directory 'obj'
 CLOBBER.include 'obj'
 
 
-SIMULATORS.each do |sim|
-  taskName = "build_#{sim.id}"
+SIMULATORS.each_pair do |id, sim|
+  taskName = "build_#{id}"
 
-  desc "Builds object files for #{sim.name} simulator."
+  desc "Builds object files for #{sim.name}."
   task taskName => ['obj', 'ext'] do
     src = "#{PROJECT_ID}.so"
-    dst = "#{PROJECT_ID}.#{sim.id}.so"
+    dst = "#{PROJECT_ID}.#{id}.so"
 
     dst = File.expand_path(File.join('obj', dst))
 

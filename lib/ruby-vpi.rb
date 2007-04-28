@@ -142,14 +142,14 @@ module RubyVpi
     PROJECT_SUMMARY = "Ruby interface to IEEE 1364-2005 Verilog VPI"
     PROJECT_DETAIL = "#{PROJECT_NAME} is a #{PROJECT_SUMMARY}. It lets you create complex Verilog test benches easily and wholly in Ruby."
 
-    Simulator = Struct.new(:id, :name, :compiler_args, :linker_args)
+    Simulator = Struct.new(:name, :compiler_args, :linker_args)
 
     # List of supported Verilog simulators.
-    SIMULATORS = [
-      Simulator.new(:cver, 'GPL Cver', '-DPRAGMATIC_CVER', ''),
-      Simulator.new(:ivl, 'Icarus Verilog', '-DICARUS_VERILOG', ''),
-      Simulator.new(:vcs, 'Synopsys VCS', '-DSYNOPSYS_VCS', ''),
-      Simulator.new(:vsim, 'Mentor Modelsim', '-DMENTOR_MODELSIM', ''),
-    ]
+    SIMULATORS = {
+      :cver   => Simulator.new('GPL Cver',        '-DPRAGMATIC_CVER',   ''),
+      :ivl    => Simulator.new('Icarus Verilog',  '-DICARUS_VERILOG',   ''),
+      :vcs    => Simulator.new('Synopsys VCS',    '-DSYNOPSYS_VCS',     ''),
+      :vsim   => Simulator.new('Mentor Modelsim', '-DMENTOR_MODELSIM',  ''),
+    }
   end
 end

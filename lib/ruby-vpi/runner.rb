@@ -97,7 +97,7 @@ task :default do
 end
 
 
-desc "Simulate with GPL Cver."
+desc "Simulate with #{SIMULATORS[:cver].name}."
 task :cver => :setup do
   sh 'cver', SIMULATOR_ARGUMENTS[:cver], "+loadvpi=#{object_file_path(:cver)}:#{BOOTSTAP_FUNC}", expand_include_dir_options(:cver), SIMULATOR_SOURCES
 end
@@ -105,7 +105,7 @@ end
 CLOBBER.include 'verilog.log'
 
 
-desc "Simulate with Icarus Verilog."
+desc "Simulate with #{SIMULATORS[:ivl].name}."
 task :ivl => :setup do
   cp object_file_path(:ivl), 'ruby-vpi.vpi'
   sh 'iverilog', SIMULATOR_ARGUMENTS[:ivl], '-mruby-vpi', expand_include_dir_options(:ivl), SIMULATOR_SOURCES
@@ -115,7 +115,7 @@ end
 CLEAN.include 'ruby-vpi.vpi', 'a.out'
 
 
-desc "Simulate with Synopsys VCS."
+desc "Simulate with #{SIMULATORS[:vcs].name}."
 task :vcs => :setup do
   sh %w(vcs -R +v2k +vpi), SIMULATOR_ARGUMENTS[:vcs], '-load', "#{object_file_path(:vcs)}:#{BOOTSTAP_FUNC}", expand_include_dir_options(:vcs), SIMULATOR_SOURCES
 end
@@ -123,7 +123,7 @@ end
 CLEAN.include 'csrc', 'simv*'
 
 
-desc "Simulate with Mentor Modelsim."
+desc "Simulate with #{SIMULATORS[:vsim].name}."
 task :vsim => :setup do
   sh 'vlib work'
   sh 'vlog', expand_include_dir_options(:vsim), SIMULATOR_SOURCES
