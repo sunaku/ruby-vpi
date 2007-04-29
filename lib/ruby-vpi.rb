@@ -19,14 +19,20 @@
 =end
 
 module RubyVpi
-  # Initializes the bench by setting up code coverage, the interactive debugger, and so on:
+  # Initializes the bench by setting up code coverage, the interactive debugger,
+  # and so on:
+  #
   # 1. loads the design.rb file
   # 2. loads the proto.rb file if prototyping is enabled
   # 3. loads the spec.rb file
   #
-  # aDesignId:: The name of the Ruby object which gives access to the design under test.
+  # aDesignId:: The name of the Ruby object which gives access to the design
+  #             under test.
+  #
   # aSpecFormat:: The name of the format being used by the specification.
-  # aSimulationCycle:: A block that simulates the design under test by, for example, toggling the clock signal.
+  #
+  # aSimulationCycle::  A block that simulates the design under test by, for
+  #                     example, toggling the clock signal.
   #
   def RubyVpi.init_bench aDesignId, aSpecFormat, &aSimulationCycle
     raise ArgumentError, "block must be given" unless block_given?
@@ -42,7 +48,8 @@ module RubyVpi
     usePrototype = !(ENV['PROTOTYPE'] || '').empty?
 
     # set up code coverage analysis
-      # XXX: this is loaded *before* RCov to prevent coverage statistics about it
+      # XXX: this is loaded *before* RCov to prevent coverage statistics about
+      # it
       require 'ruby-vpi/vpi'
 
       if useCoverage
@@ -125,7 +132,8 @@ module RubyVpi
         Vpi::vpi_printf "#{Config::PROJECT_NAME}: prototype is enabled for test #{testName.inspect}\n"
 
       else
-        # XXX: this completes the handshake, by calling relay_verilog, with pthread_mutex_lock() in relay_main() in the C extension
+        # XXX: this completes the handshake, by calling relay_verilog, with
+        # pthread_mutex_lock() in relay_main() in the C extension
         advance_time
       end
 

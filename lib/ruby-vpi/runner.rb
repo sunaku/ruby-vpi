@@ -1,9 +1,16 @@
-# A template to simplify building and running examples. This file is meant to be embedded in another Rakefile, which bears the responsibility of defining the following variables.
+# A template to simplify building and running examples. This file is meant to be
+# embedded in another Rakefile, which bears the responsibility of defining the
+# following variables.
 #
 # = Required variables
-# SIMULATOR_SOURCES:: Array of paths to source files needed by the simulator.
-# SIMULATOR_TARGET:: Name of the Verilog module to be simulated.
-# SIMULATOR_ARGUMENTS:: A hash containing keys for each simulator task (same as Rakefile task names) and values containing command-line arguments for each simulator.
+#
+# SIMULATOR_SOURCES::   Array of paths to source files needed by the simulator.
+#
+# SIMULATOR_TARGET::    Name of the Verilog module to be simulated.
+#
+# SIMULATOR_ARGUMENTS:: A hash containing keys for each simulator task (same as
+#                       Rakefile task names) and values containing command-line
+#                       arguments for each simulator.
 
 =begin
   Copyright 2006 Suraj N. Kurapati

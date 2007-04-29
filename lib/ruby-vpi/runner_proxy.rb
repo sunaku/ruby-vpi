@@ -1,4 +1,5 @@
-# A template to simplify running multiple tests for an examples. This file is meant to be embedded in another Rakefile.
+# A template to simplify running multiple tests for an examples. This file is
+# meant to be embedded in another Rakefile.
 
 =begin
   Copyright 2006 Suraj N. Kurapati

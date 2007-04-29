@@ -20,7 +20,9 @@
 
 require 'erb_proxy'
 
-# Processes ERB templates to produce documentation. Templates may contain "<xref...>" tags where the ... represents the target anchor of the cross-reference.
+# Processes ERB templates to produce documentation. Templates may contain
+# "<xref...>" tags where the ... represents the target anchor of the
+# cross-reference.
 class DocProxy < ErbProxy
   Block = Struct.new :anchor, :title, :type
   Heading = Struct.new :anchor, :title, :depth, :index
@@ -63,11 +65,13 @@ class DocProxy < ErbProxy
     end
   end
 
-  # Post-processes the given ERB template result by parsing the document structure and expanding cross-references, and returns the result.
+  # Post-processes the given ERB template result by parsing the document
+  # structure and expanding cross-references, and returns the result.
   def post_process! aResult
     buffer = aResult
 
-    # parse document structure and insert anchors (so that the table of contents can link directly to these headings) where necessary
+    # parse document structure and insert anchors (so that the table of contents
+    # can link directly to these headings) where necessary
       buffer.gsub! %r{^(\s*h(\d))(.*)$} do
         head, depth, rest = $1, $2.to_i, $3
 
@@ -141,11 +145,16 @@ class DocProxy < ErbProxy
     buffer
   end
 
-  # Adds a block handler for the given type of block and outputs the result in a <div> whose CSS class is the given category.
-  # The arguments for the block handler are:
+  # Adds a block handler for the given type of block and outputs the result in a
+  # <div> whose CSS class is the given category. The arguments for the block
+  # handler are:
+  #
   # 1. number of the block
+  #
   # 2. title of the block
+  #
   # 3. content of the block
+  #
   def add_block_handler aCategory, aType
     raise ArgumentError unless block_given?
 
@@ -175,7 +184,8 @@ class DocProxy < ErbProxy
 
   private
 
-  # Joins the given elements by putting enough white-space between them so that RedCloth knows they're different elements.
+  # Joins the given elements by putting enough white-space between them so that
+  # RedCloth knows they're different elements.
   def join_redcloth_elements *args
     args.join("\n\n\n") << "\n\n\n"
   end

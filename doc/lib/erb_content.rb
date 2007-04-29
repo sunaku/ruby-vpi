@@ -20,10 +20,13 @@
 
 require 'erb'
 
-# Returns an array containing the current ERB buffer and the content that the given block will append to the buffer when it is invoked.
+# Returns an array containing the current ERB buffer and the content that the
+# given block will append to the buffer when it is invoked.
 #
 # == Example
-# Suppose your ERB template invoked a method with some arguments and some content in a block. You can pass the block to this method to obtain the content contained within the block.
+# Suppose your ERB template invoked a method with some arguments and some
+# content in a block. You can pass the block to this method to obtain the
+# content contained within the block.
 #
 ## template = ERB.new <<-EOS
 ## <% wrap_xml "message" do %>
@@ -31,7 +34,8 @@ require 'erb'
 ## <% end %>
 ## EOS
 #
-# In this case, the ERB template invokes the _wrap_xml_ method to wrap some content within a pair of XML tags.
+# In this case, the ERB template invokes the _wrap_xml_ method to wrap some
+# content within a pair of XML tags.
 #
 ## def wrap_xml tag, &block
 ##   buffer, content = ERB.buffer_and_content(&block)

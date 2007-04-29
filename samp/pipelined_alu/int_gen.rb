@@ -27,7 +27,8 @@ class IntegerGenerator
 
   attr_reader :bits
 
-  # Generates random integers that are representable by the given number of bits.
+  # Generates random integers that are representable by the given number of
+  # bits.
   def initialize aBits
     @bits = aBits
     @limit = 2 ** @bits

@@ -38,7 +38,6 @@ void main_init() {
     rb_define_module_function(mVpi, "relay_verilog", main_relay_verilog, 0);
     rb_define_module_function(mVpi, "relay_ruby_reason", main_relay_ruby_reason, 0);
 
-
   // initialize the Ruby bench
     char* benchFile = getenv("RUBYVPI_BOOTSTRAP");
 

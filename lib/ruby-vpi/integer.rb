@@ -18,7 +18,9 @@
   Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 =end
 
-# NOTE: Because integers are _immediate_ values in Ruby, these methods *cannot* modify the value of the integer upon which they are invoked. Instead, they return the new value as their result.
+# NOTE: Because integers are _immediate_ values in Ruby, these methods *cannot*
+# modify the value of the integer upon which they are invoked. Instead, they
+# return the new value as their result.
 class Integer
   # Returns the ceiling of the logarithm (base 2) of this positive integer.
   def log2
@@ -37,7 +39,8 @@ class Integer
     to_s(2).length
   end
 
-  # Returns the lowest upper-bound of this integer. This integer cannot reach the limit without occupying more bits in its binary representation.
+  # Returns the lowest upper-bound of this integer. This integer cannot reach
+  # the limit without occupying more bits in its binary representation.
   def limit
     length.to_limit
   end
@@ -59,14 +62,18 @@ class Integer
   end
 
 
-  # Returns the maximum value representable by this integer without occupying more bits in its binary representation.
+  # Returns the maximum value representable by this integer without occupying
+  # more bits in its binary representation.
   alias max mask
 
-  # Returns the maximum value representable by an integer with *this* number of bits.
+  # Returns the maximum value representable by an integer with *this* number of
+  # bits.
   alias to_max to_mask
 
 
-  # Transforms this infinite-length Ruby integer into a fixed-length integer (represented in two's complement form) that has the given width (number of bits).
+  # Transforms this infinite-length Ruby integer into a fixed-length integer
+  # (represented in two's complement form) that has the given width (number of
+  # bits).
   def pack aPackedWidth
     bits = length
     bits += 1 if self > 0 # positive integers also have a sign bit (zero)
@@ -78,7 +85,9 @@ class Integer
     extend_sign(bits, aPackedWidth)
   end
 
-  # Transforms this fixed-length integer (represented in two's complement form) that has the given width (number of bits) into an infinite-length Ruby integer.
+  # Transforms this fixed-length integer (represented in two's complement form)
+  # that has the given width (number of bits) into an infinite-length Ruby
+  # integer.
   def unpack aPackedWidth
     bits = length
 
@@ -97,7 +106,9 @@ class Integer
   end
 
 
-  # Performs sign extension on this integer, which has the given width (number of bits), so that the result will have the given extended width (number of bits).
+  # Performs sign extension on this integer, which has the given width (number
+  # of bits), so that the result will have the given extended width (number of
+  # bits).
   def extend_sign aOrigWidth, aExtWidth
     result = self
     maskWidth = aExtWidth - aOrigWidth
@@ -109,7 +120,10 @@ class Integer
     result & aExtWidth.to_mask
   end
 
-  # Splits this integer into an array of smaller integers, each of which have the given positive, non-zero width (number of bits). These smaller integers are ordered from left to right, in the same way that humans write unsigned binary numbers; for example:
+  # Splits this integer into an array of smaller integers, each of which have
+  # the given positive, non-zero width (number of bits). These smaller integers
+  # are ordered from left to right, in the same way that humans write unsigned
+  # binary numbers; for example:
   #
   ## >> 6.split 1
   ## => [1, 1, 0]

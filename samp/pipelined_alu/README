@@ -1,6 +1,9 @@
 PIPELINED ALU
 
-  This example is my solution to a homework assignment for an Advanced Logic Design class I had taken during the Winter of 2006 at University of California, Santa Cruz. Relevant portions of the problem have been revised and reproduced here with permission from the instructor: professor Jose Renau.
+  This example is my solution to a homework assignment for an Advanced Logic
+  Design class I had taken during the Winter of 2006 at University of
+  California, Santa Cruz. Relevant portions of the problem have been revised and
+  reproduced here with permission from the instructor: professor Jose Renau.
 
 
 
@@ -44,13 +47,20 @@ PROBLEM
 
   5. OP_MULT must have 3 cycles latency.
 
-  6. There is only one result (res). Since three operations can finish every cycle, you need to buffer the other two. Note that since at most one operation starts per cycle, a 3-entry buffer should be enough.
+  6. There is only one result (res). Since three operations can finish every
+  cycle, you need to buffer the other two. Note that since at most one operation
+  starts per cycle, a 3-entry buffer should be enough.
 
-  7. Each operation has an associated tag (in_databits) which you must pass back with the result (out_databits). For example, if a OP_MULT operation is started with parameters a=2, b=4, in_databits=3; then after the multiplication finishes three cycles later, the outputs should be res=8, out_databits=3, out_op=OP_MULT.
+  7. Each operation has an associated tag (in_databits) which you must pass back
+  with the result (out_databits). For example, if a OP_MULT operation is started
+  with parameters a=2, b=4, in_databits=3; then after the multiplication
+  finishes three cycles later, the outputs should be res=8, out_databits=3,
+  out_op=OP_MULT.
 
   8. The testbench used to verify this module must:
 
-    a. Test random combinations of positive, zero, one, prime numbers, power-of-two values from powers 1 to 32, and random numbers.
+    a. Test random combinations of positive, zero, one, prime numbers,
+    power-of-two values from powers 1 to 32, and random numbers.
 
     b. Execute random combinations of add, subtract, and multiply operations.
 
@@ -60,7 +70,10 @@ PROBLEM
 
 DESIGN
 
-  From the start, my approach was to use a single queue to solve the resource conflict (only one ALU can give an output per cycle). After drawing some sketches and understanding the problem, I wrote the following algorithm to solve the resource conflict:
+  From the start, my approach was to use a single queue to solve the resource
+  conflict (only one ALU can give an output per cycle). After drawing some
+  sketches and understanding the problem, I wrote the following algorithm to
+  solve the resource conflict:
 
     def queue_results(a, b, c)
       output a
@@ -68,7 +81,10 @@ DESIGN
     end
 
 
-  We cannot perform all the operations in the queue_results method using only one cycle. However, if the queue_results method is not implemented as shown, then the design will not work---it will be chaotic and produce incoherent results.
+  We cannot perform all the operations in the queue_results method using only
+  one cycle. However, if the queue_results method is not implemented as shown,
+  then the design will not work---it will be chaotic and produce incoherent
+  results.
 
   The trick is to satisfy the post-conditions of the queue_results method (one result is outputted and the other two have been queued) using multiple clock cycles:
 
@@ -88,15 +104,23 @@ DESIGN
     2. enqueue c; output a
     (nothing to remember)
 
-  Note that we cannot output the 'a' result during the first cycle because that would violate the post-conditions.
+  Note that we cannot output the 'a' result during the first cycle because that
+  would violate the post-conditions.
 
 
-  After gaining this understanding, I realized that a separate queue was wholly unnecessary. Instead, I could simply use pipeline registers to remember values until they were needed (i.e. the 'a' result is output only in the last cycle).
+  After gaining this understanding, I realized that a separate queue was wholly
+  unnecessary. Instead, I could simply use pipeline registers to remember values
+  until they were needed (i.e. the 'a' result is output only in the last cycle).
 
-  This approach uses exactly the same number of pipeline registers (three in this case) as the size of the queue suggested by the Professor. Also, this approach uses less storage than the three-queues (one for each ALU output; therefore 9 registers) approach suggested by the Professor.
+  This approach uses exactly the same number of pipeline registers (three in
+  this case) as the size of the queue suggested by the Professor. Also, this
+  approach uses less storage than the three-queues (one for each ALU output;
+  therefore 9 registers) approach suggested by the Professor.
 
 
-  Finally, I wrote a behavioral model (see MODEL section) of the RTL using Ruby and verified both my initial approach (magical single-cycle queueing of multiple items) and its later improvement (the pipeline-register approach).
+  Finally, I wrote a behavioral model (see MODEL section) of the RTL using Ruby
+  and verified both my initial approach (magical single-cycle queueing of
+  multiple items) and its later improvement (the pipeline-register approach).
 
 
 
@@ -106,7 +130,8 @@ MODEL
   $ ruby -w TestHw5UnitModel.rb		# use the "-d" option for details
 
 
-  The model is written in Ruby and comes with a unit test which is similar to the Ruby-VPI test bench I wrote for the RTL implementation.
+  The model is written in Ruby and comes with a unit test which is similar to
+  the Ruby-VPI test bench I wrote for the RTL implementation.
 
 
 
@@ -123,5 +148,5 @@ TEST BENCH
 
 
 
-  The test bench structure was ported from my unit test for the behavioral model of hw5_unit.
-
+  The test bench structure was ported from my unit test for the behavioral model
+  of hw5_unit.

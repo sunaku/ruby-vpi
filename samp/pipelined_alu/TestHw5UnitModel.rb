@@ -41,7 +41,12 @@ class TestHw5UnitModel < Test::Unit::TestCase
     inputQueue = []
 
     NUM_VECTORS.times do |i|
-      inputQueue << Hw5UnitModel::Operation.new(Hw5UnitModel::OPERATIONS[rand(Hw5UnitModel::OPERATIONS.size)], i, @ingen.gen.abs, @ingen.gen.abs)
+      inputQueue << Hw5UnitModel::Operation.new(
+        Hw5UnitModel::OPERATIONS[rand(Hw5UnitModel::OPERATIONS.size)],
+        i,
+        @ingen.gen.abs,
+        @ingen.gen.abs
+      )
     end
 
 

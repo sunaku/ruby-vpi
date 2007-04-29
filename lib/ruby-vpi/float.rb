@@ -19,7 +19,8 @@
 =end
 
 class String
-  # Converts this string into a floating point number using the given radix. The default radix is 10.
+  # Converts this string into a floating point number using the given radix.
+  # The default radix is 10.
   def to_f aRadix = 10
     whole, frac = split('.', 2)
     whole = whole.to_i(aRadix).to_f

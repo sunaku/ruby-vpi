@@ -20,7 +20,9 @@
 
 require 'erb'
 
-# A version of ERB whose embedding tags behave like those of PHP. That is, only <%= ... %> tags produce output, whereas <% ... %> tags do *not* produce any output.
+# A version of ERB whose embedding tags behave like those of PHP. That is, only
+# <%= ... %> tags produce output, whereas <% ... %> tags do *not* produce any
+# output.
 class ERB
   alias original_initialize initialize
 

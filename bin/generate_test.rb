@@ -1,15 +1,32 @@
 # Generates Ruby-VPI tests from Verilog 2001 module declarations.
+#
 # * The standard input stream is read if no input files are specified.
-# * The first input signal in a module's declaration is assumed to be the clocking signal.
+#
+# * The first input signal in a module's declaration is assumed to be the
+#   clocking signal.
+#
 #
 # = Progress indicators
+#
 # module:: A Verilog module has been identified.
+#
 # create:: A file is being created because it does not exist.
+#
 # skip:: A file is being skipped because it is already up to date.
-# update:: A file will be updated because it is out of date. A text merging tool (see MERGER) will be launched to transfer content from the old file (*.old) and the new file (*.new) to the out of date file. If a text merging tool is not specified, then you will have to do the merging by hand.
+#
+# update::  A file will be updated because it is out of date. A text merging
+#           tool (see MERGER) will be launched to transfer content from the old
+#           file (*.old) and the new file (*.new) to the out of date file. If a
+#           text merging tool is not specified, then you will have to do the
+#           merging by hand.
+#
 #
 # = Environment variables
-# MERGER:: A command that invokes a text merging tool with three arguments: (1) old file, (2) new file, (3) output file. The tool's output should be written to the output file.
+#
+# MERGER::  A command that invokes a text merging tool with three arguments: (1)
+#           old file, (2) new file, (3) output file. The tool's output should be
+#           written to the output file.
+#
 
 
 =begin
@@ -42,7 +59,8 @@ def notify *args # :nodoc:
   printf "%8s  %s\n", *args
 end
 
-# Writes the given contents to the file at the given path. If the given path already exists, then a backup is created before invoking the merging tool.
+# Writes the given contents to the file at the given path. If the given path
+# already exists, then a backup is created before invoking the merging tool.
 def write_file aPath, aContent # :nodoc:
   if File.exist? aPath
     oldDigest = Digest::MD5.digest(File.read(aPath))

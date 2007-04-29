@@ -52,7 +52,8 @@ end
 
 file 'swig_vpi.i' => 'swig_vpi.h'
 
-# avoid compilation problems due to va_list, which is used in the SWIG-generated wrapper for VPI vprintf functions
+# avoid compilation problems due to va_list, which is used in the SWIG-generated
+# wrapper for VPI vprintf functions
 file 'swig_vpi.h' => 'vpi_user.h' do |t|
   src, dst = t.prerequisites[0], t.name
 
@@ -61,5 +62,6 @@ file 'swig_vpi.h' => 'vpi_user.h' do |t|
   end
 end
 
-# NOTE: since SWIG is not a requirement for users, we should not clobber these generated files
+# NOTE: since SWIG is not a requirement for users, we should not clobber these
+# generated files
 #CLOBBER.include 'swig_wrap.cin', 'swig_vpi.h'
