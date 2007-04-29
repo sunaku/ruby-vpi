@@ -257,6 +257,25 @@ module Vpi
 
       alias to_s inspect
 
+      # Registers a callback that is invoked whenever the value of this object
+      # changes.
+      def cbValueChange aOptions = {}, &aHandler
+        raise ArgumentError unless block_given?
+
+        aOptions[:time]  ||= S_vpi_time.new(:type => VpiSuppressTime)
+        aOptions[:value] ||= S_vpi_value.new(:format => VpiSuppressVal)
+
+        alarm = S_cb_data.new(
+          :reason => CbValueChange,
+          :obj    => self,
+          :time   => aOptions[:time],
+          :value  => aOptions[:value],
+          :index  => 0
+        )
+
+        vpi_register_cb alarm, &aHandler
+      end
+
 
       @@propCache = Hash.new {|h, k| h[k] = Property.resolve(k)}
 
