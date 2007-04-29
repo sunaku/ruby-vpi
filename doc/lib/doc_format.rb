@@ -113,4 +113,122 @@ class String
       %{<#{tag} class="code"#{atts}>#{html}</#{tag}>}
     end
   end
+
+
+  # Transforms this string into a valid XHTML anchor (ID attribute).
+  # See http://www.nmt.edu/tcc/help/pubs/xhtml/id-type.html
+  def to_html_anchor
+    # The first or only character must be a letter.
+      buf =
+        if self[0,1] =~ /[[:alpha:]]/
+          self
+        else
+          'a' + self
+        end
+
+    # The remaining characters must be letters, digits, hyphens (-),
+    # underscores (_), colons (:), or periods (.) [or Unicode characters]
+      buf.unpack('U*').map! do |code|
+        if code > 0xFF or code.chr =~ /[[:alnum:]\-_:\.]/
+          code
+        else
+          ?_
+        end
+      end.pack('U*')
+  end
+
+  @@anchors = []
+
+  # Resets the list of anchors encountered thus far.
+  def String.reset_anchors
+    @@anchors.clear
+  end
+
+  # Builds a table of contents from XHTML headings (<h1>, <h2>, etc.) found
+  # in this string and returns an array containing [toc, text] where:
+  #
+  # toc::   the generated table of contents
+  #
+  # text::  a modified version of this string which contains anchors for the
+  #         hyperlinks in the table of contents (so that the TOC can link to
+  #         the content in this string)
+  #
+  # If a block is given, it will be invoked every time a heading is found, with
+  # information about the found heading.
+  #
+  def table_of_contents
+    toc = '<ul>'
+    prevDepth = 0
+    prevIndex = ''
+
+    text = gsub %r{<h(\d)(.*?)>(.*?)</h\1>$}m do
+      depth, atts, title = $1.to_i, $2, $3.strip
+
+      # generate a LaTeX-style index (section number) for the heading
+        depthDiff = (depth - prevDepth).abs
+
+        index =
+          if depth > prevDepth
+            toc << '<li><ul>' * depthDiff
+
+            s = prevIndex + ('.1' * depthDiff)
+            s.sub(/^\./, '')
+
+          elsif depth < prevDepth
+            toc << '</ul></li>' * depthDiff
+
+            s = prevIndex.sub(/(\.\d+){#{depthDiff}}$/, '')
+            s.next
+
+          else
+            prevIndex.next
+
+          end
+
+        prevDepth = depth
+        prevIndex = index
+
+      # generate a unique HTML anchor for the heading
+        anchor = CGI.unescape(
+          if atts =~ /id=('|")(.*?)\1/
+            atts = $` + $'
+            $2
+          else
+            title
+          end
+        ).to_html_anchor
+
+        anchor << anchor.object_id.to_s while @@anchors.include? anchor
+        @@anchors << anchor
+
+      yield title, anchor, index, depth, atts if block_given?
+
+      # provide hyperlinks for traveling between TOC and heading
+        dst = anchor
+        src = dst.object_id.to_s.to_html_anchor
+
+        # forward link from TOC to heading
+        toc << %{<li><a id="#{src}" href="##{dst}">#{title}</a></li>}
+
+        # reverse link from heading to TOC
+        %{<h#{depth}#{atts}><a id="#{dst}" href="##{src}">#{index}</a> &nbsp; #{title}</h#{depth}>}
+    end
+
+    if prevIndex.empty?
+      toc = nil # there were no headings
+    else
+      toc << '</ul></li>' * prevDepth
+      toc << '</ul>'
+
+      # collapse redundant list elements
+      while toc.gsub! %r{(<li>.*?)</li><li>(<ul>)}, '\1\2'
+      end
+
+      # collapse unnecessary levels
+      while toc.gsub! %r{(<ul>)<li><ul>(.*)</ul></li>(</ul>)}, '\1\2\3'
+      end
+    end
+
+    [toc, text]
+  end
 end

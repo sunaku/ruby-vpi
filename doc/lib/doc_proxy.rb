@@ -19,6 +19,7 @@
 =end
 
 require 'erb_proxy'
+require 'doc_format'
 
 # Processes ERB templates to produce documentation. Templates may contain
 # "<xref...>" tags where the ... represents the target anchor of the
@@ -27,7 +28,6 @@ class DocProxy < ErbProxy
   Block = Struct.new :anchor, :title, :type
   Heading = Struct.new :anchor, :title, :depth, :index
   Index = Struct.new :name, :items
-  @@anchorNum = 0
 
   CATEGORIES = {
     :admonition => [:tip, :note, :important, :caution, :warning],
@@ -67,56 +67,21 @@ class DocProxy < ErbProxy
 
   # Post-processes the given ERB template result by parsing the document
   # structure and expanding cross-references, and returns the result.
-  def post_process! aResult
-    buffer = aResult
+  def post_process aResult
+    text = aResult.to_html
+    anchors = []
 
     # parse document structure and insert anchors (so that the table of contents
     # can link directly to these headings) where necessary
-      buffer.gsub! %r{^(\s*h(\d))(.*)$} do
-        head, depth, rest = $1, $2.to_i, $3
-
-        # parse title and class attributes
-          rest =~ /^([\{\(\[].*?[\]\)\}])?\.(.*)$/
-          atts, title = $1, $2.strip
-
-        # put heading index in title
-          prevDepth = @headings.last.depth rescue 0
-          prevIndex = @headings.last.index rescue ""
-          depthDiff = (depth - prevDepth).abs
-
-          index =
-            if depth > prevDepth
-              s = prevIndex + ('.1' * depthDiff)
-              s.sub /^\./, ''
-
-            elsif depth < prevDepth
-              s = prevIndex.sub /(\.\d+){#{depthDiff}}$/, ''
-              s.next
-
-            else
-              prevIndex.next
-            end
-
-          rest = "#{atts}. #{index} &nbsp; #{title}"
-
-        # parse and insert anchor if necessary
-          if atts =~ /#(.*?)\)/
-            anchor = $1
-          else
-            anchor = "anchor#{@@anchorNum += 1}"
-            rest.insert 0, "(##{anchor})"
-          end
-
+      toc, text = text.table_of_contents do |title, anchor, index, depth, atts|
         @headings << Heading.new(anchor, title, depth, index)
         @blocks[:section] << Block.new(anchor, title, :section)
-
-        head + rest
       end
 
     # expand cross-references into links to their targets
       blocks = @blocks.values.flatten
 
-      buffer.gsub! %r{<xref\s*(.+?)\s*/?>} do
+      text.gsub! %r{<xref\s*(.+?)\s*/?>} do
         anchor = unanchor($1)
         target = blocks.find {|b| b.anchor == anchor}
 
@@ -142,7 +107,7 @@ class DocProxy < ErbProxy
         end
       end
 
-    buffer
+    [toc, text]
   end
 
   # Adds a block handler for the given type of block and outputs the result in a

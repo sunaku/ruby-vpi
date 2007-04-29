@@ -43,9 +43,11 @@ FileList['*.doc'].each do |src|
 
   desc "Process file #{src.inspect}."
   file dst => [src, 'common.tpl', *deps] do |t|
+    String.reset_anchors
+
     content = DocProxy.new.instance_eval do
       # default output configuration
-      table_of_contents = true
+      insert_toc = true
       page_title = nil
 
       # load the documentation's helper
@@ -56,7 +58,7 @@ FileList['*.doc'].each do |src|
       # evaluate the documentation file
         template = ERB.new(File.read(src))
         content = template.result(binding)
-        post_process! content
+        toc, content = post_process(content)
 
       # fit result into common HTML format
         template = ERB.new(File.read(t.prerequisites[1]))

@@ -1,4 +1,4 @@
-<% table_of_contents = false %>
+<% insert_toc = false %>
 
 h1{margin-top: 0}. Welcome to Ruby-VPI
 

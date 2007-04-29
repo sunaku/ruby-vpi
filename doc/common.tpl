@@ -18,7 +18,7 @@
     <title><%= page_title %></title>
   </head>
   <body>
-  <% if table_of_contents %>
+  <% if insert_toc %>
     <h1 style="margin-top: 0"><%= page_title %></h1>
 
     <%= %{p=. !images/tango/home.png(Return to main page)!:readme.html}.redcloth %>
@@ -36,11 +36,7 @@
 
     <div id="index">
       <h1>Contents</h1>
-      <%=
-        @headings.map do |h|
-          %{#{'*' * h.depth} #{h.index} "#{h.title}":##{h.anchor}}
-        end.join("\n").redcloth
-      %>
+      <%= toc %>
 
       <% @indexes.each_pair do |cat, lists| %>
         <h1><%= cat %></h1>
@@ -56,6 +52,6 @@
       <% end %>
     </div>
   <% end %>
-    <%= content.to_html %>
+    <%= content %>
   </body>
 </html>
