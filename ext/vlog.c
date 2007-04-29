@@ -63,12 +63,9 @@ void (*vlog_startup_routines[])() = { vlog_startup, NULL };
 #if defined(PRAGMATIC_CVER) || defined(SYNOPSYS_VCS)
   /**
     Invokes each routine specified in the vlog_startup_routines array.
-
-    This code is originally from GPL Cver 2.11a:
-    Copyright (c) 1991-2005 Pragmatic C Software Corp.
   */
   void vlog_startup_routines_bootstrap() {
-    unsigned int i;
+    unsigned i;
     for (i = 0; vlog_startup_routines[i] != NULL; i++)
       vlog_startup_routines[i]();
   }
