@@ -1,5 +1,29 @@
-Ruby-VPI is a "Ruby":http://www.ruby-lang.org interface to "IEEE 1364-2005 Verilog VPI":http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945. It lets you create complex Verilog test benches easily and wholly in Ruby.
+Ruby-VPI is a platform for unit testing, rapid prototyping, and systems integration of Verilog modules through the "Ruby programming language":http://www.ruby-lang.org. It lets you:
 
+* Access the _entire_ "IEEE 1364-2005 Verilog VPI":http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945 interface from Ruby.
+* Create complex Verilog test benches easily and wholly in Ruby.
+* Apply agile software development practices to develop hardware.
+* Perform "specification-driven functional verification":http://ruby-vpi.rubyforge.org/papers/masters_thesis.html ("PDF version":http://ruby-vpi.rubyforge.org/papers/masters_thesis.pdf).
+
+Ruby-VPI is "open source software":http://en.wikipedia.org/wiki/Open_source_software released under "this license":#intro.license.
+
+
+<div id="resources">
+
+h2. Resources
+
+p(title). Records
+
+<a type="application/rss+xml" href="<%= RSS_URL %>"><img src="images/mozilla/feed-icon.png" alt="RSS feed for release notifications" style="float: right"/></a>
+
+* "What's new?":history.html
+  - a record of all release notes.
+* "Plans":memo.html
+  - pending tasks for future releases.
+* "Talks":http://ruby-vpi.rubyforge.org/talks/
+  - materials from presentations and seminars.
+* "Papers":http://ruby-vpi.rubyforge.org/papers/
+  - research publications.
 
 p(title). Documentation
 
@@ -10,53 +34,36 @@ p(title). Documentation
 * "Reference":../ref/
   - API documentation for Ruby libraries and C extension.
 
-
-p(title). Records
-
-* <a type="application/rss+xml" href="<%= RSS_URL %>">!images/mozilla/feed-icon.png(RSS feed icon)! RSS feed</a>
-  - keep track of new releases at your leisure.
-* "Release history":history.html
-  - record of all release notes.
-* "Memorandum":memo.html
-  - pending tasks for future releases.
-
-
 p(title). Facilities
 
-* "Project portal":http://rubyforge.org/projects/ruby-vpi
-  - hosted generously by "RubyForge":http://rubyforge.org.
-* "Source code":http://ruby-vpi.rubyforge.org/src/ruby-vpi
-  - browse online or obtain through "Darcs":http://abridgegame.org/darcs/.
 * "Downloads":http://rubyforge.org/frs/?group_id=1339
   - obtain release packages.
+* "Source code":http://ruby-vpi.rubyforge.org/src/ruby-vpi
+  - browse online or obtain with "Darcs":http://darcs.net.
+* "Forums":http://rubyforge.org/forum/?group_id=1339
+  - discuss things and ask questions.
 * "Bugs":http://rubyforge.org/tracker/?group_id=1339
   - report defects in the software.
 * "Patches":http://rubyforge.org/tracker/?group_id=1339
   - submit patches to source code.
 * "Requests":http://rubyforge.org/tracker/?group_id=1339
   - request new features or get support.
-* "Forums":http://rubyforge.org/forum/?group_id=1339
-  - discuss things and ask questions.
+* "Project portal":http://rubyforge.org/projects/ruby-vpi
+  - hosted generously by "RubyForge":http://rubyforge.org.
 
 
-p(title). Outreach
-
-* "News":http://ruby-vpi.rubyforge.org/news
-  - see what's cooking for the next release.
-* "Talks":http://ruby-vpi.rubyforge.org/talks
-  - materials from presentations and seminars.
+</div>
 
 
-h2(#intro.features). Prominent features
+h2(#intro.features). Features
 
-h3. Portable
+p(title). Portable
 
-* Supports the _entire_ "IEEE Std 1364-2005":http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945 VPI standard.
+* Supports the _entire_ "IEEE 1364-2005 Verilog VPI":http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945 standard.
+* Works with all "major Verilog simulators":#intro.reqs available today.
+* Compiled _just once_ during "installation":manual.html#setup.installation and used forever!
 
-* Works with all "major Verilog simulators":manual.html#setup.reqs available today.
-** Compiled _just once_ during "installation":manual.html#setup.installation and used forever!
-
-h3. Agile
+p(title). Agile
 
 * Enables "agile practices":http://agilemanifesto.org/ such as
 ** "test-driven":http://www.testdriven.com development
@@ -68,7 +75,7 @@ h3. Agile
 ** The "automated test generator":manual.html#usage.tools.generate-test helps you accomodate design changes with _minimal_ effort.
 ** There is absolutely _no compiling_!
 
-h3. Powerful
+p(title). Powerful
 
 * Inherits the "power and elegance":http://www.ruby-lang.org/en/about/ of Ruby:
 ** Unlimited length integers
@@ -80,14 +87,13 @@ h3. Powerful
 * Uses "ruby-debug":http://rubyforge.org/projects/ruby-debug/ for "interactive debugging":manual.html#usage.debugger.
 * Uses "rcov":http://eigenclass.org/hiki.rb?rcov for test "coverage analysis and report generation":manual.html#usage.test-runner.env-vars.
 
-h3. Free
 
 * Gives you the _freedom_ to study, modify, and distribute this software, in accordance with the "GNU General Public License":http://www.gnu.org/copyleft/gpl.html.
 
 
 h2(#intro.applications). Applications
 
-Here is a modest sampling of tasks that Ruby-VPI can be used to perform.
+Examples of tasks that can be performed with Ruby-VPI are:
 
 * From the second edition of "_The Verilog PLI Handbook_":http://www.sutherland-hdl.com/publications.html:
 ** C language bus-functional models
@@ -110,7 +116,7 @@ Here is a modest sampling of tasks that Ruby-VPI can be used to perform.
 
 h2(#intro.appetizers). Appetizers
 
-Here is a modest sampling of code to whet your appetite.
+Here is a tiny sampling of code to whet your appetite. See "the tutorial":manual.html#usage.tutorial for more samples.
 
 * Assign the value 2^2048^ to a register:
 

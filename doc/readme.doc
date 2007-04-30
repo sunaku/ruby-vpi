@@ -1,5 +1,39 @@
-<% insert_toc = false %>
+<%
+  insert_toc = false
+  page_title = "Ruby-VPI: Ruby interface to Verilog VPI"
+%>
 
-h1{margin-top: 0}. Welcome to Ruby-VPI
+<style type="text/css">
+  body {
+    margin-left: 275px;
+    padding-right: 1em;
+  }
+
+  #resources {
+    position: absolute;
+    left: 0;
+    top: 0;
+    max-width: 200px;
+    padding: 1em;
+
+    border: thin solid red;
+    border-left: none;
+    border-top: none;
+    background-color: snow;
+  }
+
+  #resources li {
+    margin-top: 1em;
+    margin-left: -1em;
+  }
+
+  #resources h2 {
+    display: none;
+  }
+</style>
+
+h1{margin-top: 0}. Ruby-VPI
+
+<a href="http://www.ruby-lang.org"><img src="images/ruby/logo-reflection.png" alt="Logo of the Ruby programming language" style="margin: 0; margin-left: 2em; float: right"/></a>
 
 <%= import 'intro.inc' %>
