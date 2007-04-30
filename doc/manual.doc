@@ -831,6 +831,13 @@ Finished in 0.006766 seconds.
 
 h1(#hacking). Hacking
 
+
+h2(#hacking.scm). Getting the source code
+
+Check out the source code using "Darcs":http://darcs.net from the project repository:
+
+  darcs get http://ruby-vpi.rubyforge.org/src/ruby-vpi
+
 h2(#hacking.release-packages). Building release packages
 
 In addition to the "normal requirements":#setup.reqs, you need the following software to build release packages:
