@@ -86,7 +86,7 @@ class DocProxy < ErbProxy
         target = blocks.find {|b| b.anchor == anchor}
 
         if target
-          %{"the #{target.type} named &ldquo;#{target.title}&rdquo;":##{target.anchor}}
+          %{<a href="##{target.anchor}">the #{target.type} named &ldquo;#{target.title}&rdquo;</a>}
         else
           warn "unresolved cross-reference to #{anchor}"
           %{"#{anchor}":##{anchor}}
