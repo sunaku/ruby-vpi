@@ -14,7 +14,7 @@ h2. Resources
 
 p(title). Records
 
-<a type="application/rss+xml" href="<%= RSS_URL %>"><img src="images/mozilla/feed-icon.png" alt="RSS feed for release notifications" style="float: right"/></a>
+<a type="application/rss+xml" href="<%= RSS_URL %>"><img src="images/feed-icon-28x28.png" alt="RSS feed for release notifications" style="float: right"/></a>
 
 * "What's new?":history.html
   - a record of all release notes.
