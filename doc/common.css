@@ -1,11 +1,10 @@
 body {
-  font-family: sans-serif;
-
   margin-left: auto;
   margin-right: auto;
   max-width: 600px;
 
   margin-bottom: 5em; /* give space for #menu */
+  margin-top: 2.25em; /* give space for breathing */
 }
 
 
@@ -59,7 +58,9 @@ h1, h2, h3, h4, h5, h6 {
 /* source code */
 
 tt {
-  background-color: #cfc;
+  font-weight: bold;
+  color: brown;
+  background-color: floralwhite;
 }
 
 pre, blockquote .code {
@@ -120,14 +121,42 @@ th {
   }
 
 
-/* misc. */
+/* emphasis */
+
+body {
+  font-family: sans-serif;
+}
+
+em, blockquote {
+  font-family: serif;
+}
+
+blockquote {
+  border-left: thick solid darkkhaki;
+  background: beige;
+}
+
+hr {
+  background-color: red;
+  border: none;
+}
+
+big {
+  font-size: larger;
+}
+
+/* fix annoyances */
+
+img {
+  margin: 1em;
+}
 
 a img {
   border: none;
 }
 
-em, strong {
-  font-family: serif;
+#menu li, .entry .toc li {
+  margin-left: -1.5em;
 }
 
 .formal .title {
