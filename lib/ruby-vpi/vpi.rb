@@ -553,7 +553,7 @@ module Vpi
             old_initialize
 
             aMembers.each_pair do |k, v|
-              __send__ k.to_s << '=', v
+              __send__ "#{k}=", v
             end
           end
         end
