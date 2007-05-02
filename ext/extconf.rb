@@ -1,3 +1,8 @@
+# Generates a makefile for buiding the extension.
+#--
+# Copyright 2006-2007 Suraj N. Kurapati
+# See the file named LICENSE for details.
+
 require 'mkmf'
 
 # check for POSIX threads library
