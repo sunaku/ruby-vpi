@@ -9,7 +9,7 @@ You can give feedback about this manual and, in general, any aspect of the Ruby-
 _Happy reading!_
 
 
-h2(#terms). Terms
+h2(#legal). Legalities
 
 This manual is distributed under "the same license as Ruby-VPI":#intro.license.
 
@@ -291,11 +291,11 @@ To access a handle's properties, invoke the property name, using the following f
 | @handle.vpiParent_h@ | &nbsp; | &nbsp; | vpiParent | _ | h | &nbsp; |
 | @handle.parent@ | &nbsp; | &nbsp; | parent | &nbsp; | &nbsp; | &nbsp; |
 | @handle.parent_h@ | &nbsp; | &nbsp; | parent | _ | h | &nbsp; |
-| <code>handle.each_vpiNet {|net| puts net.fullName}</code> | each | _ | vpiNet | &nbsp; | &nbsp; | &nbsp; |/2. These expressions print the full name of each vpiNet object associated with the handle. |
+| <code>handle.each_vpiNet {|net| puts net.fullName}</code> | each | _ | vpiNet | &nbsp; | &nbsp; | &nbsp; |/2. These expressions print the full name of each @VpiNet@ object associated with the handle. |
 | <code>handle.each_net {|net| puts net.fullName}</code> | each | _ | net | &nbsp; | &nbsp; | &nbsp; |
 | <code>handle.all_vpiReg? {|reg| reg.size == 1}</code> | all? | _ | vpiReg | &nbsp; | &nbsp; | &nbsp; |/2. These expressions check if all registers associated with the handle are capable of storing only one bit. |
 | <code>handle.all_reg? {|reg| reg.size == 1}</code> | all? | _ | reg | &nbsp; | &nbsp; | &nbsp; |
-| <code>handle.select_vpiNet {|net| net.x?}</code> | select | _ | VpiNet | &nbsp; | &nbsp; | &nbsp; |/2. These expressions return a list of nets whose logic value is unknown or "don't care" (x).|
+| <code>handle.select_vpiNet {|net| net.x?}</code> | select | _ | VpiNet | &nbsp; | &nbsp; | &nbsp; |/2. These expressions return a list of nets whose *logic value* is unknown or "don't care" (x).|
 | <code>handle.select_net {|net| net.x?}</code> | select | _ | net | &nbsp; | &nbsp; | &nbsp; |
 <% end %>
 
@@ -475,9 +475,9 @@ When you invoke a test runner without any arguments, it will show you a list of 
 <% end %>
 
 <% tip "Running multiple tests at once." do %>
-Create a file named <tt>Rakefile</tt> containing the following line.
+Create a file named <tt>Rakefile</tt> containing the following line:
 
-bq. @require 'ruby-vpi/runner_proxy'@
+@require 'ruby-vpi/runner_proxy'@
 
 Now you can invoke all test runners in the current directory simply by executing <pre>rake cver</pre> (where _cver_ denotes the "GPL Cver simulator":#setup.reqs).
 <% end %>
@@ -928,7 +928,7 @@ h2(#glossary.rake). Rake
 
 bq. Rake is a build tool, written in Ruby, using Ruby as a build language. Rake is similar to *make* in scope and purpose.
 
-bq>. --"Rake documentation":http://docs.rubyrake.org
+p>. --"Rake documentation":http://docs.rubyrake.org
 
 
 h2(#glossary.rspec). rSpec

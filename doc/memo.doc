@@ -13,6 +13,8 @@ h1. Pending tasks
 
 * clean up the teriminology section... unnecessary
 
+* write unit tests for the non-VPI libraries like integer.rb and float.rb
+
 
 h1. Finished tasks
 

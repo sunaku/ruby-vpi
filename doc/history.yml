@@ -1,4 +1,53 @@
 -
+  Version: 16.0.0
+
+  Date: 2007-05-02
+
+  Record: |
+    This release adds support for the "Cadence NC-Sim / NC-Verilog":http://www.cadence.com/products/functional_ver/nc-verilog/ simulator, improves the project website and documentation, simplifies interaction with VPI, and comes with a more permissive license.
+
+
+    h2. Caution
+
+    * The @Integer.ensure_min@ and @Integer.ensure_max@ methods have been removed from the <tt>ruby-vpi/integer.rb</tt> library because Ruby already has idioms for these operations: <pre>
+    >> 5.ensure_min 10
+    => 10
+    >> [5, 10].max
+    => 10
+
+    >> 5.ensure_max 10
+    => 5
+    >> [5, 10].min
+    => 5
+    </pre>
+
+    * Ruby-VPI is now developed under a "more permissive license":readme.html#intro.license that better reflects my ethical beliefs than "the previous license":http://www.gnu.org/copyleft/gpl.html.
+
+
+    h2. New features
+
+    * The "Cadence NC-Sim / NC-Verilog":http://www.cadence.com/products/functional_ver/nc-verilog/ (ncsim) simulator is now supported.
+
+    * VPI structures (whose names begin with "S_") now allow initialization of their members through their constructor, in the style of Ruby on Rails. For example, the expression @time = S_vpi_time.new :type => VpiSuppressTime@ is equivalent to: <code>
+    time      = S_vpi_time.new
+    time.type = VpiSuppressTime
+    </code>
+
+    * Added the @Vpi::Handle.cbValueChange@ method which simplifies the registration of a value-change callback for a particular VPI handle. For instance, the user manual's "example of setting up a value-change callback":manual.html#ex..callback can now be written as follows: <code>
+    Counter.count.cbValueChange do |s_cb_data|
+      puts "hello from callback! time=#{s_cb_data.time.to_i} count=#{s_cb_data.obj.intVal}"
+    end
+    </code>
+
+
+    h2. Details
+
+    * Revised the project website according to the "Producing OSS":http://producingoss.com guidelines.
+
+    * Added instructions for checking out source code and generating documentation.
+
+
+-
   Version: 15.0.2
 
   Date: 2007-01-22
