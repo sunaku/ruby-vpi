@@ -1,0 +1,11 @@
+The *.doc files in this directory are plain-text files!
+
+To transform them into XHTML, you need the following software:
+
+  Rake:     http://docs.rubyrake.org/
+
+  RedCloth: http://whytheluckystiff.net/ruby/redcloth/
+
+  Coderay:  http://coderay.rubychan.de/
+
+Once you have the above software, simply run the "rake" command.
