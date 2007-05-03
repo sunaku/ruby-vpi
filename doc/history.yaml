@@ -52,10 +52,12 @@
 
   Date: 2007-01-22
 
-  Summary: |
+  Record: |
     This release fixes problems with linking of the C extension and installation of the gem.
 
-  Details: |
+
+    h2. Details
+
     * Added checks for POSIX threads & Ruby libraries before creating makefile. Otherwise the <tt>.so</tt> files were not being linked to those libraries on the MASC machine!
 
     * The *make* program on the MASC machine does not like an empty Makefile. It was causing gem installation to fail.
@@ -66,13 +68,17 @@
 
   Date: 2007-01-15
 
-  Summary: |
-    This release fixes a problem with compilation of the C extension and improves the user documentation's appearance.
+  Record: |
+    This release fixes another problem with compilation of the C extension and improves the user documentation's appearance.
 
-  Acknowledgment: |
-    Thanks to Derek Graham for reporting the problem.
 
-  Details: |
+    h2. Thanks
+
+    * Derek Graham reported the problem with compilation of the C extension.
+
+
+    h2. Details
+
     * Restored the monkey patch, which was removed in release 14.0.0, for the SWIG @va_list@ problem.
 
     * Made table of contents in-line with the content in user documentation.
@@ -85,13 +91,17 @@
 
   Date: 2007-01-13
 
-  Summary: |
+  Record: |
     This release fixes a problem with compilation of the C extension, and makes clock generation code correctly affect Ruby prototypes.
 
-  Acknowledgment: |
-    Thanks to Derek Graham for reporting the problem with compilation of the C extension.
 
-  Notice: |
+    h2. Thanks
+
+    * Derek Graham reported the problem with compilation of the C extension.
+
+
+    h2. Caution
+
     * The @Vpi::advance_time@ method (instead of the @Vpi::simulate@ method) now invokes the design's @simulate!@ method when prototyping is enabled.
 
       This makes clock generation code (passed to the @RubyVpi::init_bench@ method) affect Ruby prototypes, just as it affects a real Verilog design.
@@ -106,7 +116,9 @@
 
     * Added utility methods for accessing the @value@ field in the @Vpi::S_vpi_value@ structure.
 
-  Details: |
+
+    h2. Details
+
     * Fixed problem with incorrect Ruby library flag in <tt>ext/extconf.rb</tt>. It happens that the @mkmf@ library determines the correct library flag all by itself!
 
     * Added new "prototyping section":manual.html#usage.prototyping to user manual.
@@ -119,10 +131,12 @@
 
   Date: 2006-12-30
 
-  Summary: |
+  Record: |
     This release adds support for simulation callbacks, renders Verilog benches _fully simplified_, and revises the user manual to reflect major changes.
 
-  Notice: |
+
+    h2. Caution
+
     * The @Vpi::relay_verilog@ method has been replaced by @Vpi::simulate@.
 
       Please update you tests accordingly, because invoking the @Vpi::relay_verilog@ method directly will cause your tests to freeze/hang.
@@ -141,7 +155,9 @@
 
     * Added the @Vpi::simulation_time@ method, which gives you the current simulation time as a 64-bit integer.
 
-  Details: |
+
+    h2. Details
+
     * Removed the monkey patch for the SWIG @va_list@ problem -- it no longer occurs.
 
     * Cleansed the appearance of the user documentation.
@@ -159,10 +175,12 @@
 
   Date: 2006-12-27
 
-  Summary: |
+  Record: |
     This release fixes a _major_ instability bug, simplifies generated Verilog benches, and purifies the API reference documentation.
 
-  Notice: |
+
+    h2. Caution
+
     * The @$ruby_init@ and @$ruby_relay@ system task/functions have been removed. Generated Verilog benches no longer use them.
     ** To pass your own command-line options to Ruby, set the @RUBYOPT@ environment variable before running a test.
 
@@ -170,7 +188,9 @@
 
     * You can now choose when @Vpi::relay_verilog@ is triggered: upon positive/negative edge of the clock signal, or any other criteria. This is done by passing a block to the @RubyVpi::init_bench@ method (see "the API reference documentation":../ref/ruby/classes/RubyVpi.html for details).
 
-  Details: |
+
+    h2. Details
+
     * Fixed a major instability bug that was randomly causing segmentation faults and pthread assertion failures.
 
       The problem was that the @$ruby_init@ system task/function was mischeviously unlocking a pthread mutex. From then onward, all code assumed that the mutex was still locked -- but in reality, the mutex was already unlocked.
@@ -187,10 +207,12 @@
 
   Date: 2006-12-22
 
-  Summary: |
+  Record: |
     This release adds interactive debugging support, adds new sections to the user manual, and cleanses some internals.
 
-  Notice: |
+
+    h2. Caution
+
     * The <tt>lib/ruby-vpi/rspec.rb</tt> and <tt>lib/ruby-vpi/xx.rb</tt> files have been removed because they are no longer necessary.
 
     * rSpec 0.7.0 or newer is now required because the sample tests utilize the @should ==@ syntax.
@@ -202,7 +224,9 @@
 
     * Status messages, which are shown during initialization of a Ruby bench, now appear in your simulator's log files.
 
-  Details: |
+
+    h2. Details
+
     * ruby-debug is now a gem dependency for Ruby-VPI.
 
     * Added documentation about "test runners":manual.html#usage.test-runner and the "interactive debugger":manual.html#usage.debugger in the user manual.
@@ -217,7 +241,7 @@
 
   Date: 2006-12-18
 
-  Summary: |
+  Record: |
     This release fixes a problem in the 12.0.1 gem, where the *generate_test.rb* and *header_to_ruby.rb* tools were not being installed properly.
 
 
@@ -226,13 +250,17 @@
 
   Date: 2006-12-18
 
-  Summary: |
+  Record: |
     This release fixes a problem in code coverage analysis.
 
-  Acknowledgment: |
-    Thanks to Mauricio Fernandez for helping me solve the problem.
 
-  Details: |
+    h2. Thanks
+
+    * Mauricio Fernandez helped me solve the problem with code coverage analysis.
+
+
+    h2. Details
+
     Previously, code coverage reports were not providing any useful information because they were being generated _before_ the test had a chance to run. This problem has been fixed -- code coverage reports are now generated _after_ the test has finished running.
 
     This problem occurred because I had forgotten that @Kernel.at_exit@ invokes the blocks passed to it in _reverse_ order. So, the coverage report was being generated before Test::Unit had a chance to run (it also uses @Kernel.at_exit@).
@@ -243,10 +271,12 @@
 
   Date: 2006-12-07
 
-  Summary: |
+  Record: |
     This release adds support for the "test/spec":http://chneukirchen.org/blog/archive/2006/10/announcing-test-spec-0-2-a-bdd-interface-for-test-unit.html library, fixes some bugs, and improves the user manual and generated tests.
 
-  Notice: |
+
+    h2. Caution
+
     * Icarus Verilog 0.8 has been demoted to a "mostly acceptable":manual.html#setup.reqs status.
 
     * Generated Verilog benches no longer supply the <tt>-w</tt> option to the @$ruby_init@ task.
@@ -262,7 +292,9 @@
     ** now supplies a third argument to the @MERGER@ command.
     ** no longer replaces existing files with newly generated content during the *update* action. Instead, it now writes the newly generated output to a <tt>.new</tt> file and then invokes the @MERGER@ command.
 
-  Details: |
+
+    h2. Details
+
     * The @Vpi::Handle@ class has two new methods: @x!@ and @z!@, which set the handle's logic value to _unknown_ and _high impedance_ respectively.
 
     * The tests for the simple up-counter example were randomly failing because the specifications were not asserting the design's @reset@ signal long enough. So the design was getting into weird states and behaving in a non-deterministic way. This problem has been fixed.
@@ -292,16 +324,22 @@
 
   Date: 2006-11-15
 
-  Summary: |
+  Record: |
     This release fixes a bug in the automated test generator, unifies the user manual and the website into a single documentation system, and adds support for rSpec 0.7.2.
 
-  Acknowledgment: |
-    Thanks to John Burr for finding the bug in the automated test generator.
 
-  Notice: |
+    h2. Thanks
+
+    * John Burr found the bug in the automated test generator.
+
+
+    h2. Caution
+
     * The user manual is now available _only_ in HTML format. If you still wish to have a plain-text version, you can use a text-based browser, such as "lynx":http://lynx.browser.org/, to perform the necessary conversion.
 
-  Details: |
+
+    h2. Details
+
     * The automated test generator no longer crashes when parsing a Verilog module declaration that contains multiple module parameters.
 
     * The user manual and the website are now written using a custom documentation system based on RedCloth and ERB instead of DocBook-XML. This makes it easier to edit the user manual and reuse its content in other areas of the website.
@@ -312,16 +350,22 @@
 
   Date: 2006-11-08
 
-  Summary: |
+  Record: |
     This release fixes a bug in generated benches, improves the "the @Vpi::Handle@ class":../ref/ruby/classes/Vpi/Handle.html, and improves performance by roughly 20%.
 
-  Acknowledgment: |
-    Thanks to Matt Fischler for finding the bug in generated benches (see below).
 
-  Notice: |
+    h2. Thanks
+
+    * Matt Fischler found the bug in generated benches (see below).
+
+
+    h2. Caution
+
     * A bug in generated Verilog and Ruby benches, which caused the <pre>ruby: no such file to load -- ruby-vpi (LoadError)</pre> error, has been fixed. Please regenerate your tests to apply this bug fix to your tests.
 
-  Details: |
+
+    h2. Details
+
     * The class @SWIG::TYPE_p_unsigned_int@ has been aliased as @Vpi::Handle@ for easier access.
 
     * @Vpi::Handle.to_s@ and @Vpi::Handle.inspect@ now produce more informative output. For example, what used to appear as <pre>#<SWIG::TYPE_p_unsigned_int:0x2aaab6574fa0></pre> now appears as <pre>#<Vpi::Handle vpiModule fullName=counter_rspec_bench, size=-1, file=counter_rspec_bench.v, lineNo=2></pre> in this release.
@@ -347,17 +391,21 @@
 
   Date: 2006-11-05
 
-  Summary: |
+  Record: |
     This release shortens generated Ruby benches and uses the less confusing notation for defining "singleton methods":http://wiki.rubygarden.org/Ruby/page/show/SingletonTutorial in generated designs and prototypes.
 
-  Notice: |
+
+    h2. Caution
+
     * The arguments for the "@RubyVPI.init_bench@ method":../ref/ruby/classes/RubyVpi.html have changed.
 
     * *generate_test.rb* no longer emits undocumented status indicators: _name_ and _format_.
 
     * The source code is no longer distributed as a *zip* package, because it seems to be quite underutilized in comparison to the *tgz* and *gem* packages.
 
-  Details: |
+
+    h2. Details
+
     * Generated Ruby benches have been shortened to just _one_ line of code!
 
     * The less confusing notation of <code>def some_object.a_singleton_method
@@ -377,13 +425,17 @@
 
   Date: 2006-11-05
 
-  Summary: |
+  Record: |
     This release adds the ability to access a handle's children and reduces the amount of code produced by the automated test generator.
 
-  Acknowledgment: |
-    Thanks to Matt Fischler for finding the problem of misdirected compilation errors in Verilog benches.
 
-  Notice: |
+    h2. Thanks
+
+    * Matt Fischler found the problem of misdirected compilation errors in Verilog benches.
+
+
+    h2. Caution
+
     * The way in which Ruby-VPI and generated tests interact has changed: the design is now a VPI handle object and the <tt>design.rb</tt> and <tt>proto.rb</tt> files define "singleton methods":http://wiki.rubygarden.org/Ruby/page/show/SingletonTutorial for that object.
     ** I suggest that you regenerate your existing tests (just run *generate_test.rb* again) whilst employing the service of a text merging tool (see the user manual).
 
@@ -392,7 +444,9 @@
     * *generate_test.rb* no longer accepts the <pre>-s</pre> and <pre>-u</pre> options. Use their longer counterparts <pre>--rspec</pre> and <pre>--xunit</pre> instead.
 
 
-  Details: |
+
+    h2. Details
+
     h3. Automated test generator
 
     * Generated Verilog benches no longer divert compilation errors from Verilog design files. That is, if the Verilog simulator finds compilation errors in a Verilog design file, it will report that the Verilog design file is at fault (instead of reporting that the generated Verilog bench is at fault).
@@ -418,16 +472,22 @@
 
   Date: 2006-10-28
 
-  Summary: |
+  Record: |
     This release improves the automated test generator and adds new content to the user manual.
 
-  Acknowledgment: |
-    Thanks to Matt Fischler for helping test and debug the installation of Ruby-VPI on Windows.
 
-  Notice: |
+    h2. Thanks
+
+    * Matt Fischler helped test and debug the installation of Ruby-VPI on Windows.
+
+
+    h2. Caution
+
     * The command-line options for *generate_test.rb* have changed. Run the command <pre>generate_test.rb --help</pre> for details.
 
-  Details: |
+
+    h2. Details
+
     * Test runners now attempt to resolve paths in @SIMULATOR_SOURCES@ by searching for them within the directories specified in @SIMULATOR_INCLUDES@.
 
     * Synopsys VCS is now used in a better way (via the <pre>-load</pre> option).
@@ -453,16 +513,22 @@
 
   Date: 2006-10-24
 
-  Summary: |
+  Record: |
     This release simplifies configuration of generated tests.
 
-  Acknowledgment: |
-    Thanks to "students in CMPE-126":http://www.soe.ucsc.edu/classes/cmpe126/Fall06/ for their comments.
 
-  Notice: |
+    h2. Thanks
+
+    * "Students in the CMPE-126 class":http://www.soe.ucsc.edu/classes/cmpe126/Fall06/ for their comments and criticisms.
+
+
+    h2. Caution
+
     * Generated runners now have a @SIMULATOR_INCLUDES@ array, whose entries specify places where Verilog source files, needed by the Verilog design, reside.
 
-  Details: |
+
+    h2. Details
+
     * Generated Verilog benches now inherit all @`include@ and @`define@ directives from the Verilog design in a simpler manner.
     * A generated test no longer requires its Verilog design to reside in the same directory.
     * The sample tests have been updated accordingly.
@@ -473,13 +539,17 @@
 
   Date: 2006-10-21
 
-  Summary: |
+  Record: |
     This release adds an integer library and renames the vpi_util library.
 
-  Notice: |
+
+    h2. Caution
+
     * The *vpi_util* library has been renamed to *vpi*. This change should not affect your code unless you explicitly imported this library via @require 'ruby-vpi/vpi_util'@. In which case, you should update your code to use @require 'ruby-vpi/vpi'@ accordingly.
 
-  Details: |
+
+    h2. Details
+
     * An integer library has been added to simplify common tasks related to hardware and the binary number system. You can import this library for use via @require 'ruby-vpi/integer'@.
 
 
@@ -488,16 +558,20 @@
 
   Date: 2006-10-13
 
-  Summary: |
+  Record: |
     This release renames some identifiers for consistency, updates the documentation, and improves integration with RubyGems.
 
-  Notice: |
+
+    h2. Caution
+
     * The @RubyVPI@ module has been renamed to @RubyVpi@.
 
     * The @PROTO@ environment variable has been renamed to @PROTOTYPE@.
     ** In addition to using *unset*, you can now disable simulation of the prototype by assigning an empty value to this variable.
 
-  Details: |
+
+    h2. Details
+
     * We now use "Darcs":http://darcs.net for revision control, instead of Subversion. The source repository can now be accessed at "http://ruby-vpi.rubyforge.org/src/ruby-vpi":http://ruby-vpi.rubyforge.org/src/ruby-vpi.
 
     * The source code is now distributed in tar.gz and zip form, in addition to gem.
@@ -515,15 +589,19 @@
 
   Date: 2006-09-30
 
-  Summary: |
+  Record: |
     This release fixes a bug in generated Verilog benches, includes parsed constants in generated tests, and adds new methods to handles.
 
-  Notice: |
+
+    h2. Caution
+
     * Handles now have two new methods:
     ** @handle.x?@ checks if the logic value is "don't care"
     ** @handle.z?@ checks if the logic value is high impedance
 
-  Details: |
+
+    h2. Details
+
     * Module instantiation code in generated Verilog benches has been fixed. Whitespace between the module type and instance variable was missing.
 
     * The test generator tool now provides parsed Verilog constants and include-directives in generated Verilog benches; and parsed Verilog constants in generated Ruby designs.
@@ -537,13 +615,17 @@
 
   Date: 2006-09-15
 
-  Summary: |
+  Record: |
     This release adds initial support for code coverage analysis via the "rcov library":http://eigenclass.org/hiki.rb?rcov.
 
-  Acknowledgment: |
-    Thanks to Mauricio Fernandez for helping me use rcov without its runner.
 
-  Details: |
+    h2. Thanks
+
+    * Mauricio Fernandez helped me use rcov without its runner.
+
+
+    h2. Details
+
     * Added initial support (full capabilites of the rcov library, such as its various analysis modes, are not yet utilized) for code coverage analysis, which can be enabled by setting the @COVERAGE@ environment variable to a non-empty value before running a test.
     ** For example, you can run a test with the GPL Cver simulator while enabling the generation of code coverage reports as follows: <pre>export COVERAGE=1; rake cver</pre>
 
@@ -555,10 +637,12 @@
 
   Date: 2006-08-29
 
-  Summary: |
+  Record: |
     This release simplifies running of multiple tests, restores compatibility with Synopsys VCS, and better integrates with RubyGems.
 
-  Details: |
+
+    h2. Details
+
     * Added <tt>lib/ruby-vpi/runner_proxy.rb</tt> library which, when embedded into a Rakefile, runs all generated tests in the working directory with any specified arguments. For example, have a look at the <tt>samp/counter/Rakefile</tt> file.
 
     * Fixed a bug that prevented one from running tests with Synopsys VCS.
@@ -575,10 +659,12 @@
 
   Date: 2006-08-29
 
-  Summary: |
+  Record: |
     This release distributes Ruby-VPI as a gem, improves portability of generated tests, and fixes a bug.
 
-  Notice: |
+
+    h2. Caution
+
     * @put_value()@ now accomodates register value overflows when verifying the value it has written.
 
     * The test generator's templates and the examples have been updated as follows:
@@ -589,7 +675,9 @@
 
     * The <tt>src/</tt> directory has been renamed to <tt>ext/</tt> to follow RubyGems convention.
 
-  Details: |
+
+    h2. Details
+
     * Ruby-VPI is now distributed only as a "source gem":http://www.rubygems.org. You can decompress the gem without installing it onto your system by running the command <pre>gem install -i output_directory ruby-vpi-7.0.0.gem</pre>. In addition, you can still obtain the source code directly from the Subversion repository.
 
     * The tools in <tt>bin/</tt> become available in your system's <tt>bin/</tt> directory when the gem is installed.
@@ -607,14 +695,18 @@
 
   Date: 2006-08-27
 
-  Summary: |
+  Record: |
     This release adds support for the GPL Cver simulator, provides both binary and source packages, and explicitly defines the version numbering system.
 
-  Notice: |
+
+    h2. Caution
+
     * Ruby-VPI now only needs to be built once.
     ** You can run tests with different Verilog simulators without having to re-compile Ruby-VPI.
 
-  Details: |
+
+    h2. Details
+
     * The GPL Cver simulator is now supported.
 
     * Release packages are now available in both source and binary form.
@@ -642,15 +734,19 @@
 
   Date: 2006-08-26
 
-  Summary: |
+  Record: |
     This release beautifies generated tests, adds checks to find signal width bugs, and includes a new tool.
 
-  Notice: |
+
+    h2. Caution
+
     * @put_value()@ now returns the value it puts. Therefore, it is easier to chain together a series of assignments: @foo.intVal = bar.intVal = baz.intVal = 10@
 
     * @put_value()@ now verifies that the value it puts was written correctly. This helps to find bugs regarding invalid assumptions about the number of bits supported by a signal.
 
-  Details: |
+
+    h2. Details
+
     * The test generator now uses ERB templates which ensures nice indentation of generated output.
 
     * The test generator now decouples Ruby-VPI paths from Verilog benches via the RUBYLIB environment variable.
@@ -665,10 +761,12 @@
 
   Date: 2006-08-09
 
-  Summary: |
+  Record: |
     This release simplifies generated tests and fixes a bug.
 
-  Details: |
+
+    h2. Details
+
     * The test generator now produces simpler Ruby benches and specifications.
     ** A template used by generated specifications has been added.
     ** The counter example and tutorial have also been simplified accordingly.
@@ -681,10 +779,12 @@
 
   Date: 2006-08-07
 
-  Summary: |
+  Record: |
     This release adds support and documentation for rapid prototyping of Verilog designs in Ruby.
 
-  Notice: |
+
+    h2. Caution
+
     * The directory structure has been reorganized as follows:
     ** <tt>ext</tt> &rarr; <tt>src</tt>
     ** <tt>tools</tt> &rarr; <tt>bin</tt>
@@ -692,7 +792,9 @@
 
     * All template files have been moved into the <tt>tpl</tt> directory.
 
-  Details: |
+
+    h2. Details
+
     * Support for prototyping designs in Ruby, before they are implemented in Verilog, has been added.
     ** The _same_ specification can be used to verify both prototype _and_ design! :-)
     ** The tutorial in the user manual has been updated to discuss prototyping.
@@ -706,13 +808,17 @@
 
   Date: 2006-08-04
 
-  Summary: |
+  Record: |
     This release fixes unreadable syntax coloring in the user manual.
 
-  Acknowledgment: |
-    * Thanks to Todd Nagengast and Matt Fischler for notifying me about unreadable text in the user manual.
 
-  Details: |
+    h2. Thanks
+
+    * Todd Nagengast and Matt Fischler notified me about unreadable text in the user manual.
+
+
+    h2. Details
+
     * Source code comments in the user manual are now readable.
 
     * The <tt>README</tt> and <tt>HISTORY</tt> files have been converted to "textile":http://www.textism.com/tools/textile/ format.
@@ -723,13 +829,17 @@
 
   Date: 2006-07-29
 
-  Summary: |
+  Record: |
     This release adds a tutorial to the user manual, and improves the tools and examples.
 
-  Acknowledgment: |
-    * Thanks to Phil Tomson for correcting the URL of the RHDL website, in the user manual.
 
-  Details: |
+    h2. Thanks
+
+    * Phil Tomson corrected the URL of the RHDL website in the user manual.
+
+
+    h2. Details
+
     h3. User manual
 
     * A tutorial, based on the counter example, has been added to the user manual.
@@ -758,18 +868,24 @@
 
   Date: 2006-07-22
 
-  Summary: |
+  Record: |
     This release enhances the VPI utility layer and adds new content to the user manual.
 
-  Acknowledgment: |
-    * Thanks to Jan Decaluwe for correcting the description of MyHDL in the user manual.
 
-  Notice: |
+    h2. Thanks
+
+    * Jan Decaluwe corrected the description of MyHDL in the user manual.
+
+
+    h2. Caution
+
     * SWIG is no longer required for users because its output is included in the release package.
 
     * The @handle.value@ and @handle.value=@ methods have been removed.
 
-  Details: |
+
+    h2. Details
+
     * The VPI utility layer provides access to VPI properties of handles in a "simpler, more powerful way":manual.html#background.org.vpi.
 
     ** All VPI properties, except delay values, are now accessible from a handle.
@@ -786,18 +902,24 @@
 
   Date: 2006-05-25
 
-  Summary: |
+  Record: |
     This release adds a comprehensive user manual, upgrades from make to "Rake":http://rake.rubyforge.org, and improves the test generation tool.
 
-  Acknowledgment: |
-    * Thanks to Jose Renau for solving the problem of strange delays that occurred whenever a design was reset.
 
-  Notice: |
+    h2. Thanks
+
+    * Jose Renau solved the problem of strange delays that occurred whenever a design was reset.
+
+
+    h2. Caution
+
     * Rake has replaced the role of *make*. All makefiles have been converted accordingly.
 
     * The test generation tool now generates multiple files (runner, bench, design, spec) and makes backups of existing files. See its help information for details.
 
-  Details: |
+
+    h2. Details
+
     * A comprehensive user manual, written in DocBook-XML, has been added.
 
     * Support for RSpec 0.5.4 has been added.
@@ -813,13 +935,17 @@
 
   Date: 2006-05-13
 
-  Summary: |
+  Record: |
     This release adds a tool which generates test benches, and adds support for "Behavior Driven Development":http://behaviour-driven.org via the "RSpec":http://rspec.rubyforge.org library.
 
-  Acknowledgment: |
-    * Thanks to Scott L Holmes for helping me "use the RSpec library without its runner":http://article.gmane.org/gmane.comp.lang.ruby.general/150087 program.
 
-  Details: |
+    h2. Thanks
+
+    * Scott L Holmes helped me "use the RSpec library without its runner":http://article.gmane.org/gmane.comp.lang.ruby.general/150087 program.
+
+
+    h2. Details
+
     * A tool, which generates most of a Ruby-VPI test bench from a Verilog 2001 module declaration, has been added.
 
     * Ability to use RSpec in a test bench has been added.
@@ -836,13 +962,17 @@
 
   Date: 2006-04-28
 
-  Summary: |
+  Record: |
     This release adds simple ways of reading and writing values to VPI handles, adds documentation for the VPI utility layer, and fixes the pipelined ALU example.
 
-  Notice: |
+
+    h2. Caution
+
     * The *msim* Makefile target for Mentor Modelsim has been renamed back to *vsim*.
 
-  Details: |
+
+    h2. Details
+
     * Simple, consistent ways of reading and writing values to handles have been added to the VPI utility layer. These ways are described in the @SWIG::TYPE_p_unsigned_int@ class' documentation.
 
     * The makefiles now use the *rbconfig* library to determine the default compiler and linker flags for Ruby.
@@ -863,16 +993,22 @@
 
   Date: 2006-04-23
 
-  Summary: |
+  Record: |
     This release adds support for the _entire_ "IEEE Std. 1364-2005":http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945 VPI interface, and updates the examples into unit tests.
 
-  Acknowledgment: |
-    * Thanks to the "SWIG developers":http://www.swig.org/guilty.html for making this project _much_ easier! ;-)
 
-  Notice: |
+    h2. Thanks
+
+    * The "SWIG developers":http://www.swig.org/guilty.html made this project _much_ easier! ;-)
+
+
+    h2. Caution
+
     * The *vsim* Makefile target for Mentor Modelsim has been renamed to *msim*.
 
-  Details: |
+
+    h2. Details
+
     * The Ruby interface to VPI is now generated by "SWIG":http://www.swig.org.
     ** The main @VPI@ module has been renamed to @Vpi@.
     ** The @VPI::Handle@ class has been removed.
@@ -896,16 +1032,22 @@
 
   Date: 2006-04-17
 
-  Summary: |
+  Record: |
     This release fixes major bugs, adds support for Mentor Modelsim, and removes the @$ruby_task@ callback.
 
-  Acknowledgment: |
-    * Thanks to Nobu Nakada for explaining the "cross-thread violation on rb_gc()":http://article.gmane.org/gmane.comp.lang.ruby.general/146653 error.
 
-  Notice: |
+    h2. Thanks
+
+    * Nobu Nakada explained the "cross-thread violation on rb_gc()":http://article.gmane.org/gmane.comp.lang.ruby.general/146653 error.
+
+
+    h2. Caution
+
     * Removed @$ruby_task@ callback and ability to dynamically register system tasks from Ruby because inter-process communication is complicated at present.
 
-  Details: |
+
+    h2. Details
+
     * The "cross-thread violation on rb_gc()" error has been fixed.
     ** The "stack level too deep (SystemStackError)" error has been fixed.
     ** The test/unit library can be used in Ruby test bench.
@@ -924,18 +1066,22 @@
 
   Date: 2006-02-26
 
-  Summary: |
+  Record: |
     This release adds enough Verilog VPI functionality to make Ruby-VPI usable for simple test benches:
     * access Verilog objects through VPI handles
     * read and change VPI handle values
     * stop, finish, restart the simulation
 
-  Acknowledgment: |
-    * Thanks to Jose Renau for helping me debug how Synopsys VCS works with Verilog VPI. The problem was that VCS required calltf signatures to be @void (*)(void)@, whereas the Verilog standard defines a calltf signature as @PLI_INT32 (*)(PLI_BYTE8*)@.
 
-    * Thanks to Ross Bamford, Eric Hodel, and Yukihiro Matsumoto for "helping me discover":http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/180662 why the @SystemStackError@ was happening.
+    h2. Thanks
 
-  Details: |
+    * Jose Renau helped me debug how Synopsys VCS works with Verilog VPI. The problem was that VCS required calltf signatures to be @void (*)(void)@, whereas the Verilog standard defines a calltf signature as @PLI_INT32 (*)(PLI_BYTE8*)@.
+
+    * Ross Bamford, Eric Hodel, and Yukihiro Matsumoto "helped me discover":http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/180662 why the @SystemStackError@ was happening.
+
+
+    h2. Details
+
     * Implemented some Verilog VPI functionality:
     ** @VPI::handle_by_name(string, VPI::Handle)@ &rarr; @VPI::Handle@
     ** @VPI::handle_by_name(string)@ &rarr; @VPI::Handle@
@@ -966,10 +1112,12 @@
 
   Date: 1999-10-31
 
-  Summary: |
+  Record: |
     This is Kazuhiro HIWADA's initial testing release of Ruby-VPI. See its "original announcement":http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/18193 and "source code":http://rubyforge.org/frs/?group_id=1339&release_id=8852.
 
-  Details: |
+
+    h2. Details
+
     * Added ability to relay control from Verilog test bench to Ruby (using @$ruby_callback@) and vice versa (using @PLI::relay_Verilog@).
 
     * Tested and developed using Ruby 1.4 and Verilog-XL from Cadence systems, on a SPARC machine running Solaris 2.6.

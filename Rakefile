@@ -175,18 +175,19 @@ task :default => :build
   desc 'Generate release announcement.'
   task :ann => 'doc/history.rb' do |t|
     require t.prerequisites[0]
+
+    $: << File.join(File.dirname(__FILE__), 'doc', 'lib')
+    require 'doc_proxy'
+
     text = [
       PROJECT_DETAIL,
-      "* " + PROJECT_URL,
+      "* See #{PROJECT_URL} for details.",
       "---",
-      format_history_entry(@history.first)
+      @history.first
     ].join "\n\n"
 
-    require 'doc/lib/doc_format'
-    html = text.redcloth
-
     IO.popen('w3m -T text/html -dump -cols 60', 'w+') do |pipe|
-      pipe.write html
+      pipe.write text.to_html
       pipe.close_write
       puts pipe.read
     end

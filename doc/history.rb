@@ -1,17 +1,13 @@
 require 'yaml'
-@history = YAML.load_file(File.join(File.dirname(__FILE__), 'history.yml'))
 
-# note: @history is an array of hashes
+@history = YAML.load_file(File.join(File.dirname(__FILE__), 'history.yaml')).each do |entry|
+  class << entry
+    def to_s
+      %{<h1 id="#{self['Version']}">Version #{self['Version']} (#{self['Date']})</h1>\n\n#{self['Record']}}
+    end
 
-
-def format_history_entry aEntry
-  output = "h1(##{aEntry['Version']}). Version #{aEntry['Version']} (#{aEntry['Date']})\n\n"
-
-  %w[Summary Acknowledgment Notice Details].each do |key|
-    if content = aEntry[key]
-      output << "h2. #{key}\n\n#{content}\n\n"
+    def to_html
+      to_s.to_html
     end
   end
-
-  output
 end

@@ -1,5 +1,5 @@
 <%
-  # note: this file depends on constants defined in Rakefile
+  # NOTE: this file depends on constants defined in Rakefile
 
   require 'history'
   require 'date'
@@ -13,7 +13,7 @@
   <description><%= PROJECT_DETAIL %></description>
 <%
   @history.each do |entry|
-    link = HISTORY_URL + '#' + entry['Version']
+    link = HISTORY_URL + '#' + entry['Version'].to_html_anchor
 
     stamp = Time.parse entry['Date'].to_s
     rfc822 = stamp.strftime "%a, %d %b %Y 00:00:00 %Z"
@@ -22,7 +22,7 @@
     <title>Version <%= entry['Version'] %> released</title>
     <link><%= link %></link>
     <guid><%= link %></guid>
-    <description><%=ERB::Util.h format_history_entry(entry).to_html %></description>
+    <description><%=ERB::Util.h entry.to_html %></description>
     <pubDate><%= rfc822 %></pubDate>
   </item>
 <% end %>
