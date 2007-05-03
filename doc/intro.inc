@@ -88,7 +88,47 @@ p(title). Powerful
 * Uses "rcov":http://eigenclass.org/hiki.rb?rcov for test "coverage analysis and report generation":manual.html#usage.test-runner.env-vars.
 
 
-* Gives you the _freedom_ to study, modify, and distribute this software, in accordance with the "GNU General Public License":http://www.gnu.org/copyleft/gpl.html.
+h2(#intro.reqs). Requirements
+
+The following software is necessary in order to use Ruby-VPI.
+
+p(title). Verilog simulator
+
+Ruby-VPI is known to work with the following simulators. However, you should be able to use it with any Verilog simulator that supports VPI.
+
+* "Synopsys VCS":http://www.synopsys.com/products/simulation/simulation.html
+ - any version that supports the <tt>-load</tt> option is acceptable.
+
+* "Mentor Modelsim":http://www.model.com
+ - any version that supports the <tt>-pli</tt> option is acceptable.
+
+* "Cadence NC-Sim / NC-Verilog":http://www.cadence.com/products/functional_ver/nc-verilog/
+ - any version that supports the <tt>+loadvpi</tt> option is acceptable.
+
+* "GPL Cver":http://www.pragmatic-c.com/gpl-cver/
+ - version 2.11a or newer is acceptable.
+
+* "Icarus Verilog":http://www.icarus.com/eda/Verilog/
+  - version 0.8 is _mostly_ acceptable -- you *will not* be able to "access child handles through method calls":manual.html#background.org.vpi.util. The reason for this limitation is explained "in the user manual":#problems.ivl.vpi_handle_by_name.absolute-paths.
+
+p(title). Compilers
+
+* "make":http://en.wikipedia.org/wiki/Make
+  - any flavor should be acceptable.
+
+* C compiler
+  - the "GNU Compiler Collection (GCC)":http://www.gnu.org/software/gcc/ is preferred, but any C compiler should be acceptable.
+
+* "Ruby":http://www.ruby-lang.org
+  - version 1.8 or newer, including header and linkable object files for building extensions, is necessary. You can install Ruby by following "these instructions":http://www.rubygarden.org/faq/section/show/3.
+
+p(title). Libraries
+
+* "POSIX threads (pthreads)":http://en.wikipedia.org/wiki/Pthreads
+  - header and linkable object files, and operating system support for this library are necessary.
+
+* "RubyGems":http://rubyforge.org/frs/?group_id=126
+  - any recent version should be acceptable. You can install RubyGems by following "these instructions":http://www.rubygems.org/read/chapter/3.
 
 
 h2(#intro.applications). Applications
@@ -133,3 +173,26 @@ bq. @puts some_register@
 * Simulate fifteen clock cycles:
 
 bq. @15.times { simulate }@
+
+
+h2(#intro.license). License
+
+<%= File.read '../LICENSE' %>
+
+
+h2(#intro.related-works). Related works
+
+* "JOVE":http://jove.sourceforge.net is a Java interface to VPI.
+* "Teal":http://teal.sourceforge.net is a C++ interface to VPI.
+* "ScriptEDA":http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/ is a Perl, Python, and Tcl interface to VPI.
+* "RHDL":http://rhdl.rubyforge.org is a hardware description and verification language based on Ruby.
+* "MyHDL":http://myhdl.jandecaluwe.com is a hardware description and verification language based on Python, which features conversion to Verilog and co-simulation.
+
+
+h3(#intro.related-works.pli). Ye olde PLI
+
+The following projects utilize the archaic *tf* and *acc* PLI interfaces, which have been officially deprecated in IEEE Std 1364-2005.
+
+* "ScriptSim":http://www.nelsim.com is a Perl, Python, and Tcl/Tk interface to PLI.
+* "Verilog::Pli":http://www.veripool.com/verilog-pli.html is a Perl interface to PLI.
+* "JPLI":http://www.time-rover.com/jpli/ is a proprietary Java interface to PLI.

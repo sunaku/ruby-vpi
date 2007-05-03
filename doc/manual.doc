@@ -21,29 +21,6 @@ h1(#intro). Introduction
 <%= import 'intro.inc' %>
 
 
-h2(#intro.license). License
-
-Ruby-VPI is "free software":http://en.wikipedia.org/wiki/Free_software ; you can redistribute it and/or modify it under the terms of the "GNU General Public License":http://www.gnu.org/copyleft/gpl.html as published by the "Free Software Foundation":http://www.fsf.org ; either version 2 of the License, or (at your option) any later version.
-
-
-h2(#intro.related-works). Related works
-
-* "JOVE":http://jove.sourceforge.net is a Java interface to VPI.
-* "Teal":http://teal.sourceforge.net is a C++ interface to VPI.
-* "ScriptEDA":http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/ is a Perl, Python, and Tcl interface to VPI.
-* "RHDL":http://rhdl.rubyforge.org is a hardware description and verification language based on Ruby.
-* "MyHDL":http://myhdl.jandecaluwe.com is a hardware description and verification language based on Python, which features conversion to Verilog and co-simulation.
-
-
-h3(#intro.related-works.pli). Ye olde PLI
-
-The following projects utilize the archaic *tf* and *acc* PLI interfaces, which have been officially deprecated in IEEE Std 1364-2005.
-
-* "ScriptSim":http://www.nelsim.com is a Perl, Python, and Tcl/Tk interface to PLI.
-* "Verilog::Pli":http://www.veripool.com/verilog-pli.html is a Perl interface to PLI.
-* "JPLI":http://www.time-rover.com/jpli/ is a proprietary Java interface to PLI.
-
-
 h1(#background). Background
 
 
@@ -124,37 +101,11 @@ When you extract a release package, the following is what you would expect to fi
 
 h2(#setup.reqs). Requirements
 
-The following software is necessary in order to use Ruby-VPI.
-
-* Verilog simulator
-  - Ruby-VPI is known to work with the following simulators. However, you should be able to use it with any Verilog simulator that supports VPI.
-** "GPL Cver":http://www.pragmatic-c.com/gpl-cver/
-  - version 2.11a or newer is acceptable.
-** "Icarus Verilog":http://www.icarus.com/eda/Verilog/
-  - version 0.8 is _mostly_ acceptable -- you *will not* be able to "access child handles through method calls":#background.org.vpi.util. The reason for this limitation is explained in <xref #problems.ivl.vpi_handle_by_name.absolute-paths>.
-** "Synopsys VCS":http://www.synopsys.com/products/simulation/simulation.html
-  - any version that supports the <tt>-load</tt> option is acceptable.
-** "Mentor Modelsim":http://www.model.com
-  - any version that supports the <tt>-pli</tt> option is acceptable.
+See <xref#intro.reqs> above.
 
 <% tip "Add support for your Verilog simulator" do %>
 Write a "support request":http://rubyforge.org/tracker/?group_id=1339 for your simulator, while providing a sample transcript of the commands you use to run a test with your simulator, and we will add support for your simulator in the next release!
 <% end %>
-
-* *make*
-  - any distribution should be acceptable.
-
-* C compiler
-  - the "GNU Compiler Collection (GCC)":http://www.gnu.org/software/gcc/ is preferred, but any C compiler should be acceptable.
-
-* "POSIX threads (pthreads)":http://en.wikipedia.org/wiki/Pthreads
-  - header and linkable object files, and operating system support for this library are necessary.
-
-* "Ruby":http://www.ruby-lang.org
-  - version 1.8 or newer, including header and linkable object files for building extensions, is necessary. You can install Ruby by following "these instructions":http://www.rubygarden.org/faq/section/show/3.
-
-* "RubyGems":http://rubyforge.org/frs/?group_id=126
-  - any recent version should be acceptable. You can install RubyGems by following "these instructions":http://www.rubygems.org/read/chapter/3.
 
 
 h2(#setup.recom). Recommendations
