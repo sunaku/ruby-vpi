@@ -33,6 +33,10 @@ SIMULATOR_ARGUMENTS = {
 
   # Mentor Modelsim
   :vsim => '',
+
+  # Cadence NC-Sim
+  :ncsim => '',
+
 }
 
 # This task is invoked _before_ the simulator runs.
