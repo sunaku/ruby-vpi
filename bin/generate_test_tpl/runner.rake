@@ -22,17 +22,11 @@ SIMULATOR_TARGET = '<%= aOutputInfo.verilogBenchName %>'
 #   :cver => %w[these are also separate arguments],
 #
 SIMULATOR_ARGUMENTS = {
-  # GPL Cver
-  :cver => '',
+<% RubyVpi::Config::SIMULATORS.each_pair do |id, sim| %>
+  # <%= sim.name %>
+  :<%= id %> => '',
 
-  # Icarus Verilog
-  :ivl => '',
-
-  # Synopsys VCS
-  :vcs => '',
-
-  # Mentor Modelsim
-  :vsim => '',
+<% end %>
 }
 
 # This task is invoked _before_ the simulator runs.

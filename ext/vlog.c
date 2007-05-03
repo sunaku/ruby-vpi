@@ -45,7 +45,7 @@ void vlog_startup() {
 
 void (*vlog_startup_routines[])() = { vlog_startup, NULL };
 
-#if defined(PRAGMATIC_CVER) || defined(SYNOPSYS_VCS)
+#if defined(PRAGMATIC_CVER) || defined(SYNOPSYS_VCS) || defined(CADENCE_NCSIM)
   /**
     Invokes each routine specified in the vlog_startup_routines array.
   */

@@ -122,3 +122,12 @@ end
 
 CLEAN.include 'work'
 CLOBBER.include 'transcript'
+
+
+desc "Simulate with #{SIMULATORS[:ncsim].name}."
+task :ncsim => :setup do
+  sh 'ncverilog', SIMULATOR_ARGUMENTS[:ncsim], "+loadvpi=#{object_file_path(:ncsim)}:#{BOOTSTAP_FUNC}", '+access+rwc', expand_include_dir_options(:ncsim), SIMULATOR_SOURCES
+end
+
+CLEAN.include 'INCA_libs'
+CLOBBER.include 'ncverilog.log', 'ncsim.log'

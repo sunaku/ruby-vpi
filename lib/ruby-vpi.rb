@@ -143,6 +143,7 @@ module RubyVpi
       :ivl    => Simulator.new('Icarus Verilog',  '-DICARUS_VERILOG',   ''),
       :vcs    => Simulator.new('Synopsys VCS',    '-DSYNOPSYS_VCS',     ''),
       :vsim   => Simulator.new('Mentor Modelsim', '-DMENTOR_MODELSIM',  ''),
+      :ncsim  => Simulator.new('Cadence NC-Sim',  '-DCADENCE_NCSIM',    ''),
     }
   end
 end

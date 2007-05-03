@@ -31,6 +31,7 @@
 # Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
+require 'ruby-vpi' # for project info
 require 'ruby-vpi/verilog_parser'
 require 'fileutils'
 require 'digest/md5'
