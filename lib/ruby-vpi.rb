@@ -28,9 +28,9 @@ module RubyVpi
       raise 'Unable to determine name of test.'
     end
 
-    useDebugger = !(ENV['DEBUG'] || '').empty?
-    useCoverage = !(ENV['COVERAGE'] || '').empty?
-    usePrototype = !(ENV['PROTOTYPE'] || '').empty?
+    useDebugger  = ENV['DEBUG'].to_i     == 1
+    useCoverage  = ENV['COVERAGE'].to_i  == 1
+    usePrototype = ENV['PROTOTYPE'].to_i == 1
 
     # set up code coverage analysis
       # XXX: this is loaded *before* RCov to prevent coverage statistics about
