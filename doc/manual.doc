@@ -529,7 +529,9 @@ The <tt>bin</tt> directory contains various utilities which ease the process of 
 
 h3(#usage.tools.generate-test). Automated test generation
 
-The automated test generator (*generate_test.rb*) generates tests from Verilog 2001 module declarations, as demonstrated "in the tutorial":#usage.tutorial.generate-test. A generated test is composed of the following parts:
+The *generate* tool (also known as the "automated test generator") generates tests from Verilog 2001 module declarations, as demonstrated "in the tutorial":#usage.tutorial.generate-test. You can try it by running the <pre>ruby-vpi generate --help</pre> command.
+
+A generated test is composed of the following parts:
 
 * Runner
   - written in "Rake":#glossary.rake, this file builds and runs the test.
@@ -560,7 +562,7 @@ From now on, *kdiff3* will be invoked to help you transfer your changes between 
 
 h3(#usage.tools.verilog-ruby-conv). Verilog to Ruby conversion
 
-The *header_to_ruby.rb* tool can be used to convert Verilog header files into Ruby. You can try it by running the <pre>header_to_ruby.rb --help</pre> command.
+The *convert* tool can be used to convert Verilog header files into Ruby. You can try it by running the <pre>ruby-vpi convert --help</pre> command.
 
 By converting Verilog header files into Ruby, your "test":#glossary.test can utilize the same @`define@ constants that are used in the Verilog "design":#glossary.design.
 
@@ -618,7 +620,7 @@ Once we have decided how we want to implement our specification, we can proceed 
 
 <% example "Generating a test with specification in rSpec format", "#fig..generate-test.rspec" do %>
 <pre>
-$ generate_test.rb counter.v --rspec --name rspec
+$ ruby-vpi generate counter.v --rspec --name rspec
 
   module  counter
   create  counter_rspec_runner.rake
@@ -632,7 +634,7 @@ $ generate_test.rb counter.v --rspec --name rspec
 
 <% example "Generating a test with specification in xUnit format", "#fig..generate-test.unit-test" do %>
 <pre>
-$ generate_test.rb counter.v --xunit --name xunit
+$ ruby-vpi generate counter.v --xunit --name xunit
 
   module  counter
   create  counter_xunit_runner.rake

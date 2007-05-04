@@ -218,7 +218,7 @@ task :default => :build
     s.files = FileList['**/*'].exclude('_darcs')
     s.autorequire = PROJECT_ID
     s.extensions << 'gem_extconf.rb'
-    s.executables = FileList['bin/*.rb'].map {|f| File.basename f}
+    s.executables = PROJECT_ID
   end
 
   Rake::GemPackageTask.new(spec) do |pkg|

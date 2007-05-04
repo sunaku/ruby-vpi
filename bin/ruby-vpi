@@ -1,0 +1,30 @@
+# Wrapper for tools provided by Ruby-VPI.
+#
+# Usage:
+#   ruby-vpi tool --help
+#   ruby-vpi tool [arguments...]
+
+#--
+# Copyright 2006 Suraj N. Kurapati
+# See the file named LICENSE for details.
+
+TOOL_DIR = File.dirname(__FILE__)
+TOOL_EXT = '.rb'
+
+$: << File.join(TOOL_DIR, '..', 'lib')
+
+begin
+  load File.join(TOOL_DIR, ARGV.shift + TOOL_EXT)
+
+rescue StandardError, LoadError
+  require 'ruby-vpi/rdoc'
+  RDoc.usage_from_file __FILE__
+
+  # show a list of available tools
+    puts "Tools:"
+
+    Dir[File.join(TOOL_DIR, "*#{TOOL_EXT}")].each do |file|
+      tool = File.basename file, TOOL_EXT
+      printf "  %-10s %s", tool, File.new(file).readline
+    end
+end
