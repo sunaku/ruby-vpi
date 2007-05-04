@@ -182,11 +182,13 @@ For example, the @s_vpi_value@ structure becomes the @S_vpi_value@ class in Ruby
 Ruby's capitalization rule does _not_ apply to VPI functions--their names remain unchanged in Ruby.
 <% end %>
 
-p(title). Use Ruby's @printf@
+p(title). Use @printf@ instead of @vprintf@
 
-The VPI functions @vpi_vprintf@ and @vpi_mcd_vprintf@ are not made accessible to Ruby. However, this isn't a big problem because you can use Ruby's @printf@ method instead.
+The @vpi_vprintf@ and @vpi_mcd_vprintf@ VPI functions are aliased to @vpi_printf@ and @vpi_mcd_printf@ respectively because:
 
-The reason for this limitation is that some C compilers have trouble with pointers to the @va_list@ type. For these compilers, the third line of source code shown below causes a "type mismatch" error.
+* Ruby represents "variable argument lists as arrays":http://www.rubycentral.com/book/tut_methods.html#UA instead of defining a special datatype, such as @va_list@, for them.
+
+* Some C compilers have trouble with pointers to the @va_list@ type. For these compilers, the third line of source code shown below causes a "type mismatch" error.
 
 <code lang="c">
 #include <stdarg.h>
