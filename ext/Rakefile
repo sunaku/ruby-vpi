@@ -23,7 +23,7 @@ file 'Makefile' => [:swig, 'extconf.rb'] do |t|
   ruby t.prerequisites[1], "--with-cflags=#{ENV['CFLAGS']}", "--with-ldflags=#{ENV['LDFLAGS']}"
 end
 
-CLEAN.include 'Makefile', 'mkmf.log', '*.o', '*.so'
+CLEAN.include 'Makefile', 'mkmf.log', '*.o', '*.' + Config::CONFIG['DLEXT']
 
 
 desc 'Generate Ruby wrapper for VPI.'

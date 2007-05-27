@@ -78,10 +78,8 @@ task :default => :build
 
     desc "Builds object files for #{sim.name}."
     task taskName => ['obj', 'ext'] do
-      src = "#{PROJECT_ID}.so"
-      dst = "#{PROJECT_ID}.#{id}.so"
-
-      dst = File.expand_path(File.join('obj', dst))
+      src = PROJECT_ID + '.' + Config::CONFIG['DLEXT']
+      dst = File.expand_path(File.join('obj', id.to_s))
 
       unless File.exist? dst
         cd 'ext' do
