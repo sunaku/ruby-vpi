@@ -1,4 +1,21 @@
 -
+  Version: 16.0.1
+
+  Date: 2007-05-27
+
+  Record: |
+    This release restores support for installation on Mac OS X.
+
+    h2. Thanks
+
+    * Mark Thompson "reported and solved":http://rubyforge.org/tracker/index.php?func=detail&aid=11125&group_id=1339&atid=5281 the problem.
+
+    h2. Repairs
+
+    * Shared-object files have a file extension of <tt>.so</tt> in Linux and <tt>.bundle</tt> on Mac OS X.  Previously, only the Linux file extension was supported.
+
+
+-
   Version: 16.0.0
 
   Date: 2007-05-02
