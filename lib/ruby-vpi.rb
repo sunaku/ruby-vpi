@@ -124,7 +124,7 @@ module RubyVpi
       else
         # XXX: this completes the handshake, by calling relay_verilog, with
         # pthread_mutex_lock() in relay_main() in the C extension
-        advance_time
+        advance_time 0
       end
 
     # load the design's specification
