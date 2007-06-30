@@ -16,14 +16,19 @@
 # See the file named LICENSE for details.
 
 # check for required variables
-  raise ArgumentError, "All required variables must be defined." unless
-    defined?(SIMULATOR_SOURCES) &&
-    defined?(SIMULATOR_TARGET) &&
-    defined?(SIMULATOR_ARGUMENTS)
+  vars = %w[SIMULATOR_SOURCES SIMULATOR_ARGUMENTS]
 
-  SIMULATOR_INCLUDES = [] unless defined? SIMULATOR_INCLUDES
+  unless vars.all? {|v| eval "defined? #{v}"}
+    raise ArgumentError, "#{vars.join(' and ')} must be defined."
+  end
+
+# auto-detect and set default parameters
+  runnerPath       = caller.reject {|s| s =~ /:in \`/}.first.sub(/:[^:]*$/, '')
+  testName         = File.basename(runnerPath).sub(/_[^_]*$/, '')
+  SIMULATOR_TARGET = testName + '_bench'
 
   task :setup
+  SIMULATOR_INCLUDES = SIMULATOR_SOURCES.reject! {|s| File.directory? s} || []
 
 # resolve paths to sources by searching include directories
   SIMULATOR_SOURCES.map! do |src|

@@ -7,13 +7,6 @@ SIMULATOR_SOURCES = [
   '<%= aOutputInfo.verilogBenchPath %>',
 ]
 
-# These are paths to directories which contain the
-# sources listed above, the files they `include, or both.
-SIMULATOR_INCLUDES = []
-
-# This specifies the "top module" that is to be simulated.
-SIMULATOR_TARGET = '<%= aOutputInfo.verilogBenchName %>'
-
 # These are command-line arguments for the simulator.
 # They can be specified as a string or an array of strings:
 #
