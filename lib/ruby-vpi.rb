@@ -89,7 +89,12 @@ module RubyVpi
       end
 
       Vpi.module_eval do
-        define_method :simulate, &aSimulationCycle
+        @@simCycle = aSimulationCycle
+
+        # Simulates the design under test for the given number of cycles.
+        def simulate aNumCycles = 1
+          aNumCycles.times {@@simCycle.call}
+        end
       end
 
     # load the design under test

@@ -473,11 +473,6 @@ module Vpi
 
   # simulation control
 
-    # Simulates the design under test according to RubyVpi.init_bench.
-    def simulate
-      # this is a dummy method! it is overwritten by RubyVpi.init_bench
-    end
-
     # Advances the simulation by the given number of steps.
     def advance_time aNumSteps = 1
       # schedule wake-up callback from verilog
