@@ -41,7 +41,7 @@ file 'swig_vpi.h' => 'vpi_user.h' do |t|
   src, dst = t.prerequisites[0], t.name
 
   File.open(dst, 'w') do |f|
-    f << File.read(src).gsub(/\bva_list\b/, 'int')
+    f << File.read(src).gsub(/\bva_list\b/, 'void*')
   end
 end
 
