@@ -1,8 +1,9 @@
-# Wrapper for tools provided by Ruby-VPI.
+# This is a front-end for tools provided by Ruby-VPI.
 #
 # Usage:
-#   ruby-vpi tool --help
-#   ruby-vpi tool [arguments...]
+#   ruby-vpi                                    Show this help message
+#   ruby-vpi TOOL --help                        Show help message for TOOL
+#   ruby-vpi TOOL arguments...                  Run TOOL with some arguments
 
 #--
 # Copyright 2006 Suraj N. Kurapati
@@ -13,10 +14,8 @@ TOOL_EXT = '.rb'
 
 $: << File.join(TOOL_DIR, '..', 'lib')
 
-begin
-  load File.join(TOOL_DIR, ARGV.shift + TOOL_EXT)
 
-rescue StandardError, LoadError
+def show_help_info
   require 'ruby-vpi/rdoc'
   RDoc.usage_from_file __FILE__
 
@@ -25,6 +24,31 @@ rescue StandardError, LoadError
 
     Dir[File.join(TOOL_DIR, "*#{TOOL_EXT}")].each do |file|
       tool = File.basename file, TOOL_EXT
-      printf "  %-10s %s", tool, File.new(file).readline
+      printf "  %-10s %s", tool, File.new(file).readline.sub(/^#\s*/, '')
     end
+
+    puts
+
+  # show a list of available simulators
+    require 'ruby-vpi'
+    puts "Simulators:"
+
+    RubyVpi::Config::SIMULATORS.each_pair do |id, sim|
+      printf "  %-10s %s\n", id, sim.name
+    end
+end
+
+
+unless ARGV.empty?
+  tool = ARGV.shift
+
+  begin
+    load File.join(TOOL_DIR, tool + TOOL_EXT)
+  rescue LoadError
+    show_help_info
+    puts '', '#' * 76
+    raise "Invalid tool: #{tool.inspect}"
+  end
+else
+  show_help_info
 end
