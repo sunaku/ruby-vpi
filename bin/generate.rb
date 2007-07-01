@@ -197,4 +197,5 @@ v.modules.each do |m|
     write_file o.designPath, DESIGN_TEMPLATE.result(binding)
     write_file o.protoPath, PROTO_TEMPLATE.result(binding)
     write_file o.specPath, SPEC_TEMPLATE.result(binding)
+    write_file 'Rakefile', "require 'ruby-vpi/runner_proxy'"
 end
