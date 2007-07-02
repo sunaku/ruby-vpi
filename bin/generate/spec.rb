@@ -15,9 +15,7 @@ class <%= aOutputInfo.specClassName %> < Test::Unit::TestCase
   end
 <% end %>
 end
-<%
-   when :rSpec, :tSpec
-%>
+<% when :tSpec %>
 context "A resetted <%= aOutputInfo.designClassName %>" do
   setup do
     <%= aOutputInfo.designClassName %>.reset!
@@ -27,11 +25,17 @@ context "A resetted <%= aOutputInfo.designClassName %>" do
     # <%= aOutputInfo.designClassName %>.should ...
   end
 end
-<%
-  else
-%>
+<% when :rSpec %>
+describe <%= aOutputInfo.designClassName %>, " when resetted" do
+  before do
+    <%= aOutputInfo.designClassName %>.reset!
+  end
+
+  it "should ..." do
+    # <%= aOutputInfo.designClassName %>.should ...
+  end
+end
+<% else %>
 <%= aOutputInfo.designClassName %>.reset!
 # raise "should ..." unless <%= aOutputInfo.designClassName %> ...
-<%
-  end
-%>
+<% end %>
