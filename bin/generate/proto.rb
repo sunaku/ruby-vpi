@@ -3,7 +3,7 @@
 # When prototyping is enabled, Vpi::advance_time invokes this
 # method instead of transferring control to the Verilog simulator.
 def <%= aOutputInfo.designClassName %>.simulate!
-  if <%= aModuleInfo.ports.first.name %>.intVal == 1
+  if <%= aModuleInfo.ports.first.name %>.posedge?
     # discard old outputs
 <% aModuleInfo.ports.reject { |p| p.input? }.each do |port| %>
       <%= port.name %>.hexStrVal = 'x'

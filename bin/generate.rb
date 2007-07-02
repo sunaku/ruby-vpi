@@ -2,8 +2,9 @@
 #
 # * The standard input stream is read if no input files are specified.
 #
-# * The first input signal in a module's declaration is assumed to be the
-#   clocking signal.
+# * Unless specified, the first input
+#   signal in a module's declaration
+#   is assumed to be the clock signal.
 #
 #
 # = Progress indicators
@@ -14,18 +15,18 @@
 #
 # skip:: A file is being skipped because it is already up to date.
 #
-# update::  A file will be updated because it is out of date. A text merging
-#           tool (see MERGER) will be launched to transfer content from the old
-#           file (*.old) and the new file (*.new) to the out of date file. If a
-#           text merging tool is not specified, then you will have to do the
-#           merging by hand.
+# update::  A file will be updated because it is out of date.  A text
+#           merging tool (see MERGER) will be launched to transfer
+#           content from the old file (*.old) and the new file (*.new)
+#           to the out of date file.  If a text merging tool is not
+#           specified, then you will have to do the merging by hand.
 #
 #
 # = Environment variables
 #
-# MERGER::  A command that invokes a text merging tool with three arguments: (1)
-#           old file, (2) new file, (3) output file. The tool's output should be
-#           written to the output file.
+# MERGER::  A command that invokes a text merging tool with three
+#           arguments: (1) old file, (2) new file, (3) output file.
+#           The tool's output should be written to the output file.
 
 #--
 # Copyright 2006 Suraj N. Kurapati
@@ -75,7 +76,7 @@ require 'ruby-vpi/erb'
 
 # Template used for generating output.
 class Template < ERB # :nodoc:
-  TEMPLATE_PATH = __FILE__.sub %r{\.rb$}, ''
+  TEMPLATE_PATH = __FILE__.sub(/\.rb$/, '')
 
   def initialize aName
     super File.read(File.join(TEMPLATE_PATH, aName))
@@ -86,9 +87,9 @@ end
 
 # Holds information about the output destinations of a parsed Verilog module.
 class OutputInfo # :nodoc:
-  RUBY_EXT = '.rb'
+  RUBY_EXT    = '.rb'
   VERILOG_EXT = '.v'
-  RUNNER_EXT = '.rake'
+  RUNNER_EXT  = '.rake'
 
   SPEC_FORMATS = [:rSpec, :tSpec, :xUnit, :generic]
 
@@ -98,38 +99,38 @@ class OutputInfo # :nodoc:
 
   def initialize aModuleName, aSpecFormat, aTestName, aRubyVpiPath
     raise ArgumentError unless SPEC_FORMATS.include? aSpecFormat
-    @specFormat = aSpecFormat
-    @testName = aTestName
+    @specFormat       = aSpecFormat
+    @testName         = aTestName
 
-    @suffix = '_' + @testName
-    @benchSuffix = @suffix + '_bench'
-    @designSuffix = @suffix + '_design'
-    @specSuffix = @suffix + '_spec'
-    @runnerSuffix = @suffix + '_runner'
-    @protoSuffix = @suffix + '_proto'
+    @suffix           = '_'               + @testName
+    @benchSuffix      = @suffix           + '_bench'
+    @designSuffix     = @suffix           + '_design'
+    @specSuffix       = @suffix           + '_spec'
+    @runnerSuffix     = @suffix           + '_runner'
+    @protoSuffix      = @suffix           + '_proto'
 
-    @rubyVpiPath = aRubyVpiPath
+    @rubyVpiPath      = aRubyVpiPath
 
-    @verilogBenchName = aModuleName + @benchSuffix
+    @verilogBenchName = aModuleName       + @benchSuffix
     @verilogBenchPath = @verilogBenchName + VERILOG_EXT
 
-    @rubyBenchName = aModuleName + @benchSuffix
-    @rubyBenchPath = @rubyBenchName + RUBY_EXT
+    @rubyBenchName    = aModuleName       + @benchSuffix
+    @rubyBenchPath    = @rubyBenchName    + RUBY_EXT
 
-    @designName = aModuleName + @designSuffix
-    @designPath = @designName + RUBY_EXT
+    @designName       = aModuleName       + @designSuffix
+    @designPath       = @designName       + RUBY_EXT
 
-    @protoName = aModuleName + @protoSuffix
-    @protoPath = @protoName + RUBY_EXT
+    @protoName        = aModuleName       + @protoSuffix
+    @protoPath        = @protoName        + RUBY_EXT
 
-    @specName = aModuleName + @specSuffix
-    @specPath = @specName + RUBY_EXT
+    @specName         = aModuleName       + @specSuffix
+    @specPath         = @specName         + RUBY_EXT
 
-    @designClassName = aModuleName.to_ruby_const_name
-    @specClassName = @specName.to_ruby_const_name
+    @designClassName  = aModuleName.to_ruby_const_name
+    @specClassName    = @specName.to_ruby_const_name
 
-    @runnerName = aModuleName + @runnerSuffix
-    @runnerPath = @runnerName + RUNNER_EXT
+    @runnerName       = aModuleName       + @runnerSuffix
+    @runnerPath       = @runnerName       + RUNNER_EXT
   end
 end
 
@@ -137,45 +138,48 @@ end
 
 # obtain templates for output generation
   VERILOG_BENCH_TEMPLATE = Template.new('bench.v')
-  RUBY_BENCH_TEMPLATE = Template.new('bench.rb')
-  DESIGN_TEMPLATE = Template.new('design.rb')
-  PROTO_TEMPLATE = Template.new('proto.rb')
-  SPEC_TEMPLATE = Template.new('spec.rb')
-  RUNNER_TEMPLATE = Template.new('runner.rake')
+  RUBY_BENCH_TEMPLATE    = Template.new('bench.rb')
+  DESIGN_TEMPLATE        = Template.new('design.rb')
+  PROTO_TEMPLATE         = Template.new('proto.rb')
+  SPEC_TEMPLATE          = Template.new('spec.rb')
+  RUNNER_TEMPLATE        = Template.new('runner.rake')
 
 
 # parse command-line options
   require 'optparse'
 
-  optSpecFmt = :generic
+  optSpecFmt  = :generic
   optTestName = 'test'
 
-  opts = OptionParser.new
+  opts        = OptionParser.new
   opts.banner = "Usage: ruby-vpi generate [options] [files]"
 
   opts.on '-h', '--help', 'show this help message' do
-    require 'ruby-vpi/rdoc'
-    RDoc.usage_from_file __FILE__
+            require 'ruby-vpi/rdoc'
+            RDoc.usage_from_file __FILE__
 
-    puts opts
-    exit
-  end
+            puts opts
+            exit
+          end
 
-  opts.on '--xunit', '--test-unit', 'use xUnit (Test::Unit) specification format' do |val|
-    optSpecFmt = :xUnit if val
-  end
+  opts.on '--xUnit',
+          'use xUnit (Test::Unit) specification format' do
+            optSpecFmt = :xUnit
+          end
 
-  opts.on '--rspec', 'use rSpec specification format' do |val|
-    optSpecFmt = :rSpec if val
-  end
+  opts.on '--rSpec',
+          'use rSpec specification format' do
+            optSpecFmt = :rSpec
+          end
 
-  opts.on '--tspec', '--test-spec', 'use test/spec specification format' do |val|
-    optSpecFmt = :tSpec if val
-  end
+  opts.on '--tSpec',
+          'use test/spec specification format' do
+            optSpecFmt = :tSpec
+          end
 
-  opts.on '-n', '--name NAME', 'insert NAME into the names of generated files' do |val|
-    optTestName = val
-  end
+  opts.on '-n', '--name NAME',
+          'insert NAME into names of generated files',
+          String do |optTestName| end
 
   opts.parse! ARGV
 

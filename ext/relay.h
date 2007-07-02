@@ -13,8 +13,8 @@
   #include "common.h"
 
   /**
-    Initialize the relay mechanism, which enables Verilog to transfer control to
-    Ruby and vice versa, and start Ruby.
+    Initialize the relay mechanism, which enables Verilog to
+    transfer control to Ruby and vice versa, and start Ruby.
   */
   void relay_init();
 

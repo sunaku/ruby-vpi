@@ -1,21 +1,21 @@
-# A utility layer which transforms the VPI interface into one that is more
-# suitable for Ruby.
+# A utility layer which transforms the VPI interface
+# into one that is more suitable for Ruby.
 #--
 # Copyright 2006-2007 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
 module Vpi
   # Number of bits in PLI_INT32.
-  INTEGER_BITS = 32
+  INTEGER_BITS  = 32
 
   # Lowest upper bound of PLI_INT32.
   INTEGER_LIMIT = 2 ** INTEGER_BITS
 
   # Bit-mask capable of capturing PLI_INT32.
-  INTEGER_MASK = INTEGER_LIMIT - 1
+  INTEGER_MASK  = INTEGER_LIMIT - 1
 
-  # some compilers have trouble with pointers to the va_list type
-  # see ext/Rakefile and the user manual for details
+  # some compilers have trouble with pointers to the va_list
+  # type.  see ext/Rakefile and the user manual for details
   alias vpi_vprintf vpi_printf
   alias vpi_mcd_vprintf vpi_mcd_printf
 
@@ -23,10 +23,9 @@ module Vpi
 
     Handle = SWIG::TYPE_p_unsigned_int
 
-    # An object inside a Verilog simulation (see *vpiHandle* in IEEE Std.
-    # 1364-2005).
-    #
-    # VPI types and properties listed in ext/vpi_user.h can be specified by
+    # A handle is an object inside a Verilog simulation (see
+    # *vpiHandle* in IEEE Std.  1364-2005).  VPI types and
+    # properties listed in ext/vpi_user.h can be specified by
     # their names (strings or symbols) or integer constants.
     #
     # = Example names
@@ -47,8 +46,8 @@ module Vpi
 
       # inherit Enumerable methods, such as #each, #map, #select, etc.
         Enumerable.instance_methods.each do |meth|
-          # using a string because define_method does not accept a block until
-          # Ruby 1.9
+          # using a string because define_method
+          # does not accept a block until Ruby 1.9
           class_eval %{
             def #{meth} *args, &block
               self[*args].send(:#{meth}, &block)
@@ -92,18 +91,20 @@ module Vpi
         old == 1 && new == 0
       end
 
-      # Reads the value using the given format (integer constant) and returns a
-      # +S_vpi_value+ object.
+      # Reads the value using the given
+      # format (integer constant) and
+      # returns a +S_vpi_value+ object.
       def get_value_wrapper aFormat
-        val = S_vpi_value.new
+        val        = S_vpi_value.new
         val.format = aFormat
 
         vpi_get_value self, val
         val
       end
 
-      # Reads the value using the given format (name or integer constant) and
-      # returns it. If a format is not given, then the Verilog simulator will
+      # Reads the value using the given format (name or
+      # integer constant) and returns it.  If a format
+      # is not given, then the Verilog simulator will
       # attempt to determine the correct format.
       def get_value aFormat = VpiObjTypeVal
         val = get_value_wrapper(resolve_prop_type(aFormat))
@@ -135,10 +136,10 @@ module Vpi
         end
       end
 
-      # Writes the given value using the given format (name or integer
-      # constant), time, and delay, and then returns the given value. If a
-      # format is not given, then the Verilog simulator will attempt to
-      # determine the correct format.
+      # Writes the given value using the given format (name or
+      # integer constant), time, and delay, and then returns the
+      # given value.  If a format is not given, then the Verilog
+      # simulator will attempt to determine the correct format.
       def put_value aValue, aFormat = nil, aTime = nil, aDelay = VpiNoDelay
         aFormat =
           if aFormat
@@ -147,28 +148,28 @@ module Vpi
             get_value_wrapper(VpiObjTypeVal).format
           end
 
-        newVal = S_vpi_value.new
+        newVal        = S_vpi_value.new
         newVal.format = aFormat
 
         case aFormat
           when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal, VpiStringVal
-            newVal.value.str = aValue.to_s
+            newVal.value.str      = aValue.to_s
 
           when VpiScalarVal
-            newVal.value.scalar = aValue
+            newVal.value.scalar   = aValue
 
           when VpiIntVal
-            newVal.format = VpiHexStrVal
-            newVal.value.str = aValue.to_i.to_s(16)
+            newVal.format         = VpiHexStrVal
+            newVal.value.str      = aValue.to_i.to_s(16)
 
           when VpiRealVal
-            newVal.value.real = aValue.to_f
+            newVal.value.real     = aValue.to_f
 
           when VpiTimeVal
-            newVal.value.time = aValue
+            newVal.value.time     = aValue
 
           when VpiVectorVal
-            newVal.value.vector = aValue
+            newVal.value.vector   = aValue
 
           when VpiStrengthVal
             newVal.value.strength = aValue
@@ -212,8 +213,8 @@ module Vpi
         aValue
       end
 
-      # Returns an array of child handles of the given types (name or integer
-      # constant).
+      # Returns an array of child handles of the
+      # given types (name or integer constant).
       def [] *aTypes
         handles = []
 
@@ -230,8 +231,8 @@ module Vpi
         handles
       end
 
-      # Inspects the given VPI property names, in addition to those common to
-      # all handles.
+      # Inspects the given VPI property names, in
+      # addition to those common to all handles.
       def inspect *aPropNames
         aPropNames.unshift :fullName, :size, :file, :lineNo
 
@@ -244,8 +245,9 @@ module Vpi
 
       alias to_s inspect
 
-      # Registers a callback that is invoked whenever the value of this object
-      # changes.
+      # Registers a callback that is
+      # invoked whenever the value
+      # of this object changes.
       def cbValueChange aOptions = {}, &aHandler
         raise ArgumentError unless block_given?
 
@@ -266,15 +268,16 @@ module Vpi
 
       @@propCache = Hash.new {|h, k| h[k] = Property.resolve(k)}
 
-      # Provides access to this handle's (1) child handles and (2) VPI
-      # properties through method calls. In the case that a child handle has the
-      # same name as a VPI property, the child handle will be accessed instead
-      # of the VPI property. However, you can still access the VPI property via
-      # #get_value and #put_value.
+      # Provides access to this handle's (1) child handles
+      # and (2) VPI properties through method calls.  In the
+      # case that a child handle has the same name as a VPI
+      # property, the child handle will be accessed instead
+      # of the VPI property.  However, you can still access
+      # the VPI property via #get_value and #put_value.
       def method_missing aMeth, *aArgs, &aBlockArg
         if child = vpi_handle_by_name(aMeth.to_s, self)
-          # cache the child for future accesses, in order to cut down number of
-          # calls to method_missing
+          # cache the child for future accesses, in order
+          # to cut down number of calls to method_missing
             (class << self; self; end).class_eval do
               define_method aMeth do
                 child
@@ -288,7 +291,6 @@ module Vpi
 
           if prop.operation
             self.send(prop.operation, prop.type, *aArgs, &aBlockArg)
-
           else
             case prop.accessor
               when :d	# delay values
@@ -328,8 +330,8 @@ module Vpi
 
       Property = Struct.new :type, :name, :operation, :accessor, :assignment
 
-      # Resolves the given shorthand name into a description of its VPI
-      # property.
+      # Resolves the given shorthand name into
+      # a description of its VPI property.
       def Property.resolve aName # :nodoc:
         # parse the given property name
           tokens = aName.to_s.split(/_/)
@@ -339,7 +341,7 @@ module Vpi
 
           addendum = $&
           isAssign = $& == '='
-          isQuery = $& == '?'
+          isQuery  = $& == '?'
 
 
           tokens.last =~ /^[a-z]$/ && tokens.pop
@@ -416,14 +418,15 @@ module Vpi
 
     alias vpi_register_cb_old vpi_register_cb
 
-    # This is a Ruby version of the vpi_register_cb C function. It is identical
-    # to the C function, except for the following differences:
+    # This is a Ruby version of the vpi_register_cb C function.  It is
+    # identical to the C function, except for the following differences:
     #
-    # * This method accepts a block (callback handler) which is executed
-    #   whenever the callback occurs.
+    # * This method accepts a block (callback handler)
+    #   which is executed whenever the callback occurs.
     #
-    # * This method overwrites the +cb_rtn+ and +user_data+ fields of the given
-    #   +S_cb_data+ object.
+    # * This method overwrites the
+    #   +cb_rtn+ and +user_data+ fields
+    #   of the given +S_cb_data+ object.
     #
     def vpi_register_cb aData, &aHandler # :yields: Vpi::S_cb_data
       raise ArgumentError, "block must be given" unless block_given?
@@ -432,10 +435,10 @@ module Vpi
 
       # register the callback with Verilog
         aData.user_data = key
-        aData.cb_rtn = Vlog_relay_ruby
-        token = vpi_register_cb_old(aData)
+        aData.cb_rtn    = Vlog_relay_ruby
+        token           = vpi_register_cb_old(aData)
 
-      @@callbacks[key] = Callback.new(aHandler, token)
+      @@callbacks[key]  = Callback.new(aHandler, token)
       token
     end
 
@@ -450,10 +453,10 @@ module Vpi
       end
     end
 
-    # Proxy for relay_verilog which supports callbacks.
-    # This method should NOT be invoked from callback handlers (see
-    # vpi_register_cb) and threads -- otherwise the situation will be like seven
-    # remote controls changing the channel on a single television set!
+    # Proxy for relay_verilog which supports callbacks.  This method
+    # should NOT be invoked from callback handlers (see vpi_register_cb)
+    # and threads -- otherwise the situation will be like seven remote
+    # controls changing the channel on a single television set!
     def relay_verilog_proxy # :nodoc:
       loop do
         relay_verilog
@@ -476,20 +479,20 @@ module Vpi
     # Advances the simulation by the given number of steps.
     def advance_time aNumSteps = 1
       # schedule wake-up callback from verilog
-        time = S_vpi_time.new
-        time.integer = aNumSteps
-        time.type = VpiSimTime
+        time            = S_vpi_time.new
+        time.integer    = aNumSteps
+        time.type       = VpiSimTime
 
-        value = S_vpi_value.new
-        value.format = VpiSuppressVal
+        value           = S_vpi_value.new
+        value.format    = VpiSuppressVal
 
-        alarm = S_cb_data.new
-        alarm.reason = CbAfterDelay
-        alarm.cb_rtn = Vlog_relay_ruby
-        alarm.obj = nil
-        alarm.time = time
-        alarm.value = value
-        alarm.index = 0
+        alarm           = S_cb_data.new
+        alarm.reason    = CbAfterDelay
+        alarm.cb_rtn    = Vlog_relay_ruby
+        alarm.obj       = nil
+        alarm.time      = time
+        alarm.value     = value
+        alarm.index     = 0
         alarm.user_data = nil
 
         vpi_free_object(vpi_register_cb_old(alarm))
@@ -503,7 +506,7 @@ module Vpi
 
     # Returns the current simulation time as an integer.
     def simulation_time
-      t = S_vpi_time.new
+      t      = S_vpi_time.new
       t.type = VpiSimTime
 
       vpi_get_time nil, t
@@ -511,16 +514,16 @@ module Vpi
     end
 
     class S_vpi_time
-      # Returns the high and low portions of this time as a single 64-bit
-      # integer.
+      # Returns the high and low portions of
+      # this time as a single 64-bit integer.
       def integer
         (self.high << INTEGER_BITS) | self.low
       end
 
-      # Sets the high and low portions of this time from the given 64-bit
-      # integer.
+      # Sets the high and low portions of this
+      # time from the given 64-bit integer.
       def integer= aValue
-        self.low = aValue & INTEGER_MASK
+        self.low  = aValue & INTEGER_MASK
         self.high = (aValue >> INTEGER_BITS) & INTEGER_MASK
       end
 
@@ -542,8 +545,8 @@ module Vpi
       end
     end
 
-    # make VPI structs more accessible by allowing their members to be
-    # initialized through the constructor
+    # make VPI structs more accessible by allowing their
+    # members to be initialized through the constructor
       constants.grep(/^S_/).each do |s|
         const_get(s).class_eval do
           alias old_initialize initialize

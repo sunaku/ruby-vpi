@@ -33,11 +33,11 @@ s_cb_data* vlog_relay_ruby_reason() {
 void vlog_startup() {
   s_cb_data call;
 
-  call.reason = cbStartOfSimulation;
-  call.cb_rtn = vlog_relay_init;
-  call.obj = NULL;
-  call.time = NULL;
-  call.value = NULL;
+  call.reason    = cbStartOfSimulation;
+  call.cb_rtn    = vlog_relay_init;
+  call.obj       = NULL;
+  call.time      = NULL;
+  call.value     = NULL;
   call.user_data = NULL;
 
   vpi_free_object(vpi_register_cb(&call));

@@ -18,8 +18,8 @@
   verilog_cb_funcSig(vlog_relay_ruby);
 
   /**
-    Returns the data corresponding to the callback that caused the relay from
-    Verilog to Ruby.
+    Returns the data corresponding to the callback
+    that caused the relay from Verilog to Ruby.
   */
   s_cb_data* vlog_relay_ruby_reason();
 

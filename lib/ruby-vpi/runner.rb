@@ -1,16 +1,17 @@
-# A template to simplify building and running examples. This file is meant to be
-# embedded in another Rakefile, which bears the responsibility of defining the
-# following variables.
+# A template to simplify building and running examples.  This
+# file is meant to be embedded in another Rakefile, which bears
+# the responsibility of defining the following variables.
 #
 # = Required variables
 #
-# SIMULATOR_SOURCES::   Array of paths to source files needed by the simulator.
+# SIMULATOR_SOURCES::   Array of paths to (1) source files or (2)
+#                       directories that contain source files
+#                       which must be loaded by the simulator.
 #
-# SIMULATOR_TARGET::    Name of the Verilog module to be simulated.
+# SIMULATOR_ARGUMENTS:: A hash table containing keys for each simulator task
+#                       (same as Rakefile task names) and values containing
+#                       command-line arguments for each simulator.
 #
-# SIMULATOR_ARGUMENTS:: A hash containing keys for each simulator task (same as
-#                       Rakefile task names) and values containing command-line
-#                       arguments for each simulator.
 #--
 # Copyright 2006-2007 Suraj N. Kurapati
 # See the file named LICENSE for details.
@@ -57,7 +58,7 @@ require 'ruby-vpi/rake'
 include RubyVpi::Config
 
 OBJECT_PATH = File.join(File.dirname(__FILE__), '..', '..', 'obj')
-BOOTSTAP_FUNC = 'vlog_startup_routines_bootstrap'
+LOADER_FUNC = 'vlog_startup_routines_bootstrap'
 
 
 # Returns the path to the Ruby-VPI object file for the given simulator.
@@ -94,7 +95,7 @@ end
 
 desc "Simulate with #{SIMULATORS[:cver].name}."
 task :cver => :setup do
-  sh 'cver', SIMULATOR_ARGUMENTS[:cver], "+loadvpi=#{object_file_path(:cver)}:#{BOOTSTAP_FUNC}", expand_include_dir_options(:cver), SIMULATOR_SOURCES
+  sh 'cver', SIMULATOR_ARGUMENTS[:cver], "+loadvpi=#{object_file_path(:cver)}:#{LOADER_FUNC}", expand_include_dir_options(:cver), SIMULATOR_SOURCES
 end
 
 CLOBBER.include 'verilog.log'
@@ -112,7 +113,7 @@ CLEAN.include 'ruby-vpi.vpi', 'a.out'
 
 desc "Simulate with #{SIMULATORS[:vcs].name}."
 task :vcs => :setup do
-  sh %w(vcs -R +v2k +vpi), SIMULATOR_ARGUMENTS[:vcs], '-load', "#{object_file_path(:vcs)}:#{BOOTSTAP_FUNC}", expand_include_dir_options(:vcs), SIMULATOR_SOURCES
+  sh %w(vcs -R +v2k +vpi), SIMULATOR_ARGUMENTS[:vcs], '-load', "#{object_file_path(:vcs)}:#{LOADER_FUNC}", expand_include_dir_options(:vcs), SIMULATOR_SOURCES
 end
 
 CLEAN.include 'csrc', 'simv*'
@@ -131,7 +132,7 @@ CLOBBER.include 'transcript'
 
 desc "Simulate with #{SIMULATORS[:ncsim].name}."
 task :ncsim => :setup do
-  sh 'ncverilog', SIMULATOR_ARGUMENTS[:ncsim], "+loadvpi=#{object_file_path(:ncsim)}:#{BOOTSTAP_FUNC}", '+access+rwc', expand_include_dir_options(:ncsim), SIMULATOR_SOURCES
+  sh 'ncverilog', SIMULATOR_ARGUMENTS[:ncsim], "+loadvpi=#{object_file_path(:ncsim)}:#{LOADER_FUNC}", '+access+rwc', expand_include_dir_options(:ncsim), SIMULATOR_SOURCES
 end
 
 CLEAN.include 'INCA_libs'

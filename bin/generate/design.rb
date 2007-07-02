@@ -5,7 +5,7 @@
 
 # This method resets the design under test.
 def <%= aOutputInfo.designClassName %>.reset!
-<% aModuleInfo.ports.select { |p| p.input? }[1..-1].each do |port| # using [1..] because the first signal is the clock %>
+<% aModuleInfo.ports.select {|p| p.input?}.each do |port| %>
   <%= port.name %>.hexStrVal = 'x'
 <% end %>
 end

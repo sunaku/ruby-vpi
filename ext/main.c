@@ -31,7 +31,7 @@ void main_init() {
       rb_load_file(benchFile);
     }
     else {
-      common_printf("error: environment variable RUBY_VPI__RUBY_BENCH_FILE is uninitialized.");
+      common_printf("error: environment variable RUBYVPI_BOOTSTRAP is not initialized.");
       exit(EXIT_FAILURE);
     }
 

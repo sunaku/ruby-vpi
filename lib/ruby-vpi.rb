@@ -4,20 +4,21 @@
 # See the file named LICENSE for details.
 
 module RubyVpi
-  # Initializes the bench by setting up code coverage, the interactive debugger,
-  # and so on:
+  # Initializes the bench by setting up code
+  # coverage, the interactive debugger, and so on:
   #
   # 1. loads the design.rb file
   # 2. loads the proto.rb file if prototyping is enabled
   # 3. loads the spec.rb file
   #
-  # aDesignId:: The name of the Ruby object which gives access to the design
-  #             under test.
+  # aDesignId:: The name of the Ruby
+  #             object which gives access
+  #             to the design under test.
   #
   # aSpecFormat:: The name of the format being used by the specification.
   #
-  # aSimulationCycle::  A block that simulates the design under test by, for
-  #                     example, toggling the clock signal.
+  # aSimulationCycle::  A block that simulates the design under test
+  #                     by, for example, toggling the clock signal.
   #
   def RubyVpi.init_bench aDesignId, aSpecFormat, &aSimulationCycle
     raise ArgumentError, "block must be given" unless block_given?
@@ -33,8 +34,9 @@ module RubyVpi
     usePrototype = ENV['PROTOTYPE'].to_i == 1
 
     # set up code coverage analysis
-      # XXX: this is loaded *before* RCov to prevent coverage statistics about
-      # it
+      # XXX: this is loaded *before*
+      #      RCov to prevent coverage
+      #      statistics about it
       require 'ruby-vpi/vpi'
 
       if useCoverage
@@ -123,7 +125,7 @@ module RubyVpi
 
       else
         # XXX: this completes the handshake, by calling relay_verilog, with
-        # pthread_mutex_lock() in relay_main() in the C extension
+        #      pthread_mutex_lock() in relay_main() in the C extension
         advance_time 0
       end
 
@@ -133,12 +135,12 @@ module RubyVpi
 
   # Provides information about this project's configuration.
   module Config
-    PROJECT_ID = 'ruby-vpi'
-    PROJECT_NAME = 'Ruby-VPI'
-    PROJECT_URL = "http://#{PROJECT_ID}.rubyforge.org"
-    WEBSITE_URL = PROJECT_URL + "/doc"
+    PROJECT_ID      = 'ruby-vpi'
+    PROJECT_NAME    = 'Ruby-VPI'
+    PROJECT_URL     = "http://#{PROJECT_ID}.rubyforge.org"
+    WEBSITE_URL     = PROJECT_URL + "/doc"
     PROJECT_SUMMARY = "Ruby interface to IEEE 1364-2005 Verilog VPI"
-    PROJECT_DETAIL = "#{PROJECT_NAME} is a #{PROJECT_SUMMARY} and a platform for unit testing, rapid prototyping, and systems integration of Verilog modules through Ruby. It lets you create complex Verilog test benches easily and wholly in Ruby."
+    PROJECT_DETAIL  = "#{PROJECT_NAME} is a #{PROJECT_SUMMARY} and a platform for unit testing, rapid prototyping, and systems integration of Verilog modules through Ruby. It lets you create complex Verilog test benches easily and wholly in Ruby."
 
     Simulator = Struct.new(:name, :compiler_args, :linker_args)
 

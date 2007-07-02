@@ -25,20 +25,21 @@ task :default => :build
 
 # load project information
   include RubyVpi::Config
-  PROJECT_SSH_URL = "snk@rubyforge.org:/var/www/gforge-projects/#{PROJECT_ID}"
+  PROJECT_SSH_URL  = "snk@rubyforge.org:/var/www/gforge-projects/#{PROJECT_ID}"
 
   load 'doc/history.rb'
-  head = @history.first
-  PROJECT_VERSION = head['Version']
+  head             = @history.first
+  PROJECT_VERSION  = head['Version']
   PROJECT_BIRTHDAY = head['Date']
 
 
 # utility
 
-  # Returns a temporary, unique path ready for use. No file exists at the
-  # returned path.
+  # Returns a temporary, unique path ready for
+  # use. No file exists at the returned path.
   def generate_temp_path
-    rm_f path = Tempfile.new($$).path
+    path = Tempfile.new($$).path
+    rm_f path
     path
   end
 
@@ -48,7 +49,7 @@ task :default => :build
   end
 
   # propogate cleaning tasks recursively to lower levels
-  [:clean, :clobber].each do |t|
+  %w[clean clobber].each do |t|
     task t do
       files = FileList['**/Rakefile'].exclude('_darcs')
       files.shift # avoid infinite loop on _this_ file
@@ -58,7 +59,7 @@ task :default => :build
 
       files.each do |f|
         cd File.dirname(f) do
-          sh 'rake', t.to_s
+          sh 'rake', t
         end
       end
     end
@@ -120,7 +121,7 @@ task :default => :build
   desc 'Generate reference for Ruby.'
   Rake::RDocTask.new 'ref/ruby' do |t|
     t.rdoc_dir = t.name
-    t.title = "#{PROJECT_NAME}: #{PROJECT_SUMMARY}"
+    t.title    = "#{PROJECT_NAME}: #{PROJECT_SUMMARY}"
     t.options.concat %w(--charset utf-8 --line-numbers)
     t.rdoc_files.include '{bin,lib/**}/*.rb'
   end
@@ -200,22 +201,23 @@ task :default => :build
   end
 
   spec = Gem::Specification.new do |s|
-    s.name = s.rubyforge_project = PROJECT_ID
-    s.summary = PROJECT_SUMMARY
-    s.description = PROJECT_DETAIL
-    s.homepage = PROJECT_URL
-    s.version = PROJECT_VERSION
+    s.name              = PROJECT_ID
+    s.rubyforge_project = PROJECT_ID
+    s.summary           = PROJECT_SUMMARY
+    s.description       = PROJECT_DETAIL
+    s.homepage          = PROJECT_URL
+    s.version           = PROJECT_VERSION
 
-    s.add_dependency 'rake', '>= 0.7.0'
-    s.add_dependency 'rspec', '>= 0.7.0'
-    s.add_dependency 'rcov', '>= 0.7.0'
+    s.add_dependency 'rake',       '>= 0.7.0'
+    s.add_dependency 'rspec',      '>= 0.7.0'
+    s.add_dependency 'rcov',       '>= 0.7.0'
     s.add_dependency 'xx' # needed by rcov
     s.add_dependency 'ruby-debug', '>= 0.5.2'
 
     s.requirements << "POSIX threads library"
     s.requirements << "C language compiler"
 
-    s.files = FileList['**/*'].exclude('_darcs')
+    s.files       = FileList['**/*'].exclude('_darcs')
     s.autorequire = PROJECT_ID
     s.extensions << 'gem_extconf.rb'
     s.executables = PROJECT_ID
@@ -231,9 +233,9 @@ task :default => :build
   desc "Configures the gem during installation."
   task :gem_config_inst do |t|
     # make documentation available to gem_server
-      gemDir = File.dirname(__FILE__)
+      gemDir  = File.dirname(__FILE__)
       gemName = File.basename(gemDir)
-      docDir = File.join('..', '..', 'doc', gemName)
+      docDir  = File.join('..', '..', 'doc', gemName)
 
       mkdir_p docDir
       ln_s gemDir, File.join(docDir, 'rdoc')
@@ -247,8 +249,8 @@ task :default => :build
     # ensures that current sources are tested instead of the installed gem
     ENV['RUBYLIB'] = PROJECT_LIBS
 
-    FileList['samp/*/'].each do |s|
-      cd s do
+    FileList['samp/*/'].each do |dir|
+      cd dir do
         sh 'rake', ENV['SIMULATOR'] || 'cver'
       end
     end
