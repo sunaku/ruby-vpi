@@ -3,84 +3,93 @@
 require 'rubygems'
 require 'ruby-vpi'
 
-RubyVpi.init_bench :Counter, :xUnit do
-  ##
-  # This block is executed whenever Vpi::simulate is invoked.
-  #
-  # It simulates the design under test. This is typically done
-  # by toggling the clock signal, as demonstrated below.
-  ##
+RubyVpi.init_bench(:Counter, :xUnit) do
+  # This block of code is executed whenever the "simulate" method
+  # is invoked by the specification.  The purpose of this block
+  # of code is to simulate the design under test by (typically)
+  # toggling the clock signal, as demonstrated below.
 
-  ##
-  # We are currently here (marked by the ! signs):
-  #
-  #    !
-  #    !
-  #    ! ____      ____      ____      ____
-  # ___!/    \____/    \____/    \____/    \
-  #    !
-  #    !
-  #
-  ##
+  clock    = Counter.clock
+  numSteps = 1
 
-  Counter.clock.intVal = 1
+  ##############################################################################
+  # We are currently at the position indicated by the exclamation marks (!):
+  #
+  #          !
+  #          !
+  #          !    ____________________                        _________________
+  #          !   /                    \                      /
+  #          !  /                      \                    /
+  # _________!_/                        \__________________/
+  #          !
+  #          !
+  #
+  ##############################################################################
 
-  ##
+  clock.intVal = 1
+
+  ##############################################################################
   # After setting the clock signal to high, we are here:
   #
-  #      !
-  #      !
-  #      !____      ____      ____      ____
-  # ____/!    \____/    \____/    \____/    \
-  #      !
-  #      !
+  #                !
+  #                !
+  #               _!__________________                        _________________
+  #              / !                  \                      /
+  #             /  !                   \                    /
+  # ___________/   !                    \__________________/
+  #                !
+  #                !
   #
-  ##
+  ##############################################################################
 
-  advance_time
+  advance_time(numSteps)
 
-  ##
+  ##############################################################################
   # After advancing the time, we are here:
   #
-  #          !
-  #          !
-  #      ____!      ____      ____      ____
-  # ____/    !\____/    \____/    \____/    \
-  #          !
-  #          !
+  #                                 !
+  #                                 !
+  #               __________________!_                        _________________
+  #              /                  ! \                      /
+  #             /                   !  \                    /
+  # ___________/                    !   \__________________/
+  #                                 !
+  #                                 !
   #
-  ##
+  ##############################################################################
 
-  Counter.clock.intVal = 0
+  clock.intVal = 0
 
-  ##
+  ##############################################################################
   # After setting the clock signal to low, we are here:
   #
-  #           !
-  #           !
-  #      ____ !     ____      ____      ____
-  # ____/    \!____/    \____/    \____/    \
-  #           !
-  #           !
+  #                                       !
+  #                                       !
+  #               ____________________    !                   _________________
+  #              /                    \   !                  /
+  #             /                      \  !                 /
+  # ___________/                        \_!________________/
+  #                                       !
+  #                                       !
   #
-  ##
+  ##############################################################################
 
-  advance_time
+  advance_time(numSteps)
 
-  ##
+  ##############################################################################
   # After advancing the time, we are here:
   #
+  #                                                      !
+  #                                                      !
+  #               ____________________                   !    _________________
+  #              /                    \                  !   /
+  #             /                      \                 !  /
+  # ___________/                        \________________!_/
+  #                                                      !
+  #                                                      !
   #
-  #               !
-  #               !
-  #      ____     ! ____      ____      ____
-  # ____/    \____!/    \____/    \____/    \
-  #               !
-  #               !
-  #
-  ##
+  ##############################################################################
 
-  ##
-  # This process repeats when Vpi::simulate is invoked again.
-  ##
+  # This process repeats when the "simulate" method is invoked again.
+
 end

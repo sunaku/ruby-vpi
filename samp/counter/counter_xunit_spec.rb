@@ -12,12 +12,12 @@ class ResettedCounterValue < Test::Unit::TestCase
   end
 
   def test_zero
-    assert_equal 0, Counter.count.intVal
+    assert_equal(0, Counter.count.intVal)
   end
 
   def test_increment
     LIMIT.times do |i|
-      assert_equal i, Counter.count.intVal
+      assert_equal(i, Counter.count.intVal)
       simulate # increment the counter
     end
   end
@@ -27,13 +27,12 @@ class MaximumCounterValue < Test::Unit::TestCase
   def setup
     Counter.reset!
 
-    # increment the counter to maximum value
-    MAX.times {simulate}
-    assert_equal MAX, Counter.count.intVal
+    simulate(MAX) # increment the counter to maximum value
+    assert_equal(MAX, Counter.count.intVal)
   end
 
   def test_overflow
     simulate # increment the counter
-    assert_equal 0, Counter.count.intVal
+    assert_equal(0, Counter.count.intVal)
   end
 end

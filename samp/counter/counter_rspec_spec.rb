@@ -6,16 +6,16 @@ LIMIT = 2 ** Counter.Size.intVal
 # maximum allowed value for a counter
 MAX = LIMIT - 1
 
-context "A resetted counter's value" do
+describe "A resetted counter's value" do
   setup do
     Counter.reset!
   end
 
-  specify "should be zero" do
+  it "should be zero" do
     Counter.count.intVal.should == 0
   end
 
-  specify "should increment by one count upon each rising clock edge" do
+  it "should increment upon each rising clock edge" do
     LIMIT.times do |i|
       Counter.count.intVal.should == i
       simulate # increment the counter
@@ -23,16 +23,15 @@ context "A resetted counter's value" do
   end
 end
 
-context "A counter with the maximum value" do
+describe "A counter with the maximum value" do
   setup do
     Counter.reset!
 
-    # increment the counter to maximum value
-    MAX.times {simulate}
+    simulate MAX # increment the counter to maximum value
     Counter.count.intVal.should == MAX
   end
 
-  specify "should overflow upon increment" do
+  it "should overflow upon increment" do
     simulate # increment the counter
     Counter.count.intVal.should == 0
   end
