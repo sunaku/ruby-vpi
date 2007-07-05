@@ -14,11 +14,6 @@ module Vpi
   # Bit-mask capable of capturing PLI_INT32.
   INTEGER_MASK  = INTEGER_LIMIT - 1
 
-  # some compilers have trouble with pointers to the va_list
-  # type.  see ext/Rakefile and the user manual for details
-  alias vpi_vprintf vpi_printf
-  alias vpi_mcd_vprintf vpi_mcd_printf
-
   # handles
 
     Handle = SWIG::TYPE_p_unsigned_int

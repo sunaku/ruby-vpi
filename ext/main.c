@@ -23,6 +23,11 @@ void main_init() {
     rb_define_module_function(mVpi, "relay_verilog", main_relay_verilog, 0);
     rb_define_module_function(mVpi, "relay_ruby_reason", main_relay_ruby_reason, 0);
 
+    // some compilers have trouble with pointers to the va_list
+    // type.  See ext/Rakefile and the user manual for details
+    rb_define_alias(mVpi, "vpi_vprintf", "vpi_printf");
+    rb_define_alias(mVpi, "vpi_mcd_vprintf", "vpi_mcd_printf");
+
   // initialize the Ruby bench
     char* benchFile = getenv("RUBYVPI_BOOTSTRAP");
 
