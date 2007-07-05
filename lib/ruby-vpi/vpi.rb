@@ -70,6 +70,26 @@ module Vpi
         self.hexStrVal = 'z'
       end
 
+      # Tests if the logic value of this handle is at "logic high" level.
+      def high?
+        self.intVal != 0
+      end
+
+      # Sets the logic value of this handle to "logic high" level.
+      def high!
+        self.intVal = 1
+      end
+
+      # Tests if the logic value of this handle is at "logic low" level.
+      def low?
+        self.hexStrVal =~ /^0+$/
+      end
+
+      # Sets the logic value of this handle to "logic low" level.
+      def low!
+        self.intVal = 0
+      end
+
       # Tests if the logic value of this handle is currently at a positive edge.
       def posedge?
         old = @lastVal
