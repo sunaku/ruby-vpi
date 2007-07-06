@@ -19,30 +19,28 @@
   </head>
   <body>
   <% if insert_toc %>
-    <h1 style="margin-top: 0"><%= page_title %></h1>
+    <div id="toc">
+      <%= 'p=. !images/tango/home.png(Return to main page)!:readme.html'.redcloth %>
 
-    <%= %{p=. !images/tango/home.png(Return to main page)!:readme.html}.redcloth %>
-
-    <div id="menu">
-      <%=
+      <ul>
+      <%
         links = @indexes.values.flatten.map do |i|
           %{<a href="##{i.name.downcase}">#{i.name}</a>}
         end
-        links.unshift %{<a href="#index">Contents</a>}
+        links.unshift %{<a href="#toc-real">Contents</a>}
 
-        links.join ' &middot; '
+        links.each do |link|
       %>
-    </div>
+        <li><%= link %></li>
+      <% end %>
+      </ul>
 
-    <div id="index">
-      <h1>Contents</h1>
+      <h1 id="toc-real">Contents</h1>
       <%= toc %>
 
       <% @indexes.each_pair do |cat, lists| %>
-        <h1><%= cat %></h1>
-
         <% lists.each do |list| %>
-          <h2 id="<%= list.name.downcase %>"><%= list.name %></h2>
+          <h1 id="<%= list.name.downcase %>"><%= list.name %></h1>
           <%=
             list.items.inject('') do |memo, block|
               memo << "# #{(block.title || block.anchor).inspect}:##{block.anchor}\n"

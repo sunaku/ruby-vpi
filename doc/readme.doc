@@ -5,7 +5,7 @@
 
 <style type="text/css">
   body {
-    margin-left: 275px;
+    margin-left: 20em;
     padding-right: 1em;
   }
 
@@ -13,7 +13,7 @@
     position: absolute;
     left: 0;
     top: 0;
-    width: 200px;
+    max-width: 15em;
     padding: 1em;
 
     border: thin solid red;
