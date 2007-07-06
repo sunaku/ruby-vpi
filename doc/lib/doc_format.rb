@@ -201,6 +201,7 @@ class String
         toc << %{<li><a id="#{src}" href="##{dst}">#{title}</a></li>}
 
         # reverse link from heading to TOC
+        '<hr style="display: none"/>' +
         %{<h#{depth}#{atts}><a id="#{dst}" href="##{src}">#{index}</a> &nbsp; #{title}</h#{depth}>}
     end
 
