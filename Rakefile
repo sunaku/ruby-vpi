@@ -5,8 +5,6 @@
 # Copyright 2006-2007 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
-CFLAGS, LDFLAGS = ENV['CFLAGS'], ENV['LDFLAGS']
-
 require 'rake/clean'
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
@@ -74,6 +72,9 @@ task :default => :build
   directory 'obj'
   CLOBBER.include 'obj'
 
+  ccFlags = ENV['CFLAGS']
+  ldFlags = ENV['LDFLAGS']
+
   SIMULATORS.each_pair do |id, sim|
     taskName = "build_#{id}"
 
@@ -84,8 +85,8 @@ task :default => :build
 
       unless File.exist? dst
         cd 'ext' do
-          ENV['CFLAGS'] = "#{CFLAGS} #{sim.compiler_args}"
-          ENV['LDFLAGS'] = "#{LDFLAGS} #{sim.linker_args}"
+          ENV['CFLAGS']  = "#{ccFlags} #{sim.compiler_args}"
+          ENV['LDFLAGS'] = "#{ldFlags} #{sim.linker_args}"
 
           sh 'rake'
           mv src, dst

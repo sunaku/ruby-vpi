@@ -25,12 +25,9 @@ void relay_init() {
   pthread_mutex_init(&relay__verilogLock, NULL);
   pthread_mutex_lock(&relay__verilogLock);
 
-  // start the ruby thread
-    pthread_create(&relay__rubyThread, NULL, relay_ruby_thread, NULL);
-
-    // XXX: freezee verilog because RubyVpi.init_bench will call
-    //      relay_verilog (which assumes that verilog is frozen)
-    pthread_mutex_lock(&relay__verilogLock);
+  // begin by putting the ruby thread in control
+  pthread_create(&relay__rubyThread, NULL, relay_ruby_thread, NULL);
+  pthread_mutex_lock(&relay__verilogLock);
 }
 
 void relay_ruby() {

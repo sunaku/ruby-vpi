@@ -16,21 +16,21 @@ class VerilogParser
       input.gsub! %r{//.*$}, ''
       input.gsub! %r{/\*.*?\*/}m, ''
 
-    @modules = input.scan(%r{module.*?;}m).map! do |decl|
+    @modules = input.scan(%r{module.*?;}m).map do |decl|
       Module.new decl
     end
 
-    @constants = input.scan(%r{(`define\s+(\w+)\s+(.+))}).map! do |matches|
+    @constants = input.scan(%r{(`define\s+(\w+)\s+(.+))}).map do |matches|
       Constant.new(*matches)
     end
 
-    @includes = input.scan(%r{(`include\s*(\S+))}).map! do |matches|
+    @includes = input.scan(%r{(`include\s*(\S+))}).map do |matches|
       Include.new(*matches)
     end
   end
 
   Constant = Struct.new(:decl, :name, :value)
-  Include = Struct.new(:decl, :target)
+  Include  = Struct.new(:decl, :target)
 
   class Module
     attr_reader :decl, :name, :parameters, :ports
@@ -43,14 +43,14 @@ class VerilogParser
 
       @parameters =
         if paramDecls =~ %r{\bparameter\b(.*)$}
-          $1.split(',').map! do |decl|
+          $1.split(',').map do |decl|
             Parameter.new decl
           end
         else
           []
         end
 
-      @ports = portDecls.split(',').map! do |decl|
+      @ports = portDecls.split(',').map do |decl|
         Port.new decl
       end
     end
@@ -59,8 +59,8 @@ class VerilogParser
       attr_reader :decl, :name, :value
 
       def initialize aDecl
-        @decl = aDecl.strip
-        @name, @value = @decl.split('=').map! {|s| s.strip}
+        @decl         = aDecl.strip
+        @name, @value = @decl.split('=').map {|s| s.strip}
       end
     end
 
@@ -90,8 +90,8 @@ class VerilogParser
 end
 
 class String
-  # Converts this string containing Verilog code into syntactically correct Ruby
-  # code.
+  # Converts this string containing Verilog
+  # code into syntactically correct Ruby code.
   def verilog_to_ruby
     content = self.dup
 

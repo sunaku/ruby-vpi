@@ -260,9 +260,8 @@ module Vpi
 
       alias to_s inspect
 
-      # Registers a callback that is
-      # invoked whenever the value
-      # of this object changes.
+      # Registers a callback that is invoked
+      # whenever the value of this object changes.
       def cbValueChange aOptions = {}, &aHandler
         raise ArgumentError unless block_given?
 
@@ -453,9 +452,8 @@ module Vpi
     # * This method accepts a block (callback handler)
     #   which is executed whenever the callback occurs.
     #
-    # * This method overwrites the
-    #   +cb_rtn+ and +user_data+ fields
-    #   of the given +S_cb_data+ object.
+    # * This method overwrites the +cb_rtn+ and +user_data+
+    #   fields of the given +S_cb_data+ object.
     #
     def vpi_register_cb aData, &aHandler # :yields: Vpi::S_cb_data
       raise ArgumentError, "block must be given" unless block_given?
@@ -535,9 +533,7 @@ module Vpi
 
     # Returns the current simulation time as an integer.
     def simulation_time
-      t      = S_vpi_time.new
-      t.type = VpiSimTime
-
+      t = S_vpi_time.new :type => VpiSimTime
       vpi_get_time nil, t
       t.to_i
     end

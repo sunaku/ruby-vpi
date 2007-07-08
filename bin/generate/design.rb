@@ -1,4 +1,3 @@
-# This is a Ruby interface to the design under test.
 <% aParseInfo.constants.each do |var| %>
 <%= var.name.to_ruby_const_name %> = <%= var.value.verilog_to_ruby %>
 <% end %>
