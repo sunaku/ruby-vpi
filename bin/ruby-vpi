@@ -41,9 +41,11 @@ end
 
 unless ARGV.empty?
   tool = ARGV.shift
+  glob = File.join(TOOL_DIR, tool + '*' + TOOL_EXT)
+  file = Dir[glob].first
 
   begin
-    load File.join(TOOL_DIR, tool + TOOL_EXT)
+    load file
   rescue LoadError
     show_help_info
     puts '', '#' * 76
