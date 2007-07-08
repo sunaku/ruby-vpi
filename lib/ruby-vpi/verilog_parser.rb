@@ -3,6 +3,8 @@
 # Copyright 2006-2007 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
+require 'ruby-vpi/util'
+
 class VerilogParser
   attr_reader :modules, :constants, :includes
 
@@ -115,10 +117,5 @@ class String
       content.gsub! %r{(\S)\s*:\s*(\S)}, '\1..\2'
 
     content
-  end
-
-  # Converts this string into a valid Ruby constant name.
-  def to_ruby_const_name
-    self[0, 1].upcase << self[1..-1]
   end
 end
