@@ -322,19 +322,33 @@ module Vpi
                 end
 
               when :i	# integer values
-                vpi_get(prop.type, self) unless prop.assignment
+                unless prop.assignment
+                  vpi_get(prop.type, self)
+                else
+                  raise NotImplementedError
+                end
 
               when :b # boolean values
                 unless prop.assignment
                   value = vpi_get(prop, self)
                   value && (value != 0)	# zero is false in C
+                else
+                  raise NotImplementedError
                 end
 
               when :s	# string values
-                vpi_get_str(prop.type, self) unless prop.assignment
+                unless prop.assignment
+                  vpi_get_str(prop.type, self)
+                else
+                  raise NotImplementedError
+                end
 
               when :h	# handle values
-                vpi_handle(prop.type, self) unless prop.assignment
+                unless prop.assignment
+                  vpi_handle(prop.type, self)
+                else
+                  raise NotImplementedError
+                end
 
               else
                 raise NoMethodError, "unable to access VPI property #{prop.name.inspect} through method #{aMeth.inspect} with arguments #{aArgs.inspect} for handle #{self}"
