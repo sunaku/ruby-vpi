@@ -2,17 +2,16 @@
 # Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
-require 'InputGenerator'
+require 'int_gen'
 require 'Hw5UnitModel'
 require 'test/unit'
-require 'pp'
 
 class TestHw5UnitModel < Test::Unit::TestCase
   NUM_VECTORS = 4000
 
   def setup
     @model = Hw5UnitModel.new
-    @ingen = InputGenerator.new 32
+    @ingen = IntegerGenerator.new 32
   end
 
   def test_reset
@@ -28,8 +27,8 @@ class TestHw5UnitModel < Test::Unit::TestCase
       inputQueue << Hw5UnitModel::Operation.new(
         Hw5UnitModel::OPERATIONS[rand(Hw5UnitModel::OPERATIONS.size)],
         i,
-        @ingen.gen.abs,
-        @ingen.gen.abs
+        @ingen.random.abs,
+        @ingen.random.abs
       )
     end
 
