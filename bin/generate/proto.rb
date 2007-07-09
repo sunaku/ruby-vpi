@@ -1,13 +1,10 @@
-# This is a prototype of the design under test.
-
-# When prototyping is enabled, Vpi::advance_time invokes this
-# method instead of transferring control to the Verilog simulator.
-def <%= aOutputInfo.designClassName %>.simulate!
-  if <%= aModuleInfo.ports.first.name %>.posedge?
+# Ruby prototype of the design under test's Verilog implementation.
+def feign!
+  if <%= aModuleInfo.clock_port.name %>.posedge?
     # discard old outputs
-<% aModuleInfo.ports.reject { |p| p.input? }.each do |port| %>
-      <%= port.name %>.hexStrVal = 'x'
-<% end %>
+    <% aModuleInfo.output_ports.each do |port| %>
+      <%= port.name %>.x!
+    <% end %>
 
     # process new inputs
 

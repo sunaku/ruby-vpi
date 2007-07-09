@@ -28,22 +28,19 @@ void main_init() {
     rb_define_alias(mVpi, "vpi_vprintf", "vpi_printf");
     rb_define_alias(mVpi, "vpi_mcd_vprintf", "vpi_mcd_printf");
 
-  // initialize the Ruby bench
-    char* benchFile = getenv("RUBYVPI_BOOTSTRAP");
 
-    if (benchFile != NULL) {
-      ruby_script(benchFile);
-      rb_load_file(benchFile);
-    }
-    else {
-      common_printf("error: environment variable RUBYVPI_BOOTSTRAP is not initialized.");
-      exit(EXIT_FAILURE);
-    }
+  char* bootLoader = getenv("RUBYVPI_BOOT_LOADER");
+  char* bootTarget = getenv("RUBYVPI_BOOT_TARGET");
 
-  // run the test bench
+  if (bootLoader != NULL && bootTarget != NULL) {
+    ruby_script(bootTarget);
+    rb_load_file(bootLoader);
     ruby_run();
-
-  ruby_finalize();
+  }
+  else {
+    common_printf("error: the RUBYVPI_BOOT_LOADER and RUBYVPI_BOOT_TARGET environment variables are not initialized.");
+    exit(EXIT_FAILURE);
+  }
 }
 
 VALUE main_relay_verilog(VALUE arSelf) {

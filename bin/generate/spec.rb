@@ -1,41 +1,45 @@
-# This file is a behavioral specification for the design under test.
+<% dut = aOutputInfo.designClassName %>
 
-<%
-  case aOutputInfo.specFormat
-    when :xUnit
-%>
+<% case aOutputInfo.specFormat %>
+<% when :xUnit %>
+require 'test/unit'
+
 class <%= aOutputInfo.specClassName %> < Test::Unit::TestCase
   def setup
-    <%= aOutputInfo.designClassName %>.reset!
+    <%= dut %>.reset!
   end
 <% aModuleInfo.ports.each do |port| %>
 
   def test_<%= port.name %>
-    # assert <%= aOutputInfo.designClassName %>.<%= port.name %> ..., "<%= port.name %> should ..."
+    # assert <%= dut %>.<%= port.name %> ..., "<%= port.name %> should ..."
   end
 <% end %>
 end
 <% when :tSpec %>
-context "A resetted <%= aOutputInfo.designClassName %>" do
+require 'test/spec'
+
+context "A resetted <%= dut %>" do
   setup do
-    <%= aOutputInfo.designClassName %>.reset!
+    <%= dut %>.reset!
   end
 
   specify "should ..." do
-    # <%= aOutputInfo.designClassName %>.should ...
+    # <%= dut %>.should ...
   end
 end
 <% when :rSpec %>
-describe <%= aOutputInfo.designClassName %>, " when resetted" do
+require 'spec'
+
+describe <%= dut %>, " when resetted" do
   before do
-    <%= aOutputInfo.designClassName %>.reset!
+    <%= dut %>.reset!
   end
 
   it "should ..." do
-    # <%= aOutputInfo.designClassName %>.should ...
+    # <%= dut %>.should ...
   end
 end
 <% else %>
-<%= aOutputInfo.designClassName %>.reset!
-# raise "should ..." unless <%= aOutputInfo.designClassName %> ...
+<%= dut %>.reset!
+# raise "should ..." unless <%= dut %> ...
 <% end %>

@@ -33,7 +33,9 @@ class VerilogParser
   Include  = Struct.new(:decl, :target)
 
   class Module
-    attr_reader :decl, :name, :parameters, :ports
+    attr_reader :decl, :name, :parameters,
+                :ports, :input_ports, :output_ports,
+                :clock_port
 
     def initialize aDecl
       @decl = aDecl.strip
@@ -50,9 +52,14 @@ class VerilogParser
           []
         end
 
-      @ports = portDecls.split(',').map do |decl|
-        Port.new decl
-      end
+      @ports        = portDecls.split(',').map {|decl| Port.new decl}
+      @input_ports  = @ports.select {|p| p.input?}
+      @output_ports = @ports.select {|p| p.output?}
+
+      @clock_port   = @ports.find {|p| p.name =~ /clock/i} ||
+                      @ports.find {|p| p.name =~ /clo?c?k/i} ||
+                      @ports.find {|p| p.name =~ /cl?o?c?k?/i} ||
+                      @ports.first
     end
 
     class Parameter

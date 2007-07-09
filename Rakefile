@@ -22,7 +22,7 @@ task :default => :build
 
 
 # load project information
-  include RubyVpi::Config
+  include RubyVPI
   PROJECT_SSH_URL  = "snk@rubyforge.org:/var/www/gforge-projects/#{PROJECT_ID}"
 
   load 'doc/history.rb'

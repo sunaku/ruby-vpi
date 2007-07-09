@@ -8,7 +8,8 @@ require 'rake/clean'
 
 $: << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'ruby-vpi'
-include RubyVpi::Config
+include RubyVPI
+
 HISTORY_URL = WEBSITE_URL + "/history.html"
 RSS_URL = WEBSITE_URL + '/rss.xml'
 RSS_INFO = "RSS feed for this project."

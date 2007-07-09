@@ -23,7 +23,7 @@ require 'rcov'
 require 'rcov/report'
 
 
-module RubyVpi
+module RubyVPI
   COVERAGE_ANALYSIS = Rcov::CodeCoverageAnalyzer.new
   COVERAGE_ANALYSIS.install_hook
 
@@ -37,11 +37,9 @@ module RubyVpi
     end
   end
 
-  # Invokes the given block, which yields COVERAGE_ANALYSIS, after code coverage
-  # analysis has completed.
-  def RubyVpi.with_coverage_analysis &aBlock # :nodoc:
-    if aBlock
-      COVERAGE_ANALYSIS_HANDLERS << aBlock
-    end
+  # Invokes the given block, which yields COVERAGE_ANALYSIS,
+  # after code coverage analysis has completed.
+  def RubyVPI.with_coverage_analysis &aBlock # :nodoc:
+    COVERAGE_ANALYSIS_HANDLERS << aBlock if aBlock
   end
 end

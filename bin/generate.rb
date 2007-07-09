@@ -2,10 +2,8 @@
 #
 # * The standard input stream is read if no input files are specified.
 #
-# * Unless specified, the first input
-#   signal in a module's declaration
-#   is assumed to be the clock signal.
-#
+# * If the clock signal cannot be automatically detected, then the first
+#   input signal in a module's declaration is assumed to be the clock signal.
 #
 # = Progress indicators
 #
@@ -29,7 +27,7 @@
 #           The tool's output should be written to the output file.
 
 #--
-# Copyright 2006 Suraj N. Kurapati
+# Copyright 2006-2007 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
 $: << File.join(File.dirname(__FILE__), '..', 'lib')
@@ -84,65 +82,51 @@ class Template < ERB # :nodoc:
 end
 
 
-
 # Holds information about the output destinations of a parsed Verilog module.
 class OutputInfo # :nodoc:
-  RUBY_EXT    = '.rb'
-  VERILOG_EXT = '.v'
-  RUNNER_EXT  = '.rake'
+  RUBY_EXT      = '.rb'
+  VERILOG_EXT   = '.v'
+  RUNNER_EXT    = '.rake'
+
+  DESIGN_SUFFIX = '_design'
+  SPEC_SUFFIX   = '_spec'
+  RUNNER_SUFFIX = '_runner'
+  PROTO_SUFFIX  = '_proto'
 
   SPEC_FORMATS = [:rSpec, :tSpec, :xUnit, :generic]
 
-  attr_reader :verilogBenchName, :verilogBenchPath, :rubyBenchName, :rubyBenchPath, :designName, :designClassName, :designPath, :specName, :specClassName, :specFormat, :specPath, :rubyVpiPath, :runnerName, :runnerPath, :protoName, :protoPath
+  attr_reader :designPath,  :designName,  :designClassName,
+              :specPath,    :specName,    :specClassName,    :specFormat,
+              :runnerPath,  :runnerName,
+              :protoPath,   :protoName
 
-  attr_reader :testName, :suffix, :benchSuffix, :designSuffix, :specSuffix, :runnerSuffix, :protoSuffix
-
-  def initialize aModuleName, aSpecFormat, aTestName, aRubyVpiPath
+  def initialize aModuleName, aSpecFormat
     raise ArgumentError unless SPEC_FORMATS.include? aSpecFormat
     @specFormat       = aSpecFormat
-    @testName         = aTestName
 
-    @suffix           = '_'               + @testName
-    @benchSuffix      = @suffix           + '_bench'
-    @designSuffix     = @suffix           + '_design'
-    @specSuffix       = @suffix           + '_spec'
-    @runnerSuffix     = @suffix           + '_runner'
-    @protoSuffix      = @suffix           + '_proto'
+    @designName       = aModuleName + DESIGN_SUFFIX
+    @designPath       = @designName + RUBY_EXT
 
-    @rubyVpiPath      = aRubyVpiPath
+    @protoName        = aModuleName + PROTO_SUFFIX
+    @protoPath        = @protoName  + RUBY_EXT
 
-    @verilogBenchName = aModuleName       + @benchSuffix
-    @verilogBenchPath = @verilogBenchName + VERILOG_EXT
-
-    @rubyBenchName    = aModuleName       + @benchSuffix
-    @rubyBenchPath    = @rubyBenchName    + RUBY_EXT
-
-    @designName       = aModuleName       + @designSuffix
-    @designPath       = @designName       + RUBY_EXT
-
-    @protoName        = aModuleName       + @protoSuffix
-    @protoPath        = @protoName        + RUBY_EXT
-
-    @specName         = aModuleName       + @specSuffix
-    @specPath         = @specName         + RUBY_EXT
+    @specName         = aModuleName + SPEC_SUFFIX
+    @specPath         = @specName   + RUBY_EXT
 
     @designClassName  = aModuleName.to_ruby_const_name
     @specClassName    = @specName.to_ruby_const_name
 
-    @runnerName       = aModuleName       + @runnerSuffix
-    @runnerPath       = @runnerName       + RUNNER_EXT
+    @runnerName       = aModuleName + RUNNER_SUFFIX
+    @runnerPath       = @runnerName + RUNNER_EXT
   end
 end
 
 
-
 # obtain templates for output generation
-  VERILOG_BENCH_TEMPLATE = Template.new('bench.v')
-  RUBY_BENCH_TEMPLATE    = Template.new('bench.rb')
-  DESIGN_TEMPLATE        = Template.new('design.rb')
-  PROTO_TEMPLATE         = Template.new('proto.rb')
-  SPEC_TEMPLATE          = Template.new('spec.rb')
-  RUNNER_TEMPLATE        = Template.new('runner.rake')
+  DESIGN_TEMPLATE = Template.new('design.rb')
+  PROTO_TEMPLATE  = Template.new('proto.rb')
+  SPEC_TEMPLATE   = Template.new('spec.rb')
+  RUNNER_TEMPLATE = Template.new('runner.rake')
 
 
 # parse command-line options
@@ -177,29 +161,20 @@ end
             optSpecFmt = :tSpec
           end
 
-  opts.on '-n', '--name NAME',
-          'insert NAME into names of generated files',
-          String do |optTestName| end
-
   opts.parse! ARGV
 
 
 v = VerilogParser.new(ARGF.read)
-
 v.modules.each do |m|
   puts
   notify :module, m.name
 
-  o = OutputInfo.new(m.name, optSpecFmt, optTestName, File.dirname(File.dirname(__FILE__)))
+  o = OutputInfo.new(m.name, optSpecFmt)
+  aParseInfo, aModuleInfo, aOutputInfo = v.freeze, m.freeze, o.freeze
 
-  # generate output
-    aParseInfo, aModuleInfo, aOutputInfo = v.freeze, m.freeze, o.freeze
-
-    write_file o.runnerPath, RUNNER_TEMPLATE.result(binding)
-    write_file o.verilogBenchPath, VERILOG_BENCH_TEMPLATE.result(binding)
-    write_file o.rubyBenchPath, RUBY_BENCH_TEMPLATE.result(binding)
-    write_file o.designPath, DESIGN_TEMPLATE.result(binding)
-    write_file o.protoPath, PROTO_TEMPLATE.result(binding)
-    write_file o.specPath, SPEC_TEMPLATE.result(binding)
-    write_file 'Rakefile', "require 'ruby-vpi/runner_proxy'"
+  write_file o.runnerPath, RUNNER_TEMPLATE.result(binding)
+  write_file o.designPath, DESIGN_TEMPLATE.result(binding)
+  write_file o.protoPath, PROTO_TEMPLATE.result(binding)
+  write_file o.specPath, SPEC_TEMPLATE.result(binding)
+  write_file 'Rakefile', "require 'ruby-vpi/runner_proxy'"
 end

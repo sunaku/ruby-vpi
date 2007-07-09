@@ -3,7 +3,6 @@
 # source files will be loaded by the simulator before the simulation begins.
 SIMULATOR_SOURCES = FileList[
   '<%= aModuleInfo.name %>.v',
-  '<%= aOutputInfo.verilogBenchPath %>',
 ]
 
 # Command-line arguments for the simulator.  These arguments can be
@@ -14,7 +13,7 @@ SIMULATOR_SOURCES = FileList[
 #   :cver => %w[these are also separate arguments],
 #
 SIMULATOR_ARGUMENTS = {
-<% RubyVpi::Config::SIMULATORS.each_pair do |id, sim| %>
+<% RubyVPI::SIMULATORS.each_pair do |id, sim| %>
   # <%= sim.name %>
   :<%= id %> => "",
 
