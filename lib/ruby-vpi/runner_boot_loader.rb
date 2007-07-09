@@ -58,8 +58,29 @@ usePrototype = ENV['PROTOTYPE'].to_i == 1
   end
 
 # load the design under test
-  unless design = vpi_handle_by_name(designName, nil)
+  unless designHandle = vpi_handle_by_name(designName, nil)
     raise "cannot access the design under test: #{designName.inspect}"
+  end
+
+  # create a module to wrap the DUT, so that inner classes and modules
+  # and constants defined in the design.rb and proto.rb files are
+  # accessible in spec.rb through the namespace resolution operator (::)
+  design = Module.new do
+    @@design = designHandle
+
+    # delegate all instance methods to the DUT
+    instance_eval do
+      def method_missing(*a, &b)
+        @@design.__send__(*a, &b)
+      end
+
+      # so that #inspect executes on the DUT instead of this wrapper
+      undef to_s
+      undef inspect
+    end
+
+    # methods in design.rb & proto.rb must execute on the DUT
+    @@design.extend(self)
   end
 
   Kernel.const_set(designName.to_ruby_const_name, design)
