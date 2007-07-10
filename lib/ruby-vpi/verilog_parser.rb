@@ -6,7 +6,7 @@
 require 'ruby-vpi/util'
 
 class VerilogParser
-  attr_reader :modules, :constants, :includes
+  attr_reader :modules
 
   # Parses the given Verilog source code.
   def initialize aInput
@@ -16,81 +16,49 @@ class VerilogParser
       input.gsub! %r{//.*$}, ''
       input.gsub! %r{/\*.*?\*/}m, ''
 
-    @modules = input.scan(%r{module.*?;}m).map do |decl|
-      Module.new decl
-    end
-
-    @constants = input.scan(%r{(`define\s+(\w+)\s+(.+))}).map do |matches|
-      Constant.new(*matches)
-    end
-
-    @includes = input.scan(%r{(`include\s*(\S+))}).map do |matches|
-      Include.new(*matches)
+    @modules = input.scan(%r{(module.*?;)(.*?)endmodule}m).map do |matches|
+      Module.new(*matches)
     end
   end
 
-  Constant = Struct.new(:decl, :name, :value)
-  Include  = Struct.new(:decl, :target)
-
   class Module
-    attr_reader :decl, :name, :parameters,
+    attr_reader :decl, :body, :name,
                 :ports, :input_ports, :output_ports,
-                :clock_port
+                :clock_port, :reset_port
 
-    def initialize aDecl
+    def initialize aDecl, aBody
       @decl = aDecl.strip
+      @body = aBody
 
-      @decl =~ %r{module\s+(\w+)\s*(?:\#\((.*?)\))?\s*\((.*?)\)\s*;}m
-      @name, paramDecls, portDecls = $1, $2, $3
+      @decl =~ %r{module\s+(\w+)\s*(?:\#\(.*?\))?\s*\((.*?)\)\s*;}m
+      @name, portDecls = $1, $2
 
-      @parameters =
-        if paramDecls =~ %r{\bparameter\b(.*)$}
-          $1.split(',').map do |decl|
-            Parameter.new decl
-          end
-        else
-          []
-        end
-
-      @ports        = portDecls.split(',').map {|decl| Port.new decl}
+      @ports        = portDecls.split(',').map {|decl| Port.new decl, self}
       @input_ports  = @ports.select {|p| p.input?}
       @output_ports = @ports.select {|p| p.output?}
 
-      @clock_port   = @ports.find {|p| p.name =~ /clock/i} ||
-                      @ports.find {|p| p.name =~ /clo?c?k/i} ||
-                      @ports.find {|p| p.name =~ /cl?o?c?k?/i} ||
-                      @ports.first
-    end
-
-    class Parameter
-      attr_reader :decl, :name, :value
-
-      def initialize aDecl
-        @decl         = aDecl.strip
-        @name, @value = @decl.split('=').map {|s| s.strip}
-      end
+      @clock_port   = @ports.find {|p| p.name =~ /clock|clo?c?k/i}
+      @reset_port   = @ports.find {|p| p.name =~ /reset|re?se?t/i}
     end
 
     class Port
-      attr_reader :decl, :name, :size
+      attr_reader :decl, :name
 
-      def initialize aDecl
-        @decl = aDecl.strip
+      def initialize aDecl, aModule
+        @decl = aDecl
+        @name = aDecl.scan(/\S+/).last
 
-        @decl =~ /(\[.*?\])?\s*(\w+)$/
-        @size, @name = $1, $2
+        parser = /\b(input|output|inout)\b[^;]*\b#{@name}\b/m
+        aDecl =~ parser || aModule.body =~ parser
+        @type = $1
       end
 
       def input?
-        @decl =~ /\binput\b/
+        @type != 'output'
       end
 
       def output?
-        @decl =~ /\boutput\b/
-      end
-
-      def reg?
-        @decl =~ /\breg\b/
+        @type != 'input'
       end
     end
   end
