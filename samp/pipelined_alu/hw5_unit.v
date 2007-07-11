@@ -3,34 +3,34 @@
   See the file named LICENSE for details.
 */
 
-`define WIDTH 32
-`define DATABITS 7
-`define OP_NOP	0
-`define OP_ADD 1
-`define OP_SUB	2
-`define OP_MULT 3
-
 module hw5_unit(
-  input clk
+    input clk
   , input reset
 
   // inputs
-  , input [`DATABITS-1:0] in_databits
-  , input [`WIDTH-1:0] a
-  , input [`WIDTH-1:0] b
+  , input [DATABITS-1:0] in_databits
+  , input [WIDTH-1:0] a
+  , input [WIDTH-1:0] b
   , input [1:0] in_op
 
   // outputs
-  , output reg [`WIDTH-1:0] res
-  , output reg [`DATABITS-1:0] out_databits
+  , output reg [WIDTH-1:0] res
+  , output reg [DATABITS-1:0] out_databits
   , output reg [1:0] out_op
 );
 
+  parameter
+    WIDTH    = 32,
+    DATABITS = 7,
+    OP_NOP   = 0,
+    OP_ADD   = 1,
+    OP_SUB   = 2,
+    OP_MULT  = 3;
 
   /* PHASE 0: perform the ALU operations */
 
   // operation ID
-    reg [`DATABITS-1:0] in_databits_phase0;
+    reg [DATABITS-1:0] in_databits_phase0;
     reg [1:0] in_op_phase0;
 
     always @(*) begin
@@ -39,21 +39,21 @@ module hw5_unit(
     end
 
   // addition
-    reg [`WIDTH-1:0] add_result_phase0;
+    reg [WIDTH-1:0] add_result_phase0;
 
     always @(*) begin
       add_result_phase0 = a + b;
     end
 
   // subtraction
-    reg [`WIDTH-1:0] sub_result_phase0;
+    reg [WIDTH-1:0] sub_result_phase0;
 
     always @(*) begin
       sub_result_phase0 = a - b;
     end
 
   // multiplication
-    reg [`WIDTH-1:0] mul_result_phase0;
+    reg [WIDTH-1:0] mul_result_phase0;
 
     always @(*) begin
       mul_result_phase0 = a * b;
@@ -71,12 +71,12 @@ module hw5_unit(
 
   /* PHASE 1: delay the ALU results */
 
-    reg [`DATABITS-1:0] in_databits_phase1;
+    reg [DATABITS-1:0] in_databits_phase1;
     reg [1:0] in_op_phase1;
 
-    reg [`WIDTH-1:0] add_result_phase1;
-    reg [`WIDTH-1:0] sub_result_phase1;
-    reg [`WIDTH-1:0] mul_result_phase1;
+    reg [WIDTH-1:0] add_result_phase1;
+    reg [WIDTH-1:0] sub_result_phase1;
+    reg [WIDTH-1:0] mul_result_phase1;
 
     always @(posedge clk) begin
       in_databits_phase1 <= in_databits_phase0;
@@ -98,12 +98,12 @@ module hw5_unit(
 
   /* PHASE 2: delay the ALU results */
 
-    reg [`DATABITS-1:0] in_databits_phase2;
+    reg [DATABITS-1:0] in_databits_phase2;
     reg [1:0] in_op_phase2;
 
-    reg [`WIDTH-1:0] add_result_phase2;
-    reg [`WIDTH-1:0] sub_result_phase2;
-    reg [`WIDTH-1:0] mul_result_phase2;
+    reg [WIDTH-1:0] add_result_phase2;
+    reg [WIDTH-1:0] sub_result_phase2;
+    reg [WIDTH-1:0] mul_result_phase2;
 
     always @(posedge clk) begin
       in_databits_phase2 <= in_databits_phase1;
@@ -125,13 +125,13 @@ module hw5_unit(
 
   /* PHASE 3: produce the outputs */
 
-    reg [`DATABITS-1:0] out_databits_next;
+    reg [DATABITS-1:0] out_databits_next;
     reg [1:0] out_op_next;
-    reg [`WIDTH-1:0] res_next;
+    reg [WIDTH-1:0] res_next;
 
     always @(*) begin
       if (reset) begin
-        out_op_next = `OP_NOP;
+        out_op_next = OP_NOP;
       end else begin
         out_op_next = in_op_phase2;
       end
@@ -139,16 +139,16 @@ module hw5_unit(
       out_databits_next = in_databits_phase2;
 
       case (in_op_phase2)
-        `OP_NOP:
+        OP_NOP:
           res_next = 0;
 
-        `OP_ADD:
+        OP_ADD:
           res_next = add_result_phase2;
 
-        `OP_SUB:
+        OP_SUB:
           res_next = sub_result_phase2;
 
-        `OP_MULT:
+        OP_MULT:
           res_next = mul_result_phase2;
       endcase
     end
