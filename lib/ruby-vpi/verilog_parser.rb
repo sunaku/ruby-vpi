@@ -30,8 +30,8 @@ class VerilogParser
       @decl = aDecl.strip
       @body = aBody
 
-      @decl =~ %r{module\s+(\w+)\s*(?:\#\(.*?\))?\s*\((.*?)\)\s*;}m
-      @name, portDecls = $1, $2
+      @decl =~ %r{module\s+(\w+)\s*(?:\#\(.*?\))?\s*(?:\((.*?)\))?\s*;}m
+      @name, portDecls = $1, $2.to_s
 
       @ports        = portDecls.split(',').map {|decl| Port.new decl, self}
       @input_ports  = @ports.select {|p| p.input?}
