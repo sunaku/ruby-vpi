@@ -74,6 +74,8 @@ usePrototype = ENV['PROTOTYPE'].to_i == 1
         @@design.__send__(*a, &b)
       end
 
+      alias const_missing method_missing
+
       # so that #inspect executes on the DUT instead of this wrapper
       undef to_s
       undef inspect
