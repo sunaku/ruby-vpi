@@ -69,7 +69,7 @@ def object_file_path aSimId # :nodoc:
   path = File.join(OBJECT_PATH, aSimId.to_s)
 
   unless File.exist? path
-    raise "Object file #{path.inspect} is missing. Rebuild #{PROJECT_NAME}."
+    raise "Object file #{path.inspect} is missing. Rebuild Ruby-VPI."
   end
 
   path
