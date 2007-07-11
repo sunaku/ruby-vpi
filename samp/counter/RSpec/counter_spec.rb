@@ -1,4 +1,4 @@
-# This file is a behavioral specification for the design under test.
+require 'spec'
 
 # lowest upper bound of counter's value
 LIMIT = 2 ** Counter.Size.intVal
@@ -18,7 +18,7 @@ describe "A resetted counter's value" do
   it "should increment upon each rising clock edge" do
     LIMIT.times do |i|
       Counter.count.intVal.should == i
-      simulate # increment the counter
+      Counter.cycle! # increment the counter
     end
   end
 end
@@ -27,12 +27,13 @@ describe "A counter with the maximum value" do
   setup do
     Counter.reset!
 
-    simulate MAX # increment the counter to maximum value
+    # increment the counter to maximum value
+    MAX.times { Counter.cycle! }
     Counter.count.intVal.should == MAX
   end
 
   it "should overflow upon increment" do
-    simulate # increment the counter
+    Counter.cycle! # increment the counter
     Counter.count.intVal.should == 0
   end
 end

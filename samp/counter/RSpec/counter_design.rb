@@ -1,18 +1,14 @@
-# This file is the Ruby side of the bench.
 
-require 'rubygems'
-require 'ruby-vpi'
+# Brings the design under test into a blank state.
+def reset!
+  reset.high!
+  cycle!
+  reset.low!
+end
 
-RubyVpi.init_bench(:Counter, :rSpec) do
-  # This block of code is executed whenever the "simulate" method
-  # is invoked by the specification.  The purpose of this block
-  # of code is to simulate the design under test by (typically)
-  # toggling the clock signal, as demonstrated below.
-
-  clock    = Counter.clock
-  numSteps = 1
-
-  ##############################################################################
+# Simulates the design under test for one clock cycle.
+def cycle!
+  ##
   # We are currently at the position indicated by the exclamation marks (!):
   #
   #          !
@@ -24,11 +20,11 @@ RubyVpi.init_bench(:Counter, :rSpec) do
   #          !
   #          !
   #
-  ##############################################################################
+  ##
 
-  clock.intVal = 1
+  clock.high!
 
-  ##############################################################################
+  ##
   # After setting the clock signal to high, we are here:
   #
   #                !
@@ -40,11 +36,11 @@ RubyVpi.init_bench(:Counter, :rSpec) do
   #                !
   #                !
   #
-  ##############################################################################
+  ##
 
-  advance_time(numSteps)
+  advance_time
 
-  ##############################################################################
+  ##
   # After advancing the time, we are here:
   #
   #                                 !
@@ -56,11 +52,11 @@ RubyVpi.init_bench(:Counter, :rSpec) do
   #                                 !
   #                                 !
   #
-  ##############################################################################
+  ##
 
-  clock.intVal = 0
+  clock.low!
 
-  ##############################################################################
+  ##
   # After setting the clock signal to low, we are here:
   #
   #                                       !
@@ -72,11 +68,11 @@ RubyVpi.init_bench(:Counter, :rSpec) do
   #                                       !
   #                                       !
   #
-  ##############################################################################
+  ##
 
-  advance_time(numSteps)
+  advance_time
 
-  ##############################################################################
+  ##
   # After advancing the time, we are here:
   #
   #                                                      !
@@ -88,8 +84,5 @@ RubyVpi.init_bench(:Counter, :rSpec) do
   #                                                      !
   #                                                      !
   #
-  ##############################################################################
-
-  # This process repeats when the "simulate" method is invoked again.
-
+  ##
 end

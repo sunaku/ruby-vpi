@@ -1,4 +1,4 @@
-# This file is a behavioral specification for the design under test.
+require 'test/unit'
 
 # lowest upper bound of counter's value
 LIMIT = 2 ** Counter.Size.intVal
@@ -12,13 +12,13 @@ class ResettedCounterValue < Test::Unit::TestCase
   end
 
   def test_zero
-    assert_equal(0, Counter.count.intVal)
+    assert_equal( 0, Counter.count.intVal )
   end
 
   def test_increment
     LIMIT.times do |i|
-      assert_equal(i, Counter.count.intVal)
-      simulate # increment the counter
+      assert_equal( i, Counter.count.intVal )
+      Counter.cycle! # increment the counter
     end
   end
 end
@@ -27,12 +27,13 @@ class MaximumCounterValue < Test::Unit::TestCase
   def setup
     Counter.reset!
 
-    simulate(MAX) # increment the counter to maximum value
-    assert_equal(MAX, Counter.count.intVal)
+    # increment the counter to maximum value
+    MAX.times { Counter.cycle! }
+    assert_equal( MAX, Counter.count.intVal )
   end
 
   def test_overflow
-    simulate # increment the counter
-    assert_equal(0, Counter.count.intVal)
+    Counter.cycle! # increment the counter
+    assert_equal( 0, Counter.count.intVal )
   end
 end
