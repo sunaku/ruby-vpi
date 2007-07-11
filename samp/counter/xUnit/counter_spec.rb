@@ -1,7 +1,7 @@
 require 'test/unit'
 
 # lowest upper bound of counter's value
-LIMIT = 2 ** Counter.Size.intVal
+LIMIT = 2 ** Counter::Size
 
 # maximum allowed value for a counter
 MAX = LIMIT - 1

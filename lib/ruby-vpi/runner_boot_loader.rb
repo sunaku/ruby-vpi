@@ -81,6 +81,11 @@ usePrototype = ENV['PROTOTYPE'].to_i == 1
       undef inspect
     end
 
+    # make module parameters available as constants
+    @@design[VpiParameter, VpiLocalParam].each do |var|
+      const_set(var.name.to_ruby_const_name, var.intVal)
+    end
+
     # methods in design.rb & proto.rb must execute on the DUT
     @@design.extend(self)
   end
