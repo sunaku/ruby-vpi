@@ -39,17 +39,6 @@ module Vpi
     class Handle
       include Vpi
 
-      # inherit Enumerable methods, such as #each, #map, #select, etc.
-        Enumerable.instance_methods.each do |meth|
-          # using a string because define_method
-          # does not accept a block until Ruby 1.9
-          class_eval %{
-            def #{meth} *args, &block
-              self[*args].send(:#{meth}, &block)
-            end
-          }
-        end
-
       # Tests if the logic value of this handle is unknown (x).
       def x?
         self.hexStrVal =~ /x/i
@@ -245,6 +234,26 @@ module Vpi
 
         handles
       end
+
+      alias to_a []
+
+      # inherit Enumerable methods, such as #each, #map, #select, etc.
+        Enumerable.instance_methods.push('each').each do |meth|
+          # using a string because define_method
+          # does not accept a block until Ruby 1.9
+          class_eval %{
+            def #{meth}(*args, &block)
+              if ary = self[*args]
+                ary.#{meth}(&block)
+              end
+            end
+          }, __FILE__, __LINE__
+        end
+
+        # Sort by absolute VPI path.
+        def <=> other
+          self.fullName <=> other.fullName
+        end
 
       # Inspects the given VPI property names, in
       # addition to those common to all handles.
