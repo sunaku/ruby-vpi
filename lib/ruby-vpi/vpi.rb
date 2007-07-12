@@ -358,6 +358,13 @@ module Vpi
                   raise NotImplementedError
                 end
 
+              when :a # array of child handles
+                unless prop.assignment
+                  self[prop.type]
+                else
+                  raise NotImplementedError
+                end
+
               else
                 raise NoMethodError, "unable to access VPI property #{prop.name.inspect} through method #{aMeth.inspect} with arguments #{aArgs.inspect} for handle #{self}"
             end
