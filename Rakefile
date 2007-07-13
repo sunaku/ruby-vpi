@@ -250,9 +250,9 @@ task :default => :build
     # ensures that current sources are tested instead of the installed gem
     ENV['RUBYLIB'] = PROJECT_LIBS
 
-    FileList['samp/*/'].each do |dir|
-      cd dir do
-        sh 'rake', ENV['SIMULATOR'] || 'cver'
+    FileList['samp/**/*.rake'].each do |runner|
+      cd File.dirname(runner) do
+        sh 'rake', '-f', File.basename(runner), ENV['SIMULATOR'] || 'cver'
       end
     end
   end
