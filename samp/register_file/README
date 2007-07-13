@@ -1,0 +1,4 @@
+This sample Ruby-VPI test was originally written by Jacinto Shy II:
+http://jacintoshy.blogspot.com/2007/05/hacking-verilog-with-ruby-part-2.html
+
+It has undergone some minor changes to work with the latest Ruby-VPI release.
