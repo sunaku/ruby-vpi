@@ -15,6 +15,7 @@ RSS_URL = WEBSITE_URL + '/rss.xml'
 RSS_INFO = "RSS feed for this project."
 
 require 'ruby-vpi/erb'
+include ERB::Util
 
 
 $: << File.join(File.dirname(__FILE__), 'lib')
@@ -29,6 +30,7 @@ FileList['*.doc'].each do |src|
 
   desc "Process file #{src.inspect}."
   file dst => [src, 'common.tpl', *deps] do |t|
+    puts src
     String.reset_anchors
 
     content = DocProxy.new.instance_eval do
@@ -53,7 +55,6 @@ FileList['*.doc'].each do |src|
 
     File.open(dst, 'w') do |f|
       f << content
-      puts f.path
     end
   end
 

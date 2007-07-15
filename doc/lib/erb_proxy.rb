@@ -11,8 +11,8 @@ class ErbProxy
     @handlers = {}
   end
 
-  # Adds a new handler that can be invoked from a ERB template. The arguments
-  # passed to the handler are:
+  # Adds a new handler that can be invoked from a ERB
+  # template.  The arguments passed to the handler are:
   #
   # 1. buffer containing the evaluated results of the ERB template thus far
   #
@@ -34,8 +34,8 @@ class ErbProxy
     }
   end
 
-  # Evaluates the given ERB template. Used to dynamically include one template
-  # within another.
+  # Evaluates the given ERB template.  Used to
+  # dynamically include one template within another.
   def import aErbFile
     ERB.new(File.read(aErbFile)).result
   end

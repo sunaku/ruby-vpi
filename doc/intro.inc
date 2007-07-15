@@ -109,7 +109,7 @@ Ruby-VPI is known to work with the following simulators. However, you should be 
  - version 2.11a or newer is acceptable.
 
 * "Icarus Verilog":http://www.icarus.com/eda/Verilog/
-  - version 0.8 is _mostly_ acceptable -- you *will not* be able to "access child handles through method calls":manual.html#background.org.vpi.util. The reason for this limitation is explained "in the user manual":#problems.ivl.vpi_handle_by_name.absolute-paths.
+  - version 0.8 is _mostly_ acceptable -- you *will not* be able to "access child handles through method calls":manual.html#background.org.vpi.util. The reason for this limitation is explained "in the user manual":manual.html#problems.ivl.vpi_handle_by_name.absolute-paths.
 
 p(title). Compilers
 
@@ -177,7 +177,7 @@ bq. @15.times { simulate }@
 
 h2(#intro.license). License
 
-<%= File.read '../LICENSE' %>
+<%=h File.read('../LICENSE') %>
 
 
 h2(#intro.related-works). Related works

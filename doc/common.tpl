@@ -2,11 +2,17 @@
   require 'doc_format'
 
   # set default page title if none was given
-    unless page_title
-      if h = @headings.first
-        page_title = h.title
-      end
+  unless page_title
+    if h = @boxes[:section].first
+      page_title = h.title
     end
+  end
+
+  Listing = Struct.new(:name, :anchor, :key)
+
+  listings = (@boxes.keys - [:section]).map do |key|
+    Listing.new(key.to_s.capitalize << 's', key.to_s.to_html_anchor, key)
+  end
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -22,15 +28,14 @@
     <div id="toc">
       <%= 'p=. !images/tango/home.png(Return to main page)!:readme.html'.redcloth %>
 
-      <ul>
       <%
-        links = @indexes.values.flatten.map do |i|
-          %{<a href="##{i.name.downcase}">#{i.name}</a>}
+        links = listings.map do |x|
+          %{<a href="##{x.anchor}">#{x.name}</a>}
         end
         links.unshift %{<a href="#toc-real">Contents</a>}
-
-        links.each do |link|
       %>
+      <ul>
+      <% links.each do |link| %>
         <li><%= link %></li>
       <% end %>
       </ul>
@@ -38,15 +43,13 @@
       <h1 id="toc-real">Contents</h1>
       <%= toc %>
 
-      <% @indexes.each_pair do |cat, lists| %>
-        <% lists.each do |list| %>
-          <h1 id="<%= list.name.downcase %>"><%= list.name %></h1>
-          <%=
-            list.items.inject('') do |memo, block|
-              memo << "# #{(block.title || block.anchor).inspect}:##{block.anchor}\n"
-            end.redcloth
-          %>
+      <% listings.each do |x| %>
+        <h1 id="<%= x.anchor %>"><%= x.name %></h1>
+        <ol>
+        <% @boxes[x.key].map do |box| %>
+          <%= %{<li><a href="##{box.anchor}">#{box.title.to_html}</a></li>} %>
         <% end %>
+        </ol>
       <% end %>
     </div>
   <% end %>

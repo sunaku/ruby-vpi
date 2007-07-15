@@ -1,4 +1,18 @@
 -
+  Version: 17.0.0
+
+  Date: 2007-07-08
+
+  Record: |
+    This release eliminates the <tt>bench.v</tt> and <tt>bench.rb</tt> files from generated tests.
+
+
+    h2. Caution
+
+    * The @DEBUG@ environment variable, which controls wether the test runner starts the interactive debugger, has been renamed to @DEBUGGER@.
+
+
+-
   Version: 16.0.1
 
   Date: 2007-05-27
