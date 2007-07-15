@@ -30,7 +30,7 @@ class DocProxy < ErbProxy
       h[d] = k
       d
     end
-    @lazy  = @mask.dup
+    @lazyHandlers = {}
 
     type = :admonition
     BOX_TYPES[type].each do |name|
@@ -66,14 +66,29 @@ class DocProxy < ErbProxy
         ].join
       ]
     end
-  end
 
-  def xref aTarget
-    @lazy["xref-#{aTarget.object_id}:#{aTarget}"]
-  end
+    # bibliography citations
+    add_lazy_handler :cite do |aTarget|
+      target = @bib.find {|item| item.name == aTarget}
 
-  def cite aTarget
-    @lazy["cite-#{aTarget.object_id}:#{aTarget}"]
+      if target
+        %{[<a href="##{target.anchor}">#{target.name.to_html}</a>]}
+      else
+        warn "unresolved cross-reference to bibliography item: #{name}"
+      end
+    end
+
+    # cross references
+    add_lazy_handler :xref do |aTarget|
+      target = @boxes.values.flatten.find {|b| b.id == aTarget} ||
+               @boxes[:section].find {|b| b.anchor == aTarget}
+
+      if target
+        %{<a href="##{target.anchor}">the #{target.type} named &ldquo;#{target.title.to_html}&rdquo;</a>}
+      else
+        warn "unresolved cross-reference to id: #{aTarget}"
+      end
+    end
   end
 
   # Post-processes the given ERB template result by parsing the document
@@ -88,41 +103,13 @@ class DocProxy < ErbProxy
     # parse document structure and insert anchors (so that the table
     # of contents can link directly to these headings) where necessary
     toc, text = text.table_of_contents do |title, anchor, index, depth, atts|
-      # @headings << Heading.new(anchor, title, depth, index)
       @boxes[:section] << Box.new(:section, anchor, index, title)
     end
 
     # expand cross-references into links to their targets
-    boxes = @boxes.values.flatten
-
-    @lazy.each_pair do |src, dst|
-      dst =~ /^(\w+)-[^:]+:(.*)/
-      op, arg = $1, $2
-
-      dst = case op
-        when 'xref'
-          target = boxes.find {|b| b.id == arg} ||
-                   boxes.find {|b| b.anchor == arg}
-
-          if target
-            %{<a href="##{target.anchor}">the #{target.type} named &ldquo;#{target.title}&rdquo;</a>}
-          else
-            raise "unresolved cross-reference to id: #{arg}"
-          end
-
-        when 'cite'
-          target = @bib.find {|item| item.name == arg}
-
-          if target
-            %{[<a href="##{target.anchor}">#{target.name}</a>]}
-          else
-            raise "unresolved cross-reference to bibliography item: #{name}"
-          end
-      end
-
-      text.sub! src, dst
+    @lazyHandlers.each_pair do |token, (handler, args)|
+      text.gsub! token, handler.call(*args)
     end
-
 
     [toc, text]
   end
@@ -157,6 +144,16 @@ class DocProxy < ErbProxy
           '</div>',
         ].join
       ]
+    end
+  end
+
+  def add_lazy_handler aName, &aHandler
+    (class << self; self; end).instance_eval do
+      define_method aName do |*args|
+        token = Digest::MD5.hexdigest("#{aName}#{args.object_id}")
+        @lazyHandlers[token] = [aHandler, args]
+        token
+      end
     end
   end
 end
