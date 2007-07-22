@@ -210,9 +210,9 @@ task :default => :build
     s.version           = PROJECT_VERSION
 
     s.add_dependency 'rake',       '>= 0.7.0'
-    s.add_dependency 'rspec',      '>= 0.7.0'
+    s.add_dependency 'rspec',      '>= 1.0.0'
     s.add_dependency 'rcov',       '>= 0.7.0'
-    s.add_dependency 'xx' # needed by rcov
+    s.add_dependency 'xx'           # needed by rcov
     s.add_dependency 'ruby-debug', '>= 0.5.2'
 
     s.requirements << "POSIX threads library"
