@@ -3,15 +3,24 @@
 
   # set default page title if none was given
   unless page_title
-    if h = @boxes[:section].first
+    if h = @nodeTree.group2nodes[:latex].first
       page_title = h.title
     end
   end
 
-  Listing = Struct.new(:name, :anchor, :key)
+  Listing = Struct.new(:name, :anchor, :key, :nodes) unless defined? Listing
 
-  listings = (@boxes.keys - [:section]).map do |key|
-    Listing.new(key.to_s.capitalize << 's', key.to_s.to_html_anchor, key)
+  listings = (
+    DocProxy::GROUP2TYPES[:admonition] +
+    DocProxy::GROUP2TYPES[:formal]
+  ).flatten.inject([]) do |ary, key|
+    nodes = @nodeTree.type2nodes[key]
+
+    unless nodes.empty?
+      ary << Listing.new(key.to_s.capitalize << 's', "toc:#{key}".to_html_anchor, key, nodes)
+    end
+
+    ary
   end
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -25,34 +34,38 @@
   </head>
   <body>
   <% if insert_toc %>
-    <div id="toc">
-      <%= 'p=. !images/tango/home.png(Return to main page)!:readme.html'.redcloth %>
-
+    <div id="toc-links">
       <%
         links = listings.map do |x|
           %{<a href="##{x.anchor}">#{x.name}</a>}
         end
-        links.unshift %{<a href="#toc-real">Contents</a>}
+        links.unshift %{<a href="#toc:contents">Contents</a>}
       %>
-      <ul>
       <% links.each do |link| %>
-        <li><%= link %></li>
+        <%= link %> &middot;
       <% end %>
-      </ul>
 
-      <h1 id="toc-real">Contents</h1>
+      <a href="readme.html" style="color: green; font-size: larger;">Home page</a>
+    </div>
+  <% end %>
+
+    <div id="body"><%= content %></div>
+
+  <% if insert_toc %>
+    <hr style="display: none"/>
+    <div id="toc">
+      <h1 id="toc:contents">Contents</h1>
       <%= toc %>
 
       <% listings.each do |x| %>
         <h1 id="<%= x.anchor %>"><%= x.name %></h1>
         <ol>
-        <% @boxes[x.key].map do |box| %>
-          <%= %{<li><a href="##{box.anchor}">#{box.title.to_html}</a></li>} %>
+        <% x.nodes.map do |node| %>
+          <%= %{<li><a href="##{node.anchor}" id="#{node.tocAnchor}">#{node.title.to_html}</a></li>} %>
         <% end %>
         </ol>
       <% end %>
     </div>
   <% end %>
-    <%= content %>
   </body>
 </html>

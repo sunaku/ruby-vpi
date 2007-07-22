@@ -1,63 +1,116 @@
 body {
+  margin: 0;
+  background-color: snow;
+  line-height: 160%;
+}
+
+#body {
   margin-left: auto;
   margin-right: auto;
-  max-width: 33em;
+  max-width: 37em;
 
-  margin-bottom: 5em; /* give space for #menu */
-  margin-top: 2.25em; /* give space for breathing */
+  background-color: white;
+  border-left: thick solid salmon;
+  border-right: thick solid salmon;
+  padding: 2em;
+}
 
-  margin-left: 20em;
-  padding-right: 1em;
+#body > h1 {
+  margin-top: 0;
 }
 
 
 /* headings */
 
-th, h1, h2, h3, h4, h5, h6, .title {
+h1, h2, h3, h4, h5, h6, th, .title {
   font-family: serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  margin-top: 3em;
+  font-weight: lighter;
+  padding-top: 3em;
   border-bottom: thin solid silver;
 }
 
 
 /* table of contents */
 
-#toc {
-  position: absolute;
-  left: 0;
-  top: 0;
-  max-width: 15em;
+#toc-links {
+  text-align: center;
+  border-bottom: thick solid salmon;
+  background-color: white;
   padding: 1em;
+}
 
-  border: thin solid red;
-  border-left: none;
-  border-top: none;
-  background-color: snow;
+#toc {
+  border-top: thick solid salmon;
+  background-color: white;
+  padding: 1em;
 }
 
 #toc li {
-  margin-top: 1em;
-  margin-left: -1.5em;
+  margin-left: -15px;
+}
+
+
+/* latex */
+
+.front_cover {
+  margin-bottom: 10em;
+}
+
+.front_cover h1,
+.front_cover h2,
+.front_cover h3,
+.front_cover h4,
+.front_cover h5,
+.front_cover h6 {
+  border: none;
+  text-align: center;
+}
+
+.part,
+.chapter {
+  padding-top: 3em;
+  padding-bottom: 3em;
+}
+
+.part > .title,
+.chapter > .title {
+  border: none;
+  padding-bottom: 1em;
+}
+
+.part > .title {
+  border-bottom: thick solid salmon;
+}
+
+.paragraph > .title,
+.admonition .title {
+  font-family: serif;
+  font-size: larger;
+}
+
+.paragraph > .title {
+  padding-top: 1em;
 }
 
 
 /* admonitions */
 
 .admonition {
-  border: thin solid steelblue;
-  background-color: aliceblue;
+  border: thin solid seagreen;
+  background-color: honeydew;
   padding: 1em;
-  margin-bottom: 1em;
   margin-top: 1em;
+  margin-bottom: 1em;
 
-  min-height: 170px;
+  min-height: 150px;
 }
 
-.admonition img {
-  margin-right: 2em;
+.admonition .icon {
+  margin-top: 0;
+  margin-left: 0;
   float: left;
 }
 
@@ -90,6 +143,10 @@ pre {
 
 /* tables */
 
+table {
+  background-color: white; /* otherwise it's transparent! */
+}
+
 th, td {
   padding: 1em;
   border: thin solid silver;
@@ -103,15 +160,13 @@ th {
 /* formal blocks; see http://www.sagehill.net/docbookxsl/FormalTitles.html */
 
 .formal {
-  margin: 1em;
-}
-
-.title {
-  display: block;
-  font-size: large;
+  padding-top: 1em;
+  padding-bottom: 1em;
 }
 
 .formal .title {
+  display: block;
+  font-size: large;
   text-align: center
 }
 
@@ -152,6 +207,11 @@ big {
   font-size: larger;
 }
 
+a:hover {
+  color: red;
+}
+
+
 /* fix annoyances */
 
 img {
@@ -160,8 +220,4 @@ img {
 
 a img {
   border: none;
-}
-
-.formal .title {
-  margin-top: 3em;
 }
