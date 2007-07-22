@@ -12,7 +12,7 @@
   <link><%= PROJECT_URL %></link>
   <description><%= PROJECT_DETAIL %></description>
 <%
-  @history.each do |entry|
+  @history[0,3].each do |entry|
     link = HISTORY_URL + '#' + entry['Version'].to_html_anchor
 
     stamp = Time.parse entry['Date'].to_s
