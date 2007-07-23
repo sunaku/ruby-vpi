@@ -1,63 +1,65 @@
-h1. Pending tasks
+<doc_proxy_include common.inc>
 
-* add shortcuts for reading & writing VPI delay values
+<% section "Pending tasks" do %>
+  * add shortcuts for reading & writing VPI delay values
 
-* GHDL simulator supports VPI
-** need way to invoke VPI tasks from VHDL, like @$ruby_init();@
+  * GHDL simulator supports VPI
+  ** need way to invoke VPI tasks from VHDL, like @$ruby_init();@
 
-  +No need for system tasks/functions. Ruby-VPI uses callbacks now!+
+    +No need for system tasks/functions. Ruby-VPI uses callbacks now!+
 
-* add instructions for using *ruby-debug* with a graphical debugging tool or IDE like RadRails
+  * add instructions for using *ruby-debug* with a graphical debugging tool or IDE like RadRails
 
-* write section about code coverage and prototyping in manual
+  * write section about code coverage and prototyping in manual
 
-* clean up the teriminology section... unnecessary
+  * clean up the teriminology section... unnecessary
 
-* write unit tests for the non-VPI libraries like integer.rb and float.rb
-
-
-h1. Finished tasks
-
-* add support for ESL prototyping (like SystemC)
-
-* decouple code generation with $RUBYLIB and erb
-
-* change should_be to should_equal in examples
-
-* add support for GPL Cver in the test runner template
-
-* build ruby-vpi once to generate all .so files
-** test runner should not rebuild ruby-vpi every time
-
-* distribute as a GEM, binary, and source
-** use RUBYLIB to bypass rubygems site installation for local testing. otherwise have to build & install gem _every_ time!
-** move stuff from lib/ into lib/ruby-vpi/
-
-* integrate RCov for code-coverage statistics
-
-* method_missing for Design class
-
-* define handled methods in Vpi::method_missing for faster response
-** this has been verified as bottleneck from profiling data
-
-* make RCov correctly profile the code and report useful coverage metrics...
-
-* add support for VPI callbacks which execute Ruby blocks
+  * write unit tests for the non-VPI libraries like integer.rb and float.rb
+<% end %>
 
 
-h1. Obsolete tasks
+<% section "Finished tasks" do %>
+  * add support for ESL prototyping (like SystemC)
 
-* smarter test generation, which adjusts to user modifications in previously generated output
+  * decouple code generation with $RUBYLIB and erb
 
-  +Just use a smart merging tool like *kdiff3*.+
+  * change should_be to should_equal in examples
 
-* interactive console IRB wrapper for spec (just like Breakpoints in Rails)
+  * add support for GPL Cver in the test runner template
 
-  +Use the *ruby-debug* library with "*debugger* command for breakpoints":http://www.datanoise.com/articles/category/ruby-debug instead!+
+  * build ruby-vpi once to generate all .so files
+  ** test runner should not rebuild ruby-vpi every time
 
-* need to dump signal values when expectation fails in rSpec
+  * distribute as a GEM, binary, and source
+  ** use RUBYLIB to bypass rubygems site installation for local testing. otherwise have to build & install gem _every_ time!
+  ** move stuff from lib/ into lib/ruby-vpi/
 
-  +You can use the interactive debugger instead.+
-** maybe a waveform dump will also help
+  * integrate RCov for code-coverage statistics
 
-  +After reading some RTL verification books, this is not necessarily true.+
+  * method_missing for Design class
+
+  * define handled methods in Vpi::method_missing for faster response
+  ** this has been verified as bottleneck from profiling data
+
+  * make RCov correctly profile the code and report useful coverage metrics...
+
+  * add support for VPI callbacks which execute Ruby blocks
+<% end %>
+
+
+<% section "Obsolete tasks" do %>
+  * smarter test generation, which adjusts to user modifications in previously generated output
+
+    +Just use a smart merging tool like *kdiff3*.+
+
+  * interactive console IRB wrapper for spec (just like Breakpoints in Rails)
+
+    +Use the *ruby-debug* library with "*debugger* command for breakpoints":http://www.datanoise.com/articles/category/ruby-debug instead!+
+
+  * need to dump signal values when expectation fails in rSpec
+
+    +You can use the interactive debugger instead.+
+  ** maybe a waveform dump will also help
+
+    +After reading some RTL verification books, this is not necessarily true.+
+<% end %>

@@ -1,9 +1,6 @@
-# Generates Ruby-VPI tests from Verilog 2001 module declarations.
+# Generates Ruby-VPI tests from Verilog 2001 and Verilog 95 module declarations.
 #
 # * The standard input stream is read if no input files are specified.
-#
-# * If the clock signal cannot be automatically detected, then the first
-#   input signal in a module's declaration is assumed to be the clock signal.
 #
 # = Progress indicators
 #

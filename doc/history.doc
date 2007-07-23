@@ -1,17 +1,17 @@
-h1. Release history
+<doc_proxy_include common.inc>
 
-This is a record of important changes that have occurred with each release.
+<% front_cover "Release history" do %>
+  This is a record of important changes that have occurred with each release.
 
+  <% paragraph "Version numbering system" do %>
+    Ruby-VPI uses the "RubyGems rational versioning policy":http://www.rubygems.org/read/chapter/7 to number its releases. This "major.minor.build" numbering policy "is summarized":http://ablog.apress.com/?p=738 as follows.
 
-h2. Version numbering system
+    * When the *major* number increases, functionally _incompatible changes_ have occurred. Thus, what may have worked in the previous version may not work in the new one.
 
-Ruby-VPI uses the "RubyGems rational versioning policy":http://www.rubygems.org/read/chapter/7 to number its releases. This "major.minor.build" numbering policy "is summarized":http://ablog.apress.com/?p=738 as follows.
+    * When the *minor* number increases, functionally _compatible changes_ have occurred. Thus, what worked in the previous version will work in the new one.
 
-* When the *major* number increases, functionally _incompatible changes_ have occurred. Thus, what may have worked in the previous version may not work in the new one.
+    * When the *build* number increases, the _underlying implementation_ has changed. The functionality has not changed and no features have been added. Thus, what worked in the previous version will work in the new one.
+  <% end %>
+<% end %>
 
-* When the *minor* number increases, functionally _compatible changes_ have occurred. Thus, what worked in the previous version will work in the new one.
-
-* When the *build* number increases, the _underlying implementation_ has changed. The functionality has not changed and no features have been added. Thus, what worked in the previous version will work in the new one.
-
-
-<%= @history.join "\n\n" %>
+<doc_proxy_include history.inc>

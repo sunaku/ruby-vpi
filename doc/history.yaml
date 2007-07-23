@@ -53,6 +53,8 @@
 
     * The automated test generator now tries to automatically detect the clock and reset signal from Verilog module declarations.
 
+    * The automated test generator now supports Verilog 95 style module declarations.
+
     * Exceptions are now raised when you try to write to a read-only VPI property, such as @VpiName@.
 
     * Added @high?@, @high!@, @low?@, and @low!@ methods to the @Vpi::Handle@ class.

@@ -1,968 +1,809 @@
-h1. Ruby-VPI user manual
+<doc_proxy_include common.inc>
 
-This manual was last updated on <%= Time.now %>.
+<% front_cover "Ruby-VPI #{version} user manual" do %>
+  h2(author). Suraj N. Kurapati
 
-It is meant to be read in conjunction with the "reference documentation for Ruby-VPI":../ref/ruby/index.html. In addition, if you are new to "the Ruby language":http://www.ruby-lang.org, you are encouraged to "explore its documentation":http://www.ruby-lang.org/en/documentation/ alongside this manual.
-
-You can give feedback about this manual and, in general, any aspect of the Ruby-VPI project on the "project forums":http://rubyforge.org/forum/?group_id=1339.
-
-_Happy reading!_
+  h3(date). <%= Time.now.strftime("%d %B %Y") %>
 
 
-h2(#legal). Legalities
+  <% paragraph "About this manual" do %>
+    This manual is meant to be read in conjunction with the "reference documentation for Ruby-VPI":../ref/ruby/index.html. In addition, if you are new to "the Ruby language":http://www.ruby-lang.org, you are encouraged to "explore its documentation":http://www.ruby-lang.org/en/documentation/ as necessary.
 
-This manual is distributed under "the same license as Ruby-VPI":#intro.license.
+    In this manual, you will notice that the numbers of chapters, sections, figures, admonitions, etc. are hyperlinks that take you back to the corresponding place in the table of contents. These links make it easy to navigate this manual, especially for users of text-only web browsers.
 
-The admonition and navigation graphics used in this manual are Copyright (c) 2005, 2006 "Tango Desktop Project":http://tango.freedesktop.org and are licensed under "these terms":./images/tango/LICENSE.
+    In addition, this manual is distributed as one big HTML file so that you can easily search for a particular topic using nothing more than your web browser's built-in text search mechanism. This facilitates offline reading, where an Internet search engine is not available.
 
+    You can give feedback about this manual and, in general, any aspect of the Ruby-VPI project on the "project forums":<%= forumURL %>. Furthermore, you can <%= xref "hacking.manual", "edit this manual" %> and contribute your improvements to the "project patches":<%= trackerURL %>. Finally, you can find the newest version of this manual at the "Ruby-VPI project website":<%= projectURL %>.
+  <% end %>
 
-h1(#intro). Introduction
+  <% paragraph "Legal notice" do %>
+    This manual is distributed under <%= xref "intro.license", "the same license as Ruby-VPI" %>.
 
-<%= import 'intro.inc' %>
-
-
-h1(#background). Background
-
-
-h2(#background.methodology). Methodology
-
-Ruby-VPI presents an open-ended interface to VPI. Thus, you can use any methodology you wish when writing tests. However, being an agile language, Ruby makes it _very_ easy to use agile development practies such as "TDD":#glossary.TDD and "BDD":#glossary.BDD.
-
-
-h2(#background.vocab). Terminology
-
-<% note "Glossary has definitions" do %>
-Have a look at the "glossary":#glossary for definitions of terms used in this manual.
+    The admonition graphics used in this manual are Copyright 2005, 2006 "Tango Desktop Project":http://tango.freedesktop.org and are distributed under "these terms":./images/tango/LICENSE.
+  <% end %>
 <% end %>
 
-As a newcomer into the world of Verilog, I often heard the term *test bench*: "I ran the test bench, but it didn't work!" or "Are you crazy?!! You _still_ haven't written the test bench?", for example. I poured through my textbook for a definition of the term, but it was to no avail. Instead, it nonchalantly employed the term _throughout_ its being, as if mocking my ignorance of what seems to be universal knowledge.
-
-Defeated, I turned to my inner faculties to determine the answer. Let's see, the term _test bench_ has the word _test_&mdash;so it has something to do with testing&mdash;and it has the word _bench_&mdash;so maybe it's referring to a table where the testing should occur. This reasoning grew increasingly familiar as my mind rummaged through towering stores of obsolescence and ultimately revealed dreaded memories of sleepless anguish: debugging electronics in the robotics laboratory.
-
-Aha! I exclaimed, hesitantly, rushing to dismiss the past. The term has its roots in the testing of electronic devices, where an engineer would sit at a bench in an electronics laboratory and verify that an electronic component satisfies some criteria. The bench would be furnished with tools of measurement and manipulation&mdash;such as oscilloscopes, voltmeters, soldering irons, and so on&mdash;which help the engineer to verify the electronic component or locate the sources of defects in the component.
-
-Alright, now I remember what a laboratory bench is, but how does that compare with the term test bench? Surely they cannot have the same meaning, because it doesn't make sense to _run_ a laboratory bench or to _write_ one. Thus, to avoid propagating such confusion into this manual, I have attempted to clarify the terminology by "simplifying and reintroducing it in a new light":#glossary.
-
-
-h2(#background.org). Organization
-
-<% figure "Overall organization of a test", "#fig..organization" do %>
-!figures/organization.png!
+<% chapter "Welcome", 'intro' do %>
+  <doc_proxy_include intro.inc>
 <% end %>
 
-As <xref #fig..organization> shows, a "test":#glossary.test is composed of a "bench":#glossary.bench, a "design":#glossary.design, and a "specification":#glossary.specification.
+<% chapter "Setup", "setup" do %>
+  <% section "Manifest", "setup.manifest" do %>
+    When you extract a release package, the following is what you would expect to find.
 
-To extend the "analogy of an electronics laboratory":#background.vocab, the _bench_ acts as the laboratory bench which provides measurement and manipulation tools. The _design_ acts as the electronic component being verified by the engineer. And the _specification_ acts as the engineer who measures, manipulates, and verifies the electronic component.
+    * <tt>doc</tt> contains user documentation in various formats.
+    * <tt>ref</tt> contains reference API documentation in HTML format.
+    * <tt>ext</tt> contains source code, written in the C language, for the <%= xref "organization", "core of Ruby-VPI" %>
+    * <tt>lib</tt> contains Ruby libraries provided by Ruby-VPI.
+    * <tt>bin</tt> contains various tools. See <%= xref "usage.tools" %> for more information.
+    * <tt>samp</tt> contains example tests. See <%= xref "usage.examples" %> for more information.
+  <% end %>
 
-<% figure "Detailed organization of a test", "#fig..organization.detail" do %>
-!figures/organization_detailed.png!
+  <% section "Requirements", "setup.reqs" do %>
+    See <%= xref "intro.reqs" %> above.
+
+    <% tip "Add support for your Verilog simulator" do %>
+      Write a "support request":http://rubyforge.org/tracker/?group_id=1339 for your simulator, while providing a sample transcript of the commands you use to run a test with your simulator, and I will add support for your simulator in the next release!
+    <% end %>
+  <% end %>
+
+  <% section "Recommendations", "setup.recom" do %>
+    The following software may make your interactions with Ruby-VPI more pleasant.
+
+    <% section "Text merging tool", "setup.recom.merger" do %>
+      An _interactive_ text merging tool can greatly simplify the process of transferring wanted changes from one file to another. In particular, such tools are especially beneficial when using the <%= xref "usage.tools.generate", "automated test generator" %>. A handful of the currently available open-source text merging tools are listed below.
+
+      * "*kdiff3*":http://kdiff3.sourceforge.net/ is a graphical, three-way merging tool for KDE.
+
+      * "*meld*":http://meld.sourceforge.net/ is a graphical, three-way merging tool for GNOME.
+
+      * "*tkdiff*":http://tkdiff.sourceforge.net/ is a graphical, two-way merging tool that uses the cross-platform Tk windowing toolkit.
+
+      * "*xxdiff*":http://furius.ca/xxdiff/ is a graphical, three-way merging tool.
+
+      * "*imediff2*":http://elonen.iki.fi/code/imediff/ is a textual, fullscreen two-way merging tool. It is very useful when you are working remotely via SSH.
+    <% end %>
+  <% end %>
+
+  <% section "Installation", "setup.inst" do %>
+    Once you have satisfied the <%= xref "setup.reqs", "necessary requirements" %>, you can install Ruby-VPI by running the <pre>gem install -y ruby-vpi</pre> command. RubyGems will install Ruby-VPI into the system gem directory, whose path can be determined by running the <pre>gem env gemdir</pre> command. Within this directory, there is a <tt>gems/</tt> subdirectory which contains the Ruby-VPI installation, as illustrated below.
+
+    <pre>
+    $ gem env gemdir
+    /usr/lib/ruby/gems/1.8
+
+    $ ls -d /usr/lib/ruby/gems/1.8/gems/ruby-vpi*
+    /usr/lib/ruby/gems/1.8/gems/ruby-vpi-7.0.0/
+    </pre>
+
+    <% note "Tuning for maximum performance" do %>
+      You can tune your installation of Ruby-VPI for maximum performance by adding your C compiler's optimization flag to the @CFLAGS@ environment variable _before_ you run the <pre>gem install -y ruby-vpi</pre> command. For example, if your C compiler is GCC, then you can set @CFLAGS@ to <tt>-O9</tt> for maximum optimization.
+    <% end %>
+
+    <% section "Installing on Windows", "setup.inst.windows" do %>
+        After Ruby-VPI is compiled, it is linked to symbols whose names begin with <tt>_vpi</tt>. In GNU/Linux and similar operating systems, these symbols are allowed to be undefined. However, one "cannot compile a shared object file with references to undefined symbols in Windows":http://sourceware.org/ml/cygwin/2001-12/msg01293.html.
+
+      One solution to this problem is to supply the Verilog simulator's VPI object file, which contains definitions of all VPI symbols, to the linker. The following steps illustrate this process.
+
+      * Install "Cygwin":http://www.cygwin.com, the Linux-like environment for Windows.
+
+      * Search for object files whose names end with <tt>.so</tt>, <tt>.o</tt>, or <tt>.dll</tt> in your Verilog simulator's installation directory.
+
+      * Determine which object files, among those found in the previous step, contain symbols whose names begin with "_vpi" by running the <pre>for x in *.{o,so,dll}; do nm $x | grep -q '[Tt] _vpi' && echo $x; done</pre> command in Cygwin.
+      ** If you are using Mentor Modelsim, the desired object file can be found at a path similar to <tt>C:\Modeltech\win32\libvsim.dll</tt>.
+      ** If you are using GPL Cver, the desired object file can be found at a path similar to <tt>C:\gplcver\objs\v_vpi.o</tt>.
+
+      * Assign the path of the object file (determined in the previous step) to the @LDFLAGS@ environment variable. For example, if the object file's path is <tt>/foo/bar/vpi.so</tt>, then you would run the <pre>export LDFLAGS=/foo/bar/vpi.so</pre> command in Cygwin.
+
+      * You may now install Ruby-VPI by running the <pre>gem install ruby-vpi</pre> command in Cygwin.
+    <% end %>
+  <% end %>
+
+  <% section "Maintenance", "setup.maintenance" do %>
+    * You can upgrade to the latest release of Ruby-VPI by running the <pre>gem update ruby-vpi</pre> command.
+    * You can uninstall Ruby-VPI by running the <pre>gem uninstall ruby-vpi</pre> command.
+
+    Learn more about using and manipulating RubyGems in "the RubyGems user manual":http://www.rubygems.org.
+  <% end %>
 <% end %>
 
-Now, let us take a more detailed look at this organization, as illustrated in <xref #fig..organization.detail>.
+<% chapter "Organization", "organization" do %>
+  Ruby-VPI is a bridge between IEEE 1364-2005 Verilog VPI and the Ruby language. It enables Ruby programs to use VPI either (1) in the same, verbose way that C programs do, or (2) in a simpler, higher level way. In addition, it serves as a vehicle for the application of agile software development practices, such as <%= xref "glossary.TDD", "TDD" %> and <%= xref "glossary.BDD", "BDD" %> to the realm of hardware development with Verilog.
 
-Notice that Ruby-VPI encapsulates all communication between the Ruby interpreter and VPI. This allows the specification, or any Ruby program in general, to access VPI using nothing more than the Ruby language! Thus, Ruby-VPI removes the burden of having to write C programs in order to use VPI.
+  Ruby-VPI can be used with any Verilog simulator that supports VPI. In particular, it is known to operate with (1) Synopsys VCS and Mentor Modelsim, the two "most prominent Verilog simulators":http://www.eetimes.com/news/design/showArticle.jhtml?articleID=47204415 in the Electronic Design Automation (EDA) industry; as well as (2) GPL Cver and Icarus Verilog, the two most prevalent open source Verilog simulators today.
+
+  <% figure "Where does Ruby-VPI fit in?", "fig:organization.detail" do %>
+    !figures/organization_detailed.png!
+  <% end %>
+
+  As <%= xref "fig:organization.detail" %> shows, Ruby-VPI is composed of two complementary parts: one interacts with VPI through the C language, while the other interacts with an executable specification written in the Ruby language. The former is complied during installation to produce dynamically loadable C libraries---each tailored to accommodate the quirks of its respective Verilog simulator. The latter is not compiled because Ruby programs are interpreted dynamically.
+
+  <% section "Ruby/Verilog interaction", "overview.relay" do %>
+    In a typical VPI application written in C, the _Verilog simulator_ is in charge. Verilog code temporarily transfers control to C by invoking C functions, which return control to Verilog when they finish.
+
+    In contrast, Ruby-VPI puts the _specification_ in charge. The specification temporarily transfers control to the Verilog simulator by invoking the @advance_time@ method, which returns control to the specification when it finishes. This process is illustrated in <%= xref "fig:ruby_relay" %>.
+
+    Ruby-VPI's approach is the same as any software testing framework, where the _specification_ drives the design under test. Whereas, the typical VPI & C approach is literally _backwards_ because the design under test drives the specification.
+
+    <% figure "Interaction between Ruby and Verilog", "fig:ruby_relay" do %>
+      !figures/ruby_relay.png!
+
+      # The current simulation time is _X_.
+      # The specification invokes the @Vpi::advance_time@ method with parameter _Y_, which specifies the number of simulation time steps to be simulated.
+      # The Verilog simulator is now in control (temporarily).
+      # The current simulation time has _not_ changed; it is still _X_.
+      # The Verilog simulator simulates _Y_ simulation time steps.
+      # The current simulation time is now _X + Y_.
+      # The Verilog simulator returns control back to the specification.
+    <% end %>
+
+    Another means of transferring control from the specification to the Verilog simulator is the <%= xref "vpi.callbacks", "VPI callback" %>.
+  <% end %>
+
+  <% section "Tests", "organization.tests" do %>
+    In Ruby-VPI, the process of functional verification is neatly packaged into self-contained, executable tests. As <%= xref "fig:organization" %> illustrates, a test is composed of a *bench*, a *design*, and a *specification*.
+
+    <% figure "Organization of a test in Ruby-VPI", "fig:organization" do %>
+      !figures/organization.png!
+    <% end %>
+
+    *The bench* is Ruby-VPI. It defines the environment in which functional verification takes place. This is analogous to a workbench in an electronics laboratory that is furnished with tools of measurement and manipulation such as oscilloscopes, voltmeters, soldering irons, and so on which enable engineers to verify electronic components and locate the source of defects within those components.
+
+    *The design* is an instantiated Verilog module. To extend the analogy of the electronics laboratory, it corresponds to the electronic component that is verified by an engineer.
+
+    *The specification* is a Ruby program. In the electronics laboratory analogy, it corresponds to the engineer who inspects, manipulates, and verifies the electronic component. In terms of specification-driven functional verification, it corresponds to the executable specification.
+  <% end %>
 
 
-h2(#background.relay). Ruby/Verilog interaction
+  <% section "VPI in Ruby" do %>
+    <% section "Deviations from the VPI standard" do %>
+      Ruby-VPI makes the entire IEEE Std 1364-2005 VPI interface available to Ruby, but with the following minor differences.
 
-In a typical VPI application written in C, the _Verilog simulator_ is in charge. Verilog code temporarily transfers control to C by invoking C functions, which return control to Verilog when they finish.
 
-In contrast, Ruby-VPI puts the _specification_ in charge. The specification temporarily transfers control to the Verilog simulator by invoking the @Vpi::advance_time@ method, which returns control to the specification when it finishes. This process is illustrated in <xref#fig..ruby_relay>.
+      <% section "Names are capitalized" do %>
+        The names of all VPI types, structures, and constants become _capitalized_ because Ruby requires that the names of constants begin with a capital letter. However, note that Ruby's capitalization rule does _not_ apply to VPI functions.
 
-Ruby-VPI's approach is the same as any software testing framework, where the _specification_ drives the design under test. Whereas, the typical VPI & C approach is literally _backwards_ because the design under test drives the specification.
+        For example, the @s_vpi_value@ structure becomes the @S_vpi_value@ class in Ruby. Likewise, the @vpiIntVal@ constant becomes the @VpiIntVal@ constant in Ruby. However, the @vpi_handle@ function remains as @vpi_handle@ in Ruby.
+      <% end %>
 
-<% figure "Interaction between Ruby and Verilog", "#fig..ruby_relay" do %>
-!figures/ruby_relay.png!
 
-# The current simulation time is _X_.
-# The specification invokes the @Vpi::advance_time@ method with parameter _Y_, which specifies the number of simulation time steps to be simulated.
-# The Verilog simulator is now in control (temporarily).
-# The current simulation time has _not_ changed; it is still _X_.
-# The Verilog simulator simulates _Y_ simulation time steps.
-# The current simulation time is now _X + Y_.
-# The Verilog simulator returns control back to the specification.
+      <% section "@vprintf@ is @printf@" do %>
+        The @vpi_vprintf@ and @vpi_mcd_vprintf@ VPI functions are aliased to @vpi_printf@ and @vpi_mcd_printf@ respectively because:
+
+        * Ruby represents "variable argument lists as arrays":http://www.rubycentral.com/book/tut_methods.html#UA instead of defining a special datatype, such as @va_list@, for them.
+
+        * Some C compilers have trouble with pointers to the @va_list@ type. For these compilers, the third line of source code shown below causes a "type mismatch" error.
+
+        <code lang="c">
+        #include <stdarg.h>
+        void foo(va_list ap) {
+          va_list *p = &ap;
+        }
+        </code>
+      <% end %>
+    <% end %>
+
+    <% section "Handles", "vpi.handles" do %>
+      A *handle* is a reference to an object (such as a module, register, wire, and so on) inside the Verilog simulation. Handles allows you to inspect and manipulate the design under test and its internal components. They are instances of the @Vpi::Handle@ class (see "reference documentation":../ref/ruby/classes/Vpi/Handle.html for details) in Ruby-VPI.
+
+      Handles have various *properties*, listed in the second column of <%= xref "tbl:accessors" %>, which provide different kinds of information about the underlying Verilog objects they represent. These properties are accessed through the VPI functions listed in the last column of <%= xref "tbl:accessors" %>.
+
+      Handles are typically obtained through the @vpi_handle_by_name@ and @vpi_handle@ functions. These functions are hierarchical in nature, as they allow you to obtain new handles that are related to existing ones. For example, to obtain a handle to a register contained within a module, one would typically write: @your_reg = vpi_handle( VpiReg, your_handle )@
+
+
+      <% paragraph "Shortcuts for productivity" do %>
+        Given a handle, Ruby-VPI allows you to access (1) its relatives and (2) its properties simply by invoking methods on the handle. If a handle's relative happens to have the same name as one its properties, then the relative is given priority because a handle's properties can always be accessed explicitly through the @handle.get_value@ and @handle.put_value@ methods.
+      <% end %>
+
+
+      <% section "Accessing a handle's relatives" do %>
+        Imagine that the design under test, say _foo_, instantiated a Verilog module named _bar_, which in turn contained a register named _baz_. To access baz from Ruby, one could employ VPI idioms by writing:
+
+        <code>
+        foo = vpi_handle_by_name( "foo", nil )
+        bar = vpi_handle_by_name( "bar", foo )
+        baz = vpi_handle_by_name( "baz", bar )
+        </code>
+
+        or by writing:
+
+        <code>baz = vpi_handle_by_name( "foo.bar.bar", nil )</code>
+
+        These idioms seem excessively verbose in a higher level language such as Ruby, so Ruby-VPI allows you to access a handle's relative by simply invoking the relative's name as a method on the handle:
+
+        <code>foo.bar.baz</code>
+      <% end %>
+
+
+      <% section "Accessing a handle's properties" do %>
+        Imagine that the design under test, say _foo_, contained a register named _bar_. To access the integer value of _bar_ in Ruby-VPI, one could employ VPI idioms by writing:
+
+        <code>
+        wrapper = S_vpi_value.new
+        wrapper.format = VpiIntVal
+        vpi_get_value( foo.bar, wrapper )
+        result = wrapper.value.integer
+        </code>
+
+        or, if _bar_ is capable of storing more than 32 bits, one would convert a string representation of bar's integer value into a limitless Ruby integer by writing:
+
+        <code>
+        wrapper = S_vpi_value.new
+        wrapper.format = VpiHexStrVal
+        vpi_get_value( foo.bar, wrapper )
+        result = wrapper.value.str.to_i( 16 )
+        </code>
+
+        These idioms seem excessively verbose in a higher level language such as Ruby, so Ruby-VPI allows you to access a handle's properties by simply invoking property names, using the special naming format shown in <%= xref "fig:method naming format" %>, as methods on the handle:
+
+        <code>result = foo.bar.intVal</code>
+      <% end %>
+
+      <% figure "Method naming format for accessing a handle's properties", "fig:method naming format" do %>
+        |_. Operation |_. _ |_. Property |_. _ |_. Accessor |_. Addendum |
+        |\2. optional       | required   |\3. optional                   |
+
+        * *Operation* suggests a method that should be invoked in the context of the *Property* parameter. All methods in "Ruby's @Enumerable@ module":http://www.ruby-doc.org/core/classes/Enumerable.html are valid operations.
+
+        * *Property* suggests a VPI property that should be accessed. The "vpi" prefix, which is common to all VPI properties, can be omitted if you wish. For example, the VPI property "vpiFullName" is considered equivalent to "fullName" and "FullName", but not equivalent to "full_name".
+
+        * *Accessor* suggests a VPI function that should be used in order to access the VPI property. When this parameter is not specified, Ruby-VPI will attempt to _guess_ the value of this parameter.
+
+          <%= xref "tbl:accessors" %> shows a list of valid accessors and how they influence the means by which a property is accessed.
+
+        * When *Addendum* is an equal sign (=), it suggests that the specified VPI property should be written to.
+
+          When it is a question mark (?), it suggests that the specified VPI property should be accessed as a boolean value. This suggestion is the same as specifying "b" as the *Accessor*.
+      <% end %>
+
+      <% table "Possible accessors and their implications", "tbl:accessors" do %>
+        |_. Accessor |_. Kind of value accessed |_. VPI functions used to access the value |
+        | d | delay   | @vpi_get_delays@, @vpi_put_delays@ |
+        | l | logic   | @vpi_get_value@, @vpi_put_value@   |
+        | i | integer | @vpi_get@                          |
+        | b | boolean | @vpi_get@                          |
+        | s | string  | @vpi_get_str@                      |
+        | h | handle  | @vpi_handle@                       |
+        | a | array   | @vpi_iterate@                      |
+      <% end %>
+
+      <% table "Examples of accessing a handle's properties", "ex:properties" do %>
+        |_/2. Ruby expression |_\6. Method naming format |_/2. Description |
+        ||_. Operation |_. _ |_. Property |_. _ |_. Accessor |_. Addendum ||
+        | @handle.vpiIntVal@ | &nbsp; | &nbsp; | vpiIntVal | &nbsp; |  &nbsp; | &nbsp; |/4. Obtain the _logic value_ of the handle's @VpiIntVal@ property. |
+        | @handle.vpiIntVal_l@ | &nbsp; | &nbsp; | vpiIntVal | _ | l | &nbsp; |
+        | @handle.intVal@ | &nbsp; | &nbsp; | intVal | &nbsp; | &nbsp; | &nbsp; |
+        | @handle.intVal_l@ | &nbsp; | &nbsp; | intVal | _ | l | &nbsp; |
+        | @handle.vpiIntVal = 15@ | &nbsp; | &nbsp; | vpiIntVal | &nbsp; | &nbsp; | = |/4. Assign the integer 15 to the _logic value_ of the handle's @VpiIntVal@ property. |
+        | @handle.vpiIntVal_l = 15@ | &nbsp; | &nbsp; | vpiIntVal | _ | l | = |
+        | @handle.intVal = 15@ | &nbsp; | &nbsp; | intVal | &nbsp; | &nbsp; | = |
+        | @handle.intVal_l = 15@ | &nbsp; | &nbsp; | intVal | _ | l | = |
+        | @handle.vpiType@ | &nbsp; | &nbsp; | vpiType | &nbsp; | &nbsp; | &nbsp; |/4. Obtain the _integer value_ of the handle's @VpiType@ property. |
+        | @handle.vpiType_i@ | &nbsp; | &nbsp; | vpiType | _ | i | &nbsp; |
+        | @handle.type@ | &nbsp; | &nbsp; | type | &nbsp; | &nbsp; | &nbsp; |
+        | @handle.type_i@ | &nbsp; | &nbsp; | type | _ | i | &nbsp; |
+        | @handle.vpiProtected@ | &nbsp; | &nbsp; | vpiProtected | &nbsp; | &nbsp; | &nbsp; |/6. Obtain the _boolean value_ of the handle's @VpiProtected@ property. |
+        | @handle.vpiProtected_b@ | &nbsp; | &nbsp; | vpiProtected | _ | b | &nbsp; |
+        | @handle.vpiProtected?@ | &nbsp; | &nbsp; | vpiProtected | &nbsp; | &nbsp; | ? |
+        | @handle.protected@ | &nbsp; | &nbsp; | protected | &nbsp; | &nbsp; | &nbsp; |
+        | @handle.protected_b@ | &nbsp; | &nbsp; | protected | _ | b | &nbsp; |
+        | @handle.protected?@ | &nbsp; | &nbsp; | protected | &nbsp; | &nbsp; | ? |
+        | @handle.vpiFullName@ | &nbsp; | &nbsp; | vpiFullName | &nbsp; | &nbsp; | &nbsp; |/4. Obtain the _string value_ of the handle's @VpiFullName@ property. |
+        | @handle.vpiFullName_s@ | &nbsp; | &nbsp; | vpiFullName | _ | s | &nbsp; |
+        | @handle.fullName@ | &nbsp; | &nbsp; | fullName | &nbsp; | &nbsp; | &nbsp; |
+        | @handle.fullName_s@ | &nbsp; | &nbsp; | fullName | _ | s | &nbsp; |
+        | @handle.vpiParent@ | &nbsp; | &nbsp; | vpiParent | &nbsp; | &nbsp; | &nbsp; |/4. Obtain the _handle value_ of the handle's @VpiParent@ property. |
+        | @handle.vpiParent_h@ | &nbsp; | &nbsp; | vpiParent | _ | h | &nbsp; |
+        | @handle.parent@ | &nbsp; | &nbsp; | parent | &nbsp; | &nbsp; | &nbsp; |
+        | @handle.parent_h@ | &nbsp; | &nbsp; | parent | _ | h | &nbsp; |
+        | <code>handle.each_vpiNet {|net| puts net.fullName}</code> | each | _ | vpiNet | &nbsp; | &nbsp; | &nbsp; |/2. Use the @each@ operation to print the full name of each @VpiNet@ object associated with the handle. |
+        | <code>handle.each_net {|net| puts net.fullName}</code> | each | _ | net | &nbsp; | &nbsp; | &nbsp; |
+        | <code>handle.all_vpiReg? {|reg| reg.size == 1}</code> | all? | _ | vpiReg | &nbsp; | &nbsp; | &nbsp; |/2. Use the @all?@ operation to check whether all @VpiReg@ objects associated with the handle are capable of storing only one bit of information. |
+        | <code>handle.all_reg? {|reg| reg.size == 1}</code> | all? | _ | reg | &nbsp; | &nbsp; | &nbsp; |
+        | <code>handle.select_vpiNet {|net| net.x?}</code> | select | _ | VpiNet | &nbsp; | &nbsp; | &nbsp; |/2. Use the @select@ operation to obtain a list of @VpiNet@ objects whose _logic value_ is unknown (x).|
+        | <code>handle.select_net {|net| net.x?}</code> | select | _ | net | &nbsp; | &nbsp; | &nbsp; |
+      <% end %>
+    <% end %>
+
+    <% section "Callbacks", "vpi.callbacks" do %>
+      A _callback_ is a mechanism that makes the Verilog simuluator execute a block of code, which is known as a "callback handler", when some prescribed event occurs in the simulation.
+
+      Callbacks are added using the @vpi_register_cb@ function and removed using the @vpi_remove_cb@ function. However, instead of storing the address of a C function in the @cb_rtn@ field of the @s_cb_data@ structure (as you would do in C) you pass a block of code to the @vpi_register_cb@ method in Ruby. This block will be executed whenever the callback occurs.
+
+      <% example "Using a callback for value change notification", "ex:callback" do %>
+        This example shows how to use a callback for notification of changes in a handle's @VpiIntVal@ property. When you no longer need this callback, you can tear it down using @vpi_remove_cb(cb_handle)@.
+
+        In this example, the handle being monitored is the @Counter.count@ signal from <%= xref "fig:counter.v_decl" %>.
+
+        <code>
+        cbTime         = S_vpi_time.new
+        cbTime.type    = VpiSimTime
+        cbTime.low     = 0
+        cbTime.high    = 0
+
+        cbValue        = S_vpi_value.new
+        cbValue.format = VpiIntVal
+
+        cbData         = S_cb_data.new
+        cbData.reason  = CbValueChange
+        cbData.obj     = Counter.count
+        cbData.time    = cbTime
+        cbData.value   = cbValue
+        cbData.index   = 0
+
+        cbHandle = vpi_register_cb(cbData) do |data|
+          time   = (data.time.high << 32) | data.time.low
+          count  = data.value.value.integer
+          puts "hello from callback! time=#{time} count=#{count}"
+        end
+        </code>
+
+        Append this code to the <tt>RSpec/counter_spec.rb</tt> file (provided in <%= xref "usage.examples" %> and discussed in <%= xref "usage.tutorial.specification" %>) and run the <%= xref "usage.tutorial", "counter_RSpec test" %>
+      <% end %>
+    <% end %>
+  <% end %>
 <% end %>
 
+<% chapter "Usage", "usage" do %>
+  <% section "Prototyping", "usage.prototyping" do %>
+    Ruby-VPI enables you to rapidly prototype your designs in Ruby without having to do full-scale implementations in Verilog. This lets you explore and evaluate different design choices quickly.
 
-h1(#setup). Setup
+    The prototyping process is completely transparent: there is absolutely no difference, in the eyes of your executable specification, between a real Verilog design or its Ruby prototype.
+
+    In addition, the prototyping process is completely standard-based: Ruby prototypes emulate the behavior of real Verilog designs using _nothing more_ than the VPI itself.
+
+    For example, compare the Verilog design shown in <%= xref "fig:counter.v_impl" %> with its Ruby prototype shown in figure <%= xref "fig:counter_proto.rb" %>. The prototype uses only VPI to (1) detect changes in its inputs and (2) manipulate its outputs accordingly. In addition, notice how well the prototype's syntax reflects the intended behavior of the Verilog design. This similarity facilitates rapid translation of a prototype from Ruby into Verilog later in the design process.
+
+    <% paragraph "Getting started" do %>
+      To create a prototype,
+      # Start with a <%= xref "usage.tutorial.declare-design", "Verilog module declaration" %> for your design.
+      # <%= xref "usage.tutorial.generate-test", "Generate a test" %> using that module declaration.
+      # <%= xref "usage.tutorial.implement-proto", "Implement the prototype" %> in the generated <tt>proto.rb</tt> file.
+      # <%= xref "usage.tutorial.test-proto", "Verify the prototype" %> against its specification.
+
+      Once you are satisfied with your prototype, you can proceed to <%= xref "usage.tutorial.implement-design", "implement your design in Verilog" %>. This process is often a simple translation your Ruby prototype into your Verilog. At the very least, your prototype serves as a reference while you are implementing your Verilog design.
+
+      Once your design has been implemented in Verilog, you can use the _same_ specification, which was originally used to verify your prototype, to verify your Verilog design (see <%= xref "usage.test-runner" %> for details).
+    <% end %>
+
+    <% section "How does prototyping work?" do %>
+      The @advance_time@ method normally transfers control from the executable specification to the Verilog simulator. However, when prototyping is enabled, Ruby-VPI redefines it so that the @feign!@ method (which is defined in a test's <tt>proto.rb</tt> file) is invoked on the design under test. The @feign!@ method artificially simulates the behavior of the real Verilog design.
+
+      In this manner, control is kept within the Ruby interpreter when prototyping is enabled. An advantage of this approach is that it reduces the total execution time of a Ruby-VPI test by allowing Ruby's POSIX thread to commandeer the Verilog simulator's process. A disadvantage of this approach is that callbacks, which require the transfer of control to the Verilog simulator, must be ignored.
+    <% end %>
+  <% end %>
+
+  <% section "Debugging", "usage.debugger" do %>
+    The "ruby-debug project":http://www.datanoise.com/articles/category/ruby-debug serves as the interactive debugger for Ruby-VPI.
+
+    # Enable the debugger by activating the @DEBUGGER@ environment variable (see <%= xref "usage.test-runner" %> for details).
+    # Put the @debugger@ command in your code -- anywhere you wish to activate an interactive debugging session. These commands are automatically ignored when the debugger is disabled; so you can safely leave them in your code, if you wish.
+
+    <% section "Advanced initialization", "usage.debugger.init" do %>
+      By default, Ruby-VPI enables the debugger by invoking the @Debugger.start@ method. If you wish to perform more advanced initialization, such as having the debugger accept remote network connections for interfacing with a remote debugging session or perhaps with an IDE (see "the ruby-debug documentation":http://www.datanoise.com/articles/category/ruby-debug for details), then:
+
+      # Deactivate the @DEBUG@ environment variable.
+      # Put your own code, which initializes the debugger, at the top of your test's <tt>spec.rb</tt> file.
+    <% end %>
+  <% end %>
+
+  <% section "Test runner", "usage.test-runner" do %>
+    A test runner is a file, generated by the <%= xref "usage.tools.generate", "automated test generator" %> whose name ends with <tt>.rake</tt>. It helps you run generated tests -- you can think of it as a _makefile_ if you are familiar with C programming in a UNIX environment.
+
+    When you invoke a test runner without any arguments, it will show you a list of available tasks:
+    <pre>$ rake -f your_test_runner.rake
+
+    <%= `rake -f ../samp/counter/RSpec/counter_runner.rake` %></pre>
+
+    <% section "Environment variables", "usage.test-runner.env-vars" do %>
+      Test runners support the following _environment_ variables, which allow you to easily change the behavior of the test runner.
+
+      * @COVERAGE@ enables code coverage analysis and generation of code coverage reports.
+      * @DEBUGGER@ enables the <%= xref "usage.debugger", "interactive debugger" %> in its "post-mortem debugging mode":http://www.datanoise.com/articles/2006/12/20/post-mortem-debugging.
+      * @PROTOTYPE@ enables the Ruby prototype for the design under test so that the prototype, rather than the real Verilog design, is verified by the specification.
+
+      To activate these variables, simply assign the number 1 to them. For example, @DEBUG=1@ activates the @DEBUG@ variable.
+
+      To deactivate these variables, simply assign a different value to them or *unset* them in your shell. For example, both @DEBUG=0@ and @DEBUG=@ dectivate the @DEBUG@ variable.
+
+      <% paragraph "Variables as command-line arguments" do %>
+        You can specify variable assignments as arguments to the *rake* command. For example, <pre>rake DEBUG=1</pre> is equivalent to
+        <pre>
+        DEBUG=1
+        export DEBUG
+        rake
+        </pre> in Bourne shell or
+        <pre>
+        setenv DEBUG 1
+        rake
+        </pre> in C shell.
+      <% end %>
 
 
-h2(#setup.manifest). Manifest
+      <% example "Running a test with environment variables" do %>
+        Below, we enable the prototype and code coverage analysis:
+        <pre>rake -f your_test_runner.rake PROTOTYPE=1 COVERAGE=1</pre>
 
-When you extract a release package, the following is what you would expect to find.
+        Below, we _disable_ the prototype and enable the code coverage analysis. These invocations are equivalent if the @PROTOTYPE@ environment variable is unset.
+        <pre>rake -f your_test_runner.rake PROTOTYPE=0 COVERAGE=1</pre>
+        <pre>rake -f your_test_runner.rake PROTOTYPE=  COVERAGE=1</pre>
+        <pre>rake -f your_test_runner.rake COVERAGE=1</pre>
+      <% end %>
+    <% end %>
+  <% end %>
 
-* <tt>doc</tt> contains user documentation in various formats.
-* <tt>ref</tt> contains reference API documentation in HTML format.
-* <tt>ext</tt> contains source code, written in the C language, for the "core of Ruby-VPI":#background.org.
-* <tt>lib</tt> contains Ruby libraries provided by Ruby-VPI.
-* <tt>bin</tt> contains various tools. See <xref #usage.tools> for more information.
-* <tt>samp</tt> contains example tests. See <xref #usage.examples> for more information.
+  <% section "Tools", "usage.tools" do %>
+    The *ruby-vpi* command serves as a front-end to the tools provided by Ruby-VPI. You can see its help information (reproduced below) by simply running the command without any arguments.
+
+    <pre><%= `ruby ../bin/ruby-vpi` %></pre>
+
+    <% section "Automated test generation", "usage.tools.generate" do %>
+      The *generate* tool generates scaffolding for Ruby-VPI tests from Verilog module declarations (written in either Verilog 2001 or Verilog 95 style).
+
+      A Ruby-VPI test is composed of the following files:
+      * <tt>runner.rake</tt> runs the test by starting a Verilog simulator and loading Ruby-VPI into it.
+      * <tt>spec.rb</tt> is the executable specification for the design under test.
+      * <tt>design.rb</tt> is an optional file that provides convenience methods for controlling the design under test.
+      * <tt>proto.rb</tt> is an optional file that defines a Ruby prototype of the design under test.
+      * <tt>Rakefile</tt> is an optional file that recursively executes all <tt>runner.rake</tt> files found immediately within or beneath the current directory. It lets you simply run <pre>rake ...</pre> instead of having to write <pre>rake -f runner.rake ...</pre> every time.
+
+      As <%= xref "fig:generate-test.RSpec" %> shows, the name of each generated file is prefixed with the name of the Verilog module for which the test was generated. This convention helps organize tests within the file system, so that they are readily distinguishable from one another.
+
+      <% caution "Do not rename generated files" do %>
+        Ruby-VPI uses the convention described above to dynamically create a direct Ruby interface to the design under test, so _do not_ rename the generated files arbitrarily.
+      <% end %>
+
+      By producing multiple files, the automated test generator physically decouples the various parts of a test. As a result, when the interface of a Verilog module changes, you can simply regenerate the test to incorporate those changes without diverting your focus from the task at hand. Furthermore, the incorporation of changes can be catalyzed by interactive text merging tools, which allow you to selectively accept or reject the merging of changes into your source code. Fully automated text merging tools may also be used for this purpose.
+
+      You can try this tool by running the <pre>ruby-vpi generate --help</pre> command.
+
+      <% tip "Using *kdiff3* with the automated test generator." do %>
+        # Create a file named <tt>merge2</tt> with the following content: <code>
+        #!/bin/sh
+        # args: old file, new file
+        kdiff3 --auto --output "$2" "$@"
+        </code>
+        # Make the file executable by running the <pre>chmod +x merge2</pre> command.
+        # Place the file somewhere accessible by your @PATH@ environment variable.
+        # Assign the value "merge2" to the @MERGER@ environment variable using your shell's *export* or *setenv* command.
+
+        From now on, *kdiff3* will be invoked to help you transfer your changes between generated files. When you are finished transferring changes, simply issue the "save the file" command and quit *kdiff3*. Or, if you do not want to transfer any changes, simply quit *kdiff3* _without_ saving the file.
+      <% end %>
+    <% end %>
+
+    <% section "Verilog to Ruby conversion", "usage.tools.convert" do %>
+      The *convert* tool can be used to convert Verilog header files into Ruby. You can try it by running the <pre>ruby-vpi convert --help</pre> command.
+
+      By converting Verilog header files into Ruby, your test can utilize the same @`define@ constants that are used in the Verilog design.
+    <% end %>
+  <% end %>
+
+  <% section "Sample tests", "usage.examples" do %>
+    The <tt>samp</tt> directory contains several sample tests which illustrate how Ruby-VPI can be used. Each sample has an associated <tt>Rakefile</tt> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the <pre>rake</pre> command to get started.
+  <% end %>
+
+  <% section "Tutorial", "usage.tutorial" do %>
+    # <%= xref "usage.tutorial.declare-design", "Declare a design" %> using Verilog 2001 syntax.
+    # <%= xref "usage.tutorial.generate-test", "Generate a test" %> for the design using the <%= xref "usage.tools.generate", "automated test generator" %> tool.
+    # <%= xref "usage.tutorial.specification", "Identify your expectations" %> for the design and implement them in the specification.
+    # (Optional) <%= xref "usage.tutorial.implement-proto", "Implement the prototype" %> of the design in Ruby.
+    # (Optional) <%= xref "usage.tutorial.test-proto", "Verify the prototype" %> against the specification.
+    # <%= xref "usage.tutorial.implement-design", "Implement the design" %> in Verilog once the prototype has been verified.
+    # <%= xref "usage.tutorial.test-design", "Verify the design" %> against the specification.
 
 
-h2(#setup.reqs). Requirements
+    <% section "Start with a Verilog design", "usage.tutorial.declare-design" do %>
+      First, we need a Verilog design to test. In this tutorial, <%= xref "fig:counter.v_decl" %> will serve as our design under test. Its interface is composed of the following parts:
 
-See <xref#intro.reqs> above.
+      * @Size@ defines the number of bits used to represent the counter's value.
+      * @clock@ causes the @count@ register to increment whenever it reaches a positive edge.
+      * @reset@ causes the @count@ register to become zero when asserted.
+      * @count@ is a register that contains the counter's value.
 
-<% tip "Add support for your Verilog simulator" do %>
-Write a "support request":http://rubyforge.org/tracker/?group_id=1339 for your simulator, while providing a sample transcript of the commands you use to run a test with your simulator, and we will add support for your simulator in the next release!
+      <% example "Declaration of a simple up-counter with synchronous reset", "fig:counter.v_decl" do %>
+        <code lang="verilog">
+        module counter #(parameter Size = 5) (
+          input                   clock,
+          input                   reset,
+          output reg [Size-1 : 0] count
+        );
+        endmodule
+        </code>
+      <% end %>
+
+      Before we continue, save the source code shown in <%= xref "fig:counter.v_decl" %> into a file named <tt>counter.v</tt>.
+    <% end %>
+
+
+    <% section "Generate a test", "usage.tutorial.generate-test" do %>
+      Now that we have a Verilog design to test, we shall use the <%= xref "usage.tools.generate", "generate" %> tool to generate some scaffolding for our test. This tool allows us to implement our specification using RSpec, xUnit, or any other format.
+
+      Each format represents a different software development methodology:
+      * RSpec represents <%= xref "glossary.BDD", "BDD" %>
+      * xUnit represents <%= xref "glossary.TDD", "TDD" %>
+      * our own format can represent another methodology
+
+      In this tutorial, you will see how both RSpec and xUnit formats are used. So let us make separate directories for both formats to avoid generated tests from overwriting each other:
+      <pre>
+      $ mkdir RSpec xUnit
+      $ cp counter.v RSpec
+      $ cp counter.v xUnit
+      </pre>
+
+      Once we have decided how we want to implement our specification, we can proceed to generate a test for our design. This process is illustrated by <%= xref "fig:generate-test.RSpec" %> and <%= xref "fig:generate-test.xUnit" %>.
+
+      <% example "Generating a test with specification in RSpec format", "fig:generate-test.RSpec" do %>
+        <pre>
+        $ ruby-vpi generate counter.v --RSpec
+
+          module  counter
+          create  counter_runner.rake
+          create  counter_design.rb
+          create  counter_proto.rb
+          create  counter_spec.rb
+          create  Rakefile
+        </pre>
+      <% end %>
+
+      <% example "Generating a test with specification in xUnit format", "fig:generate-test.xUnit" do %>
+        <pre>
+        $ ruby-vpi generate counter.v --xUnit
+
+          module  counter
+          create  counter_runner.rake
+          create  counter_design.rb
+          create  counter_proto.rb
+          create  counter_spec.rb
+          create  Rakefile
+        </pre>
+      <% end %>
+    <% end %>
+
+
+    <% section "Specify your expectations", "usage.tutorial.specification" do %>
+      So far, the test generation tool has created a basic foundation for our test Now we must build upon this foundation by identifying our <%= xref "glossary.expectation", "expectation" %> of the design under test. That is, how do we expect the design to _behave_ under certain conditions?
+
+      Here are some reasonable expectations for our simple counter:
+      * A resetted counter's value should be zero.
+      * A resetted counter's value should increment by one count upon each rising clock edge.
+      * A counter with the maximum value should overflow upon increment.
+
+      Now that we have identified a set of expectations for our design, we are ready to implement them in our specification. This process is illustrated by <%= xref "fig:RSpec/counter_spec.rb" %> and <%= xref "fig:xUnit/counter_spec.rb" %>.
+
+      <% example "Specification implemented in RSpec format", "fig:RSpec/counter_spec.rb" do %>
+        <code><%= File.read '../samp/counter/RSpec/counter_spec.rb' %></code>
+      <% end %>
+
+      <% example "Specification implemented in xUnit format", "fig:xUnit/counter_spec.rb" do %>
+        <code><%= File.read '../samp/counter/xUnit/counter_spec.rb' %></code>
+      <% end %>
+
+      Before we continue,
+      # Replace the contents of the file named <tt>RSpec/counter_spec.rb</tt> with the source code shown in <%= xref "fig:RSpec/counter_spec.rb" %>.
+      # Replace the contents of the file named <tt>xUnit/counter_spec.rb</tt> with the source code shown in <%= xref "fig:xUnit/counter_spec.rb" %>.
+      # Replace the contents of the files named <tt>RSpec/counter_design.rb</tt> and <tt>xUnit/counter_design.rb</tt> with the following code. <code><%= File.read '../samp/counter/RSpec/counter_design.rb' %></code>
+    <% end %>
+
+
+    <% section "Implement the prototype", "usage.tutorial.implement-proto" do %>
+      Now that we have a specification against which to verify our design let us build a prototype of our design. By doing so, we exercise our specification, experience potential problems that may arise when we later implement our design in Verilog, and gain confidence in our work. The result of this proceess is illustrated by <%= xref "fig:counter_proto.rb" %>.
+
+      <% example "Ruby prototype of our Verilog design", "fig:counter_proto.rb" do %>
+        <code><%= File.read '../samp/counter/RSpec/counter_proto.rb' %></code>
+      <% end %>
+
+      Before we continue, replace the contents of the files named <tt>RSpec/counter_proto.rb</tt> and <tt>xUnit/counter_proto.rb</tt> with the source code shown in <%= xref "fig:counter_proto.rb" %>.
+    <% end %>
+
+
+    <% section "Verify the prototype", "usage.tutorial.test-proto" do %>
+      Now that we have implemented our prototype, we are ready to verify it against our specification by running the test This process is illustrated by <%= xref "fig:test-proto.RSpec" %> and <%= xref "fig:test-proto.unit-test" %>.
+
+      In these examples, the @PROTOTYPE@ environment variable is assigned the value 1 while running the test so that, instead of our design, our prototype is verified against our specification (see <%= xref "usage.test-runner.env-vars" %> for details). Also, the <%= xref "setup.reqs", "GPL Cver simulator" %> denoted by _cver_, is used to run the simulation.
+
+      <% example "Running a test with specification in RSpec format", "fig:test-proto.RSpec" do %>
+        <pre>
+        $ cd RSpec
+        $ rake cver PROTOTYPE=1
+
+        Ruby-VPI: prototype is enabled
+        ...
+
+        Finished in 0.05106 seconds
+
+        3 examples, 0 failures
+        cd -
+        </pre>
+      <% end %>
+
+      <% example "Running a test with specification in xUnit format", "fig:test-proto.unit-test" do %>
+        <pre>
+        $ cd xUnit
+        $ rake cver PROTOTYPE=1
+
+        Ruby-VPI: prototype is enabled
+        Loaded suite counter
+        Started
+        ...
+        Finished in 0.043859 seconds.
+
+        3 tests, 35 assertions, 0 failures, 0 errors
+        </pre>
+      <% end %>
+
+      <% tip "What can the test runner do?" do %>
+        If you invoke the test runner (1) without any arguments or (2) with the <tt>--tasks</tt> option, it will show you a list of tasks that it can perform for you.
+      <% end %>
+    <% end %>
+
+
+    <% section "Implement the design", "usage.tutorial.implement-design" do %>
+      Now that we have implemented and verified our prototype, we are ready to implement our design This is often quite simple because we translate _existing_ code from Ruby (our prototype) into Verilog (our design). The result of this process is illustrated by <%= xref "fig:counter.v_impl" %>.
+
+      <% example "Implementation of a simple up-counter with synchronous reset", "fig:counter.v_impl" do %>
+        <code lang="verilog"><%= File.read '../samp/counter/counter.v' %></code>
+      <% end %>
+
+      Before we continue, replace the contents of the files named <tt>RSpec/counter.v</tt> and <tt>xUnit/counter.v</tt> with the source code shown in <%= xref "fig:counter.v_impl" %>
+    <% end %>
+
+
+    <% section "Verify the design", "usage.tutorial.test-design" do %>
+      Now that we have implemented our design we are ready to verify it against our specification by running the test <%= xref "fig:test-design.RSpec" %> and <%= xref "fig:test-design.unit-test" %> illustrate this process.
+
+      In these examples, the @PROTOTYPE@ environment variable is _not_ specified while running the test, so that our design, instead of our prototype, is verified against our specification. You can also achieve this effect by assigning an empty value to @PROTOTYPE@, or by using your shell's *unset* command. Finally, the <%= xref "setup.reqs", "GPL Cver simulator" %> denoted by _cver_, is used to run the simulation.
+
+      <% example "Running a test with specification in RSpec format", "fig:test-design.RSpec" do %>
+        <pre>
+        $ cd RSpec
+        $ rake cver
+
+        ...
+
+        Finished in 0.041198 seconds
+
+        3 examples, 0 failures
+        </pre>
+      <% end %>
+
+      <% example "Running a test with specification in xUnit format", "fig:test-design.unit-test" do %>
+        <pre>
+        $ cd xUnit
+        $ rake cver
+
+        Loaded suite counter
+        Started
+        ...
+        Finished in 0.040262 seconds.
+
+        3 tests, 35 assertions, 0 failures, 0 errors
+        </pre>
+      <% end %>
+    <% end %>
+  <% end %>
 <% end %>
 
+<% chapter "Hacking", "hacking" do %>
+  <% section "Getting the source code", "hacking.scm" do %>
+    Check out the source code using "Darcs":http://darcs.net from the project repository:
 
-h2(#setup.recom). Recommendations
-
-The following software may make your interactions with Ruby-VPI more pleasant.
-
-
-h3(#setup.recom.merger). Text merging tool
-
-An _interactive_ text merging tool can greatly simplify the process of transferring wanted changes from one file to another. In particular, such tools are especially beneficial when using the "automated test generator":#usage.tools.generate-test. A handful of the currently available open-source text merging tools are listed below.
-** "*kdiff3*":http://kdiff3.sourceforge.net/ is a graphical, three-way merging tool for KDE.
-** "*meld*":http://meld.sourceforge.net/ is a graphical, three-way merging tool for GNOME.
-** "*tkdiff*":http://tkdiff.sourceforge.net/ is a graphical, two-way merging tool that uses the cross-platform Tk windowing toolkit.
-** "*xxdiff*":http://furius.ca/xxdiff/ is a graphical, three-way merging tool.
-** "*imediff2*":http://elonen.iki.fi/code/imediff/ is a textual, fullscreen two-way merging tool. It is very useful when you are working remotely via SSH.
+      darcs get http://ruby-vpi.rubyforge.org/src/ruby-vpi
+  <% end %>
 
 
-h2(#setup.installation). Installation
+  <% section "Building release packages", "hacking.release-packages" do %>
+    In addition to the <%= xref "setup.reqs", "normal requirements" %> you need the following software to build release packages:
 
-Once you have satisfied the "necessary requirements":#setup.reqs, you can install Ruby-VPI by running the <pre>gem install -y ruby-vpi</pre> command. RubyGems will install Ruby-VPI into the system gem directory, whose path can be determined by running the <pre>gem env gemdir</pre> command. Within this directory, there is a <tt>gems/</tt> subdirectory which contains the Ruby-VPI installation, as illustrated below.
+    * "SWIG":http://www.swig.org/
+    * "RedCloth":http://rubyforge.org/projects/redcloth/
+    * "CodeRay":http://rubyforge.org/projects/coderay/
 
-<pre>
-$ gem env gemdir
-/usr/lib/ruby/gems/1.8
-
-$ ls -d /usr/lib/ruby/gems/1.8/gems/ruby-vpi*
-/usr/lib/ruby/gems/1.8/gems/ruby-vpi-7.0.0/
-</pre>
+    Once you have satisfied these requirements, you can run <pre>rake release</pre> to build the release packages. Also, see the output of <pre>rake -T</pre> for more build options.
+  <% end %>
 
 
-h3(#setup.installation.windows). Installing on Windows
-
-* Install "Cygwin":http://www.cygwin.com, the Linux-like environment for Windows.
-
-<% note "Undefined symbols in Windows" do %>
-After Ruby-VPI is compiled, it is linked to symbols whose names begin with <tt>_vpi</tt>. In GNU/Linux and similar operating systems, these symbols are allowed to be undefined. However, one "cannot compile a shared object file with references to undefined symbols in Windows":http://sourceware.org/ml/cygwin/2001-12/msg01293.html.
-
-One solution is to supply the Verilog simulator's VPI object file, which contains definitions of all VPI symbols, to the linker. The following steps illustrate this process.
+  <% section "Editing this manual", "hacking.manual" do %>
+    The "doc" files inside the <tt>doc/</tt> directory are really _plain text_ files that contain the source code of this manual. You can edit these files and run the <pre>rake</pre> command to automatically generate the HTML documentation you are currently viewing.
+  <% end %>
 <% end %>
 
-* Search for object files whose names end with <tt>.so</tt>, <tt>.o</tt>, or <tt>.dll</tt> in your Verilog simulator's installation directory.
+<% chapter "Known problems", "problems" do %>
+  This chapter presents known problems and possible solutions.
 
-* Determine which object files, among those found in the previous step, contain symbols whose names begin with "_vpi" by running the <pre>for x in *.{o,so,dll}; do nm $x | grep -q '[Tt] _vpi' && echo $x; done</pre> command in Cygwin.
-** If you are using Mentor Modelsim, the desired object file can be found at a path similar to <tt>C:\Modeltech\win32\libvsim.dll</tt>.
-** If you are using GPL Cver, the desired object file can be found at a path similar to <tt>C:\gplcver\objs\v_vpi.o</tt>.
+  <% section "Icarus Verilog", "problem.ivl" do %>
+    <% section "Give full paths to Verilog objects", "problems.ivl.vpi_handle_by_name.absolute-paths" do %>
+      In version 0.8 and snapshot 20061009 of Icarus Verilog, the @vpi_handle_by_name@ function requires an _absolute_ path (including the name of the bench which instantiates the design) to a Verilog object. In addition, @vpi_handle_by_name@ always returns @nil@ when its second parameter is specified.
 
-* Assign the path of the object file (determined in the previous step) to the @LDFLAGS@ environment variable. For example, if the object file's path is <tt>/foo/bar/vpi.so</tt>, then you would run the <pre>export LDFLAGS=/foo/bar/vpi.so</pre> command in Cygwin.
+      For example, consider <%= xref "ex:TestFoo" %>. Here, one must write @vpi_handle_by_name("TestFoo.my_foo.clk", nil)@ instead of @vpi_handle_by_name("my_foo.clk", TestFoo)@ in order to access the @clk@ input of the @my_foo@ module instance.
 
-* You may now install Ruby-VPI by running the <pre>gem install ruby-vpi</pre> command in Cygwin.
+      <% example "Part of a bench which instantiates a Verilog design", "ex:TestFoo" do %>
+        <code lang="verilog">
+        module TestFoo;
+          reg clk_reg;
+          Foo my_foo(.clk(clk_reg));
+        endmodule
+        </code>
+      <% end %>
+    <% end %>
 
+    <% section "Registers must be connected", "problems.ivl.vpi_handle_by_name.connect-registers" do %>
+      In version 0.8 of Icarus Verilog, if you want to access a register in a design, then it must be connected to something (either assigned to a wire or passed as a parameter to a module instantiation). Otherwise, you will get a @nil@ value as the result of @vpi_handle_by_name@ method.
 
-h2(#setup.maintenance). Maintenance
+      For example, suppose you wanted to access the @clk_reg@ register, from the bench shown in <%= xref "ex:TestFoo_bad" %> If you execute the statement @clk_reg = vpi_handle_by_name("TestFoo.clk_reg", nil)@ in a specification, then you will discover that the @vpi_handle_by_name@ method returns @nil@ instead of a handle to the @clk_reg@ register.
 
-* You can uninstall Ruby-VPI by running the <pre>gem uninstall ruby-vpi</pre> command.
-* You can upgrade to the latest release of Ruby-VPI by running the <pre>gem update ruby-vpi</pre> command.
+      The solution is to change the design such that it appears like the one shown in <%= xref "ex:TestFoo_fix" %> where the register is connected to a wire, or <%= xref "ex:TestFoo" %> where the register is connected to a module instantiation.
 
-Learn more about using and manipulating RubyGems in "the RubyGems user manual":http://www.rubygems.org.
+      <% example "Bad design with unconnected registers", "ex:TestFoo_bad" do %>
+        Here the @clk_reg@ register is not connected to anything.
 
+        <code lang="verilog">
+        module TestFoo;
+          reg clk_reg;
+        endmodule
+        </code>
+      <% end %>
 
-h1(#usage). Usage
+      <% example "Fixed design with wired registers", "ex:TestFoo_fix" do %>
+        Here the @clk_reg@ register is connected to the @clk_wire@ wire.
 
+        <code lang="verilog">
+        module TestFoo;
+          reg clk_reg;
+          wire clk_wire;
+          assign clk_wire = clk_reg;
+        endmodule
+        </code>
+      <% end %>
+    <% end %>
+  <% end %>
 
-h2(#usage.vpi). VPI in Ruby
-
-The _entire_ IEEE Std 1364-2005 VPI interface is available in Ruby, but with a few minor differences.
-
-p(title). Capitalize those names!
-
-The names of all VPI types, structures, and constants become _capitalized_ because Ruby requires that the names of constants begin with a capital letter.
-
-For example, the @s_vpi_value@ structure becomes the @S_vpi_value@ class in Ruby. Likewise, the @vpiIntVal@ constant becomes the @VpiIntVal@ constant in Ruby.
-
-<% note "No capitalization for VPI functions" do %>
-Ruby's capitalization rule does _not_ apply to VPI functions--their names remain unchanged in Ruby.
+  <% section "Vpi::reset", "problems.ivl.vpi_reset" do %>
+    In version 0.8 of Icarus Verilog, the @vpi_control(vpiReset)@ VPI function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.
+  <% end %>
 <% end %>
 
-p(title). Use @printf@ instead of @vprintf@
+<% chapter "Glossary", "glossary" do %>
+  <% section "Test", "glossary.test" do %>
+    Something that checks if a <%= xref "glossary.design", "design" %> satisfies a <%= xref "glossary.specification", "specification" %>
+  <% end %>
 
-The @vpi_vprintf@ and @vpi_mcd_vprintf@ VPI functions are aliased to @vpi_printf@ and @vpi_mcd_printf@ respectively because:
+  <% section "Design", "glossary.design" do %>
+    A Verilog module that is verified against a <%= xref "glossary.specification", "specification" %> in order to ensure correctness or soundness of its being. In other words, it is the thing being checked: does it work or not?
+  <% end %>
 
-* Ruby represents "variable argument lists as arrays":http://www.rubycentral.com/book/tut_methods.html#UA instead of defining a special datatype, such as @va_list@, for them.
+  <% section "Specification", "glossary.specification" do %>
+    A set of <%= xref "glossary.expectation", "expectations" %> which define the desired behavior of a <%= xref "glossary.design", "design" %> when it is subjected to certain stimulus.
+  <% end %>
 
-* Some C compilers have trouble with pointers to the @va_list@ type. For these compilers, the third line of source code shown below causes a "type mismatch" error.
+  <% section "Expectation", "glossary.expectation" do %>
+    The desired response to some stimulus.
+  <% end %>
 
-<code lang="c">
-#include <stdarg.h>
-void foo(va_list ap) {
-  va_list *p = &ap;
-}
-</code>
+  <% section "Handle", "glossary.handle" do %>
+    A reference to an object inside the Verilog simulation. See <%= xref "vpi.handles" %> for usage instructions.
+  <% end %>
 
+  <% section "Rake", "glossary.rake" do %>
+    bq. Rake is a build tool, written in Ruby, using Ruby as a build language. Rake is similar to *make* in scope and purpose.
 
-h3(#usage.vpi.handles). Handles
+    p>. --"Rake documentation":http://docs.rubyrake.org
+  <% end %>
 
-A _handle_ is a reference to an object, such as a module, register, wire, and so on, inside the Verilog simulation. In short, handles allow you to inspect and manipulate the design under test and its components.
+  <% section "RSpec", "glossary.RSpec" do %>
+    The <%= xref "glossary.BDD", "BDD" %> framework for Ruby.
 
-<% note "@Vpi::Handle@ heritage" do %>
-Handles are instances of the @Vpi::Handle@ class (see "reference documentation":../ref/ruby/classes/Vpi/Handle.html for details) in Ruby-VPI.
+    See the "RSpec website":http://rspec.rubyforge.org and "tutorial":http://rspec.rubyforge.org/tutorials/index.html for more information.
+  <% end %>
+
+  <% section "Test driven development", "glossary.TDD" do %>
+    An "agile software development methodology":http://agilemanifesto.org/ which emphasizes (1) testing functionality before implementing it and (2) refactoring.
+
+    See "this introductory article":http://www.agiledata.org/essays/tdd.html for more information.
+  <% end %>
+
+  <% section "Behavior driven development", "glossary.BDD" do %>
+    An "agile software development methodology":http://agilemanifesto.org/ which emphasizes thinking in terms of behavior when designing, implementing, and verifying software.
+
+    See the "official wiki":http://behaviour-driven.org/ for more information.
+  <% end %>
 <% end %>
-
-Handles have various _properties_, which provide different kinds of information (see the "Kind of value accessed" column in <xref #tbl..accessors>) about the underlying Verilog object represented by a handle. These properties are accessed through various functions, which are listed in the "VPI functions used to access the value" column in <xref #tbl..accessors>.
-
-Handles are typically obtained through the @vpi_handle_by_name@ and @vpi_handle@ functions. These functions are hierarchical in nature, because they allow you to obtain new handles that are related to existing handles. For example, to obtain a handle to a register inside a module, you would typically write: @some_reg = vpi_handle(VpiReg, some_handle)@.
-
-
-p(title). Shortcuts for productivity
-
-Given a handle, Ruby-VPI allows you to access (1) its relatives and (2) its properties by simply invoking its methods.
-
-If a handle's relative happens to have the same name as one of the handle's properties, then the relative is given preference. However, if  you _really_ need to access a handle's property in such a situation, then you can use the @Vpi::Handle.get_value@ and @Vpi::Handle.put_value@ methods.
-
-
-h4. Accessing a handle's relatives
-
-To access a handle's relative (a handle related to it), simply invoke the relative's name as a method on the handle.
-
-For example, to access the @reset@ signal of the @counter@ module shown in <xref #fig..counter.v_decl>, you would write the following:
-
-<code>
-counter_module = vpi_handle_by_name("counter", nil)
-
-reset_signal = counter_module.reset # <== shortcut!
-</code>
-
-In this code, the shortcut is that you simply wrote @counter_module.reset@ instead of having to write @vpi_handle_by_name("reset", counter_module)@.
-
-
-h4. Accessing a handle's properties
-
-To access a handle's properties, invoke the property name, using the following format, as a method on the handle. <xref ex..properties> shows how this naming format is used.
-
-<% figure "Method naming format for accessing a handle's properties" do %>
-|_. Operation |_. _ |_. Property |_. _ |_. Accessor |_. Addendum |
-|\2. optional       | required   |\3. optional                   |
-
-* *Operation* suggests a method that should be invoked in the context of the Property parameter. All "methods in the Enumerable module":http://www.ruby-doc.org/core/classes/Enumerable.html are valid _operations_.
-
-* *Property* suggests a VPI property that should be accessed. The "vpi" prefix, which is common to all VPI properties, can be omitted if you wish. For example, the VPI property "vpiFullName" is considered equivalent to "fullName" and "FullName", but not equivalent "full_name".
-
-* *Accessor* suggests a VPI function that should be used in order to access the VPI property. When this parameter is not specified, Ruby-VPI will attempt to _guess_ the value of this parameter.
-
-  <xref #tbl..accessors> shows a list of valid accessors and how they affect the access to a property.
-
-* *Addendum* suggests that the specified VPI property should be queried as a boolean value when it is a question mark @?@. This suggestion is the same as specifying @b@ for the Accessor parameter.
-
-  Also, when this parameter is an equal sign @=@, it suggests that the specified VPI property should be written to.
-<% end %>
-
-<% table "Possible accessors and their implications", "tbl..accessors" do %>
-|_. Accessor |_. Kind of value accessed |_. VPI functions used to access the value |
-| d | delay | @vpi_get_delays@, @vpi_put_delays@ |
-| l | logic | @vpi_get_value@, @vpi_put_value@ |
-| i | integer | @vpi_get@ |
-| b | boolean | @vpi_get@ |
-| s | string | @vpi_get_str@ |
-| h | handle | @vpi_handle@ |
-<% end %>
-
-<% example "Examples of accessing a handle's properties", "ex..properties" do %>
-|_/2. Ruby expression |_\6. Method naming format |_/2. Description |
-||_. Operation |_. _ |_. Property |_. _ |_. Accessor |_. Addendum ||
-| @handle.vpiIntVal@ | &nbsp; | &nbsp; | vpiIntVal | &nbsp; |  &nbsp; | &nbsp; |/4. These expressions access the *logic value* of the handle's @VpiIntVal@ property. |
-| @handle.vpiIntVal_l@ | &nbsp; | &nbsp; | vpiIntVal | _ | l | &nbsp; |
-| @handle.intVal@ | &nbsp; | &nbsp; | intVal | &nbsp; | &nbsp; | &nbsp; |
-| @handle.intVal_l@ | &nbsp; | &nbsp; | intVal | _ | l | &nbsp; |
-| @handle.vpiIntVal = 15@ | &nbsp; | &nbsp; | vpiIntVal | &nbsp; | &nbsp; | = |/4. These expressions assign the number 15 to the *logic value* of the handle's @VpiIntVal@ property. |
-| @handle.vpiIntVal_l = 15@ | &nbsp; | &nbsp; | vpiIntVal | _ | l | = |
-| @handle.intVal = 15@ | &nbsp; | &nbsp; | intVal | &nbsp; | &nbsp; | = |
-| @handle.intVal_l = 15@ | &nbsp; | &nbsp; | intVal | _ | l | = |
-| @handle.vpiType@ | &nbsp; | &nbsp; | vpiType | &nbsp; | &nbsp; | &nbsp; |/4. These expressions access the *integer value* of the handle's @VpiType@ property. |
-| @handle.vpiType_i@ | &nbsp; | &nbsp; | vpiType | _ | i | &nbsp; |
-| @handle.type@ | &nbsp; | &nbsp; | type | &nbsp; | &nbsp; | &nbsp; |
-| @handle.type_i@ | &nbsp; | &nbsp; | type | _ | i | &nbsp; |
-| @handle.vpiProtected@ | &nbsp; | &nbsp; | vpiProtected | &nbsp; | &nbsp; | &nbsp; |/6. These expressions access the *boolean value* of the handle's @VpiProtected@ property. |
-| @handle.vpiProtected_b@ | &nbsp; | &nbsp; | vpiProtected | _ | b | &nbsp; |
-| @handle.vpiProtected?@ | &nbsp; | &nbsp; | vpiProtected | &nbsp; | &nbsp; | ? |
-| @handle.protected@ | &nbsp; | &nbsp; | protected | &nbsp; | &nbsp; | &nbsp; |
-| @handle.protected_b@ | &nbsp; | &nbsp; | protected | _ | b | &nbsp; |
-| @handle.protected?@ | &nbsp; | &nbsp; | protected | &nbsp; | &nbsp; | ? |
-| @handle.vpiFullName@ | &nbsp; | &nbsp; | vpiFullName | &nbsp; | &nbsp; | &nbsp; |/4. These expressions access the *string value* of the handle's @VpiFullName@ property. |
-| @handle.vpiFullName_s@ | &nbsp; | &nbsp; | vpiFullName | _ | s | &nbsp; |
-| @handle.fullName@ | &nbsp; | &nbsp; | fullName | &nbsp; | &nbsp; | &nbsp; |
-| @handle.fullName_s@ | &nbsp; | &nbsp; | fullName | _ | s | &nbsp; |
-| @handle.vpiParent@ | &nbsp; | &nbsp; | vpiParent | &nbsp; | &nbsp; | &nbsp; |/4. These expressions access the *handle value* of the handle's @VpiParent@ property. |
-| @handle.vpiParent_h@ | &nbsp; | &nbsp; | vpiParent | _ | h | &nbsp; |
-| @handle.parent@ | &nbsp; | &nbsp; | parent | &nbsp; | &nbsp; | &nbsp; |
-| @handle.parent_h@ | &nbsp; | &nbsp; | parent | _ | h | &nbsp; |
-| <code>handle.each_vpiNet {|net| puts net.fullName}</code> | each | _ | vpiNet | &nbsp; | &nbsp; | &nbsp; |/2. These expressions print the full name of each @VpiNet@ object associated with the handle. |
-| <code>handle.each_net {|net| puts net.fullName}</code> | each | _ | net | &nbsp; | &nbsp; | &nbsp; |
-| <code>handle.all_vpiReg? {|reg| reg.size == 1}</code> | all? | _ | vpiReg | &nbsp; | &nbsp; | &nbsp; |/2. These expressions check if all registers associated with the handle are capable of storing only one bit. |
-| <code>handle.all_reg? {|reg| reg.size == 1}</code> | all? | _ | reg | &nbsp; | &nbsp; | &nbsp; |
-| <code>handle.select_vpiNet {|net| net.x?}</code> | select | _ | VpiNet | &nbsp; | &nbsp; | &nbsp; |/2. These expressions return a list of nets whose *logic value* is unknown or "don't care" (x).|
-| <code>handle.select_net {|net| net.x?}</code> | select | _ | net | &nbsp; | &nbsp; | &nbsp; |
-<% end %>
-
-
-h3(#usage.vpi.callbacks). Callbacks
-
-A _callback_ is a mechanism that makes the Verilog simuluator execute a block of code, which is known as a "callback handler", when some prescribed event occurs in the simulation. They are set up using the @vpi_register_cb@ function and torn down using the @vpi_remove_cb@ function.
-
-<% example "Using a callback for value change notification", "ex..callback" do %>
-This example shows how to use a callback for notification of changes in a handle's @VpiIntVal@ property. When you no longer need this callback, you can tear it down using @vpi_remove_cb(cb_handle)@.
-
-In this example, the handle being monitored is the @Counter.count@ signal from <xref#fig..counter.v_decl>.
-
-<code>
-cbTime           = S_vpi_time.new
-cbTime.type      = VpiSimTime
-cbTime.low       = 0
-cbTime.high      = 0
-
-cbValue          = S_vpi_value.new
-cbValue.format   = VpiIntVal
-
-cbData           = S_cb_data.new
-cbData.reason    = CbValueChange
-cbData.obj       = Counter.count
-cbData.time      = cbTime
-cbData.value     = cbValue
-cbData.index     = 0
-
-cbHandle = vpi_register_cb(cbData) do |data|
-
-  time = (data.time.high << 32) | data.time.low
-  count = data.value.value.integer
-
-  puts "hello from callback! time=#{time} count=#{count}"
-
-end
-</code>
-
-Shown below is the result of appending this code to the <tt>counter_rspec_spec.rb</tt> file (provided in <xref#usage.examples> and discussed in <xref#usage.tutorial.specification>) and running the "counter_rspec test":#usage.tutorial.
-
-<pre>
-$ rake -f counter_rspec_runner.rake cver
-
-(in /home/sun/src/ruby-vpi/samp/counter)
-cver +loadvpi=/home/sun/src/ruby-vpi/lib/ruby-vpi/../../obj/ruby-vpi.cver.so:vlog_startup_routines_bootstrap counter.v counter_rspec_bench.v
-GPLCVER_2.11a of 07/05/05 (Linux-elf).
-Copyright (c) 1991-2005 Pragmatic C Software Corp.
-  All Rights reserved.  Licensed under the GNU General Public License (GPL).
-  See the 'COPYING' file for details.  NO WARRANTY provided.
-Today is Sat Dec 30 09:24:09 2006.
-Compiling source file "counter.v"
-Compiling source file "counter_rspec_bench.v"
-Highest level modules:
-counter_rspec_bench
-
-
-A resetted counter's value
-hello from callback! time=1 count=0
-- should be zero
-hello from callback! time=5 count=1
-hello from callback! time=7 count=2
-hello from callback! time=9 count=3
-hello from callback! time=11 count=4
-hello from callback! time=13 count=5
-hello from callback! time=15 count=6
-hello from callback! time=17 count=7
-hello from callback! time=19 count=8
-hello from callback! time=21 count=9
-hello from callback! time=23 count=10
-hello from callback! time=25 count=11
-hello from callback! time=27 count=12
-hello from callback! time=29 count=13
-hello from callback! time=31 count=14
-hello from callback! time=33 count=15
-hello from callback! time=35 count=16
-hello from callback! time=37 count=17
-hello from callback! time=39 count=18
-hello from callback! time=41 count=19
-hello from callback! time=43 count=20
-hello from callback! time=45 count=21
-hello from callback! time=47 count=22
-hello from callback! time=49 count=23
-hello from callback! time=51 count=24
-hello from callback! time=53 count=25
-hello from callback! time=55 count=26
-hello from callback! time=57 count=27
-hello from callback! time=59 count=28
-hello from callback! time=61 count=29
-hello from callback! time=63 count=30
-hello from callback! time=65 count=31
-hello from callback! time=67 count=0
-- should increment by one count upon each rising clock edge
-
-A counter with the maximum value
-hello from callback! time=71 count=1
-hello from callback! time=73 count=2
-hello from callback! time=75 count=3
-hello from callback! time=77 count=4
-hello from callback! time=79 count=5
-hello from callback! time=81 count=6
-hello from callback! time=83 count=7
-hello from callback! time=85 count=8
-hello from callback! time=87 count=9
-hello from callback! time=89 count=10
-hello from callback! time=91 count=11
-hello from callback! time=93 count=12
-hello from callback! time=95 count=13
-hello from callback! time=97 count=14
-hello from callback! time=99 count=15
-hello from callback! time=101 count=16
-hello from callback! time=103 count=17
-hello from callback! time=105 count=18
-hello from callback! time=107 count=19
-hello from callback! time=109 count=20
-hello from callback! time=111 count=21
-hello from callback! time=113 count=22
-hello from callback! time=115 count=23
-hello from callback! time=117 count=24
-hello from callback! time=119 count=25
-hello from callback! time=121 count=26
-hello from callback! time=123 count=27
-hello from callback! time=125 count=28
-hello from callback! time=127 count=29
-hello from callback! time=129 count=30
-hello from callback! time=131 count=31
-hello from callback! time=133 count=0
-- should overflow upon increment
-
-Finished in 0.042328 seconds
-
-3 specifications, 0 failures
-</pre>
-<% end %>
-
-
-h2(#usage.prototyping). Prototyping
-
-Ruby-VPI enables you to rapidly prototype your designs in Ruby without having to do full-scale implementations in Verilog. This lets you explore and evaluate different design choices quickly.
-
-To create a prototype,
-# "Determine the *interface*":#usage.tutorial.declare-design (Verilog module declaration) of your design.
-# "Generate a test":#usage.tutorial.generate-test for that interface.
-# "Implement the prototype":#usage.tutorial.implement-proto in the generated <tt>proto.rb</tt> file.
-# "Verify the prototype":#usage.tutorial.test-proto against its specification.
-
-Once you are satisfied with your prototype, you can proceed to "implement your design in Verilog":#usage.tutorial.implement-design. This process is often a simple translation your Ruby prototype into your Verilog. At the very least, your prototype serves as a reference while you are implementing your Verilog design.
-
-Once your design has been implemented in Verilog, you can use the _same_ specification, which was originally used to verify your prototype, to verify your Verilog design.
-
-
-h2(#usage.debugger). Debugging
-
-The "ruby-debug project":http://www.datanoise.com/articles/category/ruby-debug serves as the interactive debugger for Ruby-VPI.
-
-# Enable the debugger by activating the @DEBUG@ environment variable (see <xref #usage.test-runner> for details).
-# Put the @debugger@ command in your code -- anywhere you wish to activate an interactive debugging session. These commands are automatically ignored when the debugger is disabled; so you can safely leave them in your code, if you wish.
-
-
-h3(#usage.debugger.init). Advanced initialization
-
-By default, Ruby-VPI enables the debugger by invoking the @Debugger.start@ method. If you wish to perform more advanced initialization, such as having the debugger accept remote network connections for interfacing with a remote debugging session or perhaps with an IDE (see "the ruby-debug documentation":http://www.datanoise.com/articles/category/ruby-debug for details), then:
-
-# Deactivate the @DEBUG@ environment variable.
-# Put your own code, which initializes the debugger, above the @RubyVpi.init_bench@ line in your generated <tt>spec.rb</tt> file.
-
-
-h2(#usage.test-runner). Test runner
-
-A test runner is a file, generated by the "automated test generator":#usage.tools.generate-test, whose name ends with <tt>.rake</tt>. It helps you run generated tests -- you can think of it as a _makefile_ if you are familiar with C programming in a UNIX environment.
-
-<% example "Seeing what a test runner can do" do %>
-When you invoke a test runner without any arguments, it will show you a list of available tasks:
-<pre>$ rake -f some_test_runner.rake
-
-<%= `rake -f ../samp/counter/counter_rspec_runner.rake` %></pre>
-<% end %>
-
-<% tip "Running multiple tests at once." do %>
-Create a file named <tt>Rakefile</tt> containing the following line:
-
-@require 'ruby-vpi/runner_proxy'@
-
-Now you can invoke all test runners in the current directory simply by executing <pre>rake cver</pre> (where _cver_ denotes the "GPL Cver simulator":#setup.reqs).
-<% end %>
-
-
-h3(#usage.test-runner.env-vars). Environment variables
-
-Test runners support the following _environment_ variables, which allow you to easily change the behavior of the test runner.
-
-* @COVERAGE@ enables code coverage analysis and generation of code coverage reports.
-* @DEBUG@ enables the "interactive debugger":#usage.debugger in its "post-mortem debugging mode":http://www.datanoise.com/articles/2006/12/20/post-mortem-debugging.
-* @PROTOTYPE@ enables the Ruby prototype for the design under test.
-
-To activate these variables, simply assign the number 1 to them. For example, @DEBUG=1@ activates the @DEBUG@ variable.
-
-To deactivate these variables, simply assign a different value to them or *unset* them in your shell. For example, both @DEBUG=0@ and @DEBUG=@ dectivate the @DEBUG@ variable.
-
-p(title). Variables as command-line arguments
-
-You can specify variable assignments as arguments to the *rake* command. For example, <pre>rake DEBUG=1</pre> is equivalent to <pre>
-DEBUG=1
-export DEBUG
-rake
-</pre> in Bourne shell or <pre>
-setenv DEBUG 1
-rake
-</pre> in C shell.
-
-
-<% example "Running a test with environment variables" do %>
-
-Below, we enable the prototype and code coverage analysis:
-<pre>rake -f some_test_runner.rake PROTOTYPE=1 COVERAGE=1</pre>
-
-Below, we _disable_ the prototype and enable the code coverage analysis. These invocations are equivalent if the @PROTOTYPE@ environment variable is unset.
-<pre>rake -f some_test_runner.rake PROTOTYPE=0 COVERAGE=1</pre>
-<pre>rake -f some_test_runner.rake PROTOTYPE=  COVERAGE=1</pre>
-<pre>rake -f some_test_runner.rake COVERAGE=1</pre>
-<% end %>
-
-
-h2(#usage.examples). Sample tests
-
-The <tt>samp</tt> directory contains several sample tests which illustrate how Ruby-VPI can be used. Each sample has an associated <tt>Rakefile</tt> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the <pre>rake</pre> command to get started.
-
-
-h2(#usage.tools). Tools
-
-The <tt>bin</tt> directory contains various utilities which ease the process of writing tests. Each tool provides help and usage information invoked with the <tt>--help</tt> option.
-
-
-h3(#usage.tools.generate-test). Automated test generation
-
-The *generate* tool (also known as the "automated test generator") generates tests from Verilog 2001 module declarations, as demonstrated "in the tutorial":#usage.tutorial.generate-test. You can try it by running the <pre>ruby-vpi generate --help</pre> command.
-
-A generated test is composed of the following parts:
-
-* Runner
-  - written in "Rake":#glossary.rake, this file builds and runs the test.
-* Bench
-  - written in Verilog and Ruby, these files define the testing environment.
-* Design
-  - written in Ruby, this file provides an interface to the design being verified.
-* Prototype
-  - written in Ruby, this file defines a prototype of the design being verified.
-* Specification
-  - written in Ruby, this file describes the expected behavior of the design.
-
-The reason for dividing a single test into these parts is mainly to decouple the design from the specification. This allows you to focus on writing the specification while the remainder is automatically generated by the tool. For example, when the interface of a Verilog module changes, you would simply re-run this tool and incorporate those changes (using a "text merging tool":#setup.recom.merger) into the test without diverting your focus from the specification.
-
-<% tip "Using *kdiff3* with the automated test generator." do %>
-# Create a file named <tt>merge2</tt> with the following content: <code>
-#!/bin/sh
-# args: old file, new file
-kdiff3 --auto --output "$2" "$@"
-</code>
-# Make the file executable by running the <pre>chmod +x merge2</pre> command.
-# Place the file somewhere accessible by your @PATH@ environment variable.
-# Assign the value "merge2" to the @MERGER@ environment variable using your shell's *export* or *setenv* command.
-
-From now on, *kdiff3* will be invoked to help you transfer your changes between generated files. When you are finished transferring changes, simply issue the "save the file" command and quit *kdiff3*. Or, if you do not want to transfer any changes, simply quit *kdiff3* _without_ saving the file.
-<% end %>
-
-
-h3(#usage.tools.verilog-ruby-conv). Verilog to Ruby conversion
-
-The *convert* tool can be used to convert Verilog header files into Ruby. You can try it by running the <pre>ruby-vpi convert --help</pre> command.
-
-By converting Verilog header files into Ruby, your "test":#glossary.test can utilize the same @`define@ constants that are used in the Verilog "design":#glossary.design.
-
-
-h2(#usage.tutorial). Tutorial
-
-# "Declare a design":#usage.tutorial.declare-design using Verilog 2001 syntax.
-# "Generate a test":#usage.tutorial.generate-test for the design using the "automated test generator":#usage.tools.generate-test tool.
-# "Identify your expectations":#usage.tutorial.specification for the design and implement them in the specification.
-# (Optional) "Implement the prototype":#usage.tutorial.implement-proto of the design in Ruby.
-# (Optional) "Verify the prototype":#usage.tutorial.test-proto against the specification.
-# "Implement the design":#usage.tutorial.implement-design in Verilog once the prototype has been verified.
-# "Verify the design":#usage.tutorial.test-design against the specification.
-
-
-h3(#usage.tutorial.declare-design). Start with a design
-
-First, we need a "design":#glossary.design to verify. In this tutorial, <xref #fig..counter.v_decl> will serve as our design. Its interface is composed of the following parts:
-
-* @Size@ defines the number of bits used to represent the counter's value.
-* @clock@ causes the @count@ register to increment whenever it reaches a positive edge.
-* @reset@ causes the @count@ register to become zero when asserted.
-* @count@ is a register that contains the counter's value.
-
-<% example "Declaration of a simple up-counter with synchronous reset", "#fig..counter.v_decl" do %>
-<code lang="verilog">
-module counter #(parameter Size = 5) (
-  input clock,
-  input reset,
-  output reg [Size - 1 : 0] count
-);
-endmodule
-</code>
-<% end %>
-
-<% important "Before we continue..." do %>
-Save the source code shown in <xref #fig..counter.v_decl> into a file named <tt>counter.v</tt>.
-<% end %>
-
-
-h3(#usage.tutorial.generate-test). Generate a test
-
-Now that we have a "design":#glossary.design to verify, let us generate a "test":#glossary.test for it using the "automated test generator":#usage.tools.generate-test. This tool allows us to implement our specification in either rSpec, xUnit, or our very own format.
-
-Each format represents a different software development methodology:
-* rSpec represents "BDD":#glossary.BDD
-* xUnit represents "TDD":#glossary.TDD
-* our own format can represent another methodology
-
-<% note do %>
-Both rSpec and xUnit formats are presented in this tutorial.
-<% end %>
-
-Once we have decided how we want to implement our specification, we can proceed to generate a test for our design. This process is illustrated by <xref #fig..generate-test.rspec> and <xref #fig..generate-test.unit-test>.
-
-<% example "Generating a test with specification in rSpec format", "#fig..generate-test.rspec" do %>
-<pre>
-$ ruby-vpi generate counter.v --rspec --name rspec
-
-  module  counter
-  create  counter_rspec_runner.rake
-  create  counter_rspec_bench.v
-  create  counter_rspec_bench.rb
-  create  counter_rspec_design.rb
-  create  counter_rspec_proto.rb
-  create  counter_rspec_spec.rb
-</pre>
-<% end %>
-
-<% example "Generating a test with specification in xUnit format", "#fig..generate-test.unit-test" do %>
-<pre>
-$ ruby-vpi generate counter.v --xunit --name xunit
-
-  module  counter
-  create  counter_xunit_runner.rake
-  create  counter_xunit_bench.v
-  create  counter_xunit_bench.rb
-  create  counter_xunit_design.rb
-  create  counter_xunit_proto.rb
-  create  counter_xunit_spec.rb
-</pre>
-<% end %>
-
-
-h3(#usage.tutorial.specification). Specify your expectations
-
-So far, the test generation tool has created a basic foundation for our "test":#glossary.test. Now we must build upon this foundation by identifying our "expectation":#glossary.expectation of the "design":#glossary.design. That is, how do we expect the design to _behave_ under certain conditions?
-
-Here are some reasonable expectations for our simple counter:
-* A resetted counter's value should be zero.
-* A resetted counter's value should increment by one count upon each rising clock edge.
-* A counter with the maximum value should overflow upon increment.
-
-Now that we have identified a set of expectations for our design, we are ready to implement them in our specification. This process is illustrated by <xref #fig..counter_rspec_spec.rb> and <xref #fig..counter_xunit_spec.rb>.
-
-<% example "Specification implemented in rSpec format", "#fig..counter_rspec_spec.rb" do %>
-<code><%= File.read '../samp/counter/counter_rspec_spec.rb' %></code>
-<% end %>
-
-<% example "Specification implemented in xUnit format", "#fig..counter_xunit_spec.rb" do %>
-<code><%= File.read '../samp/counter/counter_xunit_spec.rb' %></code>
-<% end %>
-
-<% important "Before we continue..." do %>
-# Replace the contents of the file named <tt>counter_rspec_spec.rb</tt> with the source code shown in <xref #fig..counter_rspec_spec.rb>.
-# Replace the contents of the file named <tt>counter_xunit_spec.rb</tt> with the source code shown in <xref #fig..counter_xunit_spec.rb>.
-# Replace the contents of the files named <tt>counter_rspec_design.rb</tt> and <tt>counter_xunit_design.rb</tt> with the following code. <code><%= File.read '../samp/counter/counter_rspec_design.rb' %></code>
-<% end %>
-
-
-h3(#usage.tutorial.implement-proto). Implement the prototype
-
-Now that we have a "specification":#glossary.specification against which to verify our "design":#glossary.design, let us build a prototype of our design. By doing so, we exercise our specification, experience potential problems that may arise when we later implement our design in Verilog, and gain confidence in our work. The result of this proceess is illustrated by <xref #fig..counter_proto.rb>.
-
-<% example "Ruby prototype of our Verilog design", "#fig..counter_proto.rb" do %>
-<code><%= File.read '../samp/counter/counter_rspec_proto.rb' %></code>
-<% end %>
-
-<% important "Before we continue..." do %>
-Replace the contents of the files named <tt>counter_rspec_proto.rb</tt> and <tt>counter_xunit_proto.rb</tt> with the source code shown in <xref #fig..counter_proto.rb>
-<% end %>
-
-
-h3(#usage.tutorial.test-proto). Verify the prototype
-
-Now that we have implemented our prototype, we are ready to verify it against our "specification":#glossary.specification by running the "test":#glossary.test. This process is illustrated by <xref #fig..test-proto.rspec> and <xref #fig..test-proto.unit-test>.
-
-In these examples, the @PROTOTYPE@ environment variable is assigned a non-empty value while running the test so that, instead of our design, our prototype is verified against our specification. You can also assign a value to @PROTOTYPE@ before running the test, by using your shell's *export* or *setenv* command. Finally, the "GPL Cver simulator":#setup.reqs, denoted by _cver_, is used to run the simulation.
-
-<% example "Running a test with specification in rSpec format", "#fig..test-proto.rspec" do %>
-<pre>
-$ rake -f counter_rspec_runner.rake cver PROTOTYPE=1
-
-Ruby-VPI: prototype has been enabled for test "counter_rspec"
-
-A resetted counter's value
-- should be zero
-- should increment by one count upon each rising clock edge
-
-A counter with the maximum value
-- should overflow upon increment
-
-Finished in 0.018199 seconds
-
-3 specifications, 0 failures
-</pre>
-<% end %>
-
-<% example "Running a test with specification in xUnit format", "#fig..test-proto.unit-test" do %>
-<pre>
-$ rake -f counter_xunit_runner.rake cver PROTOTYPE=1
-
-Ruby-VPI: prototype has been enabled for test "counter_xunit"
-
-Loaded suite counter_xunit_bench
-Started
-...
-Finished in 0.040668 seconds.
-
-3 tests, 35 assertions, 0 failures, 0 errors
-</pre>
-<% end %>
-
-<% tip "What can the test runner do?" do %>
-If you invoke the test runner (1) without any arguments or (2) with the <tt>--tasks</tt> option, it will show you a list of tasks that it can perform for you.
-<% end %>
-
-
-h3(#usage.tutorial.implement-design). Implement the design
-
-Now that we have implemented and verified our prototype, we are ready to implement our "design":#glossary.design. This is often quite simple because we translate _existing_ code from Ruby (our prototype) into Verilog (our design). The result of this process is illustrated by <xref #fig..counter.v_impl>.
-
-
-<% example "Implementation of a simple up-counter with synchronous reset", "#fig..counter.v_impl" do %>
-<code lang="verilog"><%= File.read '../samp/counter/counter.v' %></code>
-<% end %>
-
-<% important "Before we continue..." do %>
-Replace the contents of the file named <tt>counter.v</tt> with the source code shown in <xref #fig..counter.v_impl>
-<% end %>
-
-
-h3(#usage.tutorial.test-design). Verify the design
-
-Now that we have implemented our "design":#glossary.design, we are ready to verify it against our "specification":#glossary.specification by running the "test":#glossary.test. <xref #fig..test-design.rspec> and <xref #fig..test-design.unit-test> illustrate this process.
-
-In these examples, the @PROTOTYPE@ environment variable is _not_ specified while running the test, so that our design, instead of our prototype, is verified against our specification. You can also achieve this effect by assigning an empty value to @PROTOTYPE@, or by using your shell's *unset* command. Finally, the "GPL Cver simulator":#setup.reqs, denoted by _cver_, is used to run the simulation.
-
-<% example "Running a test with specification in rSpec format", "#fig..test-design.rspec" do %>
-<pre>
-$ rake -f counter_rspec_runner.rake cver
-
-A resetted counter's value
-- should be zero
-- should increment by one count upon each rising clock edge
-
-A counter with the maximum value
-- should overflow upon increment
-
-Finished in 0.005628 seconds
-
-3 specifications, 0 failures
-</pre>
-<% end %>
-
-<% example "Running a test with specification in xUnit format", "#fig..test-design.unit-test" do %>
-<pre>
-$ rake -f counter_xunit_runner.rake cver
-
-Loaded suite counter_xunit_bench
-Started
-...
-Finished in 0.006766 seconds.
-
-3 tests, 35 assertions, 0 failures, 0 errors
-</pre>
-<% end %>
-
-
-h1(#hacking). Hacking
-
-
-h2(#hacking.scm). Getting the source code
-
-Check out the source code using "Darcs":http://darcs.net from the project repository:
-
-  darcs get http://ruby-vpi.rubyforge.org/src/ruby-vpi
-
-h2(#hacking.release-packages). Building release packages
-
-In addition to the "normal requirements":#setup.reqs, you need the following software to build release packages:
-
-* "SWIG":http://www.swig.org/
-* "RedCloth":http://rubyforge.org/projects/redcloth/
-* "CodeRay":http://rubyforge.org/projects/coderay/
-
-Once you have satisfied these requirements, you can run <pre>rake release</pre> to build the release packages. Also, see the output of <pre>rake -T</pre> for more build options.
-
-
-h1(#problems). Known problems
-
-This chapter presents known problems and possible solutions. In addition, previously solved problems have been retained for historical reference.
-
-
-h2(#problems.ruby). Ruby
-
-
-h3(#problems.ruby.SystemStackError). SystemStackError
-
-<% note "Fixed in 2.0.0." do %>
-This problem was fixed in release 2.0.0 (2006-04-17).
-<% end %>
-
-If a "stack level too deep (SystemStackError)" error occurs during the simulation, then increase the system-resource limit for stack-size by running the <pre>ulimit -s unlimited</pre> command before starting the simulation.
-
-
-h3(#problems.ruby.xUnit). test/unit
-
-<% note "Fixed in 2.0.0." do %>
-This problem was fixed in release 2.0.0 (2006-04-17).
-<% end %>
-
-If your specification employs Ruby's unit testing framework, then you will encounter an error saying "[BUG] cross-thread violation on rb_gc()".
-
-
-h2(#problem.ivl). Icarus Verilog
-
-
-h3(#problems.ivl.vpi_handle_by_name). Vpi::vpi_handle_by_name
-
-
-h4(#problems.ivl.vpi_handle_by_name.absolute-paths). Give full paths to Verilog objects
-
-In version 0.8 and snapshot 20061009 of Icarus Verilog, the @vpi_handle_by_name@ function requires an _absolute_ path (including the name of the bench which instantiates the design) to a Verilog object. In addition, @vpi_handle_by_name@ always returns @nil@ when its second parameter is specified.
-
-For example, consider <xref #ex..TestFoo>. Here, one must write @vpi_handle_by_name("TestFoo.my_foo.clk", nil)@ instead of @vpi_handle_by_name("my_foo.clk", TestFoo)@ in order to access the @clk@ input of the @my_foo@ module instance.
-
-<% example "Part of a bench which instantiates a Verilog design", "#ex..TestFoo" do %>
-<code lang="verilog">
-module TestFoo;
-  reg clk_reg;
-  Foo my_foo(.clk(clk_reg));
-endmodule
-</code>
-<% end %>
-
-
-h4(#problems.ivl.vpi_handle_by_name.connect-registers). Registers must be connected
-
-In version 0.8 of Icarus Verilog, if you want to access a register in a design, then it must be connected to something (either assigned to a wire or passed as a parameter to a module instantiation). Otherwise, you will get a @nil@ value as the result of @vpi_handle_by_name@ method.
-
-For example, suppose you wanted to access the @clk_reg@ register, from the bench shown in <xref #ex..TestFoo_bad> If you execute the statement @clk_reg = vpi_handle_by_name("TestFoo.clk_reg", nil)@ in a specification, then you will discover that the @vpi_handle_by_name@ method returns @nil@ instead of a handle to the @clk_reg@ register.
-
-The solution is to change the design such that it appears like the one shown in <xref #ex..TestFoo_fix> where the register is connected to a wire, or <xref #ex..TestFoo> where the register is connected to a module instantiation.
-
-<% example "Bad design with unconnected registers", "#ex..TestFoo_bad" do %>
-<code lang="verilog">
-module TestFoo;
-  reg clk_reg;
-endmodule
-</code>
-
-Here the @clk_reg@ register is not connected to anything.
-<% end %>
-
-<% example "Fixed design with wired registers", "#ex..TestFoo_fix" do %>
-<code lang="verilog">
-module TestFoo;
-  reg clk_reg;
-  wire clk_wire;
-  assign clk_wire = clk_reg;
-endmodule
-</code>
-
-Here the @clk_reg@ register is connected to the @clk_wire@ wire.
-<% end %>
-
-
-h3(#problems.ivl.vpi_reset). Vpi::reset
-
-In version 0.8 of Icarus Verilog, the @vpi_control(vpiReset)@ VPI function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.
-
-
-h2(#problems.vsim). Mentor Modelsim
-
-
-h3(#problems.vsim.ruby_run). ruby_run();
-
-<% note "Fixed in 2.0.0." do %>
-This problem was fixed in release 2.0.0 (2006-04-17).
-<% end %>
-
-Version 6.1b of Mentor Modelsim doesn't play nicely with either an embedded Ruby interpreter or POSIX threads in a PLI application. When Ruby-VPI invokes the ruby_run function (which starts the Ruby interpreter), the simulator terminates immediately with an exit status of 0.
-
-
-h1(#glossary). Glossary
-
-
-h2(#glossary.bench). Bench
-
-An environment in which a "design":#glossary.design is verified against a "specification":#glossary.specification. Often, it is used to emulate conditions in which the design will be eventually deployed.
-
-
-h2(#glossary.BDD). Behavior driven development (BDD)
-
-An "agile software development methodology":http://agilemanifesto.org/ which emphasizes thinking in terms of behavior when designing, implementing, and verifying software.
-
-See the "official wiki":http://behaviour-driven.org/ for more information.
-
-
-h2(#glossary.design). Design
-
-A Verilog module that is verified against a "specification":#glossary.specification in order to ensure correctness or soundness of its being. In other words, it is the thing being checked: does it work or not?
-
-
-h2(#glossary.expectation). Expectation
-
-The desired response to some stimulus.
-
-
-h2(#glossary.handle). Handle
-
-A reference to an object inside the Verilog simulation that was obtained through the @vpi_handle_by_name@ function.
-
-
-h2(#glossary.rake). Rake
-
-bq. Rake is a build tool, written in Ruby, using Ruby as a build language. Rake is similar to *make* in scope and purpose.
-
-p>. --"Rake documentation":http://docs.rubyrake.org
-
-
-h2(#glossary.rspec). rSpec
-
-The "BDD":#glossary.BDD framework for Ruby.
-
-See the "rSpec website":http://rspec.rubyforge.org and "tutorial":http://rspec.rubyforge.org/tutorials/index.html for more information.
-
-
-h2(#glossary.specification). Specification
-
-A set of "expectations":#glossary.expectations which define the desired behavior of a "design":#glossary.design when it is subjected to certain stimulus.
-
-
-h2(#glossary.TDD). Test driven development (TDD)
-
-An "agile software development methodology":http://agilemanifesto.org/ which emphasizes (1) testing functionality before implementing it and (2) refactoring.
-
-See "this introductory article":http://www.agiledata.org/essays/tdd.html for more information.
-
-
-h2(#glossary.test). Test
-
-Something that checks if a "design":#glossary.design satisfies a "specification":#glossary.specification.
-
-
-h2(#glossary.test_bench). Test bench
-
-An allusion to "a bench in an electronics laboratory":#background.vocab, or so it seems.

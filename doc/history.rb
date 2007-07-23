@@ -11,3 +11,12 @@ require 'yaml'
     end
   end
 end
+
+path = File.join(File.dirname(__FILE__), 'history.inc')
+unless File.exist? path
+  File.open(path, 'w') do |f|
+    @history.each do |entry|
+      f << %{<% section "Version #{entry['Version']} (#{entry['Date']})", "#{entry['Version']}" do %>#{entry['Record']}<% end %>}
+    end
+  end
+end
