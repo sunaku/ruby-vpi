@@ -121,7 +121,7 @@ module Vpi
             val.value.scalar
 
           when VpiIntVal
-            get_value_wrapper(VpiHexStrVal).value.str.to_i(16)
+            get_value_wrapper(VpiBinStrVal).value.str.gsub(/[^01]/, '0').to_i(2)
 
           when VpiRealVal
             val.value.real
@@ -152,8 +152,7 @@ module Vpi
             get_value_wrapper(VpiObjTypeVal).format
           end
 
-        newVal        = S_vpi_value.new
-        newVal.format = aFormat
+        newVal = S_vpi_value.new(:format => aFormat)
 
         case aFormat
           when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal, VpiStringVal
@@ -182,7 +181,7 @@ module Vpi
             raise "unknown S_vpi_value.format: #{newVal.format}"
         end
 
-        vpi_put_value self, newVal, aTime, aDelay
+        vpi_put_value(self, newVal, aTime, aDelay)
 
         # ensure that value was written correctly
           readenVal = get_value(aFormat)
@@ -201,7 +200,7 @@ module Vpi
 
               when VpiIntVal
                 # allow for register overflow when limit reached
-                readenVal == (aValue.to_i % (2 ** self.vpiSize))
+                readenVal == (aValue.to_i % (2 ** vpi_get(VpiSize, self)))
 
               when VpiRealVal
                 readenVal == aValue.to_f
@@ -211,7 +210,7 @@ module Vpi
             end
 
           unless writtenCorrectly
-            raise "value written (#{aValue.inspect}) does not match value read (#{readenVal.inspect}) from handle #{self}"
+            raise "value written (#{aValue.inspect}) does not match value read (#{readenVal.inspect}) on handle #{self}"
           end
 
         aValue
@@ -222,8 +221,8 @@ module Vpi
       def [] *aTypes
         handles = []
 
-        aTypes.each do |t|
-          t = resolve_prop_type(t)
+        aTypes.each do |arg|
+          t = resolve_prop_type(arg)
 
           if itr = vpi_iterate(t, self)
             while h = vpi_scan(itr)
@@ -235,9 +234,8 @@ module Vpi
         handles
       end
 
-      alias to_a []
 
-      # inherit Enumerable methods, such as #each, #map, #select, etc.
+        # inherit Enumerable methods, such as #each, #map, #select, etc.
         Enumerable.instance_methods.push('each').each do |meth|
           # using a string because define_method
           # does not accept a block until Ruby 1.9
@@ -250,10 +248,14 @@ module Vpi
           }, __FILE__, __LINE__
         end
 
+        # bypass Enumerable's #to_a method, which relies on #each
+        alias to_a []
+
         # Sort by absolute VPI path.
         def <=> other
           self.fullName <=> other.fullName
         end
+
 
       # Inspects the given VPI property names, in
       # addition to those common to all handles.
@@ -301,11 +303,11 @@ module Vpi
         if child = vpi_handle_by_name(aMeth.to_s, self)
           # cache the child for future accesses, in order
           # to cut down number of calls to method_missing
-            (class << self; self; end).class_eval do
-              define_method aMeth do
-                child
-              end
+          (class << self; self; end).class_eval do
+            define_method aMeth do
+              child
             end
+          end
 
           child
 
@@ -313,7 +315,7 @@ module Vpi
           prop = @@propCache[aMeth]
 
           if prop.operation
-            self.send(prop.operation, prop.type, *aArgs, &aBlockArg)
+            self.__send__(prop.operation, prop.type, *aArgs, &aBlockArg)
           else
             case prop.accessor
               when :d	# delay values
@@ -372,7 +374,9 @@ module Vpi
         end
       end
 
-      Property = Struct.new :type, :name, :operation, :accessor, :assignment
+      private
+
+      Property = Struct.new(:type, :name, :operation, :accessor, :assignment)
 
       # Resolves the given shorthand name into
       # a description of its VPI property.
@@ -439,10 +443,8 @@ module Vpi
             end
           end
 
-        Property.new type, name, operation, accessor, isAssign
+        Property.new(type, name, operation, accessor, isAssign)
       end
-
-      private
 
       # resolve type names into type constants
       def resolve_prop_type aNameOrType
@@ -588,17 +590,17 @@ module Vpi
 
     # make VPI structs more accessible by allowing their
     # members to be initialized through the constructor
-      constants.grep(/^S_/).each do |s|
-        const_get(s).class_eval do
-          alias old_initialize initialize
+    constants.grep(/^S_/).each do |s|
+      const_get(s).class_eval do
+        alias old_initialize initialize
 
-          def initialize aMembers = {}
-            old_initialize
+        def initialize aMembers = {} #:nodoc:
+          old_initialize
 
-            aMembers.each_pair do |k, v|
-              __send__ "#{k}=", v
-            end
+          aMembers.each_pair do |k, v|
+            __send__ "#{k}=", v
           end
         end
       end
+    end
 end
