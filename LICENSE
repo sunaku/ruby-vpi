@@ -1,4 +1,4 @@
-Copyright 2006 Suraj N. Kurapati <snk@gna.org>
+Copyright 2006 Suraj N. Kurapati <SNK at GNA dot ORG>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -7,12 +7,13 @@ use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
 the Software, and to permit persons to whom the Software is furnished to do so,
 subject to the following conditions:
 
-1. All modified and unmodified copies and substantial portions of the Software
-   (the "Derivatives") and their corresponding machine-readable source code (the
-   "Code") must include the above copyright notice and this permission notice.
+1. All copies and substantial portions of the Software, whether modified or
+   unmodified, (the "Derivatives") and their corresponding machine-readable
+   source code (the "Code") must include the above copyright notice and this
+   permission notice.
 
-2. Upon distribution, the Derivatives must be accompanied either by the Code or,
-   if the Code is obtainable for no more than the cost of distribution plus a
+2. The Derivatives, upon distribution, must be accompanied by the Code or, if
+   the Code is obtainable for no more than the cost of distribution plus a
    nominal fee, by information on how to obtain the Code.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
