@@ -66,7 +66,7 @@ LOADER_FUNC = 'vlog_startup_routines_bootstrap'
 
 # Returns the path to the Ruby-VPI object file for the given simulator.
 def object_file_path aSimId # :nodoc:
-  path = File.join(OBJECT_PATH, aSimId.to_s)
+  path = File.join(OBJECT_PATH, "#{aSimId}.so")
 
   unless File.exist? path
     raise "Object file #{path.inspect} is missing. Rebuild Ruby-VPI."
