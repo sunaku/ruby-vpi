@@ -141,10 +141,15 @@ module Vpi
         end
       end
 
-      # Writes the given value using the given format (name or
-      # integer constant), time, and delay, and then returns the
-      # given value.  If a format is not given, then the Verilog
-      # simulator will attempt to determine the correct format.
+      # Writes the given value using the given format (name or integer
+      # constant), time, and delay, and then returns the written value.
+      #
+      # * If a format is not given, then the Verilog simulator
+      #   will attempt to determine the correct format.
+      #
+      # * If the given format is VpiIntVal, then the given value
+      #   will be truncated to fit the VpiSize of this handle.
+      #
       def put_value aValue, aFormat = nil, aTime = nil, aDelay = VpiNoDelay
         aFormat =
           if aFormat
@@ -155,7 +160,7 @@ module Vpi
 
         newVal = S_vpi_value.new(:format => aFormat)
 
-        case aFormat
+        writtenVal = case aFormat
           when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal, VpiStringVal
             newVal.value.str      = aValue.to_s
 
@@ -163,8 +168,14 @@ module Vpi
             newVal.value.scalar   = aValue
 
           when VpiIntVal
+            # truncate the integer to simulate register overflow
+            @limit  ||= 2 ** vpi_get(VpiSize, self)
+            integer  =  aValue.to_i % @limit
+
             newVal.format         = VpiHexStrVal
-            newVal.value.str      = aValue.to_i.to_s(16)
+            newVal.value.str      = integer.to_s(16)
+
+            integer
 
           when VpiRealVal
             newVal.value.real     = aValue.to_f
@@ -190,31 +201,24 @@ module Vpi
           writtenCorrectly =
             case aFormat
               when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal
-                if aValue =~ /[xz]/i  # TODO: verify 'z' behavior
+                if writtenVal =~ /[xz]/i  # TODO: verify 'z' behavior
                   readenVal =~ /[xz]/i
                 else
-                  readenVal == aValue.to_s
+                  readenVal == writtenVal
                 end
 
-              when VpiStringVal
-                readenVal == aValue.to_s
-
-              when VpiIntVal
-                # allow for register overflow when limit reached
-                readenVal == (aValue.to_i % (2 ** vpi_get(VpiSize, self)))
-
-              when VpiRealVal
-                readenVal == aValue.to_f
+              when VpiStringVal, VpiIntVal, VpiRealVal
+                readenVal == writtenVal
 
               else
                 true
             end
 
           unless writtenCorrectly
-            raise "value written (#{aValue.inspect}) does not match value read (#{readenVal.inspect}) on handle #{self}"
+            raise "value written (#{writtenVal.inspect}) does not match value read (#{readenVal.inspect}) on handle #{self}"
           end
 
-        aValue
+        writtenVal
       end
 
       # Returns an array of child handles of the
