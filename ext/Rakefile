@@ -1,8 +1,9 @@
 # Build file for the native C extension.
 #
 # = Environment variables
-# CFLAGS:: Arguments to the compiler.
-# LDFLAGS:: Arguments to the linker.
+# CFLAGS::    Arguments to the compiler.
+# LDFLAGS::   Arguments to the linker.
+# SIMULATOR:: ID of the simulator.
 #--
 # Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
@@ -23,7 +24,7 @@ file 'Makefile' => [:swig, 'extconf.rb'] do |t|
   ruby t.prerequisites[1], "--with-cflags=#{ENV['CFLAGS']}", "--with-ldflags=#{ENV['LDFLAGS']}"
 end
 
-CLEAN.include 'Makefile', 'mkmf.log', '*.o', '*.' + Config::CONFIG['DLEXT']
+CLEAN.include 'Makefile', 'mkmf.log', '*.o', "*.#{Config::CONFIG['DLEXT']}"
 
 
 desc 'Generate Ruby wrapper for VPI.'
@@ -35,17 +36,26 @@ end
 
 file 'swig_vpi.i' => 'swig_vpi.h'
 
-# avoid compilation errors due to va_list, which is used
-# in the SWIG-generated wrapper for VPI vprintf functions
+# create a custom version of the standard vpi_user.h file to
+# accomodate quirks in C compilers and Verilog simulators
 file 'swig_vpi.h' => 'vpi_user.h' do |t|
   src, dst = t.prerequisites[0], t.name
 
   File.open(dst, 'w') do |f|
-    f << File.read(src).gsub(/\bva_list\b/, 'void*')
+    input = File.read(src)
+
+    # avoid compilation errors due to va_list, which is used
+    # in the SWIG-generated wrapper for VPI vprintf functions
+    input.gsub! %r{\bva_list\b}, 'void*'
+
+    # VCS does not load the Ruby-VPI shared object file if it contains
+    # references to the vpi_put_data and vpi_get_data symbols
+    if ENV['SIMULATOR'] == 'vcs'
+      input.gsub! %r{^.*vpi_(get|put)_data[^;]+;}, ''
+    end
+
+    f << input
   end
 end
 
-# NOTE: since SWIG is not a requirement for users,
-#       we should not clobber these generated files
-#
-#CLOBBER.include 'swig_wrap.cin', 'swig_vpi.h'
+CLEAN.include 'swig_wrap.cin', 'swig_vpi.h'

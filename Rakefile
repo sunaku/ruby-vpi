@@ -85,10 +85,10 @@ task :default => :build
 
       unless File.exist? dst
         cd 'ext' do
-          ENV['CFLAGS']  = "#{ccFlags} #{sim.compiler_args}"
-          ENV['LDFLAGS'] = "#{ldFlags} #{sim.linker_args}"
+          ENV['CFLAGS']  = [ccFlags, sim.compiler_args].compact.join(' ')
+          ENV['LDFLAGS'] = [ldFlags, sim.linker_args].compact.join(' ')
 
-          sh 'rake'
+          sh "rake SIMULATOR=#{id}"
           mv src, dst
           sh 'rake clean'
         end
