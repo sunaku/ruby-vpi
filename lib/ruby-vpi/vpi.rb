@@ -4,6 +4,8 @@
 # Copyright 2006-2007 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
+require 'ruby-vpi/util'
+
 module Vpi
   # Number of bits in PLI_INT32.
   INTEGER_BITS  = 32
@@ -15,7 +17,6 @@ module Vpi
   INTEGER_MASK  = INTEGER_LIMIT - 1
 
   # handles
-
     Handle = SWIG::TYPE_p_unsigned_int
 
     # A handle is an object inside a Verilog simulation (see
@@ -291,7 +292,7 @@ module Vpi
       end
 
 
-      @@propCache = Hash.new {|h, k| h[k] = Property.resolve(k)}
+      @@propCache = Hash.new {|h, k| h[k] = Property.new(k)}
 
       # Provides access to this handle's (1) child handles
       # and (2) VPI properties through method calls.  In the
@@ -300,128 +301,74 @@ module Vpi
       # of the VPI property.  However, you can still access
       # the VPI property via #get_value and #put_value.
       def method_missing aMeth, *aArgs, &aBlockArg
-        if child = vpi_handle_by_name(aMeth.to_s, self)
-          # cache the child for future accesses, in order
-          # to cut down number of calls to method_missing
-          (class << self; self; end).class_eval do
+        childPath = vpi_get_str(VpiFullName, self) + '.' + aMeth.to_s
+
+        # cache the result for future accesses, in order
+        # to cut down number of calls to method_missing()
+        eigen_class = (class << self; self; end)
+
+        if child = vpi_handle_by_name(childPath, nil)
+          eigen_class.class_eval do
             define_method aMeth do
               child
             end
           end
 
           child
-
         else
-          prop = @@propCache[aMeth]
-
-          if prop.operation
-            self.__send__(prop.operation, prop.type, *aArgs, &aBlockArg)
-          else
-            case prop.accessor
-              when :d	# delay values
-                raise NotImplementedError, 'processing of delay values is not yet implemented.'
-                # TODO: vpi_put_delays
-                # TODO: vpi_get_delays
-
-              when :l	# logic values
-                if prop.assignment
-                  value = aArgs.shift
-                  put_value(value, prop.type, *aArgs)
-                else
-                  get_value(prop.type)
-                end
-
-              when :i	# integer values
-                unless prop.assignment
-                  vpi_get(prop.type, self)
-                else
-                  raise NotImplementedError
-                end
-
-              when :b # boolean values
-                unless prop.assignment
-                  value = vpi_get(prop, self)
-                  value && (value != 0)	# zero is false in C
-                else
-                  raise NotImplementedError
-                end
-
-              when :s	# string values
-                unless prop.assignment
-                  vpi_get_str(prop.type, self)
-                else
-                  raise NotImplementedError
-                end
-
-              when :h	# handle values
-                unless prop.assignment
-                  vpi_handle(prop.type, self)
-                else
-                  raise NotImplementedError
-                end
-
-              when :a # array of child handles
-                unless prop.assignment
-                  self[prop.type]
-                else
-                  raise NotImplementedError
-                end
-
-              else
-                raise NoMethodError, "unable to access VPI property #{prop.name.inspect} through method #{aMeth.inspect} with arguments #{aArgs.inspect} for handle #{self}"
+          # XXX: using a string because define_method() does
+          #      not support a block argument until Ruby 1.9
+          eigen_class.class_eval %{
+            def #{aMeth}(*a, &b)
+              @@propCache[#{aMeth.inspect}].execute(self, *a, &b)
             end
-          end
+          }
+
+          self.__send__(aMeth, *aArgs, &aBlockArg)
         end
       end
 
       private
 
-      Property = Struct.new(:type, :name, :operation, :accessor, :assignment)
+      class Property # :nodoc:
+        def initialize aMethName
+          @methName = aMethName.to_s
 
-      # Resolves the given shorthand name into
-      # a description of its VPI property.
-      def Property.resolve aName # :nodoc:
-        # parse the given property name
-          tokens = aName.to_s.split(/_/)
+          # parse property information from the given method name
+            tokens = @methName.split('_')
 
+            tokens.last.sub!(/[\?!=]$/, '')
+            addendum  = $&
+            @isAssign = $& == '='
+            isQuery   = $& == '?'
 
-          tokens.last.sub!(/[\?!=]$/, '')
+            tokens.last =~ /^[a-z]$/ && tokens.pop
+            @accessor = $&
 
-          addendum = $&
-          isAssign = $& == '='
-          isQuery  = $& == '?'
+            @name = tokens.pop
 
-
-          tokens.last =~ /^[a-z]$/ && tokens.pop
-          accessor = $&
-
-          name = tokens.pop
-
-          operation =
-            unless tokens.empty?
+            @operation = unless tokens.empty?
               tokens.join('_') << (addendum || '')
             end
 
-        # determine the VPI integer type for the property
-          name = name[0, 1].upcase << name[1..-1]
-          name.insert 0, 'Vpi' unless name =~ /^[Vv]pi/
+          # determine the VPI integer type for the property
+            @name = @name.to_ruby_const_name
+            @name.insert 0, 'Vpi' unless @name =~ /^[Vv]pi/
 
-          begin
-            type = Vpi.const_get(name)
-          rescue NameError
-            raise ArgumentError, "#{name.inspect} is not a valid VPI property"
-          end
+            begin
+              @type = Vpi.const_get(@name)
+            rescue NameError
+              raise ArgumentError, "#{@name.inspect} is not a valid VPI property"
+            end
 
-        accessor =
-          if accessor
-            accessor.to_sym
-
-          else # infer accessor from VPI property name
+          @accessor = if @accessor
+            @accessor.to_sym
+          else
+            # infer accessor from VPI property @name
             if isQuery
               :b
-
             else
-              case name
+              case @name
                 when /Time$/
                   :d
 
@@ -442,8 +389,67 @@ module Vpi
               end
             end
           end
+        end
 
-        Property.new(type, name, operation, accessor, isAssign)
+        def execute aHandle, *aArgs, &aBlockArg
+          if @operation
+            aHandle.__send__(@operation, @type, *aArgs, &aBlockArg)
+          else
+            case @accessor
+              when :d	# delay values
+                raise NotImplementedError, 'processing of delay values is not yet implemented.'
+                # TODO: vpi_put_delays
+                # TODO: vpi_get_delays
+
+              when :l	# logic values
+                if @isAssign
+                  value = aArgs.shift
+                  aHandle.put_value(value, @type, *aArgs)
+                else
+                  aHandle.get_value(@type)
+                end
+
+              when :i	# integer values
+                if @isAssign
+                  raise NotImplementedError
+                else
+                  vpi_get(@type, aHandle)
+                end
+
+              when :b # boolean values
+                if @isAssign
+                  raise NotImplementedError
+                else
+                  value = vpi_get(@type, aHandle)
+                  value && (value != 0)	# zero is false in C
+                end
+
+              when :s	# string values
+                if @isAssign
+                  raise NotImplementedError
+                else
+                  vpi_get_str(@type, aHandle)
+                end
+
+              when :h	# handle values
+                if @isAssign
+                  raise NotImplementedError
+                else
+                  vpi_handle(@type, aHandle)
+                end
+
+              when :a # array of child handles
+                if @isAssign
+                  raise NotImplementedError
+                else
+                  aHandle[@type]
+                end
+
+              else
+                raise NoMethodError, "cannot access VPI property #{@name.inspect} for handle #{aHandle.inspect} through method #{@methName.inspect} with arguments #{aArgs.inspect}"
+            end
+          end
+        end
       end
 
       # resolve type names into type constants
