@@ -55,6 +55,9 @@ require 'ruby-vpi/util'
   ENV['RUBYVPI_BOOT_LOADER'] = File.join(File.dirname(__FILE__), 'runner_boot_loader.rb')
   ENV['RUBYVPI_BOOT_TARGET'] = @target
 
+# check if the machine is 64-bit
+  @archIs64 = -1.size == 8
+
 
 require 'rake/clean'
 require 'ruby-vpi'
@@ -118,6 +121,7 @@ desc "Simulate with #{RubyVPI::SIMULATORS[:vcs].name}."
 task :vcs => :setup do
   sh %w[vcs -R +vpi +v2k],
     '-load', "#{object_file_path(:vcs)}:#{LOADER_FUNC}",
+    ('-full64' if @archIs64),
     SIMULATOR_ARGUMENTS[:vcs],
     expand_incdir_options(:vcs),
     @sources
@@ -144,6 +148,7 @@ desc "Simulate with #{RubyVPI::SIMULATORS[:ncsim].name}."
 task :ncsim => :setup do
   sh %w[ncverilog +access+rwc],
     "+loadvpi=#{object_file_path(:ncsim)}:#{LOADER_FUNC}",
+    ('+nc64bit' if @archIs64),
     SIMULATOR_ARGUMENTS[:ncsim],
     expand_incdir_options(:ncsim),
     @sources
