@@ -31,7 +31,7 @@ desc 'Generate Ruby wrapper for VPI.'
 task :swig => 'swig_wrap.cin'
 
 file 'swig_wrap.cin' => 'swig_vpi.i' do |t|
-  sh %w{swig -ruby -o}, t.name, t.prerequisites[0]
+  sh %w[swig -Werror -w801 -ruby -o], t.name, t.prerequisites[0]
 end
 
 file 'swig_vpi.i' => 'swig_vpi.h'
@@ -43,6 +43,9 @@ file 'swig_vpi.h' => 'vpi_user.h' do |t|
 
   File.open(dst, 'w') do |f|
     input = File.read(src)
+
+    # this is only relevant for the C language VPI interface
+    input.gsub! %r{^.*vlog_startup_routines.*$}, ''
 
     # avoid compilation errors due to va_list, which is used
     # in the SWIG-generated wrapper for VPI vprintf functions
