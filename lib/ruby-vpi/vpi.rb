@@ -169,11 +169,17 @@ module Vpi
 
           when VpiIntVal
             # truncate the integer to simulate register overflow
-            @limit  ||= 2 ** vpi_get(VpiSize, self)
+            @width  ||= vpi_get(VpiSize, self)
+            @limit  ||= 2 ** @width
             integer  =  aValue.to_i % @limit
 
-            newVal.format         = VpiHexStrVal
-            newVal.value.str      = integer.to_s(16)
+            if @width < 32
+              newVal.format        = VpiIntVal
+              newVal.value.integer = integer
+            else
+              newVal.format        = VpiHexStrVal
+              newVal.value.str     = integer.to_s(16)
+            end
 
             integer
 
