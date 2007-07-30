@@ -1,25 +1,27 @@
 require 'spec'
 
 module RegisterInterface
-  MAX_INDEX = Register_file.register.size - 1
+  NUM_REGS = Register_file.register.size
 
   def set_registers(vals)
-    Register_file.rw.intVal = 1
+    raise ArgumentError if vals.length > NUM_REGS
 
-    0.upto(MAX_INDEX) do |i|
+    Register_file.rw.intVal = 1
+    vals.each_with_index do |val, i|
       Register_file.wtReg.intVal = i
-      Register_file.inBus.intVal = vals[i]
+      Register_file.inBus.intVal = val
       Register_file.cycle!
     end
   end
 
   def expect_registers(vals)
-    Register_file.rw.intVal = 0
+    raise ArgumentError if vals.length > NUM_REGS
 
-    MAX_INDEX.downto(0) do |i|
+    Register_file.rw.intVal = 0
+    vals.each_with_index do |val, i|
       Register_file.rdReg.intVal = i
       Register_file.cycle!
-      Register_file.outBus.intVal.should == vals[i]
+      Register_file.outBus.intVal.should == val
     end
   end
 end

@@ -8,7 +8,7 @@ module register_file (
 );
   reg [3:0] register [0:3];
 
-  always @(*) begin
+  always @(rdReg, wtReg, rw, enable) begin
     if (rw == 0) begin
       outBus = register[rdReg];
     end else if (enable) begin

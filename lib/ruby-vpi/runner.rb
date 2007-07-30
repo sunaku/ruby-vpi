@@ -107,7 +107,7 @@ CLOBBER.include 'verilog.log'
 desc "Simulate with #{RubyVPI::SIMULATORS[:ivl].name}."
 task :ivl => :setup do
   cp object_file_path(:ivl), 'ruby-vpi.vpi'
-  sh 'iverilog', '-mruby-vpi',
+  sh %w[iverilog -mruby-vpi],
     SIMULATOR_ARGUMENTS[:ivl],
     expand_incdir_options(:ivl),
     @sources
@@ -146,7 +146,7 @@ CLOBBER.include 'transcript'
 
 desc "Simulate with #{RubyVPI::SIMULATORS[:ncsim].name}."
 task :ncsim => :setup do
-  sh %w[ncverilog +access+rwc],
+  sh %w[ncverilog +access+rwc +plinowarn],
     "+loadvpi=#{object_file_path(:ncsim)}:#{LOADER_FUNC}",
     ('+nc64bit' if @archIs64),
     SIMULATOR_ARGUMENTS[:ncsim],

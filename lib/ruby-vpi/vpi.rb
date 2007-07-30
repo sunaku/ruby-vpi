@@ -17,6 +17,7 @@ module Vpi
   INTEGER_MASK  = INTEGER_LIMIT - 1
 
   # handles
+
     Handle = SWIG::TYPE_p_unsigned_int
 
     # A handle is an object inside a Verilog simulation (see
@@ -196,7 +197,7 @@ module Vpi
             newVal.value.strength = aValue
 
           else
-            raise "unknown S_vpi_value.format: #{newVal.format}"
+            raise "unknown S_vpi_value.format: #{newVal.format.inspect}"
         end
 
         vpi_put_value(self, newVal, aTime, aDelay)
@@ -311,13 +312,11 @@ module Vpi
       # of the VPI property.  However, you can still access
       # the VPI property via #get_value and #put_value.
       def method_missing aMeth, *aArgs, &aBlockArg
-        childPath = vpi_get_str(VpiFullName, self) + '.' + aMeth.to_s
-
         # cache the result for future accesses, in order
         # to cut down number of calls to method_missing()
         eigen_class = (class << self; self; end)
 
-        if child = vpi_handle_by_name(childPath, nil)
+        if child = vpi_handle_by_name(aMeth.to_s, self)
           eigen_class.class_eval do
             define_method aMeth do
               child
@@ -464,8 +463,8 @@ module Vpi
 
       # resolve type names into type constants
       def resolve_prop_type aNameOrType
-        if aNameOrType.is_a? Integer
-          aNameOrType
+        if aNameOrType.respond_to? :to_int
+          aNameOrType.to_int
         else
           @@propCache[aNameOrType.to_sym].type
         end
