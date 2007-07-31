@@ -20,7 +20,7 @@ SIMULATOR_ARGUMENTS = {
   :ivl => "",
 
   # Synopsys VCS
-  :vcs => "+v2k",
+  :vcs => "",
 
   # Mentor Modelsim
   :vsim => "",
