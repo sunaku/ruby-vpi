@@ -119,7 +119,8 @@ CLEAN.include 'ruby-vpi.vpi', 'a.out'
 
 desc "Simulate with #{RubyVPI::SIMULATORS[:vcs].name}."
 task :vcs => :setup do
-  sh %w[vcs -R +vpi +v2k],
+  sh %w[vcs -R +vpi +cli+4],
+    '-P', File.join(File.dirname(__FILE__), 'pli.tab'),
     '-load', "#{object_file_path(:vcs)}:#{LOADER_FUNC}",
     ('-full64' if @archIs64),
     SIMULATOR_ARGUMENTS[:vcs],
