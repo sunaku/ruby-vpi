@@ -152,12 +152,30 @@ module Vpi
       #   will be truncated to fit the VpiSize of this handle.
       #
       def put_value aValue, aFormat = nil, aTime = nil, aDelay = VpiNoDelay
-        aFormat =
-          if aFormat
-            resolve_prop_type(aFormat)
-          else
-            get_value_wrapper(VpiObjTypeVal).format
-          end
+        aFormat = if aFormat
+          resolve_prop_type(aFormat)
+
+        elsif aValue.respond_to? :to_int
+          VpiIntVal
+
+        elsif aValue.respond_to? :to_float
+          VpiRealVal
+
+        elsif aValue.respond_to? :to_str
+          VpiStringVal
+
+        elsif aValue.is_a? S_vpi_time
+          VpiTimeVal
+
+        elsif aValue.is_a? S_vpi_vecval
+          VpiVectorVal
+
+        elsif aValue.is_a? S_vpi_strengthval
+          VpiStrengthVal
+
+        else
+          get_value_wrapper(VpiObjTypeVal).format
+        end
 
         newVal = S_vpi_value.new(:format => aFormat)
 
