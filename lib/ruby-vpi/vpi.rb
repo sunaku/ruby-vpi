@@ -543,7 +543,7 @@ module Vpi
         value.format    = VpiSuppressVal
 
         alarm           = S_cb_data.new
-        alarm.reason    = CbAfterDelay
+        alarm.reason    = CbReadWriteSynch
         alarm.cb_rtn    = Vlog_relay_ruby
         alarm.obj       = nil
         alarm.time      = time
