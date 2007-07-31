@@ -109,10 +109,9 @@ module Vpi
       end
 
       # Reads the value using the given format (name or
-      # integer constant) and returns it.  If a format
-      # is not given, then the Verilog simulator will
-      # attempt to determine the correct format.
-      def get_value aFormat = VpiObjTypeVal
+      # integer constant) and returns it.  If a format is
+      # not given, then it is assumed to be VpiIntVal.
+      def get_value aFormat = VpiIntVal
         val = get_value_wrapper(resolve_prop_type(aFormat))
 
         case val.format
@@ -123,7 +122,14 @@ module Vpi
             val.value.scalar
 
           when VpiIntVal
-            get_value_wrapper(VpiBinStrVal).value.str.gsub(/[^01]/, '0').to_i(2)
+            @size ||= vpi_get(VpiSize, self)
+
+            if @size < 32
+              val.value.integer
+            else
+              val = get_value_wrapper(VpiBinStrVal)
+              val.value.str.to_s.gsub(/[^01]/, '0').to_i(2)
+            end
 
           when VpiRealVal
             val.value.real
@@ -184,23 +190,18 @@ module Vpi
             newVal.value.str      = aValue.to_s
 
           when VpiScalarVal
-            newVal.value.scalar   = aValue
+            newVal.value.scalar   = aValue.to_i
 
           when VpiIntVal
-            # truncate the integer to simulate register overflow
-            @width  ||= vpi_get(VpiSize, self)
-            @limit  ||= 2 ** @width
-            integer  =  aValue.to_i % @limit
+            @size ||= vpi_get(VpiSize, self)
 
-            if @width < 32
+            if @size < 32
               newVal.format        = VpiIntVal
-              newVal.value.integer = integer
+              newVal.value.integer = aValue.to_i
             else
               newVal.format        = VpiHexStrVal
-              newVal.value.str     = integer.to_s(16)
+              newVal.value.str     = aValue.to_i.to_s(16)
             end
-
-            integer
 
           when VpiRealVal
             newVal.value.real     = aValue.to_f
@@ -219,29 +220,6 @@ module Vpi
         end
 
         vpi_put_value(self, newVal, aTime, aDelay)
-
-        # ensure that value was written correctly
-          readenVal = get_value(aFormat)
-
-          writtenCorrectly =
-            case aFormat
-              when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal
-                if writtenVal =~ /[xz]/i  # TODO: verify 'z' behavior
-                  readenVal =~ /[xz]/i
-                else
-                  readenVal == writtenVal
-                end
-
-              when VpiStringVal, VpiIntVal, VpiRealVal
-                readenVal == writtenVal
-
-              else
-                true
-            end
-
-          unless writtenCorrectly
-            raise "value written (#{writtenVal.inspect}) does not match value read (#{readenVal.inspect}) on handle #{self}"
-          end
 
         writtenVal
       end
