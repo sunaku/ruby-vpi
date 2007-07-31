@@ -76,7 +76,7 @@
     /usr/lib/ruby/gems/1.8/gems/ruby-vpi-7.0.0/
     </pre>
 
-    <% note "Tuning for maximum performance" do %>
+    <% tip "Tuning for maximum performance" do %>
       You can tune your installation of Ruby-VPI for maximum performance by adding your C compiler's optimization flag to the @CFLAGS@ environment variable _before_ you run the <pre>gem install -y ruby-vpi</pre> command. For example, if your C compiler is GCC, then you can set @CFLAGS@ to <tt>-O9</tt> for maximum optimization.
     <% end %>
 
@@ -581,7 +581,6 @@
       Before we continue,
       # Replace the contents of the file named <tt>RSpec/counter_spec.rb</tt> with the source code shown in <%= xref "fig:RSpec/counter_spec.rb" %>.
       # Replace the contents of the file named <tt>xUnit/counter_spec.rb</tt> with the source code shown in <%= xref "fig:xUnit/counter_spec.rb" %>.
-      # Replace the contents of the files named <tt>RSpec/counter_design.rb</tt> and <tt>xUnit/counter_design.rb</tt> with the following code. <code><%= File.read '../samp/counter/RSpec/counter_design.rb' %></code>
     <% end %>
 
 
@@ -711,6 +710,8 @@
   This chapter presents known problems and possible solutions.
 
   <% section "Icarus Verilog", "problem.ivl" do %>
+    The following sections describe problems that occur when Icarus Verilog is used with Ruby-VPI.
+
     <% section "Give full paths to Verilog objects", "problems.ivl.vpi_handle_by_name.absolute-paths" do %>
       In version 0.8 and snapshot 20061009 of Icarus Verilog, the @vpi_handle_by_name@ function requires an _absolute_ path (including the name of the bench which instantiates the design) to a Verilog object. In addition, @vpi_handle_by_name@ always returns @nil@ when its second parameter is specified.
 
@@ -755,10 +756,10 @@
         </code>
       <% end %>
     <% end %>
-  <% end %>
 
-  <% section "Vpi::reset", "problems.ivl.vpi_reset" do %>
-    In version 0.8 of Icarus Verilog, the @vpi_control(vpiReset)@ VPI function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.
+    <% section "Vpi::reset", "problems.ivl.vpi_reset" do %>
+      In version 0.8 of Icarus Verilog, the @vpi_control(vpiReset)@ VPI function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.
+    <% end %>
   <% end %>
 <% end %>
 

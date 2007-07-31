@@ -224,6 +224,27 @@ module Vpi
         writtenVal
       end
 
+      # Forces the given value (see arguments for #put_value) onto this handle.
+      def force_value *args
+        args[3] = VpiForceFlag
+        put_value(*args)
+
+        @isValueForced = true
+      end
+
+      # Releases a previously forced value on this handle.
+      def release_value
+        # this doesn't really change the value, it only removes the force flag
+        put_value(0, VpiIntVal, nil, VpiReleaseFlag)
+
+        @isValueForced = false
+      end
+
+      # Tests if there is currently a value forced onto this handle.
+      def value_forced?
+        @isValueForced
+      end
+
       # Returns an array of child handles of the
       # given types (name or integer constant).
       def [] *aTypes

@@ -1,1 +1,1 @@
-acc=wn:*
+acc=read_write,write_net,force:*
