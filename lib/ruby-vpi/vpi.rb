@@ -268,7 +268,7 @@ module Vpi
       # Inspects the given VPI property names, in
       # addition to those common to all handles.
       def inspect *aPropNames
-        aPropNames.unshift :fullName, :size, :file, :lineNo
+        aPropNames.unshift :name, :fullName, :size, :file, :lineNo
 
         aPropNames.map! do |name|
           "#{name}=#{self.send(name.to_sym)}"
