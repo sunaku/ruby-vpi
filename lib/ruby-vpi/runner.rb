@@ -141,7 +141,7 @@ task :vsim => :setup do
     SIMULATOR_ARGUMENTS[:vsim]
 end
 
-CLEAN.include 'work'
+CLEAN.include 'work', 'vsim.wlf'
 CLOBBER.include 'transcript'
 
 
