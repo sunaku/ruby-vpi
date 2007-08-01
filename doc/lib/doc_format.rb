@@ -1,5 +1,5 @@
 #--
-# Copyright 2006-2007 Suraj N. Kurapati
+# Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
 require 'cgi'

@@ -24,7 +24,7 @@
 #           The tool's output should be written to the output file.
 
 #--
-# Copyright 2006-2007 Suraj N. Kurapati
+# Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
 $: << File.join(File.dirname(__FILE__), '..', 'lib')

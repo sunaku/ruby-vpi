@@ -4,6 +4,9 @@
 # 1. loads the design.rb file
 # 2. loads the proto.rb file if prototyping is enabled
 # 3. loads the spec.rb file
+#--
+# Copyright 2006 Suraj N. Kurapati
+# See the file named LICENSE for details.
 
 require 'rubygems'
 require 'ruby-vpi'

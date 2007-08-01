@@ -1,6 +1,6 @@
 # Library for hardware-related integer operations.
 #--
-# Copyright 2006-2007 Suraj N. Kurapati
+# Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
 # NOTE: Because integers are _immediate_ values in Ruby, these methods *cannot*
