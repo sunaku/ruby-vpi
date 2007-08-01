@@ -1,8 +1,3 @@
-/*
-  Copyright 2006 Suraj N. Kurapati
-  See the file named LICENSE for details.
-*/
-
 module hw5_unit
 #(parameter                 WIDTH    = 32,
   parameter                 DATABITS = 7,

@@ -1,7 +1,3 @@
-#--
-# Copyright 2006 Suraj N. Kurapati
-# See the file named LICENSE for details.
-
 # Behavioral model of the hw5_unit Verilog module.
 class Hw5UnitModel
 

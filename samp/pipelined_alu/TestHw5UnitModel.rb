@@ -1,7 +1,3 @@
-#--
-# Copyright 2006 Suraj N. Kurapati
-# See the file named LICENSE for details.
-
 require 'int_gen'
 require 'Hw5UnitModel'
 require 'test/unit'
