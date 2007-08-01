@@ -15,10 +15,6 @@ body {
   padding: 2em;
 }
 
-#body > h1 {
-  margin-top: 0;
-}
-
 
 /* headings */
 
@@ -35,11 +31,16 @@ h1, h2, h3, h4, h5, h6 {
 
 /* table of contents */
 
-#toc-links {
+#toc-links,
+#site-links {
   text-align: center;
   border-bottom: thick solid salmon;
   background-color: white;
   padding: 1em;
+}
+
+#toc-links {
+  background-color: ivory;
 }
 
 #toc {

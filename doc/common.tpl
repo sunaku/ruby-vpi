@@ -33,19 +33,27 @@
     <title><%= page_title %></title>
   </head>
   <body>
+    <div id="site-links">
+      <a href="readme.html">Home</a>
+      <%
+        Dir['*.doc'].each do |src|
+          name, ext = src.split('.', 2)
+          next if name == 'readme'
+      %>
+        &middot; <a href="<%= name %>.html"><%= name.capitalize %></a>
+      <% end %>
+      <hr style="display: none"/>
+    </div>
+
   <% if insert_toc %>
     <div id="toc-links">
-      <%
+      <%=
         links = listings.map do |x|
           %{<a href="##{x.anchor}">#{x.name}</a>}
         end
         links.unshift %{<a href="#toc:contents">Contents</a>}
+        links.join ' &middot; '
       %>
-      <% links.each do |link| %>
-        <%= link %> &middot;
-      <% end %>
-
-      <a href="readme.html" style="color: green; font-size: larger;">Home page</a>
     </div>
   <% end %>
 
