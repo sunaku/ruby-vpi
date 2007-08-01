@@ -10,23 +10,25 @@ Ruby-VPI is "open source software":http://en.wikipedia.org/wiki/Open_source_soft
 
 <% section "Resources", "resources" do %>
   <% paragraph "Records" do %>
-    <a type="application/rss+xml" href="<%= RSS_URL %>"><img src="images/feed-icon-28x28.png" alt="RSS feed for release notifications" style="float: right"/></a>
-
-    * "What's new":history.html
-      - a history of all release notes.
+    * "What's new":history.html#<%= version.to_html_anchor %>
+      - release notes for version <%= version %>.
+    ** "History":history.html
+      - a record of all release notes.
+    ** <a type="application/rss+xml" href="<%= RSS_URL %>"><img src="images/feed-icon-28x28.png" alt="RSS feed for release announcements" style="float: right"/></a> "RSS feed":<%= RSS_URL %>
+      - keep track of new releases at your leisure.
     * "Plans":memo.html
       - pending tasks for future releases.
     * "Talks":http://ruby-vpi.rubyforge.org/talks/
       - materials from presentations and seminars.
     * "Papers":http://ruby-vpi.rubyforge.org/papers/
       - research publications.
-    * "Motivation":http://ruby-vpi.rubyforge.org/papers/masters_thesis.html#tth_sEc5.2
-      - why does Ruby-VPI exist?
   <% end %>
 
   <% paragraph "Documentation" do %>
+    * "Motivation":http://ruby-vpi.rubyforge.org/papers/masters_thesis.html#tth_sEc5.2
+      - why was Ruby-VPI developed?
     * "User manual":manual.html
-      - complete documentation for users. _Start here!_
+      - complete documentation for users.
     ** "Tutorial":manual.html#usage.tutorial
       - learn how to use Ruby-VPI quickly.
     * "Reference":../ref/
@@ -56,7 +58,7 @@ Ruby-VPI is "open source software":http://en.wikipedia.org/wiki/Open_source_soft
   <% paragraph "Portable" do %>
     * Supports the _entire_ "IEEE 1364-2005 Verilog VPI":http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945 standard.
     * Works with all <%= xref "intro.reqs", "major Verilog simulators" %> available today.
-    * Compiled _just once_ during "installation":manual.html#setup.installation and used forever!
+    * Compiled _just once_ during "installation":manual.html#setup.inst and used forever!
   <% end %>
 
   <% paragraph "Agile" do %>
@@ -67,7 +69,7 @@ Ruby-VPI is "open source software":http://en.wikipedia.org/wiki/Open_source_soft
 
     * Eliminates unneccesary work:
     ** "Specifications":manual.html#usage.tutorial.specification are readable, portable, and _executable_.
-    ** The "automated test generator":manual.html#usage.tools.generate-test helps you accomodate design changes with _minimal_ effort.
+    ** The "automated test generator":manual.html#usage.tools.generate helps you accomodate design changes with _minimal_ effort.
     ** There is absolutely _no compiling_!
   <% end %>
 
@@ -95,12 +97,12 @@ Ruby-VPI is "open source software":http://en.wikipedia.org/wiki/Open_source_soft
      - any version that supports the <tt>-load</tt> option is acceptable.
     * "Mentor Modelsim":http://www.model.com
      - any version that supports the <tt>-pli</tt> option is acceptable.
-    * "Cadence NC-Sim / NC-Verilog":http://www.cadence.com/products/functional_ver/nc-verilog/
-     - any version that supports the <tt>+loadvpi</tt> option is acceptable.
+    * "Cadence NC-Sim":http://www.cadence.com/products/functional_ver/nc-verilog/
+     - any version that supports the <tt>+loadvpi</tt> option is _mostly_ acceptable because you *will not* be able to "force values onto wires":manual.html#problem.ncsim.vpiForceFlag.
     * "GPL Cver":http://www.pragmatic-c.com/gpl-cver/
      - version 2.11a or newer is acceptable.
-    * "Icarus Verilog":http://www.icarus.com/eda/Verilog/
-      - version 0.8 is _mostly_ acceptable -- you *will not* be able to "access child handles through method calls":manual.html#background.org.vpi.util. The reason for this limitation is explained "in the user manual":manual.html#problems.ivl.vpi_handle_by_name.absolute-paths.
+    * "Icarus Verilog":http://www.geda.seul.org/tools/icarus/index.html
+      - version 0.8 is _mostly_ acceptable because you *will not* be able to "access child handles through method calls":manual.html#Accessing_a_handle_s_relatives. The reason for this limitation is explained "in the user manual":manual.html#problems.ivl.vpi_handle_by_name.absolute-paths.
   <% end %>
 
   <% paragraph "Compilers" do %>
@@ -108,8 +110,10 @@ Ruby-VPI is "open source software":http://en.wikipedia.org/wiki/Open_source_soft
       - any flavor should be acceptable.
     * C compiler
       - the "GNU Compiler Collection (GCC)":http://www.gnu.org/software/gcc/ is preferred, but any C compiler should be acceptable.
-    * "Ruby":http://www.ruby-lang.org
-      - version 1.8 or newer, including header and linkable object files for building extensions, is necessary. You can install Ruby by following "these instructions":http://www.rubygarden.org/faq/section/show/3.
+    * "SWIG":http://www.swig.org/download.html
+      - version 1.3.29 or newer is necessary.
+    * "Ruby":http://www.ruby-lang.org/en/downloads/
+      - version 1.8 or newer, including header and linkable object files for building extensions, is necessary. You can install Ruby by following "these instructions":http://www.ruby-lang.org/en/downloads/.
   <% end %>
 
   <% paragraph "Libraries" do %>
@@ -170,7 +174,7 @@ Ruby-VPI is "open source software":http://en.wikipedia.org/wiki/Open_source_soft
 
 
 <% section "License", "intro.license" do %>
-  <%=h File.read('../LICENSE') %>
+  <%= h(File.read('../LICENSE')).gsub(/^Copyright.*$/, '\&<br/>') %>
 <% end %>
 
 

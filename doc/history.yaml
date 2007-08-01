@@ -1,4 +1,64 @@
 -
+  Version: 18.0.0
+
+  Date: 2007-07-31
+
+  Record: |
+    This release restores support for Synopsys VCS and Cadence NC-Sim, improves portability and performance, and enhances the VPI abstraction layer.
+
+
+    h2. Thanks
+
+    * Calvin Wong discovered "how to bypass the following error":http://rubyforge.org/forum/message.php?msg_id=25691 emitted by Synopsys VCS when loading the Ruby-VPI shared object file.
+
+      <pre>
+      Could not open library specified in -load option obj/vcs
+      obj/vcs: undefined symbol: vpi_put_data
+      </pre>
+
+
+    h2. Caution
+
+    * "SWIG":http://www.swig.org/ is now required in order to compile and install Ruby-VPI.
+
+    * @Vpi::Handle.put_value@ no longer checks whether the value written matches the value read back after writing because that only works when there is no VPI delay associated with the write.
+
+    * When @Vpi::Handle.put_value@ is used to write a value to a wire (VpiNet), it now _forces_ the value. This is done to ensure portability:
+
+      Synopsys VCS and Cadence NC-Sim forget the value written to a wire during the next simulation time step, whereas Mentor Modelsim and GPL Cver remember the value (thereby treating wires as registers).
+
+      Note that you have to release a forced value (using @Vpi::Handle.release_value@) on a wire after writing to the wire if you want the design under test have the ability to update the value of the wire later on:
+
+      <code>
+      your_wire.intVal = 15
+      your_wire.release_value
+      advance_time # let the Verilog DUT modify your_wire
+      </code>
+
+      In addition, you can check if a wire has a forced value using the @Vpi::Handle.value_forced?@ method.
+
+    * If the format is not specified, @Vpi::Handle.get_value@ now assumes that you want to read the value in VpiIntVal format (because this is the most common case).
+
+    * The definition of "Derivatives" has been reworded for clarity in the "project license":readme.html#intro.license.
+
+
+    h2. Repairs
+
+    * Synopsys VCS and Cadence NC-Sim simulators now correctly load Ruby-VPI. Also, the 64-bit versions of these simulators are now supported.
+
+
+    h2. Improvements
+
+    * Added "force_value", "release_value", and "value_forced?" methods to the @Vpi::Handle@ class.
+
+    * @Vpi::Handle.put_value@ now tries to automatically detect the format of the value to be written. As a result, you can now write @your_handle.put_value 35@ in lieu of writing @your_handle.intVal = 35@.
+
+    * @Vpi::Handle.inspect@ now shows the hexStrVal of the handle (because it is a common case to want to see a handle's logic value along with its other information).
+
+    * Added method caching (memoizing) for VPI property accesses on handles.
+
+
+-
   Version: 17.0.0
 
   Date: 2007-07-22
@@ -90,7 +150,7 @@
   Date: 2007-05-02
 
   Record: |
-    This release adds support for the "Cadence NC-Sim / NC-Verilog":http://www.cadence.com/products/functional_ver/nc-verilog/ simulator, improves the project website and documentation, simplifies interaction with VPI, and comes with a more permissive license.
+    This release adds support for the "Cadence NC-Sim":http://www.cadence.com/products/functional_ver/nc-verilog/ simulator, improves the project website and documentation, simplifies interaction with VPI, and comes with a more permissive license.
 
 
     h2. Caution
@@ -112,7 +172,7 @@
 
     h2. New features
 
-    * The "Cadence NC-Sim / NC-Verilog":http://www.cadence.com/products/functional_ver/nc-verilog/ (ncsim) simulator is now supported.
+    * The "Cadence NC-Sim":http://www.cadence.com/products/functional_ver/nc-verilog/ (ncsim) simulator is now supported.
 
     * VPI structures (whose names begin with "S_") now allow initialization of their members through their constructor, in the style of Ruby on Rails. For example, the expression @time = S_vpi_time.new :type => VpiSuppressTime@ is equivalent to: <code>
     time      = S_vpi_time.new

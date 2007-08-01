@@ -1,18 +1,15 @@
 <doc_proxy_include common.inc>
 
 <% section "Pending tasks" do %>
+  * add support for multiple Ruby prototypes so that you can do integration testing and ESL stuff
+
   * add shortcuts for reading & writing VPI delay values
 
-  * GHDL simulator supports VPI
-  ** need way to invoke VPI tasks from VHDL, like @$ruby_init();@
-
-    +No need for system tasks/functions. Ruby-VPI uses callbacks now!+
+  * add support for GHDL simulator (and thereby VHDL!) because it supports VPI
 
   * add instructions for using *ruby-debug* with a graphical debugging tool or IDE like RadRails
 
   * write section about code coverage and prototyping in manual
-
-  * clean up the teriminology section... unnecessary
 
   * write unit tests for the non-VPI libraries like integer.rb and float.rb
 <% end %>
@@ -44,6 +41,10 @@
   * make RCov correctly profile the code and report useful coverage metrics...
 
   * add support for VPI callbacks which execute Ruby blocks
+
+  * write section about code coverage and prototyping in manual
+
+  * clean up the teriminology section... unnecessary
 <% end %>
 
 

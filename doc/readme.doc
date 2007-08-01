@@ -7,6 +7,6 @@
 <div style="float: right">Version <%= version %></div>
 <h1 style="padding-top: 0">Ruby-VPI</h1>
 
-<a href="http://www.ruby-lang.org"><img src="images/ruby/logo-reflection.png" alt="Logo of the Ruby programming language" style="margin: 0; margin-left: 2em; float: right"/></a>
+<a href="http://www.ruby-lang.org"><img src="images/ruby/logo-reflection.png" alt="Logo of the Ruby programming language" style="margin: 0; margin-left: 2em; margin-bottom: 1em; float: right"/></a>
 
 <doc_proxy_include intro.inc>

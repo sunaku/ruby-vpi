@@ -19,7 +19,7 @@
   <% paragraph "Legal notice" do %>
     This manual is distributed under <%= xref "intro.license", "the same license as Ruby-VPI" %>.
 
-    The admonition graphics used in this manual are Copyright 2005, 2006 "Tango Desktop Project":http://tango.freedesktop.org and are distributed under "these terms":./images/tango/LICENSE.
+    The admonition graphics used in this manual are Copyright 2005, 2006 "Tango Desktop Project":http://tango.freedesktop.org/Tango_Desktop_Project and are distributed under "these terms":./images/tango/LICENSE.
   <% end %>
 <% end %>
 
@@ -72,7 +72,7 @@
     $ gem env gemdir
     /usr/lib/ruby/gems/1.8
 
-    $ ls -d /usr/lib/ruby/gems/1.8/gems/ruby-vpi*
+    $ ls -d `gem env gemdir`/gems/ruby-vpi*
     /usr/lib/ruby/gems/1.8/gems/ruby-vpi-7.0.0/
     </pre>
 
@@ -170,7 +170,7 @@
       <% section "@vprintf@ is @printf@" do %>
         The @vpi_vprintf@ and @vpi_mcd_vprintf@ VPI functions are aliased to @vpi_printf@ and @vpi_mcd_printf@ respectively because:
 
-        * Ruby represents "variable argument lists as arrays":http://www.rubycentral.com/book/tut_methods.html#UA instead of defining a special datatype, such as @va_list@, for them.
+        * Ruby represents "variable argument lists as arrays":http://phrogz.net/ProgrammingRuby/tut_methods.html#variablelengthargumentlists instead of defining a special datatype, such as @va_list@, for them.
 
         * Some C compilers have trouble with pointers to the @va_list@ type. For these compilers, the third line of source code shown below causes a "type mismatch" error.
 
@@ -479,7 +479,7 @@
   <% end %>
 
   <% section "Sample tests", "usage.examples" do %>
-    The <tt>samp</tt> directory contains several sample tests which illustrate how Ruby-VPI can be used. Each sample has an associated <tt>Rakefile</tt> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the <pre>rake</pre> command to get started.
+    The <tt>samp</tt> directory ("browse it online":<%= codeURL %>/samp/) contains several sample tests which illustrate how Ruby-VPI can be used. Each sample has an associated <tt>Rakefile</tt> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the <pre>rake</pre> command to get started.
   <% end %>
 
   <% section "Tutorial", "usage.tutorial" do %>
@@ -761,6 +761,19 @@
       In version 0.8 of Icarus Verilog, the @vpi_control(vpiReset)@ VPI function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.
     <% end %>
   <% end %>
+
+  <% section "Cadence NC-Sim", "problem.ncsim" do %>
+    The following sections describe problems that occur when Cadence NC-Sim  (version 05.83-s003) is used with Ruby-VPI.
+
+    <% section "Cannot force values onto handles", "problem.ncsim.vpiForceFlag" do %>
+      When you write to a handle's value using @vpi_put_value()@ with the @VpiForceFlag@ propagation parameter, it does not have any effect.  As a result, the "register_file" sample test fails when you run it with NC-Sim.
+
+      This might be a bug in NC-Sim itself: even though I specified the "+access+rwc" command-line option for NC-Sim, I'm thinking that the force/release capability is not really enabled. However, it's more likely that there's a bug in the "register_file" sample test.
+
+      If you happen to know the solution, please tell me either on the project forums or via e-mail (see the LICENSE file for my e-mail address). Thanks.
+    <% end %>
+
+  <% end %>
 <% end %>
 
 <% chapter "Glossary", "glossary" do %>
@@ -793,7 +806,7 @@
   <% section "RSpec", "glossary.RSpec" do %>
     The <%= xref "glossary.BDD", "BDD" %> framework for Ruby.
 
-    See the "RSpec website":http://rspec.rubyforge.org and "tutorial":http://rspec.rubyforge.org/tutorials/index.html for more information.
+    See the "RSpec website":http://rspec.rubyforge.org and "tutorial":http://rspec.rubyforge.org/documentation/index.html for more information.
   <% end %>
 
   <% section "Test driven development", "glossary.TDD" do %>
