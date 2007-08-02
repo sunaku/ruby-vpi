@@ -25,7 +25,6 @@ useCoverage  = ENV['COVERAGE'].to_i  == 1
 usePrototype = ENV['PROTOTYPE'].to_i == 1
 
 # set up code coverage analysis
-
   require 'ruby-vpi/vpi' # XXX: this is loaded *before* RCov to
                          # prevent coverage statistics about it
 

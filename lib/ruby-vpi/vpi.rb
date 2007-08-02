@@ -166,7 +166,7 @@ module Vpi
         end
       end
 
-      aFormat = 
+      aFormat =
         if aFormat
           resolve_prop_type(aFormat)
 
@@ -194,7 +194,7 @@ module Vpi
 
       newVal = S_vpi_value.new(:format => aFormat)
 
-      writtenVal = 
+      writtenVal =
         case aFormat
         when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal, VpiStringVal
           newVal.value.str      = aValue.to_s
