@@ -135,10 +135,11 @@ desc "Simulate with #{RubyVPI::SIMULATORS[:vsim].name}."
 task :vsim => :setup do
   sh 'vlib work'
   sh 'vlog', expand_incdir_options(:vsim), @sources
-  sh %w[vsim -do run\ -all],
+  sh %w[vsim -c],
+    '-do', 'run -all; exit',
     '-pli', object_file_path(:vsim),
-    '-c', @target,
-    SIMULATOR_ARGUMENTS[:vsim]
+    SIMULATOR_ARGUMENTS[:vsim],
+    @target
 end
 
 CLEAN.include 'work', 'vsim.wlf'
