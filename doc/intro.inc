@@ -97,12 +97,16 @@ Ruby-VPI is "open source software":http://en.wikipedia.org/wiki/Open_source_soft
 
     * "Synopsys VCS":http://www.synopsys.com/products/simulation/simulation.html
      - any version that supports the <tt>-load</tt> option is acceptable.
+
     * "Mentor Modelsim":http://www.model.com
      - any version that supports the <tt>-pli</tt> option is acceptable.
+
     * "Cadence NC-Sim":http://www.cadence.com/products/functional_ver/nc-verilog/
-     - any version that supports the <tt>+loadvpi</tt> option is _mostly_ acceptable because you *will not* be able to "force values onto wires":manual.html#problem.ncsim.vpiForceFlag.
+     - any version that supports the <tt>+loadvpi</tt> option should be acceptable. However, version 05.83-s003 is _mostly_ acceptable because you *will not* be able to "force values onto wires":manual.html#problem.ncsim.vpiForceFlag.
+
     * "GPL Cver":http://www.pragmatic-c.com/gpl-cver/
      - version 2.11a or newer is acceptable.
+
     * "Icarus Verilog":http://www.geda.seul.org/tools/icarus/index.html
       - version 0.8 is _mostly_ acceptable because you *will not* be able to "access child handles through method calls":manual.html#Accessing_a_handle_s_relatives. The reason for this limitation is explained "in the user manual":manual.html#problems.ivl.vpi_handle_by_name.absolute-paths.
   <% end %>
@@ -110,10 +114,13 @@ Ruby-VPI is "open source software":http://en.wikipedia.org/wiki/Open_source_soft
   <% paragraph "Compilers" do %>
     * "make":http://en.wikipedia.org/wiki/Make
       - any flavor should be acceptable.
+
     * C compiler
       - the "GNU Compiler Collection (GCC)":http://www.gnu.org/software/gcc/ is preferred, but any C compiler should be acceptable.
+
     * "SWIG":http://www.swig.org/download.html
       - version 1.3.29 or newer is necessary.
+
     * "Ruby":http://www.ruby-lang.org/en/downloads/
       - version 1.8 or newer, including header and linkable object files for building extensions, is necessary. You can install Ruby by following "these instructions":http://www.ruby-lang.org/en/downloads/.
   <% end %>
@@ -121,6 +128,7 @@ Ruby-VPI is "open source software":http://en.wikipedia.org/wiki/Open_source_soft
   <% paragraph "Libraries" do %>
     * "POSIX threads (pthreads)":http://en.wikipedia.org/wiki/Pthreads
       - header and linkable object files, and operating system support for this library are necessary.
+
     * "RubyGems":http://rubyforge.org/frs/?group_id=126
       - any recent version should be acceptable. You can install RubyGems by following "these instructions":http://www.rubygems.org/read/chapter/3.
   <% end %>

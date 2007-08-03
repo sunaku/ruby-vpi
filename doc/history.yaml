@@ -1,4 +1,25 @@
 -
+  Version: 18.0.1
+
+  Date: 2007-08-02
+
+  Record: |
+    This release fixes some bugs regarding simulation time and control.
+
+
+    h2. Thanks
+
+    * Calvin Wong reported the bugs listed in the Repairs section.
+
+
+    h2. Repairs
+
+    * VCS does not acknowledge passage of time when cbReadWriteSynch callback is used, so I reverted back to using the cbAfterDelay callback (as was done in version 17.0.0).
+
+    * Ruby-VPI did not give control back to the Verilog simulator before it exited. As a result, the Verilog simulator did not have a chance to do any clean up or finish any pending tasks that remained in the simulation.
+
+
+-
   Version: 18.0.0
 
   Date: 2007-07-31
