@@ -42,6 +42,8 @@ Ruby-VPI is "open source software":http://en.wikipedia.org/wiki/Open_source_soft
       - browse online or obtain with "Darcs":http://darcs.net.
     * "Forums":<%= forumURL %>
       - discuss things and ask questions.
+    * "Mailing list":<%= mailListURL %>
+      - discuss things and ask questions.
     * "Bugs":<%= trackerURL %>
       - report defects in the software.
     * "Patches":<%= trackerURL %>
