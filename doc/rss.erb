@@ -3,7 +3,6 @@
 
   require 'history'
   require 'date'
-  require 'time'
 %>
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0">
@@ -12,7 +11,7 @@
   <link><%= PROJECT_URL %></link>
   <description><%= PROJECT_DETAIL %></description>
 <%
-  @history[0,3].each do |entry|
+  @history[0,1].each do |entry|
     link = HISTORY_URL + '#' + entry['Version'].to_html_anchor
 
     stamp = Time.parse entry['Date'].to_s
