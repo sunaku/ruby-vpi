@@ -1,4 +1,18 @@
 -
+  Version: 18.0.2
+
+  Date: 2007-08-03
+
+  Record: |
+    This release fixes a bug in error reporting.
+
+
+    h2. Repairs
+
+    * Unhandled Ruby exceptions and errors were not being printed to the screen because Ruby-VPI unconditionally gave control back to the Verilog simulator before it exited.
+
+
+-
   Version: 18.0.1
 
   Date: 2007-08-02
