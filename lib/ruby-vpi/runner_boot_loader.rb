@@ -11,7 +11,7 @@
 # return control to the simulator before Ruby exits.
 # otherwise, the simulator will not have a chance to do
 # any clean up or finish any pending tasks that remain
-at_exit {relay_verilog}
+at_exit {relay_verilog unless $!}
 
 
 require 'rubygems'
