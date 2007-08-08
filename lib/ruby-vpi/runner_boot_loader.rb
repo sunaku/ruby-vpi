@@ -8,11 +8,7 @@
 # Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
-# return control to the simulator before Ruby exits.
-# otherwise, the simulator will not have a chance to do
-# any clean up or finish any pending tasks that remain
-at_exit {relay_verilog unless $!}
-
+at_exit { Vpi.__boot__finalize }
 
 require 'rubygems'
 require 'ruby-vpi'

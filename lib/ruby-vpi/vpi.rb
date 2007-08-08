@@ -502,7 +502,7 @@ module Vpi
   Callback = Struct.new :handler, :token #:nodoc:
   @@callbacks = {}
 
-  alias vpi_register_cb_old vpi_register_cb
+  alias __callback__vpi_register_cb vpi_register_cb
 
   # This is a Ruby version of the vpi_register_cb C function.  It is
   # identical to the C function, except for the following differences:
@@ -521,40 +521,20 @@ module Vpi
     # register the callback with Verilog
     aData.user_data = key
     aData.cb_rtn    = Vlog_relay_ruby
-    token           = vpi_register_cb_old(aData)
+    token           = __callback__vpi_register_cb(aData)
 
     @@callbacks[key]  = Callback.new(aHandler, token)
     token
   end
 
-  alias vpi_remove_cb_old vpi_remove_cb
+  alias __callback__vpi_remove_cb vpi_remove_cb
 
   def vpi_remove_cb aData # :nodoc:
     key = aData.user_data
 
     if c = @@callbacks[key]
-      vpi_remove_cb_old c.token
+      __callback__vpi_remove_cb c.token
       @@callbacks.delete key
-    end
-  end
-
-  # Proxy for relay_verilog which supports callbacks.  This method
-  # should NOT be invoked from callback handlers (see vpi_register_cb)
-  # and threads -- otherwise the situation will be like seven remote
-  # controls changing the channel on a single television set!
-  def relay_verilog_proxy # :nodoc:
-    loop do
-      relay_verilog
-
-      if reason = relay_ruby_reason # might be nil
-        dst = reason.user_data
-
-        if c = @@callbacks[dst]
-          c.handler.call reason
-        else
-          break # main thread is receiver
-        end
-      end
     end
   end
 
@@ -563,8 +543,29 @@ module Vpi
   # simulation control
   ##############################################################################
 
+  # Proxy for relay_verilog which supports callbacks.  This method
+  # should NOT be invoked from callback handlers (see vpi_register_cb)
+  # and threads -- otherwise the situation will be like seven remote
+  # controls changing the channel on a single television set!
+  def __control__relay_verilog_proxy # :nodoc:
+    loop do
+      __control__relay_verilog
+
+      if reason = __control__relay_ruby_reason # might be nil
+        dst = reason.user_data
+
+        if c = @@callbacks[dst]
+          c.handler.call reason
+        else
+          # TODO: make sure this works with the thread scheduler
+          break # main thread is receiver
+        end
+      end
+    end
+  end
+
   # Advances the simulation by the given number of steps.
-  def advance_time aNumSteps = 1
+  def __control__advance_time aCallbackReason, aNumSteps #:nodoc:
     # schedule wake-up callback from verilog
     time            = S_vpi_time.new
     time.integer    = aNumSteps
@@ -574,7 +575,7 @@ module Vpi
     value.format    = VpiSuppressVal
 
     alarm           = S_cb_data.new
-    alarm.reason    = CbAfterDelay
+    alarm.reason    = aCallbackReason
     alarm.cb_rtn    = Vlog_relay_ruby
     alarm.obj       = nil
     alarm.time      = time
@@ -582,11 +583,11 @@ module Vpi
     alarm.index     = 0
     alarm.user_data = nil
 
-    vpi_free_object(vpi_register_cb_old(alarm))
+    vpi_free_object(__callback__vpi_register_cb(alarm))
 
 
     # transfer control to verilog
-    relay_verilog_proxy
+    __control__relay_verilog_proxy
   end
 
 
@@ -627,25 +628,160 @@ module Vpi
     def to_f
       value.real
     end
-
-    def to_s
-      value.str
-    end
   end
 
   # make VPI structs more accessible by allowing their
   # members to be initialized through the constructor
   constants.grep(/^S_/).each do |s|
     const_get(s).class_eval do
-      alias old_initialize initialize
+      alias __struct__initialize initialize
 
       def initialize aMembers = {} #:nodoc:
-        old_initialize
+        __struct__initialize
 
         aMembers.each_pair do |k, v|
           __send__ "#{k}=", v
         end
       end
     end
+  end
+
+
+  ##############################################################################
+  # concurrency with multiple threads
+  # see http://rubyforge.org/pipermail/ruby-vpi-discuss/2007-August/000046.html
+  ##############################################################################
+
+  Thread.abort_on_exception = true
+
+  @@schedulerMutex   = Mutex.new
+  @@schedulerThreads = []
+
+  @@scheduler = Thread.new do
+    extend Vpi
+    time = -1
+
+    loop do
+      # proceed to next time step
+        time += 1
+
+        # prevent user from modifying values using vpi_put_value()
+        __control__advance_time CbReadOnlySynch, 0
+
+        Thread.list.each {|t| t.run}
+
+      # wait for threads to finish executing inside current time step
+        loop do
+          ready = @@schedulerMutex.synchronize do
+            # all scheduled threads are ready
+            @@schedulerThreads.all? {|t| t.stop?} and
+
+            # only scheduled threads must exist
+            (Thread.list - @@schedulerThreads) == [Thread.current]
+          end
+
+          if ready
+            break
+          else
+            Thread.pass # let the other threads run
+          end
+        end
+
+        raise "all other threads should be stopped on ONLY scheduler event" if @@handleWriteMutex.locked?
+
+      # apply all writes performed in current time step
+        __control__advance_time CbAfterDelay, 1
+
+        @@handle2pendingWriteArgs.each_pair do |handle, writes|
+          # TODO: give warning if conflicting writes from diff threads
+          # if writes.length > 1
+          #   warn "more than one write scheduled on handle #{handle}"
+          # end
+          writes.each do |args|
+            __scheduler__vpi_put_value(handle, *args)
+          end
+        end
+
+        @@handle2pendingWriteArgs.clear
+    end
+  end
+
+  def __scheduler__exec #:nodoc:
+    @@schedulerMutex.synchronize do
+      @@schedulerThreads.push Thread.current
+    end
+
+    yield
+
+    @@schedulerMutex.synchronize do
+      @@schedulerThreads.delete Thread.current
+    end
+  end
+
+  # Lets the scheduler thread take control of the current thread.
+  def __scheduler__join #:nodoc:
+    __scheduler__exec do
+      # XXX: Thread#join is only supposed to return when the
+      #      thread has exited.  But for some reason,
+      #      calling #join on the @@scheduler returns after
+      #      a period of time -- even though the @@scheduler
+      #      has not exited.  That's why this hack exists.
+      until @@scheduler.join
+      end
+    end
+  end
+
+  # Wait for the given number of time steps.
+  def wait aNumTimeSteps = 1
+    __scheduler__exec do
+      aNumTimeSteps.times {Thread.stop}
+    end
+  end
+
+  alias advance_time wait
+
+  # End the simulation.
+  def finish
+    @@scheduler.exit
+  end
+
+
+  #-----------------------------------------------------------------------------
+  # buffer/cache all writes
+  #-----------------------------------------------------------------------------
+
+  @@handle2pendingWriteArgs = Hash.new {|h,k| h[k] = []}
+  @@handleWriteMutex        = Mutex.new
+
+  alias __scheduler__vpi_put_value vpi_put_value
+
+  def vpi_put_value aHandle, *aArgs #:nodoc:
+    @@handleWriteMutex.synchronize do
+      @@handle2pendingWriteArgs[aHandle] << aArgs
+    end
+  end
+
+
+  #-----------------------------------------------------------------------------
+  # boot loader stuff
+  #-----------------------------------------------------------------------------
+
+  # Finalizes the simulation for the boot loader.
+  def __boot__finalize #:nodoc:
+    # let the thread scheduler take over when the main thread is finished
+    defaultThreads = [Thread.main, @@scheduler]
+    userThreads    = Thread.list - defaultThreads
+
+    if userThreads.empty?
+      finish
+    else
+      __scheduler__join
+    end
+
+
+    # return control to the simulator before Ruby exits.
+    # otherwise, the simulator will not have a chance to do
+    # any clean up or finish any pending tasks that remain
+    __control__relay_verilog unless $!
   end
 end

@@ -20,8 +20,8 @@ void main_init() {
 
   // load the VPI interface for Ruby
     Init_vpi();
-    rb_define_module_function(mVpi, "relay_verilog", main_relay_verilog, 0);
-    rb_define_module_function(mVpi, "relay_ruby_reason", main_relay_ruby_reason, 0);
+    rb_define_module_function(mVpi, "__control__relay_verilog", main_relay_verilog, 0);
+    rb_define_module_function(mVpi, "__control__relay_ruby_reason", main_relay_ruby_reason, 0);
 
     // some compilers have trouble with pointers to the va_list
     // type.  See ext/Rakefile and the user manual for details
