@@ -565,7 +565,7 @@ module Vpi
   end
 
   # Advances the simulation by the given number of time steps.
-  def __control__advance_time aNumSteps #:nodoc:
+  def __control__advance_time aCallbackReason, aNumSteps #:nodoc:
     # schedule wake-up callback from verilog
     time            = S_vpi_time.new
     time.integer    = aNumSteps
@@ -575,7 +575,7 @@ module Vpi
     value.format    = VpiSuppressVal
 
     alarm           = S_cb_data.new
-    alarm.reason    = CbAfterDelay
+    alarm.reason    = aCallbackReason
     alarm.cb_rtn    = Vlog_relay_ruby
     alarm.obj       = nil
     alarm.time      = time
@@ -682,7 +682,7 @@ module Vpi
 
       # proceed to next time step
         @@simulation_time += 1
-        __control__advance_time 1
+        __control__advance_time CbAfterDelay, 1
 
       # resume execution in new time step
         @@thread2state_lock.synchronize do

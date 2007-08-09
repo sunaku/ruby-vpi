@@ -122,7 +122,7 @@ usePrototype = ENV['PROTOTYPE'].to_i == 1
     RubyVPI.say 'prototype is enabled'
   else
     # let simulator execute 'initial' statements in verilog code
-    __control__advance_time 0
+    __control__advance_time CbReadWriteSynch, 0
   end
 
 # load the design's specification
