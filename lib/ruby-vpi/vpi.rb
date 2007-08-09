@@ -564,11 +564,11 @@ module Vpi
     end
   end
 
-  # Advances the simulation by one time step.
-  def __control__advance_time_step #:nodoc:
+  # Advances the simulation by the given number of time steps.
+  def __control__advance_time aNumSteps #:nodoc:
     # schedule wake-up callback from verilog
     time            = S_vpi_time.new
-    time.integer    = 1
+    time.integer    = aNumSteps
     time.type       = VpiSimTime
 
     value           = S_vpi_value.new
@@ -682,7 +682,7 @@ module Vpi
 
       # proceed to next time step
         @@simulation_time += 1
-        __control__advance_time_step
+        __control__advance_time 1
 
       # resume execution in new time step
         @@thread2state_lock.synchronize do
