@@ -105,8 +105,13 @@ usePrototype = ENV['PROTOTYPE'].to_i == 1
     design.module_eval(File.read(f), f) if File.exist? f
 
     Vpi.module_eval do
-      define_method :advance_time do |*args|
+      define_method :__control__advance_time_step do
         design.feign!
+        __scheduler__flush_writes
+      end
+
+      define_method :simulation_time do
+        @@simulation_time
       end
 
       def vpi_register_cb #:nodoc:

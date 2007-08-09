@@ -564,18 +564,18 @@ module Vpi
     end
   end
 
-  # Advances the simulation by the given number of steps.
-  def __control__advance_time aCallbackReason, aNumSteps #:nodoc:
+  # Advances the simulation by one time step.
+  def __control__advance_time_step #:nodoc:
     # schedule wake-up callback from verilog
     time            = S_vpi_time.new
-    time.integer    = aNumSteps
+    time.integer    = 1
     time.type       = VpiSimTime
 
     value           = S_vpi_value.new
     value.format    = VpiSuppressVal
 
     alarm           = S_cb_data.new
-    alarm.reason    = aCallbackReason
+    alarm.reason    = CbAfterDelay
     alarm.cb_rtn    = Vlog_relay_ruby
     alarm.obj       = nil
     alarm.time      = time
@@ -648,93 +648,94 @@ module Vpi
 
 
   ##############################################################################
-  # concurrency with multiple threads
+  # concurrent processes
   # see http://rubyforge.org/pipermail/ruby-vpi-discuss/2007-August/000046.html
   ##############################################################################
 
   Thread.abort_on_exception = true
 
-  @@schedulerMutex   = Mutex.new
-  @@schedulerThreads = []
+  @@thread2state      = { Thread.main => :run }
+  @@thread2state_lock = Mutex.new
+  @@simulation_time   = 0
 
   @@scheduler = Thread.new do
     extend Vpi
-    time = -1
 
     loop do
-      # proceed to next time step
-        time += 1
-
-        # prevent user from modifying values using vpi_put_value()
-        __control__advance_time CbReadOnlySynch, 0
-
-        Thread.list.each {|t| t.run}
-
-      # wait for threads to finish executing inside current time step
+      # wait for threads to finish with current time step
         loop do
-          ready = @@schedulerMutex.synchronize do
-            # all scheduled threads are ready
-            @@schedulerThreads.all? {|t| t.stop?} and
-
-            # only scheduled threads must exist
-            (Thread.list - @@schedulerThreads) == [Thread.current]
+          ready = @@thread2state_lock.synchronize do
+            @@thread2state.all? do |(thread, state)|
+              thread.stop? and state == :wait
+            end
           end
 
           if ready
             break
           else
-            Thread.pass # let the other threads run
+            Thread.pass
           end
         end
-
-        raise "all other threads should be stopped on ONLY scheduler event" if @@handleWriteMutex.locked?
 
       # apply all writes performed in current time step
-        __control__advance_time CbAfterDelay, 1
+        __scheduler__flush_writes
 
-        @@handle2pendingWriteArgs.each_pair do |handle, writes|
-          # TODO: give warning if conflicting writes from diff threads
-          # if writes.length > 1
-          #   warn "more than one write scheduled on handle #{handle}"
-          # end
-          writes.each do |args|
-            __scheduler__vpi_put_value(handle, *args)
+      # proceed to next time step
+        @@simulation_time += 1
+        __control__advance_time_step
+
+      # resume execution in new time step
+        @@thread2state_lock.synchronize do
+          @@thread2state.keys.each do |thr|
+            @@thread2state[thr] = :run
+            thr.wakeup
           end
         end
-
-        @@handle2pendingWriteArgs.clear
     end
   end
 
-  def __scheduler__exec #:nodoc:
-    @@schedulerMutex.synchronize do
-      @@schedulerThreads.push Thread.current
+  def __scheduler__ensure_caller_is_registered *args #:nodoc:
+    isRegistered = @@thread2state_lock.synchronize do
+      @@thread2state.key? Thread.current
     end
 
-    yield
-
-    @@schedulerMutex.synchronize do
-      @@schedulerThreads.delete Thread.current
+    unless isRegistered
+      raise SecurityError, *args
     end
   end
 
-  # Lets the scheduler thread take control of the current thread.
-  def __scheduler__join #:nodoc:
-    __scheduler__exec do
-      # XXX: Thread#join is only supposed to return when the
-      #      thread has exited.  But for some reason,
-      #      calling #join on the @@scheduler returns after
-      #      a period of time -- even though the @@scheduler
-      #      has not exited.  That's why this hack exists.
-      until @@scheduler.join
+  # Creates a new concurrent thread, which will execute the
+  # given block with the given arguments, and returns it.
+  def process *aBlockArgs
+    __scheduler__ensure_caller_is_registered 'a process can only be spawned by another process'
+    raise ArgumentError, "block must be given" unless block_given?
+
+    Thread.new do
+      # register with scheduler
+      @@thread2state_lock.synchronize do
+        @@thread2state[Thread.current] = :run
+      end
+
+      yield(*aBlockArgs)
+
+      # unregister before exiting
+      @@thread2state_lock.synchronize do
+        @@thread2state.delete Thread.current
       end
     end
   end
 
   # Wait for the given number of time steps.
   def wait aNumTimeSteps = 1
-    __scheduler__exec do
-      aNumTimeSteps.times {Thread.stop}
+    __scheduler__ensure_caller_is_registered 'this method can only be invoked from within a process'
+
+    aNumTimeSteps.times do
+      @@thread2state_lock.synchronize do
+        @@thread2state[Thread.current] = :wait
+      end
+
+      # NOTE: scheduler will set state to :run before waking up this thread
+      Thread.stop
     end
   end
 
@@ -742,6 +743,8 @@ module Vpi
 
   # End the simulation.
   def finish
+    __scheduler__ensure_caller_is_registered 'this method can only be invoked from within a process'
+
     @@scheduler.exit
   end
 
@@ -750,14 +753,26 @@ module Vpi
   # buffer/cache all writes
   #-----------------------------------------------------------------------------
 
-  @@handle2pendingWriteArgs = Hash.new {|h,k| h[k] = []}
-  @@handleWriteMutex        = Mutex.new
+  @@handle2write      = Hash.new {|h,k| h[k] = []}
+  @@handle2write_lock = Mutex.new
 
   alias __scheduler__vpi_put_value vpi_put_value
 
   def vpi_put_value aHandle, *aArgs #:nodoc:
-    @@handleWriteMutex.synchronize do
-      @@handle2pendingWriteArgs[aHandle] << aArgs
+    @@handle2write_lock.synchronize do
+      @@handle2write[aHandle] << aArgs
+    end
+  end
+
+  def __scheduler__flush_writes #:nodoc:
+    @@handle2write_lock.synchronize do
+      @@handle2write.each_pair do |handle, writes|
+        writes.each do |args|
+          __scheduler__vpi_put_value(handle, *args)
+        end
+
+        writes.clear
+      end
     end
   end
 
@@ -768,14 +783,24 @@ module Vpi
 
   # Finalizes the simulation for the boot loader.
   def __boot__finalize #:nodoc:
-    # let the thread scheduler take over when the main thread is finished
-    defaultThreads = [Thread.main, @@scheduler]
-    userThreads    = Thread.list - defaultThreads
+    raise unless Thread.current == Thread.main
+    __scheduler__ensure_caller_is_registered
 
-    if userThreads.empty?
-      finish
+
+    # let the thread scheduler take over when the main thread is finished
+    anyThreadsScheduled = @@thread2state_lock.synchronize do
+      raise unless @@thread2state.key? Thread.main
+      @@thread2state.keys.length > 1
+    end
+
+    if anyThreadsScheduled
+      @@thread2state_lock.synchronize do
+        @@thread2state.delete Thread.main
+      end
+
+      raise unless @@scheduler.join
     else
-      __scheduler__join
+      finish
     end
 
 
