@@ -8,22 +8,23 @@
 # Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
-at_exit { Vpi.__boot__finalize }
-
-require 'rubygems'
-require 'ruby-vpi'
-require 'ruby-vpi/util'
-
+SIMULATOR    = ENV['RUBYVPI_SIMULATOR'].to_sym
 designName   = ENV['RUBYVPI_BOOT_TARGET']
 
 useDebugger  = ENV['DEBUGGER'].to_i  == 1
 useCoverage  = ENV['COVERAGE'].to_i  == 1
 usePrototype = ENV['PROTOTYPE'].to_i == 1
 
-# set up code coverage analysis
-  require 'ruby-vpi/vpi' # XXX: this is loaded *before* RCov to
-                         # prevent coverage statistics about it
 
+require 'rubygems'
+require 'ruby-vpi'
+require 'ruby-vpi/util'
+
+require 'ruby-vpi/vpi'
+at_exit { Vpi::__boot__finalize }
+
+
+# set up code coverage analysis
   if useCoverage
     require 'ruby-vpi/rcov'
 
@@ -57,7 +58,8 @@ usePrototype = ENV['PROTOTYPE'].to_i == 1
     end
 
 # set up the VPI utility layer
-  Object.class_eval do
+  class Object
+    # XXX: this is loaded *after* RCov to prevent coverage statistics about it
     include Vpi
   end
 
@@ -80,9 +82,11 @@ usePrototype = ENV['PROTOTYPE'].to_i == 1
 
       alias const_missing method_missing
 
-      # so that #inspect executes on the DUT instead of this wrapper
+      # pass these methods to method_missing
       undef to_s
       undef inspect
+      undef type
+      undef respond_to?
     end
 
     # make module parameters available as constants
@@ -104,14 +108,17 @@ usePrototype = ENV['PROTOTYPE'].to_i == 1
     f = "#{designName}_proto.rb"
     design.module_eval(File.read(f), f) if File.exist? f
 
+    unless design.respond_to? :feign!
+      raise NoMethodError, "handle #{design} does not have a 'feign!' method"
+    end
+
     Vpi.module_eval do
-      define_method :__control__advance_time_step do
+      define_method :__control__simulate_time_step do
         design.feign!
-        __scheduler__flush_writes
       end
 
-      define_method :simulation_time do
-        @@simulation_time
+      define_method :__control__advance_time_step do
+        # this method is empty because we want to keep control inside Ruby
       end
 
       def vpi_register_cb #:nodoc:
@@ -120,10 +127,8 @@ usePrototype = ENV['PROTOTYPE'].to_i == 1
     end
 
     RubyVPI.say 'prototype is enabled'
-  else
-    # let simulator execute 'initial' statements in verilog code
-    __control__advance_time CbReadWriteSynch, 0
   end
 
 # load the design's specification
+  __scheduler__start
   require "#{designName}_spec.rb"

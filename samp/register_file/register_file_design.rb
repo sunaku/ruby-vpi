@@ -1,6 +1,6 @@
 # Simulates the design under test for one clock cycle.
 def cycle!
-  advance_time
+  advance_time 2
 end
 
 # Brings the design under test into a blank state.

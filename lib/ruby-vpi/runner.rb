@@ -84,6 +84,15 @@ def expand_incdir_options aSimId # :nodoc:
   @incdirs.map {|i| prefix + i}
 end
 
+# Creates a new task for running the given simulator.
+def sim_task aSimId #:nodoc:
+  desc "Simulate with #{RubyVPI::SIMULATORS[aSimId].name}."
+  task aSimId => :setup do
+    ENV['RUBYVPI_SIMULATOR'] = aSimId.to_s
+    yield aSimId
+  end
+end
+
 
 desc "Show a list of available tasks."
 task :default do
@@ -92,24 +101,22 @@ task :default do
 end
 
 
-desc "Simulate with #{RubyVPI::SIMULATORS[:cver].name}."
-task :cver => :setup do
+sim_task :cver do |id|
   sh 'cver',
-    "+loadvpi=#{object_file_path(:cver)}:#{LOADER_FUNC}",
-    SIMULATOR_ARGUMENTS[:cver],
-    expand_incdir_options(:cver),
+    "+loadvpi=#{object_file_path(id)}:#{LOADER_FUNC}",
+    SIMULATOR_ARGUMENTS[id],
+    expand_incdir_options(id),
     @sources
 end
 
 CLOBBER.include 'verilog.log'
 
 
-desc "Simulate with #{RubyVPI::SIMULATORS[:ivl].name}."
-task :ivl => :setup do
-  cp object_file_path(:ivl), 'ruby-vpi.vpi'
+sim_task :ivl do |id|
+  cp object_file_path(id), 'ruby-vpi.vpi'
   sh %w[iverilog -mruby-vpi],
-    SIMULATOR_ARGUMENTS[:ivl],
-    expand_incdir_options(:ivl),
+    SIMULATOR_ARGUMENTS[id],
+    expand_incdir_options(id),
     @sources
   sh 'vvp -M. a.out'
 end
@@ -117,28 +124,26 @@ end
 CLEAN.include 'ruby-vpi.vpi', 'a.out'
 
 
-desc "Simulate with #{RubyVPI::SIMULATORS[:vcs].name}."
-task :vcs => :setup do
+sim_task :vcs do |id|
   sh %w[vcs -R +v2k +vpi +cli],
     '-P', File.join(File.dirname(__FILE__), 'pli.tab'),
-    '-load', "#{object_file_path(:vcs)}:#{LOADER_FUNC}",
+    '-load', "#{object_file_path(id)}:#{LOADER_FUNC}",
     ('-full64' if @archIs64),
-    SIMULATOR_ARGUMENTS[:vcs],
-    expand_incdir_options(:vcs),
+    SIMULATOR_ARGUMENTS[id],
+    expand_incdir_options(id),
     @sources
 end
 
 CLEAN.include 'csrc', 'simv*'
 
 
-desc "Simulate with #{RubyVPI::SIMULATORS[:vsim].name}."
-task :vsim => :setup do
+sim_task :vsim do |id|
   sh 'vlib work'
-  sh 'vlog', expand_incdir_options(:vsim), @sources
+  sh 'vlog', expand_incdir_options(id), @sources
   sh %w[vsim -c],
     '-do', 'run -all; exit',
-    '-pli', object_file_path(:vsim),
-    SIMULATOR_ARGUMENTS[:vsim],
+    '-pli', object_file_path(id),
+    SIMULATOR_ARGUMENTS[id],
     @target
 end
 
@@ -146,13 +151,12 @@ CLEAN.include 'work', 'vsim.wlf'
 CLOBBER.include 'transcript'
 
 
-desc "Simulate with #{RubyVPI::SIMULATORS[:ncsim].name}."
-task :ncsim => :setup do
+sim_task :ncsim do |id|
   sh %w[ncverilog +access+rwc +plinowarn],
-    "+loadvpi=#{object_file_path(:ncsim)}:#{LOADER_FUNC}",
+    "+loadvpi=#{object_file_path(id)}:#{LOADER_FUNC}",
     ('+nc64bit' if @archIs64),
-    SIMULATOR_ARGUMENTS[:ncsim],
-    expand_incdir_options(:ncsim),
+    SIMULATOR_ARGUMENTS[id],
+    expand_incdir_options(id),
     @sources
 end
 

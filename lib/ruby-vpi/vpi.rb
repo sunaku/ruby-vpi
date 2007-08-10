@@ -543,15 +543,34 @@ module Vpi
   # simulation control
   ##############################################################################
 
-  # Proxy for relay_verilog which supports callbacks.  This method
-  # should NOT be invoked from callback handlers (see vpi_register_cb)
-  # and threads -- otherwise the situation will be like seven remote
-  # controls changing the channel on a single television set!
-  def __control__relay_verilog_proxy # :nodoc:
-    loop do
-      __control__relay_verilog
+  # Transfers control to the simulator, which will return control
+  # during the given time slot after the given number of time steps.
+  def __control__relay_verilog aTimeSlot, aNumSteps #:nodoc:
+    # schedule wake-up callback from verilog
+    time            = S_vpi_time.new
+    time.integer    = aNumSteps
+    time.type       = VpiSimTime
 
-      if reason = __control__relay_ruby_reason # might be nil
+    value           = S_vpi_value.new
+    value.format    = VpiSuppressVal
+
+    alarm           = S_cb_data.new
+    alarm.reason    = aTimeSlot
+    alarm.cb_rtn    = Vlog_relay_ruby
+    alarm.obj       = nil
+    alarm.time      = time
+    alarm.value     = value
+    alarm.index     = 0
+    alarm.user_data = nil
+
+    vpi_free_object(__callback__vpi_register_cb(alarm))
+
+
+    # transfer control to verilog
+    loop do
+      __extension__relay_verilog
+
+      if reason = __extension__relay_ruby_reason # might be nil
         dst = reason.user_data
 
         if c = @@callbacks[dst]
@@ -564,30 +583,21 @@ module Vpi
     end
   end
 
-  # Advances the simulation by the given number of time steps.
-  def __control__advance_time aCallbackReason, aNumSteps #:nodoc:
-    # schedule wake-up callback from verilog
-    time            = S_vpi_time.new
-    time.integer    = aNumSteps
-    time.type       = VpiSimTime
+  # Advances the simulation by one time step.
+  def __control__advance_time_step
+    if SIMULATOR == :vcs
+      __control__relay_verilog CbAfterDelay, 1
+    end
+  end
 
-    value           = S_vpi_value.new
-    value.format    = VpiSuppressVal
-
-    alarm           = S_cb_data.new
-    alarm.reason    = aCallbackReason
-    alarm.cb_rtn    = Vlog_relay_ruby
-    alarm.obj       = nil
-    alarm.time      = time
-    alarm.value     = value
-    alarm.index     = 0
-    alarm.user_data = nil
-
-    vpi_free_object(__callback__vpi_register_cb(alarm))
-
-
-    # transfer control to verilog
-    __control__relay_verilog_proxy
+  # Lets the hardware simulate the current time step.
+  def __control__simulate_time_step
+    if SIMULATOR != :vcs and @@time > 0
+      # same as cbAfterDelay(1) + cbReadWriteSynch(0)
+      __control__relay_verilog CbReadWriteSynch, 1
+    else
+      __control__relay_verilog CbReadWriteSynch, 0
+    end
   end
 
 
@@ -597,9 +607,7 @@ module Vpi
 
   # Returns the current simulation time as an integer.
   def simulation_time
-    t = S_vpi_time.new :type => VpiSimTime
-    vpi_get_time nil, t
-    t.to_i
+    @@time
   end
 
   class S_vpi_time
@@ -656,13 +664,15 @@ module Vpi
 
   @@thread2state      = { Thread.main => :run }
   @@thread2state_lock = Mutex.new
-  @@simulation_time   = 0
+  @@time = 0
 
   @@scheduler = Thread.new do
+    Thread.stop # pause because boot loader is not fully init yet
     extend Vpi
 
     loop do
-      # wait for threads to finish with current time step
+      # execute current time step
+        # software first
         loop do
           ready = @@thread2state_lock.synchronize do
             @@thread2state.all? do |(thread, state)|
@@ -677,14 +687,19 @@ module Vpi
           end
         end
 
-      # apply all writes performed in current time step
+        # hardware second
+        __control__simulate_time_step
+
+        # apply software's writes *after* hardware has run,
+        # in order to ensure that both hardware & software
+        # ran with the same input (simulation database)
         __scheduler__flush_writes
 
       # proceed to next time step
-        @@simulation_time += 1
-        __control__advance_time CbAfterDelay, 1
+        __control__advance_time_step
+        @@time += 1
 
-      # resume execution in new time step
+        # resume software execution in new time step
         @@thread2state_lock.synchronize do
           @@thread2state.keys.each do |thr|
             @@thread2state[thr] = :run
@@ -692,6 +707,10 @@ module Vpi
           end
         end
     end
+  end
+
+  def __scheduler__start #:nodoc:
+    @@scheduler.wakeup
   end
 
   def __scheduler__ensure_caller_is_registered *args #:nodoc:
@@ -807,6 +826,6 @@ module Vpi
     # return control to the simulator before Ruby exits.
     # otherwise, the simulator will not have a chance to do
     # any clean up or finish any pending tasks that remain
-    __control__relay_verilog unless $!
+    __extension__relay_verilog unless $!
   end
 end
