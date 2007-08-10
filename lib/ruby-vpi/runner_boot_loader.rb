@@ -113,12 +113,9 @@ at_exit { Vpi::__boot__finalize }
     end
 
     Vpi.module_eval do
-      define_method :__control__simulate_time_step do
+      define_method :__scheduler__simulate_hardware do
         design.feign!
-      end
-
-      define_method :__control__advance_time_step do
-        # this method is empty because we want to keep control inside Ruby
+        __scheduler__flush_writes
       end
 
       def vpi_register_cb #:nodoc:

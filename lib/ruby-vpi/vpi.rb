@@ -583,23 +583,6 @@ module Vpi
     end
   end
 
-  # Advances the simulation by one time step.
-  def __control__advance_time_step
-    if SIMULATOR == :vcs
-      __control__relay_verilog CbAfterDelay, 1
-    end
-  end
-
-  # Lets the hardware simulate the current time step.
-  def __control__simulate_time_step
-    if SIMULATOR != :vcs and @@time > 0
-      # same as cbAfterDelay(1) + cbReadWriteSynch(0)
-      __control__relay_verilog CbReadWriteSynch, 1
-    else
-      __control__relay_verilog CbReadWriteSynch, 0
-    end
-  end
-
 
   ##############################################################################
   # utility
@@ -671,8 +654,7 @@ module Vpi
     extend Vpi
 
     loop do
-      # execute current time step
-        # software first
+      # finish software execution in current time step
         loop do
           ready = @@thread2state_lock.synchronize do
             @@thread2state.all? do |(thread, state)|
@@ -687,25 +669,32 @@ module Vpi
           end
         end
 
-        # hardware second
-        __control__simulate_time_step
-
-        # apply software's writes *after* hardware has run,
-        # in order to ensure that both hardware & software
-        # ran with the same input (simulation database)
         __scheduler__flush_writes
 
-      # proceed to next time step
-        __control__advance_time_step
+      # run hardware
+        __scheduler__simulate_hardware
         @@time += 1
 
-        # resume software execution in new time step
+      # resume software execution in new time step
         @@thread2state_lock.synchronize do
           @@thread2state.keys.each do |thr|
             @@thread2state[thr] = :run
             thr.wakeup
           end
         end
+    end
+  end
+
+  # This was made into a separate function so that
+  # the boot loader can redefine it for prototyping.
+  def __scheduler__simulate_hardware #:nodoc:
+    if @@time.zero?
+      __control__relay_verilog CbReadWriteSynch, 0
+    elsif SIMULATOR == :vcs
+      __control__relay_verilog CbAfterDelay, 1
+      __control__relay_verilog CbReadWriteSynch, 0
+    else
+      __control__relay_verilog CbReadWriteSynch, 1
     end
   end
 
@@ -821,7 +810,6 @@ module Vpi
     else
       finish
     end
-
 
     # return control to the simulator before Ruby exits.
     # otherwise, the simulator will not have a chance to do
