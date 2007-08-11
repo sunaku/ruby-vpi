@@ -648,11 +648,7 @@ module Vpi
 
   @@scheduler = Thread.new do
     @@time = 0
-
-    # special case @ time 0: run hardware before any & all software
-    unless USE_PROTOTYPE
-      __control__relay_verilog CbReadWriteSynch, 0
-    end
+    __control__relay_verilog CbReadOnlySynch, 0 unless USE_PROTOTYPE
 
     # pause because boot loader is not fully init yet
     Thread.stop
@@ -673,6 +669,7 @@ module Vpi
           end
         end
 
+        __control__relay_verilog CbAfterDelay, 1 unless USE_PROTOTYPE
         __scheduler__flush_writes
 
       # run hardware in next time step
@@ -682,11 +679,8 @@ module Vpi
           # XXX: this method is defined by boot loder when USE_PROTOTYPE is true
           __proto__simulate_hardware
           __scheduler__flush_writes
-        elsif SIMULATOR == :vcs
-          __control__relay_verilog CbAfterDelay, 1
-          __control__relay_verilog CbReadWriteSynch, 0
         else
-          __control__relay_verilog CbReadWriteSynch, 1
+          __control__relay_verilog CbReadOnlySynch, 0
         end
 
       # resume software execution in new time step
