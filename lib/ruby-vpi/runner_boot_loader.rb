@@ -8,24 +8,23 @@
 # Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
+at_exit { __boot__finalize }
+
+
 SIMULATOR    = ENV['RUBYVPI_SIMULATOR'].to_sym
 designName   = ENV['RUBYVPI_BOOT_TARGET']
 
-useDebugger  = ENV['DEBUGGER'].to_i  == 1
-useCoverage  = ENV['COVERAGE'].to_i  == 1
-usePrototype = ENV['PROTOTYPE'].to_i == 1
+USE_DEBUGGER  = ENV['DEBUGGER'].to_i  == 1
+USE_COVERAGE  = ENV['COVERAGE'].to_i  == 1
+USE_PROTOTYPE = ENV['PROTOTYPE'].to_i == 1
 
 
 require 'rubygems'
 require 'ruby-vpi'
 require 'ruby-vpi/util'
 
-require 'ruby-vpi/vpi'
-at_exit { Vpi::__boot__finalize }
-
-
 # set up code coverage analysis
-  if useCoverage
+  if USE_COVERAGE
     require 'ruby-vpi/rcov'
 
     RubyVPI.with_coverage_analysis do |a|
@@ -39,7 +38,7 @@ at_exit { Vpi::__boot__finalize }
   end
 
 # set up the interactive debugger
-  if useDebugger
+  if USE_DEBUGGER
     require 'ruby-debug'
 
     Debugger.start
@@ -58,10 +57,12 @@ at_exit { Vpi::__boot__finalize }
     end
 
 # set up the VPI utility layer
+  # XXX: this is done *after* RCov to prevent coverage statistics about it
   class Object
-    # XXX: this is loaded *after* RCov to prevent coverage statistics about it
     include Vpi
   end
+
+  require 'ruby-vpi/vpi'
 
 # load the design under test
   unless designHandle = vpi_handle_by_name(designName, nil)
@@ -104,7 +105,7 @@ at_exit { Vpi::__boot__finalize }
   design.module_eval(File.read(f), f) if File.exist? f
 
 # load the design's prototype
-  if usePrototype
+  if USE_PROTOTYPE
     f = "#{designName}_proto.rb"
     design.module_eval(File.read(f), f) if File.exist? f
 
@@ -113,9 +114,8 @@ at_exit { Vpi::__boot__finalize }
     end
 
     Vpi.module_eval do
-      define_method :__scheduler__simulate_hardware do
+      define_method :__proto__simulate_hardware do
         design.feign!
-        __scheduler__flush_writes
       end
 
       def vpi_register_cb #:nodoc:

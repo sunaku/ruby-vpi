@@ -4,8 +4,6 @@
 # Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
-require 'ruby-vpi/util'
-
 module Vpi
   # Number of bits in PLI_INT32.
   INTEGER_BITS  = 32
@@ -647,11 +645,17 @@ module Vpi
 
   @@thread2state      = { Thread.main => :run }
   @@thread2state_lock = Mutex.new
-  @@time = 0
 
   @@scheduler = Thread.new do
-    Thread.stop # pause because boot loader is not fully init yet
-    extend Vpi
+    @@time = 0
+
+    # special case @ time 0: run hardware before any & all software
+    unless USE_PROTOTYPE
+      __control__relay_verilog CbReadWriteSynch, 0
+    end
+
+    # pause because boot loader is not fully init yet
+    Thread.stop
 
     loop do
       # finish software execution in current time step
@@ -671,9 +675,19 @@ module Vpi
 
         __scheduler__flush_writes
 
-      # run hardware
-        __scheduler__simulate_hardware
+      # run hardware in next time step
         @@time += 1
+
+        if USE_PROTOTYPE
+          # XXX: this method is defined by boot loder when USE_PROTOTYPE is true
+          __proto__simulate_hardware
+          __scheduler__flush_writes
+        elsif SIMULATOR == :vcs
+          __control__relay_verilog CbAfterDelay, 1
+          __control__relay_verilog CbReadWriteSynch, 0
+        else
+          __control__relay_verilog CbReadWriteSynch, 1
+        end
 
       # resume software execution in new time step
         @@thread2state_lock.synchronize do
@@ -682,19 +696,6 @@ module Vpi
             thr.wakeup
           end
         end
-    end
-  end
-
-  # This was made into a separate function so that
-  # the boot loader can redefine it for prototyping.
-  def __scheduler__simulate_hardware #:nodoc:
-    if @@time.zero?
-      __control__relay_verilog CbReadWriteSynch, 0
-    elsif SIMULATOR == :vcs
-      __control__relay_verilog CbAfterDelay, 1
-      __control__relay_verilog CbReadWriteSynch, 0
-    else
-      __control__relay_verilog CbReadWriteSynch, 1
     end
   end
 
