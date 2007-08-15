@@ -655,41 +655,45 @@ module Vpi
 
     loop do
       # finish software execution in current time step
-        loop do
-          ready = @@thread2state_lock.synchronize do
-            @@thread2state.all? do |(thread, state)|
-              thread.stop? and state == :wait
-            end
-          end
+      loop do
+        ready = @@thread2state_lock.synchronize do
+          Thread.exit if @@thread2state.empty?
 
-          if ready
-            break
-          else
-            Thread.pass
+          @@thread2state.all? do |(thread, state)|
+            thread.stop? and state == :wait
           end
         end
 
-        __control__relay_verilog CbAfterDelay, 1 unless USE_PROTOTYPE
-        __scheduler__flush_writes
+        if ready
+          break
+        else
+          Thread.pass
+        end
+      end
+
+      __control__relay_verilog CbAfterDelay, 1 unless USE_PROTOTYPE
+      __scheduler__flush_writes
+
 
       # run hardware in next time step
-        @@time += 1
+      @@time += 1
 
-        if USE_PROTOTYPE
-          # XXX: this method is defined by boot loder when USE_PROTOTYPE is true
-          __proto__simulate_hardware
-          __scheduler__flush_writes
-        else
-          __control__relay_verilog CbReadOnlySynch, 0
-        end
+      if USE_PROTOTYPE
+        # XXX: this method is defined by boot loder when USE_PROTOTYPE is true
+        __proto__simulate_hardware
+        __scheduler__flush_writes
+      else
+        __control__relay_verilog CbReadOnlySynch, 0
+      end
+
 
       # resume software execution in new time step
-        @@thread2state_lock.synchronize do
-          @@thread2state.keys.each do |thr|
-            @@thread2state[thr] = :run
-            thr.wakeup
-          end
+      @@thread2state_lock.synchronize do
+        @@thread2state.keys.each do |thr|
+          @@thread2state[thr] = :run
+          thr.wakeup
         end
+      end
     end
   end
 
@@ -789,22 +793,11 @@ module Vpi
     raise unless Thread.current == Thread.main
     __scheduler__ensure_caller_is_registered
 
-
     # let the thread scheduler take over when the main thread is finished
-    anyThreadsScheduled = @@thread2state_lock.synchronize do
-      raise unless @@thread2state.key? Thread.main
-      @@thread2state.keys.length > 1
+    @@thread2state_lock.synchronize do
+      @@thread2state.delete Thread.main
     end
-
-    if anyThreadsScheduled
-      @@thread2state_lock.synchronize do
-        @@thread2state.delete Thread.main
-      end
-
-      raise unless @@scheduler.join
-    else
-      finish
-    end
+    raise unless @@scheduler.join
 
     # return control to the simulator before Ruby exits.
     # otherwise, the simulator will not have a chance to do
