@@ -83,10 +83,27 @@ module Vpi
       self.intVal = 0
     end
 
+    # Remember the current value as the "previous" value.
+    def __edge__update_previous_value #:nodoc:
+      @prev_val = self.hexStrVal
+    end
+
+    # Returns the previous value as an integer.
+    def prev_val_int #:nodoc:
+      prev_val_hex.to_i(16)
+    end
+
+    # Returns the previous value as a hex string.
+    def prev_val_hex #:nodoc:
+      @prev_val.to_s
+    end
+
+    private :prev_val_int, :prev_val_hex
+
     # Tests if the logic value of this handle has
     # changed since the last simulation time step.
     def value_changed?
-      old = Vpi::SHARED_handle2prevVal.value_for(self).to_i(16)
+      old = prev_val_int
       new = self.intVal
 
       old != new
@@ -96,7 +113,7 @@ module Vpi
 
     # Tests if the logic value of this handle is currently at a positive edge.
     def posedge?
-      old = Vpi::SHARED_handle2prevVal.value_for(self).to_i(16)
+      old = prev_val_int
       new = self.intVal
 
       old == 0 && new == 1
@@ -104,7 +121,7 @@ module Vpi
 
     # Tests if the logic value of this handle is currently at a negative edge.
     def negedge?
-      old = Vpi::SHARED_handle2prevVal.value_for(self).to_i(16)
+      old = prev_val_int
       new = self.intVal
 
       old == 1 && new == 0
@@ -114,14 +131,14 @@ module Vpi
     alias edge_10? negedge?
 
     def edge_x1?
-      old = Vpi::SHARED_handle2prevVal.value_for(self)
+      old = prev_val_hex
       new = self.intVal
 
       old =~ /x/i and new == 1
     end
 
     def edge_1x?
-      old = Vpi::SHARED_handle2prevVal.value_for(self).to_i(16)
+      old = prev_val_int
       new = self.hexStrVal
 
       old == 1 and new =~ /x/i
@@ -507,64 +524,30 @@ module Vpi
   # value change / edge detection
   #-----------------------------------------------------------------------------
 
-  # XXX: this is a constant because Vpi::Handle
-  #      needs to access it...  clean this up later
-  SHARED_handle2prevVal = {}
+  @@edgeHandles = []
+  @@edgeHandles_lock = Mutex.new
 
-  class << SHARED_handle2prevVal
-    VALUE_TYPES = Vpi::constants.grep(/^Vpi.*Val$/).map {|s| Vpi.const_get(s)}
-    LOCK = Mutex.new
-
+  class << @@edgeHandles
     # Begins monitoring the given handle for value change.
     def monitor aHandle
       # ignore handles that cannot hold a meaningful value
       type = aHandle.type_s
       return unless type =~ /Reg|Net|Word/ and type !~ /Bit/
 
-      LOCK.synchronize do
-        unless key? aHandle
-          puts "monitoring handle: #{aHandle.fullName}"
-          update_handle aHandle
+      @@edgeHandles_lock.synchronize do
+        unless include? aHandle
+          aHandle.__edge__update_previous_value
         end
       end
     end
 
     # Refreshes the cached value of all monitored handles.
     def update
-      LOCK.synchronize do
-        each_key do |handle|
-          # puts "updating handle: #{handle.fullName}"
-          update_handle handle
+      @@edgeHandles_lock.synchronize do
+        each do |handle|
+          handle.__edge__update_previous_value
         end
       end
-    end
-
-    def value_for aHandle
-      # puts "#{Thread.current} trying to read previous handle value"
-
-      LOCK.synchronize do
-        self[aHandle]
-      end
-
-      # puts "#{Thread.current} finished"
-    end
-
-    private
-
-    # Replaces the "previous" value of the given handle with its current value.
-    def update_handle aHandle
-      # vals = self[aHandle]
-
-      # VALUE_TYPES.each do |type|
-      #   vals[type] = aHandle.get_value_wrapper(type)
-      # end
-
-      old = self[aHandle]
-      new = aHandle.get_value(VpiHexStrVal)
-
-      # p :name => aHandle.name, :time => Vpi::simulation_time, :old => old, :new => new
-
-      self[aHandle] = new
     end
   end
 
@@ -579,7 +562,7 @@ module Vpi
 
     define_method src do |*args|
       if result = __send__(dst, *args)
-        SHARED_handle2prevVal.monitor(result)
+        @@edgeHandles.monitor(result)
       end
 
       result
@@ -788,8 +771,7 @@ module Vpi
         end
       end
 
-      # puts "previous values = values from time #{@@time}"
-      SHARED_handle2prevVal.update
+      @@edgeHandles.update
 
       __control__relay_verilog CbAfterDelay, 1 unless USE_PROTOTYPE
       __scheduler__flush_writes
@@ -851,6 +833,8 @@ module Vpi
     end
   end
 
+  # Wraps the given block inside an infinite loop and executes
+  # it inside a new concurrent thread (see Vpi::process).
   def always *aBlockArgs, &aBlock
     process do
       loop do

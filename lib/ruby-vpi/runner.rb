@@ -26,7 +26,7 @@ require 'ruby-vpi/util'
   end
 
 # auto-detect and set default parameters
-  runnerPath = caller.grep(/runner.rake/).first.rstrip_from(':')
+  runnerPath = caller.grep(/runner\.rake/).first.rstrip_from(':')
   @target    = File.basename(runnerPath).rstrip_from('_')
 
   task :setup
