@@ -83,29 +83,55 @@ module Vpi
       self.intVal = 0
     end
 
+    # Tests if the logic value of this handle has
+    # changed since the last simulation time step.
+    def value_changed?
+      old = Vpi::SHARED_handle2prevVal.value_for(self).to_i(16)
+      new = self.intVal
+
+      old != new
+    end
+
+    alias anyedge? value_changed?
+
     # Tests if the logic value of this handle is currently at a positive edge.
     def posedge?
-      old = @lastVal
-      new = @lastVal = self.intVal
+      old = Vpi::SHARED_handle2prevVal.value_for(self).to_i(16)
+      new = self.intVal
 
       old == 0 && new == 1
     end
 
     # Tests if the logic value of this handle is currently at a negative edge.
     def negedge?
-      old = @lastVal
-      new = @lastVal = self.intVal
+      old = Vpi::SHARED_handle2prevVal.value_for(self).to_i(16)
+      new = self.intVal
 
       old == 1 && new == 0
+    end
+
+    alias edge_01? posedge?
+    alias edge_10? negedge?
+
+    def edge_x1?
+      old = Vpi::SHARED_handle2prevVal.value_for(self)
+      new = self.intVal
+
+      old =~ /x/i and new == 1
+    end
+
+    def edge_1x?
+      old = Vpi::SHARED_handle2prevVal.value_for(self).to_i(16)
+      new = self.hexStrVal
+
+      old == 1 and new =~ /x/i
     end
 
     # Reads the value using the given
     # format (integer constant) and
     # returns a +S_vpi_value+ object.
     def get_value_wrapper aFormat
-      val        = S_vpi_value.new
-      val.format = aFormat
-
+      val = S_vpi_value.new :format => aFormat
       vpi_get_value self, val
       val
     end
@@ -114,39 +140,24 @@ module Vpi
     # integer constant) and returns it.  If a format is
     # not given, then it is assumed to be VpiIntVal.
     def get_value aFormat = VpiIntVal
-      val = get_value_wrapper(resolve_prop_type(aFormat))
+      fmt = resolve_prop_type(aFormat)
 
-      case val.format
-      when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal, VpiStringVal
-        val.value.str.to_s
-
-      when VpiScalarVal
-        val.value.scalar.to_i
-
-      when VpiIntVal
-        @size ||= vpi_get(VpiSize, self)
-
-        if @size < INTEGER_BITS
-          val.value.integer.to_i
-        else
-          get_value_wrapper(VpiHexStrVal).value.str.to_s.to_i(16)
-        end
-
-      when VpiRealVal
-        val.value.real.to_f
-
-      when VpiTimeVal
-        val.value.time
-
-      when VpiVectorVal
-        val.value.vector
-
-      when VpiStrengthVal
-        val.value.strength
-
+      if fmt == VpiIntVal
+        fmt = VpiHexStrVal
+        val = get_value_wrapper(fmt)
+        val[fmt].to_i(16)
       else
-        raise "unknown S_vpi_value.format: #{val.format.inspect}"
+        val = get_value_wrapper(fmt)
+        val[fmt]
       end
+
+        # @size ||= vpi_get(VpiSize, self)
+
+        # if @size < INTEGER_BITS
+        #   val.value.integer.to_i
+        # else
+        #   get_value_wrapper(VpiHexStrVal).value.str.to_s.to_i(16)
+        # end
     end
 
     # Writes the given value using the given format (name or integer
@@ -492,6 +503,89 @@ module Vpi
     end
   end
 
+  #-----------------------------------------------------------------------------
+  # value change / edge detection
+  #-----------------------------------------------------------------------------
+
+  # XXX: this is a constant because Vpi::Handle
+  #      needs to access it...  clean this up later
+  SHARED_handle2prevVal = {}
+
+  class << SHARED_handle2prevVal
+    VALUE_TYPES = Vpi::constants.grep(/^Vpi.*Val$/).map {|s| Vpi.const_get(s)}
+    LOCK = Mutex.new
+
+    # Begins monitoring the given handle for value change.
+    def monitor aHandle
+      # ignore handles that cannot hold a meaningful value
+      type = aHandle.type_s
+      return unless type =~ /Reg|Net|Word/ and type !~ /Bit/
+
+      LOCK.synchronize do
+        unless key? aHandle
+          puts "monitoring handle: #{aHandle.fullName}"
+          update_handle aHandle
+        end
+      end
+    end
+
+    # Refreshes the cached value of all monitored handles.
+    def update
+      LOCK.synchronize do
+        each_key do |handle|
+          # puts "updating handle: #{handle.fullName}"
+          update_handle handle
+        end
+      end
+    end
+
+    def value_for aHandle
+      # puts "#{Thread.current} trying to read previous handle value"
+
+      LOCK.synchronize do
+        self[aHandle]
+      end
+
+      # puts "#{Thread.current} finished"
+    end
+
+    private
+
+    # Replaces the "previous" value of the given handle with its current value.
+    def update_handle aHandle
+      # vals = self[aHandle]
+
+      # VALUE_TYPES.each do |type|
+      #   vals[type] = aHandle.get_value_wrapper(type)
+      # end
+
+      old = self[aHandle]
+      new = aHandle.get_value(VpiHexStrVal)
+
+      # p :name => aHandle.name, :time => Vpi::simulation_time, :old => old, :new => new
+
+      self[aHandle] = new
+    end
+  end
+
+  %w[
+    vpi_handle_by_name
+    vpi_handle_by_index
+    vpi_handle
+    vpi_scan
+  ].each do |src|
+    dst = "__value_change__#{src}"
+    alias_method dst, src
+
+    define_method src do |*args|
+      if result = __send__(dst, *args)
+        SHARED_handle2prevVal.monitor(result)
+      end
+
+      result
+    end
+  end
+
 
   ##############################################################################
   # callbacks
@@ -610,13 +704,36 @@ module Vpi
   end
 
   class S_vpi_value
-    def to_i
-      value.integer
+    # Returns the value in the given format.
+    def read aFormat
+      case aFormat
+      when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal, VpiStringVal
+        value.str.to_s
+
+      when VpiScalarVal
+        value.scalar.to_i
+
+      when VpiIntVal
+        value.integer.to_i
+
+      when VpiRealVal
+        value.real.to_f
+
+      when VpiTimeVal
+        value.time
+
+      when VpiVectorVal
+        value.vector
+
+      when VpiStrengthVal
+        value.strength
+
+      else
+        raise "unknown format: #{aFormat.inspect}"
+      end
     end
 
-    def to_f
-      value.real
-    end
+    alias [] read
   end
 
   # make VPI structs more accessible by allowing their
@@ -671,6 +788,9 @@ module Vpi
         end
       end
 
+      # puts "previous values = values from time #{@@time}"
+      SHARED_handle2prevVal.update
+
       __control__relay_verilog CbAfterDelay, 1 unless USE_PROTOTYPE
       __scheduler__flush_writes
 
@@ -679,7 +799,6 @@ module Vpi
       @@time += 1
 
       if USE_PROTOTYPE
-        # XXX: this method is defined by boot loder when USE_PROTOTYPE is true
         __proto__simulate_hardware
         __scheduler__flush_writes
       else
@@ -731,6 +850,16 @@ module Vpi
       end
     end
   end
+
+  def always *aBlockArgs, &aBlock
+    process do
+      loop do
+        aBlock.call(*aBlockArgs)
+      end
+    end
+  end
+
+  alias forever always
 
   # Wait for the given number of time steps.
   def wait aNumTimeSteps = 1
@@ -797,6 +926,8 @@ module Vpi
     @@thread2state_lock.synchronize do
       @@thread2state.delete Thread.main
     end
+
+    @@scheduler.wakeup if @@scheduler.alive?
     raise unless @@scheduler.join
 
     # return control to the simulator before Ruby exits.
