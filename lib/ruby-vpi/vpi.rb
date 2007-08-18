@@ -177,10 +177,10 @@ module Vpi
       if fmt == VpiIntVal
         fmt = VpiHexStrVal
         val = get_value_wrapper(fmt)
-        val[fmt].to_i(16)
+        val.read(fmt).to_i(16)
       else
         val = get_value_wrapper(fmt)
-        val[fmt]
+        val.read(fmt)
       end
 
         # @size ||= vpi_get(VpiSize, self)
@@ -210,69 +210,26 @@ module Vpi
       aFormat =
         if aFormat
           resolve_prop_type(aFormat)
-
-        elsif aValue.respond_to? :to_int
-          VpiIntVal
-
-        elsif aValue.respond_to? :to_float
-          VpiRealVal
-
-        elsif aValue.respond_to? :to_str
-          VpiStringVal
-
-        elsif aValue.is_a? S_vpi_time
-          VpiTimeVal
-
-        elsif aValue.is_a? S_vpi_vecval
-          VpiVectorVal
-
-        elsif aValue.is_a? S_vpi_strengthval
-          VpiStrengthVal
-
         else
-          get_value_wrapper(VpiObjTypeVal).format
+          S_vpi_value.detect_format(aValue) ||
+          get_value_wrapper(VpiObjTypeVal).format # let the simulator detect
         end
 
-      newVal = S_vpi_value.new(:format => aFormat)
+      if aFormat == VpiIntVal
+        @size ||= vpi_get(VpiSize, self)
 
-      writtenVal =
-        case aFormat
-        when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal, VpiStringVal
-          newVal.value.str      = aValue.to_s
-
-        when VpiScalarVal
-          newVal.value.scalar   = aValue.to_i
-
-        when VpiIntVal
-          @size ||= vpi_get(VpiSize, self)
-
-          if @size < INTEGER_BITS
-            newVal.format        = VpiIntVal
-            newVal.value.integer = aValue.to_i
-          else
-            newVal.format        = VpiHexStrVal
-            newVal.value.str     = aValue.to_i.to_s(16)
-          end
-
-        when VpiRealVal
-          newVal.value.real     = aValue.to_f
-
-        when VpiTimeVal
-          newVal.value.time     = aValue
-
-        when VpiVectorVal
-          newVal.value.vector   = aValue
-
-        when VpiStrengthVal
-          newVal.value.strength = aValue
-
-        else
-          raise "unknown S_vpi_value.format: #{newVal.format.inspect}"
+        unless @size < INTEGER_BITS
+          aFormat = VpiHexStrVal
+          aValue  = aValue.to_i.to_s(16)
         end
+      end
 
-      vpi_put_value(self, newVal, aTime, aDelay)
+      wrapper = S_vpi_value.new(:format => aFormat)
+      result  = wrapper.write(aFormat, aValue)
 
-      writtenVal
+      vpi_put_value(self, wrapper, aTime, aDelay)
+
+      result
     end
 
     # Forces the given value (see arguments for #put_value) onto this handle.
@@ -710,6 +667,56 @@ module Vpi
   end
 
   class S_vpi_value
+    def S_vpi_value.detect_format aValue
+      if aValue.respond_to? :to_int
+        VpiIntVal
+
+      elsif aValue.respond_to? :to_float
+        VpiRealVal
+
+      elsif aValue.respond_to? :to_str
+        VpiStringVal
+
+      elsif aValue.is_a? S_vpi_time
+        VpiTimeVal
+
+      elsif aValue.is_a? S_vpi_vecval
+        VpiVectorVal
+
+      elsif aValue.is_a? S_vpi_strengthval
+        VpiStrengthVal
+      end
+    end
+
+    # Writes the given value, which has the given format.
+    def write aFormat, aValue
+      case aFormat
+      when VpiBinStrVal, VpiOctStrVal, VpiDecStrVal, VpiHexStrVal, VpiStringVal
+        value.str      = aValue.to_s
+
+      when VpiScalarVal
+        value.scalar   = aValue.to_i
+
+      when VpiIntVal
+        value.integer  = aValue.to_i
+
+      when VpiRealVal
+        value.real     = aValue.to_f
+
+      when VpiTimeVal
+        value.time     = aValue
+
+      when VpiVectorVal
+        value.vector   = aValue
+
+      when VpiStrengthVal
+        value.strength = aValue
+
+      else
+        raise "unknown format: #{aFormat.inspect}"
+      end
+    end
+
     # Returns the value in the given format.
     def read aFormat
       case aFormat
@@ -738,8 +745,6 @@ module Vpi
         raise "unknown format: #{aFormat.inspect}"
       end
     end
-
-    alias [] read
   end
 
   # make VPI structs more accessible by allowing their
