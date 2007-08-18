@@ -8,11 +8,8 @@
 # Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
-at_exit { __boot__finalize }
-
-
-SIMULATOR    = ENV['RUBYVPI_SIMULATOR'].to_sym
-designName   = ENV['RUBYVPI_BOOT_TARGET']
+SIMULATOR     = ENV['RUBYVPI_SIMULATOR'].to_sym
+designName    = ENV['RUBYVPI_BOOT_TARGET']
 
 USE_DEBUGGER  = ENV['DEBUGGER'].to_i  == 1
 USE_COVERAGE  = ENV['COVERAGE'].to_i  == 1
@@ -22,6 +19,10 @@ USE_PROTOTYPE = ENV['PROTOTYPE'].to_i == 1
 require 'rubygems'
 require 'ruby-vpi'
 require 'ruby-vpi/util'
+
+require 'ruby-vpi/vpi'
+at_exit { Vpi::__boot__finalize }
+
 
 # set up code coverage analysis
   if USE_COVERAGE
@@ -55,14 +56,6 @@ require 'ruby-vpi/util'
         end
       end
     end
-
-# set up the VPI utility layer
-  # XXX: this is done *after* RCov to prevent coverage statistics about it
-  class Object
-    include Vpi
-  end
-
-  require 'ruby-vpi/vpi'
 
 # load the design under test
   unless designHandle = vpi_handle_by_name(designName, nil)
@@ -127,5 +120,5 @@ require 'ruby-vpi/util'
   end
 
 # load the design's specification
-  __scheduler__start
+  Vpi::__scheduler__start
   require "#{designName}_spec.rb"

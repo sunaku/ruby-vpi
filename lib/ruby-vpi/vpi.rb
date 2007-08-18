@@ -4,6 +4,10 @@
 # Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
+class Object
+  include Vpi
+end
+
 module Vpi
   # Number of bits in PLI_INT32.
   INTEGER_BITS  = 32
@@ -45,52 +49,52 @@ module Vpi
 
     # Tests if the logic value of this handle is unknown (x).
     def x?
-      self.hexStrVal =~ /x/i
+      get_value(VpiHexStrVal) =~ /x/i
     end
 
     # Sets the logic value of this handle to unknown (x).
     def x!
-      self.hexStrVal = 'x'
+      put_value('x', VpiHexStrVal)
     end
 
     # Tests if the logic value of this handle is high impedance (z).
     def z?
-      self.hexStrVal =~ /z/i
+      get_value(VpiHexStrVal) =~ /z/i
     end
 
     # Sets the logic value of this handle to high impedance (z).
     def z!
-      self.hexStrVal = 'z'
+      put_value('z', VpiHexStrVal)
     end
 
     # Tests if the logic value of this handle is at "logic high" level.
     def high?
-      self.intVal != 0
+      get_value(VpiIntVal) != 0
     end
 
     # Sets the logic value of this handle to "logic high" level.
     def high!
-      self.intVal = 1
+      put_value(1, VpiIntVal)
     end
 
     # Tests if the logic value of this handle is at "logic low" level.
     def low?
-      self.hexStrVal =~ /^0+$/
+      get_value(VpiHexStrVal) =~ /^0+$/
     end
 
     # Sets the logic value of this handle to "logic low" level.
     def low!
-      self.intVal = 0
+      put_value(0, VpiIntVal)
     end
+
+
+    #---------------------------------------------------------------------------
+    # edge detection
+    #---------------------------------------------------------------------------
 
     # Remember the current value as the "previous" value.
     def __edge__update_previous_value #:nodoc:
-      @prev_val = self.hexStrVal
-    end
-
-    # Returns the previous value as an integer.
-    def prev_val_int #:nodoc:
-      prev_val_hex.to_i(16)
+      @prev_val = get_value(VpiHexStrVal)
     end
 
     # Returns the previous value as a hex string.
@@ -98,51 +102,62 @@ module Vpi
       @prev_val.to_s
     end
 
-    private :prev_val_int, :prev_val_hex
+    # Returns the previous value as an integer.
+    def prev_val_int #:nodoc:
+      prev_val_hex.to_i(16)
+    end
+
+    private :prev_val_hex, :prev_val_int
+
+
+    # create methods for detecting all kinds of edges
+    vals  = %w[0 1 x z]
+    edges = vals.map {|a| vals.map {|b| a + b}}.flatten
+
+    edges.each do |edge|
+      old, new = edge.split(//)
+
+      old_int  = old =~ /[01]/
+      new_int  = new =~ /[01]/
+
+      old_read = old_int ? 'int' : 'hex'
+      new_read = new_int ? 'VpiIntVal' : 'VpiHexStrVal'
+
+      old_test = old_int ? "== #{old}" : "=~ /#{old}/i"
+      new_test = new_int ? "== #{new}" : "=~ /#{new}/i"
+
+      class_eval %{
+        def edge_#{edge}?
+          old = prev_val_#{old_read}
+          new = get_value(#{new_read})
+
+          old #{old_test} and new #{new_test}
+        end
+      }
+    end
+
+
+    alias posedge? edge_01?
+    alias negedge? edge_10?
+
+    # Tests if either a positive or negative edge has occurred.
+    def edge?
+      posedge? or negedge?
+    end
 
     # Tests if the logic value of this handle has
     # changed since the last simulation time step.
     def value_changed?
-      old = prev_val_int
-      new = self.intVal
+      old = prev_val_hex
+      new = get_value(VpiHexStrVal)
 
       old != new
     end
 
-    alias anyedge? value_changed?
 
-    # Tests if the logic value of this handle is currently at a positive edge.
-    def posedge?
-      old = prev_val_int
-      new = self.intVal
-
-      old == 0 && new == 1
-    end
-
-    # Tests if the logic value of this handle is currently at a negative edge.
-    def negedge?
-      old = prev_val_int
-      new = self.intVal
-
-      old == 1 && new == 0
-    end
-
-    alias edge_01? posedge?
-    alias edge_10? negedge?
-
-    def edge_x1?
-      old = prev_val_hex
-      new = self.intVal
-
-      old =~ /x/i and new == 1
-    end
-
-    def edge_1x?
-      old = prev_val_int
-      new = self.hexStrVal
-
-      old == 1 and new =~ /x/i
-    end
+    #---------------------------------------------------------------------------
+    # reading & writing values
+    #---------------------------------------------------------------------------
 
     # Reads the value using the given
     # format (integer constant) and
@@ -278,6 +293,10 @@ module Vpi
     end
 
 
+    #---------------------------------------------------------------------------
+    # accessing related handles / traversing the hierarchy
+    #---------------------------------------------------------------------------
+
     # Returns an array of child handles of the
     # given types (name or integer constant).
     def [] *aTypes
@@ -314,7 +333,7 @@ module Vpi
 
     # Sort by absolute VPI path.
     def <=> other
-      self.fullName <=> other.fullName
+      get_value(VpiFullName) <=> other.get_value(VpiFullName)
     end
 
 
@@ -324,7 +343,7 @@ module Vpi
       aPropNames.unshift :name, :fullName, :size, :file, :lineNo, :hexStrVal
 
       aPropNames.map! do |name|
-        "#{name}=#{self.send(name.to_sym).inspect}"
+        "#{name}=#{__send__(name.to_sym).inspect}"
       end
 
       "#<Vpi::Handle #{vpiType_s} #{aPropNames.join(', ')}>"
@@ -351,6 +370,10 @@ module Vpi
       vpi_register_cb alarm, &aHandler
     end
 
+
+    #---------------------------------------------------------------------------
+    # accessing VPI properties
+    #---------------------------------------------------------------------------
 
     @@propCache = Hash.new {|h, k| h[k] = Property.new(k)}
 
@@ -382,7 +405,7 @@ module Vpi
           end
         }, __FILE__, __LINE__
 
-        self.__send__(aMeth, *aArgs, &aBlockArg)
+        __send__(aMeth, *aArgs, &aBlockArg)
       end
     end
 
