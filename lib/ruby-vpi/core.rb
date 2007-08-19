@@ -5,6 +5,16 @@
 # See the file named LICENSE for details.
 
 module VPI
+  # restore compatibility with the C language version of VPI: in Ruby,
+  # constants are capitalized, whereas in C, they do not have to be.
+  constants.grep(/^(S_|Cb|Vpi)/).each do |name|
+    meth  = name[0,1].downcase << name[1..-1]
+    value = const_get(name)
+
+    define_method meth do value end
+    module_function meth
+  end
+
   # Number of bits in PLI_INT32.
   INTEGER_BITS  = 32
 
