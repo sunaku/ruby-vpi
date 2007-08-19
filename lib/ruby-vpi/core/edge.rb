@@ -14,8 +14,8 @@ module RubyVPI
     # Begins monitoring the given handle for value change.
     def Edge.monitor aHandle
       # ignore handles that cannot hold a meaningful value
-      type = aHandle.type_s
-      return unless type =~ /Reg|Net|Word/ and type !~ /Bit/
+      type = VPI::vpi_get_str(VpiType, aHandle)
+      return if type =~ /Bit|Array|Module|Parameter/
 
       @@handles_lock.synchronize do
         unless @@handles.include? aHandle
