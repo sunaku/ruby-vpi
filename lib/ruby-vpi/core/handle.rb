@@ -73,7 +73,7 @@ module VPI
       aPropNames.unshift :name, :fullName, :size, :file, :lineNo, :hexStrVal
 
       aPropNames.map! do |name|
-        "#{name}=#{get_value(name).inspect}"
+        "#{name}=#{__send__(name).inspect}"
       end
 
       "#<VPI::Handle #{vpi_get_str(VpiType, self)} #{aPropNames.join(', ')}>"
