@@ -10,9 +10,9 @@ $: << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'ruby-vpi'
 include RubyVPI
 
-HISTORY_URL = WEBSITE_URL + "/history.html"
-RSS_URL = WEBSITE_URL + '/rss.xml'
-RSS_INFO = "RSS feed for this project."
+HISTORY_URL = PROJECT_URL + "/doc/history.html"
+RSS_URL     = PROJECT_URL + '/doc/rss.xml'
+RSS_INFO    = "RSS feed for this project."
 
 require 'ruby-vpi/erb'
 include ERB::Util

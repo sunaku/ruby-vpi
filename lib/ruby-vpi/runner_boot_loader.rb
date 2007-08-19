@@ -1,45 +1,43 @@
 # Initializes the test bench by setting up code
 # coverage, the interactive debugger, and so on:
 #
-# 1. loads the design.rb file
-# 2. loads the proto.rb file if prototyping is enabled
+# 1. loads the design.rb file if it exists
+# 2. loads the proto.rb file if it exists and prototyping is enabled
 # 3. loads the spec.rb file
 #--
 # Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
-SIMULATOR     = ENV['RUBYVPI_SIMULATOR'].to_sym
-designName    = ENV['RUBYVPI_BOOT_TARGET']
-
-USE_DEBUGGER  = ENV['DEBUGGER'].to_i  == 1
-USE_COVERAGE  = ENV['COVERAGE'].to_i  == 1
-USE_PROTOTYPE = ENV['PROTOTYPE'].to_i == 1
-
-
-require 'rubygems'
+begin
+  require 'rubygems'
+rescue LoadError
+end
 require 'ruby-vpi'
 require 'ruby-vpi/util'
 
-require 'ruby-vpi/vpi'
-at_exit { Vpi::__boot__finalize }
+require 'ruby-vpi/core'
+at_exit { RubyVPI::Scheduler.exit_ruby }
 
+
+designName = ENV['RUBYVPI_BOOT_TARGET']
 
 # set up code coverage analysis
-  if USE_COVERAGE
+  if RubyVPI::USE_COVERAGE
     require 'ruby-vpi/rcov'
 
-    RubyVPI.with_coverage_analysis do |a|
-      a.dump_coverage_info [
+    RubyVPI::Coverage.attach do |analysis|
+      analysis.dump_coverage_info [
         Rcov::TextReport.new,
         Rcov::HTMLCoverage.new(:destdir => "#{designName}_coverage")
       ]
     end
 
+    RubyVPI::Coverage.start
     RubyVPI.say 'coverage analysis is enabled'
   end
 
 # set up the interactive debugger
-  if USE_DEBUGGER
+  if RubyVPI::USE_DEBUGGER
     require 'ruby-debug'
 
     Debugger.start
@@ -58,6 +56,10 @@ at_exit { Vpi::__boot__finalize }
     end
 
 # load the design under test
+  class Object
+    include VPI
+  end
+
   unless designHandle = vpi_handle_by_name(designName, nil)
     raise "cannot access the design under test: #{designName.inspect}"
   end
@@ -70,11 +72,9 @@ at_exit { Vpi::__boot__finalize }
 
     # delegate all instance methods to the DUT
     instance_eval do
-      def method_missing(*a, &b)
+      def method_missing(*a, &b) #:nodoc:
         @@design.__send__(*a, &b)
       end
-
-      alias const_missing method_missing
 
       # pass these methods to method_missing
       undef to_s
@@ -85,7 +85,7 @@ at_exit { Vpi::__boot__finalize }
 
     # make module parameters available as constants
     @@design[VpiParameter, VpiLocalParam].each do |var|
-      const_set(var.name.to_ruby_const_name, var.intVal)
+      const_set(var.name.to_ruby_const_name, var.get_value(VpiIntVal))
     end
 
     # methods in design.rb & proto.rb must execute on the DUT
@@ -98,19 +98,17 @@ at_exit { Vpi::__boot__finalize }
   design.module_eval(File.read(f), f) if File.exist? f
 
 # load the design's prototype
-  if USE_PROTOTYPE
+  if RubyVPI::USE_PROTOTYPE
     f = "#{designName}_proto.rb"
     design.module_eval(File.read(f), f) if File.exist? f
 
     unless design.respond_to? :feign!
-      raise NoMethodError, "handle #{design} does not have a 'feign!' method"
+      raise NoMethodError, "handle #{design} lacks a 'feign!' method"
     end
 
-    Vpi.module_eval do
-      define_method :__proto__simulate_hardware do
-        design.feign!
-      end
+    RubyVPI::Prototype.attach(design)
 
+    VPI.module_eval do
       def vpi_register_cb #:nodoc:
         warn "vpi_register_cb: callbacks are ignored when prototype is enabled"
       end
@@ -120,5 +118,5 @@ at_exit { Vpi::__boot__finalize }
   end
 
 # load the design's specification
-  Vpi::__scheduler__start
+  RubyVPI::Scheduler.start
   require "#{designName}_spec.rb"

@@ -1,0 +1,31 @@
+# A utility layer which transforms the VPI interface
+# into one that is more suitable for Ruby.
+#--
+# Copyright 2006 Suraj N. Kurapati
+# See the file named LICENSE for details.
+
+module VPI
+  # Number of bits in PLI_INT32.
+  INTEGER_BITS  = 32
+
+  # Lowest upper bound of PLI_INT32.
+  INTEGER_LIMIT = 2 ** INTEGER_BITS
+
+  # Bit-mask capable of capturing PLI_INT32.
+  INTEGER_MASK  = INTEGER_LIMIT - 1
+end
+
+module RubyVPI
+  USE_DEBUGGER  = ENV['DEBUGGER'].to_i  == 1
+  USE_COVERAGE  = ENV['COVERAGE'].to_i  == 1
+  USE_PROTOTYPE = ENV['PROTOTYPE'].to_i == 1
+  USE_SIMULATOR = ENV['RUBYVPI_SIMULATOR'].to_sym
+end
+
+require 'thread'
+require 'ruby-vpi/core/struct'
+require 'ruby-vpi/core/handle'
+require 'ruby-vpi/core/edge'
+require 'ruby-vpi/core/callback'
+require 'ruby-vpi/core/scheduler'
+require 'ruby-vpi/core/proto'

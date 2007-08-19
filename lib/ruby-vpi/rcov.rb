@@ -23,23 +23,36 @@ require 'rcov'
 require 'rcov/report'
 
 
+module RubyVPI::Coverage #:nodoc:
+end
+
 module RubyVPI
-  COVERAGE_ANALYSIS = Rcov::CodeCoverageAnalyzer.new
-  COVERAGE_ANALYSIS.install_hook
+  module Coverage
+    @@analyzer = Rcov::CodeCoverageAnalyzer.new
 
-  COVERAGE_ANALYSIS_HANDLERS = []
-
-  at_exit do
-    COVERAGE_ANALYSIS.remove_hook
-
-    COVERAGE_ANALYSIS_HANDLERS.each do |a|
-      a.call COVERAGE_ANALYSIS
+    def Coverage.start
+      @@analyzer.install_hook
     end
-  end
 
-  # Invokes the given block, which yields COVERAGE_ANALYSIS,
-  # after code coverage analysis has completed.
-  def RubyVPI.with_coverage_analysis &aBlock # :nodoc:
-    COVERAGE_ANALYSIS_HANDLERS << aBlock if aBlock
+    def Coverage.stop
+      @@analyzer.remove_hook
+    end
+
+
+    @@handlers = []
+
+    # Invokes the given block after code coverage analysis has completed.
+    def Coverage.attach &aBlock # :yield: Rcov::CodeCoverageAnalyzer
+      raise ArgumentError unless block_given?
+      @@handlers << aBlock if aBlock
+    end
+
+    at_exit do
+      Coverage.stop
+
+      @@handlers.each do |h|
+        h.call @@analyzer
+      end
+    end
   end
 end

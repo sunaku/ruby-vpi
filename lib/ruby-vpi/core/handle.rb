@@ -1,0 +1,391 @@
+# Interface to VPI handles.
+#--
+# Copyright 2006 Suraj N. Kurapati
+# See the file named LICENSE for details.
+
+module VPI
+  Handle = SWIG::TYPE_p_unsigned_int
+
+  # A handle is an object inside a Verilog simulation (see
+  # *vpiHandle* in IEEE Std.  1364-2005).  VPI types and
+  # properties listed in ext/vpi_user.h can be specified by
+  # their names (strings or symbols) or integer constants.
+  #
+  # = Example names
+  # * "intVal"
+  # * :intVal
+  # * "vpiIntVal"
+  # * :vpiIntVal
+  # * "VpiIntVal"
+  # * :VpiIntVal
+  #
+  # = Example constants
+  # * VpiIntVal
+  # * VpiModule
+  # * VpiReg
+  #
+  class Handle
+    include VPI
+
+    # Tests if the logic value of this handle is unknown (x).
+    def x?
+      get_value(VpiHexStrVal) =~ /x/i
+    end
+
+    # Sets the logic value of this handle to unknown (x).
+    def x!
+      put_value('x', VpiHexStrVal)
+    end
+
+    # Tests if the logic value of this handle is high impedance (z).
+    def z?
+      get_value(VpiHexStrVal) =~ /z/i
+    end
+
+    # Sets the logic value of this handle to high impedance (z).
+    def z!
+      put_value('z', VpiHexStrVal)
+    end
+
+    # Tests if the logic value of this handle is at "logic high" level.
+    def high?
+      get_value(VpiIntVal) != 0
+    end
+
+    # Sets the logic value of this handle to "logic high" level.
+    def high!
+      put_value(1, VpiIntVal)
+    end
+
+    # Tests if the logic value of this handle is at "logic low" level.
+    def low?
+      get_value(VpiHexStrVal) =~ /^0+$/
+    end
+
+    # Sets the logic value of this handle to "logic low" level.
+    def low!
+      put_value(0, VpiIntVal)
+    end
+
+    # Inspects the given VPI property names, in
+    # addition to those common to all handles.
+    def inspect *aPropNames
+      aPropNames.unshift :name, :fullName, :size, :file, :lineNo, :hexStrVal
+
+      aPropNames.map! do |name|
+        "#{name}=#{get_value(name).inspect}"
+      end
+
+      "#<VPI::Handle #{vpi_get_str(VpiType, self)} #{aPropNames.join(', ')}>"
+    end
+
+    alias to_s inspect
+
+
+    #---------------------------------------------------------------------------
+    # reading & writing values
+    #---------------------------------------------------------------------------
+
+    # Reads the value using the given format (name or
+    # integer constant) and returns a +S_vpi_value+ object.
+    def get_value_wrapper aFormat
+      fmt = resolve_prop_type(aFormat)
+      val = S_vpi_value.new(:format => fmt)
+      vpi_get_value(self, val)
+      val
+    end
+
+    # Reads the value using the given format (name or integer constant) and
+    # returns it.  If a format is not given, then it is assumed to be VpiIntVal.
+    def get_value aFormat = VpiIntVal
+      fmt = resolve_prop_type(aFormat)
+      @size ||= vpi_get(VpiSize, self)
+
+      if fmt == VpiIntVal and @size > INTEGER_BITS
+        fmt = VpiHexStrVal
+        val = get_value_wrapper(fmt)
+        val.read(fmt).to_i(16)
+      else
+        val = get_value_wrapper(fmt)
+        val.read(fmt)
+      end
+    end
+
+    # Writes the given value using the given format (name or integer
+    # constant), time, and delay, and then returns the written value.
+    #
+    # * If a format is not given, then the Verilog simulator
+    #   will attempt to determine the correct format.
+    #
+    def put_value aValue, aFormat = nil, aTime = nil, aDelay = VpiNoDelay
+      if vpi_get(VpiType, self) == VpiNet
+        aDelay = VpiForceFlag
+
+        if driver = self[VpiDriver].find {|d| d.vpiType != VpiForce}
+          warn "forcing value #{aValue.inspect} onto wire #{self} that is already driven by #{driver.inspect}"
+        end
+      end
+
+      aFormat =
+        if aFormat
+          resolve_prop_type(aFormat)
+        else
+          S_vpi_value.detect_format(aValue) ||
+          get_value_wrapper(VpiObjTypeVal).format # let the simulator detect
+        end
+
+      if aFormat == VpiIntVal
+        @size ||= vpi_get(VpiSize, self)
+
+        unless @size < INTEGER_BITS
+          aFormat = VpiHexStrVal
+          aValue  = aValue.to_i.to_s(16)
+        end
+      end
+
+      wrapper = S_vpi_value.new(:format => aFormat)
+      result  = wrapper.write(aValue, aFormat)
+
+      vpi_put_value(self, wrapper, aTime, aDelay)
+
+      result
+    end
+
+    # Forces the given value (see arguments for #put_value) onto this handle.
+    def force_value *args
+      args[3] = VpiForceFlag
+      put_value(*args)
+    end
+
+    # Releases a previously forced value on this handle.
+    def release_value
+      # this doesn't really change the value, it only removes the force flag
+      put_value(0, VpiIntVal, nil, VpiReleaseFlag)
+    end
+
+    # Tests if there is currently a value forced onto this handle.
+    def value_forced?
+      self[VpiDriver].any? {|d| d.vpiType == VpiForce}
+    end
+
+
+    #---------------------------------------------------------------------------
+    # accessing related handles / traversing the hierarchy
+    #---------------------------------------------------------------------------
+
+    # Returns an array of child handles of the
+    # given types (name or integer constant).
+    def [] *aTypes
+      handles = []
+
+      aTypes.each do |arg|
+        t = resolve_prop_type(arg)
+
+        if itr = vpi_iterate(t, self)
+          while h = vpi_scan(itr)
+            handles << h
+          end
+        end
+      end
+
+      handles
+    end
+
+    # inherit Enumerable methods, such as #each, #map, #select, etc.
+    Enumerable.instance_methods.push('each').each do |meth|
+      # using a string because define_method
+      # does not accept a block until Ruby 1.9
+      class_eval %{
+        def #{meth}(*args, &block)
+          if ary = self[*args]
+            ary.#{meth}(&block)
+          end
+        end
+      }, __FILE__, __LINE__
+    end
+
+    # bypass Enumerable's #to_a method, which relies on #each
+    alias to_a []
+
+    # Sort by absolute VPI path.
+    def <=> other
+      get_value(VpiFullName) <=> other.get_value(VpiFullName)
+    end
+
+
+    #---------------------------------------------------------------------------
+    # accessing VPI properties
+    #---------------------------------------------------------------------------
+
+    @@propCache = Hash.new {|h, k| h[k] = Property.new(k)}
+
+    undef type # used to access VpiType
+
+    # Provides access to this handle's (1) child handles
+    # and (2) VPI properties through method calls.  In the
+    # case that a child handle has the same name as a VPI
+    # property, the child handle will be accessed instead
+    # of the VPI property.  However, you can still access
+    # the VPI property via #get_value and #put_value.
+    def method_missing aMeth, *aArgs, &aBlockArg
+      # cache the result for future accesses, in order
+      # to cut down number of calls to method_missing()
+      eigen_class = (class << self; self; end)
+
+      if child = vpi_handle_by_name(aMeth.to_s, self)
+        eigen_class.class_eval do
+          define_method aMeth do
+            child
+          end
+        end
+
+        child
+      else
+        # XXX: using a string because define_method() does
+        #      not support a block argument until Ruby 1.9
+        eigen_class.class_eval %{
+          def #{aMeth}(*a, &b)
+            @@propCache[#{aMeth.inspect}].execute(self, *a, &b)
+          end
+        }, __FILE__, __LINE__
+
+        __send__(aMeth, *aArgs, &aBlockArg)
+      end
+    end
+
+    private
+
+    class Property # :nodoc:
+      attr_reader :name, :type, :accessor, :operation
+
+      def initialize aMethName
+        @methName = aMethName.to_s
+
+        # parse property information from the given method name
+          tokens = @methName.split('_')
+
+          tokens.last.sub!(/[\?!=]$/, '')
+          addendum  = $&
+          @isAssign = $& == '='
+          isQuery   = $& == '?'
+
+          tokens.last =~ /^[a-z]$/ && tokens.pop
+          @accessor = $&
+
+          @name = tokens.pop
+
+          @operation = unless tokens.empty?
+            tokens.join('_') << (addendum || '')
+          end
+
+        # determine the VPI integer type for the property
+          @name = @name.to_ruby_const_name
+          @name.insert 0, 'Vpi' unless @name =~ /^[Vv]pi/
+
+          begin
+            @type = VPI.const_get(@name)
+          rescue NameError
+            raise ArgumentError, "#{@name.inspect} is not a valid VPI property"
+          end
+
+        @accessor = if @accessor
+          @accessor.to_sym
+        else
+          # infer accessor from VPI property @name
+          if isQuery
+            :b
+          else
+            case @name
+            when /Time$/
+              :d
+
+            when /Val$/
+              :l
+
+            when /Type$/, /Direction$/, /Index$/, /Size$/, /Strength\d?$/, /Polarity$/, /Edge$/, /Offset$/, /Mode$/, /LineNo$/
+              :i
+
+            when /Is[A-Z]/, /ed$/
+              :b
+
+            when /Name$/, /File$/, /Decompile$/
+              :s
+
+            when /Parent$/, /Inst$/, /Range$/, /Driver$/, /Net$/, /Load$/, /Conn$/, /Bit$/, /Word$/, /[LR]hs$/, /(In|Out)$/, /Term$/, /Argument$/, /Condition$/, /Use$/, /Operand$/, /Stmt$/, /Expr$/, /Scope$/, /Memory$/, /Delay$/
+              :h
+            end
+          end
+        end
+      end
+
+      def execute aHandle, *aArgs, &aBlockArg
+        if @operation
+          aHandle.__send__(@operation, @type, *aArgs, &aBlockArg)
+        else
+          case @accessor
+          when :d # delay values
+            raise NotImplementedError, 'processing of delay values is not yet implemented.'
+            # TODO: vpi_put_delays
+            # TODO: vpi_get_delays
+
+          when :l # logic values
+            if @isAssign
+              value = aArgs.shift
+              aHandle.put_value(value, @type, *aArgs)
+            else
+              aHandle.get_value(@type)
+            end
+
+          when :i # integer values
+            if @isAssign
+              raise NotImplementedError
+            else
+              vpi_get(@type, aHandle)
+            end
+
+          when :b # boolean values
+            if @isAssign
+              raise NotImplementedError
+            else
+              value = vpi_get(@type, aHandle)
+              value && (value != 0) # zero is false in C
+            end
+
+          when :s # string values
+            if @isAssign
+              raise NotImplementedError
+            else
+              vpi_get_str(@type, aHandle)
+            end
+
+          when :h # handle values
+            if @isAssign
+              raise NotImplementedError
+            else
+              vpi_handle(@type, aHandle)
+            end
+
+          when :a # array of child handles
+            if @isAssign
+              raise NotImplementedError
+            else
+              aHandle[@type]
+            end
+
+          else
+            raise NoMethodError, "cannot access VPI property #{@name.inspect} for handle #{aHandle.inspect} through method #{@methName.inspect} with arguments #{aArgs.inspect}"
+          end
+        end
+      end
+    end
+
+    # resolve type names into type constants
+    def resolve_prop_type aNameOrType
+      if aNameOrType.respond_to? :to_int and not aNameOrType.is_a? Symbol
+        aNameOrType.to_int
+      else
+        @@propCache[aNameOrType.to_sym].type
+      end
+    end
+  end
+end
