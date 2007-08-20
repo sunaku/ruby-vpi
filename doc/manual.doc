@@ -1,9 +1,11 @@
 <doc_proxy_include common.inc>
 
-<% front_cover "Ruby-VPI #{version} user manual" do %>
+<% front_cover "Ruby-VPI user manual" do %>
   h2(author). Suraj N. Kurapati
 
   h3(date). <%= Time.now.strftime("%d %B %Y") %>
+
+  p=. "Version <%= version %>":history.html#<%= version.to_html_anchor %>
 
 
   <% paragraph "About this manual" do %>

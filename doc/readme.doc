@@ -1,10 +1,9 @@
 <doc_proxy_include common.inc>
-<%
-  insert_toc = false
-  page_title = "Ruby-VPI: Ruby interface to Verilog VPI"
-%>
+<% page_title = "Ruby-VPI: Ruby interface to Verilog VPI" %>
 
-<div style="float: right">Version <%= version %></div>
+<hr style="display: none"/>
+
+<a style="float: right" href="history.html#<%= version.to_html_anchor %>">Version <%= version %></a>
 <h1 style="padding-top: 0">Ruby-VPI</h1>
 
 <a href="http://www.ruby-lang.org"><img src="images/ruby/logo-reflection.png" alt="Logo of the Ruby programming language" style="margin: 0; margin-left: 2em; margin-bottom: 1em; float: right"/></a>

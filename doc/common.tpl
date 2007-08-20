@@ -33,47 +33,57 @@
     <title><%= page_title %></title>
   </head>
   <body>
-    <div id="site-links">
-      <a href="readme.html">Home</a>
-      <%
-        Dir['*.doc'].each do |src|
-          name, ext = src.split('.', 2)
-          next if name == 'readme'
-      %>
-        &middot; <a href="<%= name %>.html"><%= name.capitalize %></a>
-      <% end %>
-      <hr style="display: none"/>
-    </div>
-
-  <% if insert_toc %>
-    <div id="toc-links">
-      <%=
-        links = listings.map do |x|
-          %{<a href="##{x.anchor}">#{x.name}</a>}
-        end
-        links.unshift %{<a href="#toc:contents">Contents</a>}
-        links.join ' &middot; '
-      %>
-    </div>
-  <% end %>
-
-    <div id="body"><%= content %></div>
-
-  <% if insert_toc %>
-    <hr style="display: none"/>
-    <div id="toc">
-      <h1 id="toc:contents">Contents</h1>
-      <%= toc %>
-
-      <% listings.each do |x| %>
-        <h1 id="<%= x.anchor %>"><%= x.name %></h1>
-        <ol>
-        <% x.nodes.map do |node| %>
-          <%= %{<li><a href="##{node.anchor}" id="#{node.tocAnchor}">#{node.title.to_html}</a></li>} %>
+    <div id="menu">
+      <h1>Site navigation</h1>
+      <ul id="site-links">
+        <li><a href="readme.html">Home</a></li>
+        <%
+          Dir['*.doc'].each do |src|
+            name, ext = src.split('.', 2)
+            next if name == 'readme'
+        %>
+          <li><a href="<%= name %>.html"><%= name.capitalize %></a></li>
         <% end %>
-        </ol>
+      </ul>
+
+      <% if insert_toc %>
+        <%
+          links = listings.map do |x|
+            %{<a href="##{x.anchor}">#{x.name}</a>}
+          end
+
+          unless links.empty?
+        %>
+        <h1>Menu navigation</h1>
+        <ul id="toc-links">
+          <%=
+            links.unshift %{<a href="#toc-contents">Contents</a>}
+            links.map {|x| "<li>#{x}</li>"}.join
+          %>
+        </ul>
+        <% end %>
+
+        <div id="toc">
+          <h1 id="toc-contents">Contents</h1>
+          <%= toc %>
+
+          <% listings.each do |x| %>
+            <h1 id="<%= x.anchor %>"><%= x.name %></h1>
+            <ol>
+            <% x.nodes.map do |node| %>
+              <%= %{<li><a href="##{node.anchor}" id="#{node.tocAnchor}">#{node.title.to_html}</a></li>} %>
+            <% end %>
+            </ol>
+          <% end %>
+        </div>
       <% end %>
     </div>
-  <% end %>
+
+    <div id="body">
+      <%= content %>
+      <br/>
+      <hr/>
+      This website is maintained by Suraj N. Kurapati (SNK at GNA dot ORG). It was last updated on <%= Time.now %>.
+    </div>
   </body>
 </html>
