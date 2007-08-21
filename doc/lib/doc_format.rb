@@ -48,8 +48,8 @@ class String
     end
 
 
-    ## fix annoyances in Textile conversion 
-    
+    ## fix annoyances in Textile conversion
+
     # redcloth wraps indented text within <pre> tags
     html.gsub! %r{(<pre>)\s*<code>(.*?)\s*</code>\s*(</pre>)}m, '\1\2\3'
     html.gsub! %r{(<pre>)\s*<pre>(.*?)</pre>\s*(</pre>)}m, '\1\2\3'
@@ -85,25 +85,19 @@ class String
   # Otherwise, the programming language is assumed to be ruby.
   def coderay
     gsub %r{<(code)(.*?)>(.*?)</\1>}m do
-      code = CGI.unescapeHTML $3
-      atts = $2
+      matches = $~
 
-      lang =
-        if $2 =~ /lang=('|")(.*?)\1/i
-          $2
-        else
-          :ruby
-        end
+      atts = matches[2]
+      lang = if atts =~ /lang=('|")(.*?)\1/i then $2 else :ruby end
 
-      tag =
-        if code =~ /\n/
-          :pre
-        else
-          :code
-        end
+      code = CGI.unescapeHTML(matches[3]).rstrip
+      if matches.pre_match =~ /^[ \t]+$/
+        code.gsub! %r/^#{$&}/, ''
+      end
 
       html = CodeRay.scan(code, lang).html(:css => :style)
 
+      tag = if code =~ /\n/ then :pre else :code end
       %{<#{tag} class="code"#{atts}>#{html}</#{tag}>}
     end
   end
