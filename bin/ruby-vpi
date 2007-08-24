@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+#
 # This is a front-end for tools provided by Ruby-VPI.
 #
 # Usage:

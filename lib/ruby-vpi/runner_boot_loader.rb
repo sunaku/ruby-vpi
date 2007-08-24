@@ -8,15 +8,20 @@
 # Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
+# return control to the simulator before Ruby exits.
+# otherwise, the simulator will not have a chance to do
+# any clean up or finish any pending tasks that remain
+at_exit { VPI::__extension__relay_verilog unless $! }
+
+
 begin
   require 'rubygems'
 rescue LoadError
 end
+
 require 'ruby-vpi'
 require 'ruby-vpi/util'
-
 require 'ruby-vpi/core'
-at_exit { RubyVPI::Scheduler.exit_ruby }
 
 
 designName = ENV['RUBYVPI_BOOT_TARGET']
@@ -94,19 +99,17 @@ designName = ENV['RUBYVPI_BOOT_TARGET']
 
   Kernel.const_set(designName.to_ruby_const_name, design)
 
+# load the user's test bench
+  RubyVPI::Scheduler.start
+
+  # design file
   f = "#{designName}_design.rb"
   design.module_eval(File.read(f), f) if File.exist? f
 
-# load the design's prototype
+  # prototype file
   if RubyVPI::USE_PROTOTYPE
     f = "#{designName}_proto.rb"
     design.module_eval(File.read(f), f) if File.exist? f
-
-    unless design.respond_to? :feign!
-      raise NoMethodError, "handle #{design} lacks a 'feign!' method"
-    end
-
-    RubyVPI::Prototype.attach(design)
 
     VPI.module_eval do
       def vpi_register_cb #:nodoc:
@@ -117,6 +120,5 @@ designName = ENV['RUBYVPI_BOOT_TARGET']
     RubyVPI.say 'prototype is enabled'
   end
 
-# load the design's specification
-  RubyVPI::Scheduler.start
+  # specification file
   require "#{designName}_spec.rb"

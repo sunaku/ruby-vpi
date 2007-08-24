@@ -37,6 +37,12 @@ module VPI
       put_value('x', VpiHexStrVal)
     end
 
+    alias unknown? x?
+    alias unknown! x!
+
+    alias dont_care? x?
+    alias dont_care! x!
+
     # Tests if the logic value of this handle is high impedance (z).
     def z?
       get_value(VpiHexStrVal) =~ /z/i
@@ -46,6 +52,15 @@ module VPI
     def z!
       put_value('z', VpiHexStrVal)
     end
+
+    alias hi_z? z?
+    alias hi_z! z!
+
+    alias tri_state? z?
+    alias tri_state! z!
+
+    alias floating? z?
+    alias floating! z!
 
     # Tests if the logic value of this handle is at "logic high" level.
     def high?
@@ -57,6 +72,9 @@ module VPI
       put_value(1, VpiIntVal)
     end
 
+    alias one? high?
+    alias one! high!
+
     # Tests if the logic value of this handle is at "logic low" level.
     def low?
       get_value(VpiHexStrVal) =~ /^0+$/
@@ -66,6 +84,10 @@ module VPI
     def low!
       put_value(0, VpiIntVal)
     end
+
+    alias zero? low?
+    alias zero! low!
+
 
     # Inspects the given VPI property names, in
     # addition to those common to all handles.
@@ -167,6 +189,8 @@ module VPI
     def value_forced?
       self[VpiDriver].any? {|d| d.vpiType == VpiForce}
     end
+
+    alias force? value_forced?
 
 
     #---------------------------------------------------------------------------

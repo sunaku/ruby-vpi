@@ -5,130 +5,148 @@
 
 Thread.abort_on_exception = true
 
-module RubyVPI::Scheduler #:nodoc:
-end
+require 'singleton'
 
 module RubyVPI
-  module Scheduler
-    @@time = 0
-    Callback.relay_verilog(VPI::CbReadOnlySynch, 0) unless RubyVPI::USE_PROTOTYPE
+  class SchedulerClass #:nodoc:
+    include Singleton
 
-    def Scheduler.current_time
-      @@time
+
+    Task = Struct.new(:thread, :state)
+
+    class Task #:nodoc:
+      def run
+        self.state = :run
+        self.thread.wakeup
+      end
+
+      def stop
+        self.state = :wait
+        Thread.stop
+      end
+
+      def stop?
+        self.thread.stop? and self.state == :wait
+      end
     end
 
 
-    @@thread2state = { Thread.main => :run }
-    @@thread2state_lock = Mutex.new
+    def initialize
+      @thread2task = { Thread.main => Task.new(Thread.main, :run) }
+      @thread2task_sw = @thread2task.dup  # software threads
+      @thread2task_hw = {}                # hardware threads (Ruby prototype of DUT)
+      @thread2task_lock = Mutex.new
 
-    @@scheduler = Thread.new do
-      # pause because boot loader is not fully init yet
-      Thread.stop
 
-      loop do
-        # finish software execution in current time step
-          loop do
-            ready = @@thread2state_lock.synchronize do
-              Thread.exit if @@thread2state.empty?
+      # base case: hardware runs first before any software does at startup
+      @time = 0
 
-              @@thread2state.all? do |(thread, state)|
-                thread.stop? and state == :wait
-              end
+      unless RubyVPI::USE_PROTOTYPE
+        Callback.relay_verilog(VPI::CbReadOnlySynch, 0)
+      end
+
+      @scheduler = Thread.new do
+        # pause because boot loader is not fully init yet
+        Thread.stop
+
+        loop do
+          # run software in current time step
+            run_tasks @thread2task_sw, true
+            Edge.refresh_cache
+
+            # go to time slot where writing is permitted before flushing writes
+            unless RubyVPI::USE_PROTOTYPE
+              Callback.relay_verilog(VPI::CbAfterDelay, 1)
             end
 
-            if ready
-              break
+            flush_writes
+
+          # run hardware in next time step
+            @time += 1
+
+            if RubyVPI::USE_PROTOTYPE
+              run_tasks @thread2task_hw, false
+              flush_writes
             else
-              Thread.pass
+              Callback.relay_verilog(VPI::CbReadOnlySynch, 0)
             end
-          end
-
-          Edge.refresh_cache
-          Callback.relay_verilog(VPI::CbAfterDelay, 1) unless RubyVPI::USE_PROTOTYPE
-          Scheduler.flush_writes
-
-        # run hardware in next time step
-          @@time += 1
-
-          if RubyVPI::USE_PROTOTYPE
-            Prototype.simulate_hardware
-            Scheduler.flush_writes
-          else
-            Callback.relay_verilog(VPI::CbReadOnlySynch, 0)
-          end
-
-        # resume software execution in new time step
-          @@thread2state_lock.synchronize do
-            @@thread2state.keys.each do |thr|
-              @@thread2state[thr] = :run
-              thr.wakeup
-            end
-          end
-      end
-    end
-
-    def Scheduler.start
-      @@scheduler.wakeup if @@scheduler.alive?
-    end
-
-    def Scheduler.stop
-      @@scheduler.exit
-    end
-
-    def Scheduler.ensure_caller_is_registered
-      isRegistered =
-        @@thread2state_lock.synchronize do
-          @@thread2state.key? Thread.current
         end
-
-      unless isRegistered
-        raise SecurityError, 'This method may only be invoked from within a process (see the Vpi::process method).'
       end
+
+
+      @handle2write = Hash.new {|h,k| h[k] = []}
+      @handle2write_lock = Mutex.new
     end
 
+    def current_time
+      @time
+    end
+
+    def start
+      @scheduler.wakeup
+    end
 
     # Registers the calling thread with the scheduler.
-    def Scheduler.attach
-      @@thread2state_lock.synchronize do
-        @@thread2state[Thread.current] = :run
+    def attach
+      key = Thread.current
+
+      hash =
+        if caller.grep(/_proto\.rb/).empty?
+          @thread2task_sw
+        else
+          @thread2task_hw
+        end
+
+      @thread2task_lock.synchronize do
+        task = Task.new(key, :run)
+        hash[key] = task
+        @thread2task[key] = task
       end
     end
 
     # Unregisters the calling thread from the scheduler.
-    def Scheduler.detach
-      @@thread2state_lock.synchronize do
-        @@thread2state.delete Thread.current
+    def detach
+      key = Thread.current
+
+      @thread2task_lock.synchronize do
+        @thread2task.delete key
+        @thread2task_hw.delete key
+        @thread2task_sw.delete key
       end
     end
 
     # Waits for the scheduler to arrive in the next time step.
-    def Scheduler.await
-      @@thread2state_lock.synchronize do
-        @@thread2state[Thread.current] = :wait
+    def await
+      key = Thread.current
+
+      task = @thread2task_lock.synchronize do
+        @thread2task[key]
       end
 
-      Thread.stop
+      task.stop
     end
 
-
-    #-------------------------------------------------------------------------
-    # buffer/cache all writes
-    #-------------------------------------------------------------------------
-
-    @@handle2write = Hash.new {|h,k| h[k] = []}
-    @@handle2write_lock = Mutex.new
-
-    def Scheduler.capture_write aHandle, *aArgs
-      @@handle2write_lock.synchronize do
-        @@handle2write[aHandle] << aArgs
+    def ensure_caller_is_registered
+      unless @thread2task_lock.synchronize {@thread2task.key? Thread.current}
+        raise SecurityError, 'This method may only be invoked from within a process (see the VPI::process() method).'
       end
     end
 
-    def Scheduler.flush_writes
-      @@handle2write_lock.synchronize do
-        @@handle2write.each_pair do |handle, writes|
+    # Captures the given write operation so it
+    # can be flushed later, at the correct time.
+    def capture_write aHandle, *aArgs
+      @handle2write_lock.synchronize do
+        @handle2write[aHandle] << aArgs
+      end
+    end
+
+    private
+
+    def flush_writes
+      @handle2write_lock.synchronize do
+        @handle2write.each_pair do |handle, writes|
           writes.each do |args|
-            VPI.__scheduler__vpi_put_value(handle, *args)
+            VPI::__scheduler__vpi_put_value(handle, *args)
           end
 
           writes.clear
@@ -136,24 +154,31 @@ module RubyVPI
       end
     end
 
+    def run_tasks aHash, aExitWhenEmpty
+      @thread2task_lock.synchronize do
+        tasks = aHash.values
+        tasks.each {|t| t.run}
 
-    # Finalizes the simulation for the boot loader.
-    def Scheduler.exit_ruby
-      raise unless Thread.current == Thread.main
-      Scheduler.ensure_caller_is_registered
+        if aExitWhenEmpty and tasks.empty?
+          Thread.exit
+        end
+      end
 
-      # now that the main thread is finished, let the
-      # thread scheduler take over the entire Ruby process
-      Scheduler.detach
-      Scheduler.start
-      raise unless @@scheduler.join
+      loop do
+        ready = @thread2task_lock.synchronize do
+          aHash.values.all? {|t| t.stop?}
+        end
 
-      # return control to the simulator before Ruby exits.
-      # otherwise, the simulator will not have a chance to do
-      # any clean up or finish any pending tasks that remain
-      VPI.__extension__relay_verilog unless $!
+        if ready
+          break
+        else
+          Thread.pass
+        end
+      end
     end
   end
+
+  Scheduler = SchedulerClass.instance
 end
 
 module VPI
@@ -177,12 +202,6 @@ module VPI
   end
 
   alias wait advance_time
-
-  # Stop the simulation and exit the program.
-  def finish
-    RubyVPI::Scheduler.ensure_caller_is_registered
-    RubyVPI::Scheduler.stop
-  end
 
 
   # Creates a new concurrent thread, which will execute the

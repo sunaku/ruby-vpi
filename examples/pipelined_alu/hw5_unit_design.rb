@@ -8,13 +8,6 @@ end
 
 # Brings the design under test into a blank state.
 def reset!
-  clk.x!
-  reset.x!
-  in_databits.x!
-  a.x!
-  b.x!
-  in_op.x!
-
   reset.high!
   5.times { cycle! }
   reset.low!

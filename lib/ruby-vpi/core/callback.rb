@@ -3,47 +3,52 @@
 # Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
-module RubyVPI::Callback #:nodoc:
-end
+require 'singleton'
 
 module RubyVPI
-  module Callback
-    @@id2handler = {}
-    @@id2receipt = {}
-    @@lock = Mutex.new
+  class CallbackClass #:nodoc:
+    include Singleton
 
-    def Callback.attach aData, &aHandler
+    def initialize
+      @id2handler = {}
+      @id2receipt = {}
+      @lock = Mutex.new
+    end
+
+    def attach aData, &aHandler
       raise ArgumentError, "block must be given" unless block_given?
       id = aHandler.object_id.to_s
 
       # register the callback with Verilog
       aData.user_data = id
-      aData.cb_rtn    = Vpi::Vlog_relay_ruby
-      receipt         = Vpi.__callback__vpi_register_cb(aData)
+      aData.cb_rtn    = VPI::Vlog_relay_ruby
+      receipt         = VPI::__callback__vpi_register_cb(aData)
 
-      @@lock.synchronize do
-        @@id2handler[id] = aHandler
-        @@id2receipt[id] = receipt
+      @lock.synchronize do
+        @id2handler[id] = aHandler
+        @id2receipt[id] = receipt
       end
 
       receipt
     end
 
-    def Callback.detach aData
+    def detach aData
       id = aData.user_data.to_s
+      receipt = @lock.synchronize{ @id2receipt[id] }
 
-      @@lock.synchronize do
-        if receipt = @@id2receipt[id]
-          Vpi.__callback__vpi_remove_cb receipt
-          @@id2handler.delete id
-          @@id2receipt.delete id
+      if receipt
+        VPI::__callback__vpi_remove_cb(receipt)
+
+        @lock.synchronize do
+          @id2handler.delete id
+          @id2receipt.delete id
         end
       end
     end
 
     # Transfers control to the simulator, which will return control
     # during the given time slot after the given number of time steps.
-    def Callback.relay_verilog aTimeSlot, aNumSteps
+    def relay_verilog aTimeSlot, aNumSteps
       # schedule wake-up callback from verilog
       time            = VPI::S_vpi_time.new
       time.integer    = aNumSteps
@@ -61,17 +66,17 @@ module RubyVPI
       alarm.index     = 0
       alarm.user_data = nil
 
-      VPI.vpi_free_object(VPI.__callback__vpi_register_cb(alarm))
+      VPI.vpi_free_object(VPI::__callback__vpi_register_cb(alarm))
 
       # transfer control to verilog
       loop do
-        VPI.__extension__relay_verilog
+        VPI::__extension__relay_verilog
 
-        if reason = VPI.__extension__relay_ruby_reason # might be nil
+        if reason = VPI::__extension__relay_ruby_reason # might be nil
           id = reason.user_data.to_s
 
-          handler = @@lock.synchronize do
-            @@id2handler[id]
+          handler = @lock.synchronize do
+            @id2handler[id]
           end
 
           if handler
@@ -83,6 +88,8 @@ module RubyVPI
       end
     end
   end
+
+  Callback = CallbackClass.instance
 end
 
 module VPI

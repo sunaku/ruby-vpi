@@ -3,66 +3,59 @@
 # Copyright 2007 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
-module RubyVPI::Edge #:nodoc:
-end
+require 'singleton'
 
 module RubyVPI
-  module Edge
-    @@handles = []
-    @@handles_lock = Mutex.new
+  class EdgeClass #:nodoc:
+    include Singleton
+
+    def initialize
+      @handles = []
+      @lock = Mutex.new
+    end
 
     # Begins monitoring the given handle for value change.
-    def Edge.monitor aHandle
+    def monitor aHandle
       # ignore handles that cannot hold a meaningful value
       type = VPI::vpi_get_str(VpiType, aHandle)
       return if type =~ /Bit|Array|Module|Parameter/
 
-      @@handles_lock.synchronize do
-        unless @@handles.include? aHandle
-          @@handles << aHandle
-          Edge.refresh_handle aHandle
+      @lock.synchronize do
+        unless @handles.include? aHandle
+          @handles << aHandle
+          refresh_handle aHandle
         end
       end
     end
 
     # Refreshes the cached value of all monitored handles.
-    def Edge.refresh_cache
-      @@handles_lock.synchronize do
-        @@handles.each do |h|
-          Edge.refresh_handle h
+    def refresh_cache
+      @lock.synchronize do
+        @handles.each do |h|
+          refresh_handle h
         end
       end
     end
 
     # Remember the current value as the "previous" value.
-    def Edge.refresh_handle aHandle
+    def refresh_handle aHandle
       aHandle.instance_eval do
-        @prev_val = get_value(VpiHexStrVal)
+        @__edge__prev_val = get_value(VpiHexStrVal)
       end
     end
   end
+
+  Edge = EdgeClass.instance
 end
 
 module VPI
   class Handle
-    # Returns the previous value as a hex string.
-    def prev_val_hex #:nodoc:
-      @prev_val.to_s
-    end
-
-    # Returns the previous value as an integer.
-    def prev_val_int #:nodoc:
-      prev_val_hex.to_i(16)
-    end
-
-    private :prev_val_hex, :prev_val_int
-
-
     # create methods for detecting all kinds of edges
     vals  = %w[0 1 x z]
     edges = vals.map {|a| vals.map {|b| a + b}}.flatten
 
     edges.each do |edge|
+      meth = "edge_#{edge}?"
       old, new = edge.split(//)
 
       old_int  = old =~ /[01]/
@@ -75,15 +68,14 @@ module VPI
       new_test = new_int ? "== #{new}" : "=~ /#{new}/i"
 
       class_eval %{
-        def edge_#{edge}?
-          old = prev_val_#{old_read}
+        def #{meth}
+          old = __edge__prev_val_#{old_read}
           new = get_value(#{new_read})
 
           old #{old_test} and new #{new_test}
         end
       }
     end
-
 
     alias posedge? edge_01?
     alias negedge? edge_10?
@@ -96,10 +88,25 @@ module VPI
     # Tests if the logic value of this handle has
     # changed since the last simulation time step.
     def value_changed?
-      old = prev_val_hex
+      old = __edge__prev_val_hex
       new = get_value(VpiHexStrVal)
 
       old != new
+    end
+
+    alias change? value_changed?
+
+
+    private
+
+    # Returns the previous value as a hex string.
+    def __edge__prev_val_hex #:nodoc:
+      @__edge__prev_val.to_s
+    end
+
+    # Returns the previous value as an integer.
+    def __edge__prev_val_int #:nodoc:
+      __edge__prev_val_hex.to_i(16)
     end
   end
 
