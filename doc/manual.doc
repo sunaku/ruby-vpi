@@ -36,7 +36,7 @@
     * <tt>ext</tt> contains source code, written in the C language, for the <%= xref "organization", "core of Ruby-VPI" %>
     * <tt>lib</tt> contains Ruby libraries provided by Ruby-VPI.
     * <tt>bin</tt> contains various tools. See <%= xref "usage.tools" %> for more information.
-    * <tt>samp</tt> contains example tests. See <%= xref "usage.examples" %> for more information.
+    * <tt>examples</tt> contains example tests. See <%= xref "usage.examples" %> for more information.
   <% end %>
 
   <% section "Requirements", "setup.reqs" do %>
@@ -393,7 +393,7 @@
     When you invoke a test runner without any arguments, it will show you a list of available tasks:
     <pre>$ rake -f your_test_runner.rake
 
-    <%= `rake -f ../samp/counter/RSpec/counter_runner.rake` %></pre>
+    <%= `rake -f ../examples/counter/RSpec/counter_runner.rake` %></pre>
 
     <% section "Environment variables", "usage.test-runner.env-vars" do %>
       Test runners support the following _environment_ variables, which allow you to easily change the behavior of the test runner.
@@ -478,8 +478,8 @@
     <% end %>
   <% end %>
 
-  <% section "Sample tests", "usage.examples" do %>
-    The <tt>samp</tt> directory ("browse it online":<%= codeURL %>/samp/) contains several sample tests which illustrate how Ruby-VPI can be used. Each sample has an associated <tt>Rakefile</tt> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the <pre>rake</pre> command to get started.
+  <% section "Example tests", "usage.examples" do %>
+    The <tt>examples</tt> directory ("browse it online":<%= codeURL %>/examples/) contains several example tests which illustrate how Ruby-VPI can be used. Each example has an associated <tt>Rakefile</tt> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the <pre>rake</pre> command to get started.
   <% end %>
 
   <% section "Tutorial", "usage.tutorial" do %>
@@ -571,11 +571,11 @@
       Now that we have identified a set of expectations for our design, we are ready to implement them in our specification. This process is illustrated by <%= xref "fig:RSpec/counter_spec.rb" %> and <%= xref "fig:xUnit/counter_spec.rb" %>.
 
       <% example "Specification implemented in RSpec format", "fig:RSpec/counter_spec.rb" do %>
-        <code><%= File.read '../samp/counter/RSpec/counter_spec.rb' %></code>
+        <code><%= File.read '../examples/counter/RSpec/counter_spec.rb' %></code>
       <% end %>
 
       <% example "Specification implemented in xUnit format", "fig:xUnit/counter_spec.rb" do %>
-        <code><%= File.read '../samp/counter/xUnit/counter_spec.rb' %></code>
+        <code><%= File.read '../examples/counter/xUnit/counter_spec.rb' %></code>
       <% end %>
 
       Before we continue,
@@ -588,7 +588,7 @@
       Now that we have a specification against which to verify our design let us build a prototype of our design. By doing so, we exercise our specification, experience potential problems that may arise when we later implement our design in Verilog, and gain confidence in our work. The result of this proceess is illustrated by <%= xref "fig:counter_proto.rb" %>.
 
       <% example "Ruby prototype of our Verilog design", "fig:counter_proto.rb" do %>
-        <code><%= File.read '../samp/counter/RSpec/counter_proto.rb' %></code>
+        <code><%= File.read '../examples/counter/RSpec/counter_proto.rb' %></code>
       <% end %>
 
       Before we continue, replace the contents of the files named <tt>RSpec/counter_proto.rb</tt> and <tt>xUnit/counter_proto.rb</tt> with the source code shown in <%= xref "fig:counter_proto.rb" %>.
@@ -640,7 +640,7 @@
       Now that we have implemented and verified our prototype, we are ready to implement our design This is often quite simple because we translate _existing_ code from Ruby (our prototype) into Verilog (our design). The result of this process is illustrated by <%= xref "fig:counter.v_impl" %>.
 
       <% example "Implementation of a simple up-counter with synchronous reset", "fig:counter.v_impl" do %>
-        <code lang="verilog"><%= File.read '../samp/counter/counter.v' %></code>
+        <code lang="verilog"><%= File.read '../examples/counter/counter.v' %></code>
       <% end %>
 
       Before we continue, replace the contents of the files named <tt>RSpec/counter.v</tt> and <tt>xUnit/counter.v</tt> with the source code shown in <%= xref "fig:counter.v_impl" %>
