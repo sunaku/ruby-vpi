@@ -165,6 +165,8 @@ module VPI
         end
       end
 
+      aTime ||= S_vpi_time.new(:type => VpiSimTime, :integer => 0)
+
       wrapper = S_vpi_value.new(:format => aFormat)
       result  = wrapper.write(aValue, aFormat)
 
