@@ -222,7 +222,11 @@ module VPI
   def always *aBlockArgs, &aBlock
     process do
       loop do
+        startTime = VPI.current_time
         aBlock.call(*aBlockArgs)
+        finishTime = VPI.current_time
+
+        VPI.advance_time unless finishTime > startTime
       end
     end
   end
