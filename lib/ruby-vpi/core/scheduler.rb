@@ -132,21 +132,30 @@ module RubyVPI
       end
     end
 
+    Write = Struct.new :thread, :trace, :args
+
     # Captures the given write operation so it
     # can be flushed later, at the correct time.
     def capture_write aHandle, *aArgs
       @handle2write_lock.synchronize do
-        @handle2write[aHandle] << aArgs
+        @handle2write[aHandle] << Write.new(Thread.current, caller, aArgs)
       end
     end
 
     private
 
+    # Flushes all captured writes.
     def flush_writes
       @handle2write_lock.synchronize do
         @handle2write.each_pair do |handle, writes|
-          writes.each do |args|
-            VPI::__scheduler__vpi_put_value(handle, *args)
+          if writes.map {|w| w.thread}.uniq.length > 1
+            culprits = writes.map {|w| "\n\n#{w.thread}" << w.trace.map {|x| "\n\t#{x}"}.join}.join
+            STDERR.puts "Race condition detected at time step #{current_time}: the logic value of handle #{handle} is being modified by more than one concurrent process: #{culprits}"
+            exit 1
+          end
+
+          writes.each do |w|
+            VPI::__scheduler__vpi_put_value(handle, *w.args)
           end
 
           writes.clear
