@@ -90,14 +90,26 @@ class String
       atts = matches[2]
       lang = if atts =~ /lang=('|")(.*?)\1/i then $2 else :ruby end
 
+      # obtain the raw source code w/o extraneous indentation
       code = CGI.unescapeHTML(matches[3]).rstrip
+
       if matches.pre_match =~ /^[ \t]+$/
         code.gsub! %r/^#{$&}/, ''
       end
 
+      # convert the code into HTML
       html = CodeRay.scan(code, lang).html(:css => :style)
 
-      tag = if code =~ /\n/ then :pre else :code end
+      # perform smart sizing (block vs. inline) of the code
+      trailingText = matches.post_match[/^.*$/].to_s.strip
+
+      tag =
+        if code =~ /\n/ or trailingText.empty? or trailingText =~ %r{^</(p|div|body)}
+          :pre
+        else
+          :code
+        end
+
       %{<#{tag} class="code"#{atts}>#{html}</#{tag}>}
     end
   end
