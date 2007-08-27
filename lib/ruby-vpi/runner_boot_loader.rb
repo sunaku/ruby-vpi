@@ -60,6 +60,24 @@ designName = ENV['RUBYVPI_BOOT_TARGET']
       end
     end
 
+# set up the profiler
+  if RubyVPI::USE_PROFILER
+    require 'ruby-prof'
+
+    RubyProf.start
+
+    at_exit do
+      result = RubyProf.stop
+      printer = RubyProf::GraphPrinter.new(result)
+
+      File.open("#{designName}_profile.txt", 'w') do |out|
+        printer.print(out)
+      end
+    end
+
+    RubyVPI.say 'bottleneck profiler is enabled'
+  end
+
 # load the design under test
   class Object
     include VPI

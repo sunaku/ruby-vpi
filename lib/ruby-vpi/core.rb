@@ -26,10 +26,11 @@ module VPI
 end
 
 module RubyVPI
+  SIMULATOR     = ENV['RUBYVPI_SIMULATOR'].to_sym
   USE_DEBUGGER  = ENV['DEBUGGER'].to_i  == 1
   USE_COVERAGE  = ENV['COVERAGE'].to_i  == 1
   USE_PROTOTYPE = ENV['PROTOTYPE'].to_i == 1
-  USE_SIMULATOR = ENV['RUBYVPI_SIMULATOR'].to_sym
+  USE_PROFILER  = ENV['PROFILER'].to_i   == 1
 end
 
 require 'thread'

@@ -214,6 +214,7 @@ task :default => :build
     s.add_dependency 'rcov',       '>= 0.7.0'
     s.add_dependency 'xx'           # needed by rcov
     s.add_dependency 'ruby-debug', '>= 0.5.2'
+    s.add_dependency 'ruby-prof'
 
     s.requirements << "POSIX threads library"
     s.requirements << "C language compiler"
