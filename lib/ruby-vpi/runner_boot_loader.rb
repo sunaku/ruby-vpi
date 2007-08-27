@@ -30,15 +30,26 @@ designName = ENV['RUBYVPI_BOOT_TARGET']
   if RubyVPI::USE_COVERAGE
     require 'ruby-vpi/rcov'
 
+    outFile = "#{designName}_coverage.txt"
+
     RubyVPI::Coverage.attach do |analysis|
-      analysis.dump_coverage_info [
-        Rcov::TextReport.new,
-        Rcov::HTMLCoverage.new(:destdir => "#{designName}_coverage")
-      ]
+      begin
+        File.open(outFile, 'w') do |f|
+          STDOUT.flush
+          $stdout = f
+
+          analysis.dump_coverage_info [
+            Rcov::TextReport.new,
+            Rcov::FullTextReport.new(:textmode => :counts),
+          ]
+        end
+      ensure
+        $stdout = STDOUT
+      end
     end
 
     RubyVPI::Coverage.start
-    RubyVPI.say 'coverage analysis is enabled'
+    RubyVPI.say "coverage analysis is enabled; results stored in #{outFile}"
   end
 
 # set up the interactive debugger
@@ -48,7 +59,7 @@ designName = ENV['RUBYVPI_BOOT_TARGET']
     Debugger.start
     Debugger.post_mortem
 
-    RubyVPI.say 'debugger is enabled'
+    RubyVPI.say 'interactive debugger is enabled'
   end
 
   # suppress undefined method errors when debugger is not enabled
@@ -66,16 +77,18 @@ designName = ENV['RUBYVPI_BOOT_TARGET']
 
     RubyProf.start
 
+    outFile = "#{designName}_profile.txt"
+
     at_exit do
       result = RubyProf.stop
       printer = RubyProf::GraphPrinter.new(result)
 
-      File.open("#{designName}_profile.txt", 'w') do |out|
+      File.open(outFile, 'w') do |out|
         printer.print(out)
       end
     end
 
-    RubyVPI.say 'bottleneck profiler is enabled'
+    RubyVPI.say "performance analysis is enabled; results stored in #{outFile}"
   end
 
 # load the design under test
