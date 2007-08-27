@@ -97,7 +97,7 @@
             <dia:real val="0.80000000000000004"/>
           </dia:attribute>
           <dia:attribute name="pos">
-            <dia:point val="8.5,96.15"/>
+            <dia:point val="8.5,96.1425"/>
           </dia:attribute>
           <dia:attribute name="color">
             <dia:color val="#000000"/>
@@ -142,7 +142,7 @@
             <dia:real val="0.80000000000000004"/>
           </dia:attribute>
           <dia:attribute name="pos">
-            <dia:point val="24.1527,96.15"/>
+            <dia:point val="24.1527,96.1425"/>
           </dia:attribute>
           <dia:attribute name="color">
             <dia:color val="#000000"/>
@@ -193,15 +193,15 @@
     </dia:object>
     <dia:object type="Standard - Text" version="1" id="O3">
       <dia:attribute name="obj_pos">
-        <dia:point val="13,95"/>
+        <dia:point val="14,95"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="13,94.4325;20.0175,95.435"/>
+        <dia:rectangle val="14,94.4404;19.2671,95.4316"/>
       </dia:attribute>
       <dia:attribute name="text">
         <dia:composite type="text">
           <dia:attribute name="string">
-            <dia:string>#Vpi::advance_time(Y)#</dia:string>
+            <dia:string>#advance_time(Y)#</dia:string>
           </dia:attribute>
           <dia:attribute name="font">
             <dia:font family="monospace" style="0" name="Courier"/>
@@ -210,7 +210,7 @@
             <dia:real val="0.80000000000000004"/>
           </dia:attribute>
           <dia:attribute name="pos">
-            <dia:point val="13,95"/>
+            <dia:point val="14,95"/>
           </dia:attribute>
           <dia:attribute name="color">
             <dia:color val="#ff0000"/>
@@ -271,7 +271,7 @@
         <dia:point val="6,94"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="6,93.4325;11.0948,94.435"/>
+        <dia:rectangle val="6,93.4575;10.8345,94.3975"/>
       </dia:attribute>
       <dia:attribute name="text">
         <dia:composite type="text">
@@ -304,7 +304,7 @@
         <dia:point val="13,99"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="13,98.45;19.3273,99.4"/>
+        <dia:rectangle val="13,98.4575;19.047,99.3975"/>
       </dia:attribute>
       <dia:attribute name="text">
         <dia:composite type="text">
@@ -337,7 +337,7 @@
         <dia:point val="22,94"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="22,93.45;27.0773,94.4"/>
+        <dia:rectangle val="22,93.4575;26.8345,94.3975"/>
       </dia:attribute>
       <dia:attribute name="text">
         <dia:composite type="text">
@@ -425,7 +425,7 @@
               <dia:real val="0.80000000000000004"/>
             </dia:attribute>
             <dia:attribute name="pos">
-              <dia:point val="20.5,80.15"/>
+              <dia:point val="20.5,80.1425"/>
             </dia:attribute>
             <dia:attribute name="color">
               <dia:color val="#000000"/>
@@ -470,7 +470,7 @@
               <dia:real val="0.80000000000000004"/>
             </dia:attribute>
             <dia:attribute name="pos">
-              <dia:point val="27.6375,80.15"/>
+              <dia:point val="27.6375,80.1425"/>
             </dia:attribute>
             <dia:attribute name="color">
               <dia:color val="#000000"/>
@@ -530,7 +530,7 @@
           <dia:point val="16,77"/>
         </dia:attribute>
         <dia:attribute name="obj_bb">
-          <dia:rectangle val="16,76.45;18.15,78.2"/>
+          <dia:rectangle val="16,76.5288;18.0025,78.3988"/>
         </dia:attribute>
         <dia:attribute name="text">
           <dia:composite type="text">
@@ -621,7 +621,7 @@
               <dia:real val="0.80000000000000004"/>
             </dia:attribute>
             <dia:attribute name="pos">
-              <dia:point val="30.5,72.1"/>
+              <dia:point val="30.5,72.0925"/>
             </dia:attribute>
             <dia:attribute name="color">
               <dia:color val="#000000"/>
@@ -638,7 +638,7 @@
         <dia:point val="25,69"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="25,68.45;30.4055,70.2"/>
+        <dia:rectangle val="25,68.5288;30.1197,70.3988"/>
       </dia:attribute>
       <dia:attribute name="text">
         <dia:composite type="text">
@@ -772,7 +772,7 @@
               <dia:real val="0.80000000000000004"/>
             </dia:attribute>
             <dia:attribute name="pos">
-              <dia:point val="17.5,72.15"/>
+              <dia:point val="17.5,72.1425"/>
             </dia:attribute>
             <dia:attribute name="color">
               <dia:color val="#000000"/>
@@ -788,7 +788,7 @@
           <dia:point val="12,69"/>
         </dia:attribute>
         <dia:attribute name="obj_bb">
-          <dia:rectangle val="12,68.45;17.2617,70.2"/>
+          <dia:rectangle val="12,68.5288;16.971,70.3988"/>
         </dia:attribute>
         <dia:attribute name="text">
           <dia:composite type="text">
@@ -901,7 +901,7 @@
             <dia:real val="0.80000000000000004"/>
           </dia:attribute>
           <dia:attribute name="pos">
-            <dia:point val="29.5,53.1"/>
+            <dia:point val="29.5,53.0925"/>
           </dia:attribute>
           <dia:attribute name="color">
             <dia:color val="#000000"/>
@@ -946,7 +946,7 @@
             <dia:real val="0.80000000000000004"/>
           </dia:attribute>
           <dia:attribute name="pos">
-            <dia:point val="21.5,53.15"/>
+            <dia:point val="21.5,53.1425"/>
           </dia:attribute>
           <dia:attribute name="color">
             <dia:color val="#000000"/>
@@ -1089,7 +1089,7 @@
             <dia:real val="0.80000000000000004"/>
           </dia:attribute>
           <dia:attribute name="pos">
-            <dia:point val="25.5,57.15"/>
+            <dia:point val="25.5,57.1425"/>
           </dia:attribute>
           <dia:attribute name="color">
             <dia:color val="#000000"/>
