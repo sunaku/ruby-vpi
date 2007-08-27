@@ -143,7 +143,7 @@ designName = ENV['RUBYVPI_BOOT_TARGET']
     design.module_eval(File.read(f), f) if File.exist? f
 
     VPI.module_eval do
-      def vpi_register_cb #:nodoc:
+      def vpi_register_cb *args #:nodoc:
         warn "vpi_register_cb: callbacks are ignored when prototype is enabled"
       end
     end
