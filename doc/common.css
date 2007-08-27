@@ -1,59 +1,23 @@
+@import 'spacing.css';
+
 body {
-  margin: 0;
-  background-color: snow;
-  line-height: 160%;
-}
-
-#body {
-  max-width: 37em;
-  width: expression("37em"); /* for IE */
-
-  background-color: white;
-  border-right: thick solid salmon;
-  padding: 1em;
+  line-height: 1.8em;
 }
 
 
-/* headings */
+/* tables */
 
-h1, h2, h3, h4, h5, h6, th, .title {
-  font-family: serif;
+table {
+  background-color: white; /* otherwise it's transparent! */
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-weight: lighter;
-  padding-top: 2em;
-  padding-bottom: 5px;
-  border-bottom: 3px solid cornflowerblue;
+th, td {
+  padding: 0.5em;
+  border: thin solid silver;
 }
 
-
-/* table of contents */
-
-#menu {
-  top: 1em;
-  left: 41em;
-  position: absolute;
-
-  position: expression("static"); /* for IE */
-  float: expression("right"); /* for IE */
-}
-
-#menu h1 {
-  padding-top: 0;
-}
-
-#menu ul,
-#menu ol {
-  padding-bottom: 1em;
-}
-
-#menu li {
-  margin-left: -1em;
-}
-
-#toc-contents {
-  padding-top: 1em;
+th {
+  background-color: whitesmoke;
 }
 
 
@@ -65,46 +29,7 @@ h1, h2, h3, h4, h5, h6 {
 .front_cover h4,
 .front_cover h5,
 .front_cover h6 {
-  border: none;
   text-align: center;
-}
-
-.front_cover > .title {
-  padding-top: 0;
-}
-
-.front_cover > .author {
-  padding-top: 2em;
-}
-
-.front_cover > .date {
-  padding-top: 1em;
-}
-
-
-.part,
-.chapter {
-  padding-top: 3em;
-}
-
-.part > .title,
-.chapter > .title {
-  border: none;
-  padding-bottom: 1em;
-}
-
-.part > .title {
-  border-bottom: thick solid salmon;
-}
-
-.paragraph > .title,
-.admonition .title {
-  font-family: serif;
-  font-size: larger;
-}
-
-.paragraph > .title {
-  padding-top: 1em;
 }
 
 
@@ -113,11 +38,6 @@ h1, h2, h3, h4, h5, h6 {
 .admonition {
   border: thin solid seagreen;
   background-color: honeydew;
-  padding: 1em;
-  margin-top: 1em;
-  margin-bottom: 1em;
-
-  min-height: 150px;
 }
 
 .admonition .icon {
@@ -135,14 +55,10 @@ tt {
   background-color: floralwhite;
 }
 
-pre, blockquote .code {
-  padding: 1em;
-  line-height: normal;
-  overflow: auto;
-  display: block;
-}
-
 pre {
+  line-height: normal;
+  display: block;
+
   border: thin solid darkgray;
   background-color: whitesmoke;
 }
@@ -153,28 +69,7 @@ pre {
 }
 
 
-/* tables */
-
-table {
-  background-color: white; /* otherwise it's transparent! */
-}
-
-th, td {
-  padding: 1em;
-  border: thin solid silver;
-}
-
-th {
-  background-color: whitesmoke;
-}
-
-
-/* formal blocks; see http://www.sagehill.net/docbookxsl/FormalTitles.html */
-
-.formal {
-  padding-top: 1em;
-  padding-bottom: 1em;
-}
+/* formal blocks */
 
 .formal .title {
   display: block;
@@ -182,45 +77,23 @@ th {
   text-align: center
 }
 
+/* center-align any tables and images */
+.formal table, .formal img {
+  margin-left: auto;
+  margin-right: auto;
+}
+.formal img {
+  display: block;
+}
 
-  /* center-align any tables and images */
-
-  .formal table, .formal img {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .formal img {
-    display: block;
-  }
 
 
 /* emphasis */
 
-body {
-  font-family: sans-serif;
-}
-
-em, blockquote {
-  font-family: serif;
-}
-
-blockquote {
-  border-left: thick solid darkkhaki;
-  background: beige;
-}
-
-hr {
-  background-color: red;
-  border: none;
-}
-
-big {
-  font-size: larger;
-}
-
-a:hover {
-  color: red;
+pre, code, .admonition {
+  border-radius: 1em;
+  -moz-border-radius: 1em;
+  -webkit-border-radius: 1em;
 }
 
 

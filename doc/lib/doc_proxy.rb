@@ -64,7 +64,7 @@ class DocProxy < ErbProxy
                   end
                 }
 
-                <p class="title"><a href="##{node.tocAnchor}">#{type.to_s.capitalize} #{node.number}</a>. &nbsp; #{node.title.to_html}</p>
+                <p class="title"><a href="##{node.tocAnchor}" class="ref">#{type.to_s.capitalize} #{node.number}</a>. &nbsp; #{node.title.to_html}</p>
 
                 #{content.to_html}
               </div>
@@ -93,7 +93,7 @@ class DocProxy < ErbProxy
 
         <div id="#{node.anchor}" class="part">
           <h1 class="title">
-            Part <a href="##{node.tocAnchor}">#{node.number}</a>
+            Part <a href="##{node.tocAnchor}" class="ref">#{node.number}</a>
 
             <br/><br/>
 
@@ -112,7 +112,7 @@ class DocProxy < ErbProxy
 
         <div id="#{node.anchor}" class="chapter">
           <h1 class="title">
-            Chapter <a href="##{node.tocAnchor}">#{node.latexNumber}</a>
+            Chapter <a href="##{node.tocAnchor}" class="ref">#{node.latexNumber}</a>
 
             <br/><br/>
 
@@ -132,7 +132,7 @@ class DocProxy < ErbProxy
 
         <div id="#{node.anchor}" class="section">
           <h#{level} class="title">
-            <a href="##{node.tocAnchor}">#{node.latexNumber}</a>
+            <a href="##{node.tocAnchor}" class="ref">#{node.latexNumber}</a>
 
             &nbsp;
 
@@ -192,7 +192,7 @@ class DocProxy < ErbProxy
 
       if node
         words = [
-          %{<a href="##{node.anchor}">Reference #{node.number}</a>},
+          %{<a href="##{node.anchor}" class="ref">Reference #{node.number}</a>},
 
           # extra information about the citation (page #, etc.)
           *args.map {|s| s.to_html}
@@ -213,7 +213,7 @@ class DocProxy < ErbProxy
 
       if target
         title = aTitle || "#{target.type.to_s.capitalize} #{target.latexNumber || target.number}"
-        %{<a href="##{target.anchor}">#{title.to_html}</a>}
+        %{<a href="##{target.anchor}" class="ref">#{title.to_html}</a>}
       else
         warn "invalid xref to #{aTarget.inspect}"
         ''
@@ -520,7 +520,7 @@ class DocProxy < ErbProxy
 
 
         # generate hyperlink for traveling from TOC to heading
-        toc << %{<li><span class="hide">#{node.latexNumber} </span><a id="#{node.tocAnchor}" href="##{node.anchor}">#{node.title.to_html}</a></li>}
+        toc << %{<li>#{node.latexNumber} <a id="#{node.tocAnchor}" href="##{node.anchor}" class="ref">#{node.title.to_html}</a></li>}
       end
 
       if prevIndex.empty?

@@ -1,0 +1,57 @@
+h1, h2, h3, h4, h5, h6 {
+  padding-top: 2em;
+}
+
+
+/* latex */
+
+.front_cover > .title {
+  padding-top: 0;
+}
+
+.front_cover > .author {
+  padding-top: 2em;
+}
+
+.front_cover > .date {
+  padding-top: 1em;
+}
+
+.part,
+.chapter {
+  padding-top: 3em;
+}
+
+.part > .title,
+.chapter > .title {
+  padding-bottom: 1em;
+}
+
+.paragraph > .title {
+  padding-top: 1em;
+}
+
+
+/* admonitions */
+
+.admonition {
+  padding: 1em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  min-height: 150px;
+}
+
+
+/* source code */
+
+pre {
+  padding: 1em;
+}
+
+
+/* formal blocks */
+
+.formal {
+  padding-top: 1em;
+  padding-bottom: 1em;
+}

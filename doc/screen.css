@@ -1,0 +1,146 @@
+@import 'common.css';
+
+body {
+  margin: 0;
+  background-color: snow;
+}
+
+#body {
+  max-width: 37em;
+  width: expression("37em"); /* for IE */
+
+  background-color: white;
+  border-right: thick solid salmon;
+  padding: 1em;
+}
+
+
+/* headings */
+
+h1, h2, h3, h4, h5, h6, th, .title {
+  font-family: serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: lighter;
+  padding-bottom: 2px;
+  border-bottom: 3px solid cornflowerblue;
+}
+
+h1 a,
+h2 a,
+h3 a,
+h4 a,
+h5 a,
+h6 a {
+  text-decoration: none;
+}
+
+
+/* table of contents */
+
+#menu {
+  top: 1em;
+  left: 41em;
+  position: absolute;
+
+  position: expression("static"); /* for IE */
+  float: expression("right"); /* for IE */
+}
+
+#menu h1 {
+  padding-top: 0;
+}
+
+#menu ul,
+#menu ol {
+  padding-bottom: 1em;
+}
+
+#menu li {
+  margin-left: -1em;
+}
+
+#toc-contents {
+  padding-top: 1em;
+}
+
+
+/* latex */
+
+.front_cover h1,
+.front_cover h2,
+.front_cover h3,
+.front_cover h4,
+.front_cover h5,
+.front_cover h6 {
+  border: none;
+  text-align: center;
+}
+
+.part > .title,
+.chapter > .title {
+  border: none;
+}
+
+.part > .title {
+  border-bottom: thick solid salmon;
+}
+
+.paragraph > .title,
+.admonition .title {
+  font-family: serif;
+  font-size: larger;
+}
+
+
+/* admonitions */
+
+.admonition {
+  border: thin solid seagreen;
+  background-color: honeydew;
+}
+
+
+/* source code */
+
+pre {
+  overflow: auto;
+}
+
+code {
+  padding: 0.125em;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+}
+
+
+/* emphasis */
+
+body {
+  font-family: sans-serif;
+}
+
+em, blockquote {
+  font-family: serif;
+}
+
+blockquote {
+  border: thin solid salmon;
+  border-left-width: thick;
+  padding-left: 1em;
+  background: snow;
+}
+
+hr {
+  background-color: red;
+  border: none;
+}
+
+big {
+  font-size: larger;
+}
+
+a:hover {
+  color: red;
+}
