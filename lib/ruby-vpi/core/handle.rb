@@ -56,6 +56,12 @@ module VPI
     alias hi_z? z?
     alias hi_z! z!
 
+    alias high_z? z?
+    alias high_z! z!
+
+    alias high_impedance? z?
+    alias high_impedance! z!
+
     alias tri_state? z?
     alias tri_state! z!
 
@@ -143,7 +149,7 @@ module VPI
       if vpi_get(VpiType, self) == VpiNet
         aDelay = VpiForceFlag
 
-        if driver = self[VpiDriver].find {|d| d.vpiType != VpiForce}
+        if driver = self[VpiDriver].find {|d| vpi_get(VpiType, d) != VpiForce}
           warn "forcing value #{aValue.inspect} onto wire #{self} that is already driven by #{driver.inspect}"
         end
       end
@@ -188,11 +194,9 @@ module VPI
     end
 
     # Tests if there is currently a value forced onto this handle.
-    def value_forced?
-      self[VpiDriver].any? {|d| d.vpiType == VpiForce}
+    def force?
+      self[VpiDriver].any? {|d| vpi_get(VpiType, d) == VpiForce}
     end
-
-    alias force? value_forced?
 
 
     #---------------------------------------------------------------------------

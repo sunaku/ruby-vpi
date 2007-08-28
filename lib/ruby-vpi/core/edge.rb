@@ -50,12 +50,12 @@ end
 
 module VPI
   class Handle
-    # create methods for detecting all kinds of edges
+    # create methods for detecting all possible value changes
     vals  = %w[0 1 x z]
     edges = vals.map {|a| vals.map {|b| a + b}}.flatten
 
     edges.each do |edge|
-      meth = "edge_#{edge}?"
+      meth = "change_#{edge}?"
       old, new = edge.split(//)
 
       old_int  = old =~ /[01]/
@@ -77,8 +77,8 @@ module VPI
       }
     end
 
-    alias posedge? edge_01?
-    alias negedge? edge_10?
+    alias posedge? change_01?
+    alias negedge? change_10?
 
     # Tests if either a positive or negative edge has occurred.
     def edge?
@@ -87,14 +87,12 @@ module VPI
 
     # Tests if the logic value of this handle has
     # changed since the last simulation time step.
-    def value_changed?
+    def change?
       old = __edge__prev_val_hex
       new = get_value(VpiHexStrVal)
 
       old != new
     end
-
-    alias change? value_changed?
 
 
     private
