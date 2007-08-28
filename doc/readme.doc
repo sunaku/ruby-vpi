@@ -3,8 +3,7 @@
 
 <hr style="display: none"/>
 
-<a style="float: right" href="history.html#<%= version.to_html_anchor %>">Version <%= version %></a>
-<h1 style="padding-top: 0">Ruby-VPI</h1>
+<h1 style="padding-top: 0">Ruby-VPI <a style="float: right; position: relative; top: -1em; margin-bottom: -1em;" href="history.html#<%= version.to_html_anchor %>"><%= version %></a></h1>
 
 <a href="http://www.ruby-lang.org"><img src="images/ruby/logo-reflection.png" alt="Logo of the Ruby programming language" style="margin: 0; margin-left: 2em; margin-bottom: 1em; float: right"/></a>
 

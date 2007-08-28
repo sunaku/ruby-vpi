@@ -84,7 +84,7 @@
       <%= content %>
       <br/>
       <hr/>
-      This website is maintained by Suraj N. Kurapati (SNK at GNA dot ORG). It was last updated on <%= Time.now %>.
+      This website is maintained by Suraj N. Kurapati (SNK at GNA dot ORG). This particular webpage was last updated on <%= Time.now %>.
     </div>
   </body>
 </html>

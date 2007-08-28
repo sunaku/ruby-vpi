@@ -102,7 +102,7 @@ Ruby-VPI is "open source software":http://en.wikipedia.org/wiki/Open_source_soft
      - any version that supports the <tt>-pli</tt> option is acceptable.
 
     * "Cadence NC-Sim":http://www.cadence.com/products/functional_ver/nc-verilog/
-     - any version that supports the <tt>+loadvpi</tt> option should be acceptable. However, version 05.83-s003 is _mostly_ acceptable because you *will not* be able to "force values onto wires":manual.html#problem.ncsim.vpiForceFlag.
+     - any version that supports the <tt>+loadvpi</tt> option should be acceptable.
 
     * "GPL Cver":http://www.pragmatic-c.com/gpl-cver/
      - version 2.11a or newer is acceptable.
@@ -135,6 +135,41 @@ Ruby-VPI is "open source software":http://en.wikipedia.org/wiki/Open_source_soft
 <% end %>
 
 
+<% section "Appetizers", "intro.appetizers" do %>
+  Here is a tiny sampling of code to whet your appetite. See "the tutorial":manual.html#usage.tutorial for more samples.
+
+  * Assign the value 2^2048^ to a register:
+  ** @your_register.intVal = 2 ** 2048@
+  ** @your_register.put_value 2 ** 2048@
+
+  * Check if all nets in a module are at high impedance:
+  ** @your_module.all_net? { |your_net| your_net.z? }@
+  ** <code>
+  your_nets = your_module.net_a
+  your_nets.all? { |net| net.z? }
+  </code>
+
+  * See a register's path, width, and location (file & line number):
+  ** @puts your_register@
+  ** <code>
+  p :path  => your_register.fullName
+  p :width => your_register.size
+  p :file  => your_register.fileName
+  p :file  => your_register.lineNo
+  </code>
+
+  * Access the first five elements in a memory:
+  ** @your_memory.memoryWord_a.first(5)@
+  ** @your_memory.memoryWord_a[0..4]@
+  ** @your_memory.memoryWord_a[0, 5]@
+
+  * Clear a memory by filling it with zeroes:
+  ** @your_memory.each_memoryWord { |w| w.zero! }@
+  ** @your_memory.each_memoryWord { |w| w.intVal = 0 }@
+  ** @your_memory.each_memoryWord { |w| w.put_value 0 }@
+<% end %>
+
+
 <% section "Applications", "intro.applications" do %>
   Examples of tasks that can be performed with Ruby-VPI are:
 
@@ -158,39 +193,10 @@ Ruby-VPI is "open source software":http://en.wikipedia.org/wiki/Open_source_soft
 <% end %>
 
 
-<% section "Appetizers", "intro.appetizers" do %>
-  Here is a tiny sampling of code to whet your appetite. See "the tutorial":manual.html#usage.tutorial for more samples.
-
-  * Assign the value 2^2048^ to a register:
-
-  bq. @your_register.intVal = 2 ** 2048@
-
-  * Check if all nets in a module are at high impedance:
-
-  bq. @your_module.all_net? { |net| net.z? }@
-
-  * See a register's path, width, and location (file & line number):
-
-  bq. @puts your_register@
-
-  * Access the first five elements in a memory:
-
-  bq. @your_memory.memoryWord_a[0..4]@
-
-  * Clear a memory by filling it with zeroes:
-
-  bq. @your_memory.each_memoryWord {|w| w.intVal = 0}@
-<% end %>
-
-
-<% section "License", "intro.license" do %>
-  <%= h(File.read('../LICENSE')).gsub(/^Copyright.*$/, '\&<br/>') %>
-<% end %>
-
-
 <% section "Related works", "intro.related-works" do %>
-  * "JOVE":http://jove.sourceforge.net is a Java interface to VPI.
+  * "ANVIL":http://anvil.sourceforge.net is a C++ interface to VPI.
   * "Teal":http://teal.sourceforge.net is a C++ interface to VPI.
+  * "JOVE":http://jove.sourceforge.net is a Java interface to VPI.
   * "ScriptEDA":http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/ is a Perl, Python, and Tcl interface to VPI.
   * "RHDL":http://rhdl.rubyforge.org is a hardware description and verification language based on Ruby.
   * "MyHDL":http://myhdl.jandecaluwe.com is a hardware description and verification language based on Python, which features conversion to Verilog and co-simulation.
@@ -201,4 +207,9 @@ Ruby-VPI is "open source software":http://en.wikipedia.org/wiki/Open_source_soft
     * "ScriptSim":http://www.nelsim.com is a Perl, Python, and Tcl/Tk interface to PLI.
     * "Verilog::Pli":http://www.veripool.com/verilog-pli.html is a Perl interface to PLI.
   <% end %>
+<% end %>
+
+
+<% section "License", "intro.license" do %>
+  <%= h(File.read('../LICENSE')).gsub(/^Copyright.*$/, '\&<br/>') %>
 <% end %>

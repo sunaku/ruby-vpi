@@ -213,7 +213,7 @@ module VPI
   alias wait advance_time
 
 
-  # Creates a new concurrent thread, which will execute the
+  # Creates a new concurrent process, which will execute the
   # given block with the given arguments, and returns it.
   def process *aBlockArgs
     RubyVPI::Scheduler.ensure_caller_is_registered
@@ -227,7 +227,7 @@ module VPI
   end
 
   # Wraps the given block inside an infinite loop and executes it
-  # inside a new concurrent thread (see the VPI::process method).
+  # inside a new concurrent process (see the VPI::process method).
   def always *aBlockArgs, &aBlock
     process do
       loop do

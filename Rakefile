@@ -26,7 +26,7 @@ task :default => :build
   PROJECT_SSH_URL  = "snk@rubyforge.org:/var/www/gforge-projects/#{PROJECT_ID}"
 
   load 'doc/history.rb'
-  head             = @history.first
+  head = @history.first
   PROJECT_VERSION  = head['Version']
   PROJECT_BIRTHDAY = head['Date']
 
@@ -147,19 +147,16 @@ task :default => :build
 
 # distribution
 
-  desc "Prepare for distribution."
-  task :dist => ['ext', 'ref', :doc]
-
   desc 'Publish documentation to website.'
-  task :web => [:web_ref, :web_doc]
+  task :web => ['ref/web', 'doc/web']
 
   desc "Publish reference documentation."
-  task :web_ref => 'ref' do |t|
+  task 'ref/web' => 'ref' do |t|
     upload PROJECT_SSH_URL, *t.prerequisites
   end
 
   desc "Publish user documentation."
-  task :web_doc => 'doc' do |t|
+  task 'doc/web' => 'doc' do |t|
     upload PROJECT_SSH_URL, *t.prerequisites
   end
 
@@ -193,7 +190,7 @@ task :default => :build
 # packaging
 
   desc "Generate release packages."
-  task :release => [:clobber, :dist] do
+  task :release => [:ref, :doc] do
     sh 'rake package'
   end
 
@@ -231,12 +228,12 @@ task :default => :build
   desc "Configures the gem during installation."
   task :gem_config_inst do |t|
     # make documentation available to gem_server
-      gemDir  = File.dirname(__FILE__)
-      gemName = File.basename(gemDir)
-      docDir  = File.join('..', '..', 'doc', gemName)
+    gemDir  = File.dirname(__FILE__)
+    gemName = File.basename(gemDir)
+    docDir  = File.join('..', '..', 'doc', gemName)
 
-      mkdir_p docDir
-      ln_s gemDir, File.join(docDir, 'rdoc')
+    mkdir_p docDir
+    ln_s gemDir, File.join(docDir, 'rdoc')
   end
 
 

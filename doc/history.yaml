@@ -1,4 +1,109 @@
 -
+  Version: 19.0.0
+
+  Date: 2007-08-27
+
+  Record: |
+    This release restores support for Cadence NC-Sim, breaks support for Mentor Modelsim, adds support for concurrent processes which simplify implementing Ruby prototypess, and offers numerous other improvements.
+
+    *Mentor Modelsim users, take note*: this release does not work very well with Mentor Modelsim, so do not upgrade until compatibility is restored in a future release. In the mean time, consider using this release with another simulator, such as "GPL Cver":http://www.pragmatic-c.com/gpl-cver/.
+
+
+    h2. Thanks
+
+    * Calvin Wong "requested the concurrent processes feature":http://rubyforge.org/pipermail/ruby-vpi-discuss/2007-August/000046.html, helped test it, and provided useful feedback.
+
+
+    h2. Caution
+
+    * Prototypes no longer have a @feign!@ method.  Instead, they emulate the behavior of the real Verilog DUT using the new "concurrency model":manual.html#usage.concurrency.
+
+    * All "initial" blocks in Verilog code are now evaluated _before_ the specification begins executing. This allows you to set the initial value of registers in Verilog before the specification interacts with them.
+
+    * The @Vpi@ module has been renamed to @VPI@ for consistency with the project name.
+
+    * The @VPI::simulation_time@ method has been renamed to @VPI::current_time@.
+
+    * The @VPI::Handle.value_forced?@ method has been renamed to @VPI::Handle.force?@
+
+    * The <tt>samp/</tt> directory has been renamed to <tt>examples/</tt>.
+
+    * Code coverage analysis results are now produced only in plain-text format.
+
+
+    h2. Repairs
+
+    * You can now access VPI constants using their original uncapitalized names.  For example, you can now write "vpiIntVal" instead of having to write "VpiIntVal".  However, note that the capitalized names are still supported, so you are not required to change your code.
+
+    * Value change / edge detection for VPI handles was previously incorrect:  if you called the @VPI::Handle.posedge?@ function twice in the same time step, it would give you two different answers.
+
+    * The problem of not being able to write values to nets in Cadence NC-Sim has been fixed.
+
+
+    h2. Additions
+
+    * Added support for "concurrent processes":manual.html#usage.concurrency, which make Ruby prototypes appear more like Verilog code and also give the ability to write parallel tests.
+
+    * Added support for performance profiling using the "ruby-prof":http://ruby-prof.rubyforge.org project. The profiler can be enabled by setting the @PROFILER@ environment variable to "1" before running a Ruby-VPI test.
+
+    * Added new method aliases to @VPI::Handle@ for value detection. The complete list of aliases is now:
+    ** Tests if the logic value of this handle is unknown (x).
+    *** x?
+    *** unknown?
+    *** dont_care?
+    ** Sets the logic value of this handle to unknown (x).
+    *** x!
+    *** unknown!
+    *** dont_care!
+    ** Tests if the logic value of this handle is high impedance (z).
+    *** z?
+    *** hi_z?
+    *** high_z?
+    *** high_impedance?
+    *** tri_state?
+    *** floating?
+    ** Sets the logic value of this handle to high impedance (z).
+    *** z!
+    *** hi_z!
+    *** high_z!
+    *** high_impedance!
+    *** tri_state!
+    *** floating!
+    ** Tests if the logic value of this handle is at "logic high" level.
+    *** high?
+    *** one?
+    ** Sets the logic value of this handle to "logic high" level.
+    *** high!
+    *** one!
+    ** Tests if the logic value of this handle is at "logic low" level.
+    *** low?
+    *** zero?
+    ** Sets the logic value of this handle to "logic low" level.
+    *** low!
+    *** zero!
+
+    * Added new methods to @VPI::Handle@ for value change / edge detection:
+    ** edge? - detects positive and negative edges
+    ** change? - detects any kind of value change
+    ** change_00? - detects a value change from 0 to 0
+    ** change_01? - detects a value change from 0 to 1
+    ** change_0x? - detects a value change from 0 to unknown
+    ** change_0z? - detects a value change from 0 to high-Z
+    ** change_10? - detects a value change from 1 to 0
+    ** change_11? - detects a value change from 1 to 1
+    ** change_1x? - detects a value change from 1 to unknown
+    ** change_1z? - detects a value change from 1 to high-Z
+    ** change_x0? - detects a value change from unknown to 0
+    ** change_x1? - detects a value change from unknown to 1
+    ** change_xx? - detects a value change from unknown to unknown
+    ** change_xz? - detects a value change from unknown to high-Z
+    ** change_z0? - detects a value change from high-Z to 0
+    ** change_z1? - detects a value change from high-Z to 1
+    ** change_zx? - detects a value change from high-Z to unknown
+    ** change_zz? - detects a value change from high-Z to high-Z
+
+
+-
   Version: 18.0.2
 
   Date: 2007-08-03
