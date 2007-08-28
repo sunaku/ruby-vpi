@@ -148,11 +148,7 @@ task :default => :build
 # distribution
 
   desc "Prepare for distribution."
-  task :dist => ['ext', 'ref', :doc] do |t|
-    cd 'ext' do
-      sh 'rake swig'
-    end
-  end
+  task :dist => ['ext', 'ref', :doc]
 
   desc 'Publish documentation to website.'
   task :web => [:web_ref, :web_doc]
