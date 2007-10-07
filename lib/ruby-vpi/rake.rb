@@ -8,13 +8,11 @@ require 'fileutils'
 module FileUtils
   alias old_sh sh
 
-  # An improved sh() that also accepts arrays as arguments.
+  # An improved sh() that accepts arrays as arguments, omits empty string
+  # arguments, and shows users exactly what ARGV is being executed.
   def sh *aArgs, &aBlock
-    old_sh(*collect_args(aArgs).reject {|i| i.to_s.empty?}, &aBlock)
-  end
-
-  # Collects the given arguments into a single, sparse array.
-  def collect_args *aArgs
-    aArgs.flatten.compact
+    args = aArgs.flatten.compact.reject {|i| i.to_s.empty?}
+    STDERR.puts args.inspect
+    old_sh(*args, &aBlock)
   end
 end
