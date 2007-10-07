@@ -23,6 +23,20 @@ require 'ruby-vpi'
 require 'ruby-vpi/util'
 require 'ruby-vpi/core'
 
+# copy Ruby output into simulator's log file
+  [STDOUT, STDERR].each do |stream|
+    class << stream #:nodoc:
+      alias __write__ write
+
+      def write aString
+        s = aString.to_s
+
+        VPI.vpi_printf(s)
+        return s.length
+      end
+    end
+  end
+
 
 designName = ENV['RUBYVPI_BOOT_TARGET']
 
