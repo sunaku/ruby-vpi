@@ -32,7 +32,7 @@ $: << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'ruby-vpi' # for project info
 require 'ruby-vpi/verilog_parser'
 require 'fileutils'
-require 'digest/md5'
+require 'digest/sha1'
 
 
 # Notify the user about some action being performed.
@@ -44,8 +44,8 @@ end
 # already exists, then a backup is created before invoking the merging tool.
 def write_file aPath, aContent # :nodoc:
   if File.exist? aPath
-    oldDigest = Digest::MD5.digest(File.read(aPath))
-    newDigest = Digest::MD5.digest(aContent)
+    oldDigest = Digest::SHA1.digest(File.read(aPath))
+    newDigest = Digest::SHA1.digest(aContent)
 
     if oldDigest == newDigest
       notify :skip, aPath
