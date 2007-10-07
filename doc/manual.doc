@@ -380,7 +380,7 @@
 
         <code>
         always do
-          wait until apple.change? or banana.change? and cherry.change? or date.change?
+          wait until apple.change? or banana.change? or cherry.change? or date.change?
           puts "Yum! Fruits are good for health!"
         end
         </code>
