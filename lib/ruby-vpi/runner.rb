@@ -19,17 +19,15 @@
 require 'ruby-vpi/util'
 
 # check for required variables
-  vars = %w[SIMULATOR_SOURCES SIMULATOR_ARGUMENTS]
+  vars = %w[TEST_LOADER SIMULATOR_SOURCES SIMULATOR_ARGUMENTS]
 
   unless vars.all? {|v| eval "defined? #{v}"}
     raise ArgumentError, "#{vars.join(' and ')} must be defined."
   end
 
-# auto-detect and set default parameters
-  runnerPath = caller.grep(/runner\.rake/).first.rstrip_from(':')
-  @target    = File.basename(runnerPath).rstrip_from('_')
-
-  task :setup
+  raise ArgumentError, "The path specified by TEST_LOADER does not exist: #{TEST_LOADER.inspect}" unless File.exist? TEST_LOADER
+  raise ArgumentError, "The path specified by TEST_LOADER does not refer to a file: #{TEST_LOADER.inspect}" unless File.file? TEST_LOADER
+  raise ArgumentError, "The path specified by TEST_LOADER is not readable: #{TEST_LOADER.inspect}" unless File.readable? TEST_LOADER
 
 # resolve paths to sources by searching include directories
   @sources = SIMULATOR_SOURCES.to_a.uniq
@@ -53,10 +51,10 @@ require 'ruby-vpi/util'
 
 # prepare hook for rb_load_file() in main.c
   ENV['RUBYVPI_BOOT_LOADER'] = File.join(File.dirname(__FILE__), 'runner_boot_loader.rb')
-  ENV['RUBYVPI_BOOT_TARGET'] = @target
+  ENV['RUBYVPI_TEST_LOADER'] = TEST_LOADER
 
 # check if the machine is 64-bit
-  @archIs64 = -1.size == 8
+  @archIs64 = 0.size == 8
 
 
 require 'rake/clean'
@@ -92,6 +90,10 @@ def sim_task aSimId #:nodoc:
     yield aSimId
   end
 end
+
+
+desc "User-defined task that is invoked before the simulator runs."
+task :setup
 
 
 desc "Show a list of available tasks."
@@ -143,8 +145,7 @@ sim_task :vsim do |id|
   sh %w[vsim -c],
     '-do', 'run -all; exit',
     '-pli', object_file_path(id),
-    SIMULATOR_ARGUMENTS[id],
-    @target
+    SIMULATOR_ARGUMENTS[id]#, @target
 end
 
 CLEAN.include 'work', 'vsim.wlf'

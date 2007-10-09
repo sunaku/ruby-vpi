@@ -25,4 +25,39 @@ module RubyVPI
   def RubyVPI.say fmt, *args #:nodoc:
     VPI.vpi_printf("#{PROJECT_NAME}: #{fmt}\n", *args)
   end
+
+  # Loads a test that exercises a design (the given VPI handle).
+  #
+  # 1. Creates a sandbox (an anonymous module).
+  #
+  # 2. Defines a constant named "DUT" (which points
+  #    to the given VPI handle) inside the sandbox.
+  #
+  # 3. Loads the given test files into the sandbox.
+  #
+  # 4. Returns the sandbox.
+  #
+  # aDesignHandleOrPath:: either a VPI handle or a path to an
+  #                       object in the Verilog simulation
+  #
+  def RubyVPI.load_test aDesignHandleOrPath, *aTestFilePaths
+    design =
+      if aDesignHandleOrPath.is_a? VPI::Handle
+        aDesignHandleOrPath
+      else
+        VPI.vpi_handle_by_name(aDesignHandleOrPath.to_s, nil)
+      end
+
+    raise ArgumentError, "cannot access the design under test: #{aDesignHandleOrPath.inspect}" unless design
+
+
+    sandbox = Module.new
+    sandbox.const_set :DUT, design
+
+    aTestFilePaths.flatten.compact.uniq.each do |path|
+      sandbox.module_eval(File.read(path), path)
+    end
+
+    sandbox
+  end
 end

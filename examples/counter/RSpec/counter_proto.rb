@@ -1,9 +1,11 @@
-always do
-  wait until clock.posedge?
+if RubyVPI::USE_PROTOTYPE
+  always do
+    wait until DUT.clock.posedge?
 
-  if reset.high?
-    count.intVal = 0
-  else
-    count.intVal += 1
+    if DUT.reset.high?
+      DUT.count.intVal = 0
+    else
+      DUT.count.intVal += 1
+    end
   end
 end

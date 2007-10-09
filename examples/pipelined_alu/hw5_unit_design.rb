@@ -1,19 +1,20 @@
 # Simulates the design under test for one clock cycle.
-def cycle!
+def DUT.cycle!
   clk.high!
   advance_time
+
   clk.low!
   advance_time
 end
 
 # Brings the design under test into a blank state.
-def reset!
+def DUT.reset!
   reset.high!
   5.times { cycle! }
   reset.low!
 end
 
-OPERATIONS = (OP_NOP .. OP_MULT).to_a
+OPERATIONS = (DUT.OP_NOP.intVal .. DUT.OP_MULT.intVal).to_a
 
 # Represents an ALU operation.
 class Operation
@@ -31,13 +32,13 @@ class Operation
   # Computes the result of this operation.
   def compute
     case @type
-      when OP_ADD
+      when DUT.OP_ADD.intVal
         @arg1 + @arg2
 
-      when OP_SUB
+      when DUT.OP_SUB.intVal
         @arg1 - @arg2
 
-      when OP_MULT
+      when DUT.OP_MULT.intVal
         @arg1 * @arg2
     end
   end

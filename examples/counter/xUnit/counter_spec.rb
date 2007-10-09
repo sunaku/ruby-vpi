@@ -1,39 +1,39 @@
 require 'test/unit'
 
 # lowest upper bound of counter's value
-LIMIT = 2 ** Counter::Size
+LIMIT = 2 ** DUT.Size.intVal
 
 # maximum allowed value for a counter
 MAX = LIMIT - 1
 
-class ResettedCounterValue < Test::Unit::TestCase
+class A_counter_after_being_reset < Test::Unit::TestCase
   def setup
-    Counter.reset!
+    DUT.reset! # reset the counter
   end
 
-  def test_zero
-    assert_equal( 0, Counter.count.intVal )
+  def test_should_be_zero
+    assert_equal( 0, DUT.count.intVal )
   end
 
-  def test_increment
+  def test_should_increment_upon_each_subsequent_posedge
     LIMIT.times do |i|
-      assert_equal( i, Counter.count.intVal )
-      Counter.cycle! # increment the counter
+      assert_equal( i, DUT.count.intVal )
+      DUT.cycle! # increment the counter
     end
   end
 end
 
-class MaximumCounterValue < Test::Unit::TestCase
+class A_counter_with_the_maximum_value < Test::Unit::TestCase
   def setup
-    Counter.reset!
+    DUT.reset! # reset the counter
 
     # increment the counter to maximum value
-    MAX.times { Counter.cycle! }
-    assert_equal( MAX, Counter.count.intVal )
+    MAX.times { DUT.cycle! }
+    assert_equal( MAX, DUT.count.intVal )
   end
 
-  def test_overflow
-    Counter.cycle! # increment the counter
-    assert_equal( 0, Counter.count.intVal )
+  def test_should_overflow_upon_increment
+    DUT.cycle! # increment the counter
+    assert_equal( 0, DUT.count.intVal )
   end
 end

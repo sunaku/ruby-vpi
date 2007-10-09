@@ -1,19 +1,19 @@
 require 'test/unit'
 require 'int_gen'
 
-class Hw5_unit_spec < Test::Unit::TestCase
+class A_hw5_unit_when_reset < Test::Unit::TestCase
   # Number of input sequences to test.
   NUM_TESTS = 4000
 
   # Bitmask capable of capturing ALU result.
-  ALU_RESULT_MASK = (2 ** Hw5_unit::WIDTH) - 1
+  ALU_RESULT_MASK = (2 ** DUT.WIDTH.intVal) - 1
 
   # Upper limit of values allowed for an operation's tag.
-  OPERATION_TAG_LIMIT = 2 ** Hw5_unit::DATABITS
+  OPERATION_TAG_LIMIT = 2 ** DUT.DATABITS.intVal
 
   def setup
-    Hw5_unit.reset!
-    @intGen = IntegerGenerator.new(Hw5_unit::WIDTH)
+    DUT.reset!
+    @intGen = IntegerGenerator.new(DUT.WIDTH.intVal)
   end
 
   def test_pipeline
@@ -23,37 +23,37 @@ class Hw5_unit_spec < Test::Unit::TestCase
     until numVerified == NUM_TESTS
       # issue a new operation
       if numIssued < NUM_TESTS
-        op = Hw5_unit::Operation.new(
-          Hw5_unit::OPERATIONS[rand(Hw5_unit::OPERATIONS.size)],
+        op = Operation.new(
+          OPERATIONS[rand(OPERATIONS.size)],
           numIssued % OPERATION_TAG_LIMIT,
           @intGen.random,
           @intGen.random
         )
 
-        Hw5_unit.a.intVal           = op.arg1
-        Hw5_unit.b.intVal           = op.arg2
-        Hw5_unit.in_op.intVal       = op.type
-        Hw5_unit.in_databits.intVal = op.tag
+        DUT.a.intVal           = op.arg1
+        DUT.b.intVal           = op.arg2
+        DUT.in_op.intVal       = op.type
+        DUT.in_databits.intVal = op.tag
 
         issuedOps << op
         numIssued += 1
       end
 
-      Hw5_unit.cycle!
+      DUT.cycle!
 
       # verify result of finished operation
-      unless Hw5_unit.out_databits.x?
-        finishedOp = Hw5_unit::Operation.new(
-          Hw5_unit.out_op.intVal,
-          Hw5_unit.out_databits.intVal
+      unless DUT.out_databits.x?
+        finishedOp = Operation.new(
+          DUT.out_op.intVal,
+          DUT.out_databits.intVal
         )
-        finishedOp.result = Hw5_unit.res.intVal & ALU_RESULT_MASK
+        finishedOp.result = DUT.res.intVal & ALU_RESULT_MASK
 
         expectedOp = issuedOps.shift
         assert_equal expectedOp.type, finishedOp.type, "incorrect operation"
         assert_equal expectedOp.tag, finishedOp.tag, "incorrect tag"
 
-        unless finishedOp.type == Hw5_unit::OP_NOP
+        unless finishedOp.type == DUT.OP_NOP.intVal
           assert_equal expectedOp.compute & ALU_RESULT_MASK, finishedOp.result, "incorrect result"
         end
 

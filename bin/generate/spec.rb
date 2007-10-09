@@ -1,45 +1,43 @@
-<% dut = aOutputInfo.designClassName %>
-
 <% case aOutputInfo.specFormat %>
 <% when :xUnit %>
 require 'test/unit'
 
-class <%= aOutputInfo.specClassName %> < Test::Unit::TestCase
+class A_<%= aModuleInfo.name %>_when_reset < Test::Unit::TestCase
   def setup
-    <%= dut %>.reset!
+    DUT.reset!
   end
 <% aModuleInfo.ports.each do |port| %>
 
   def test_<%= port.name %>
-    # assert <%= dut %>.<%= port.name %> ..., "<%= port.name %> should ..."
+    # assert DUT.<%= port.name %> ..., "<%= port.name %> should ..."
   end
 <% end %>
 end
 <% when :tSpec %>
 require 'test/spec'
 
-context "A resetted <%= dut %>" do
+context "A #{DUT.name}, when reset" do
   setup do
-    <%= dut %>.reset!
+    DUT.reset!
   end
 
   specify "should ..." do
-    # <%= dut %>.should ...
+    # DUT.should ...
   end
 end
 <% when :rSpec %>
 require 'spec'
 
-describe <%= dut %>, " when resetted" do
+describe "A #{DUT.name}, when reset" do
   before do
-    <%= dut %>.reset!
+    DUT.reset!
   end
 
   it "should ..." do
-    # <%= dut %>.should ...
+    # DUT.should ...
   end
 end
 <% else %>
-<%= dut %>.reset!
-# raise "should ..." unless <%= dut %> ...
+DUT.reset!
+# raise "should ..." unless DUT ...
 <% end %>

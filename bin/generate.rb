@@ -83,38 +83,41 @@ end
 class OutputInfo # :nodoc:
   RUBY_EXT      = '.rb'
   VERILOG_EXT   = '.v'
-  RUNNER_EXT    = '.rake'
+  RAKE_EXT      = '.rake'
 
   DESIGN_SUFFIX = '_design'
   SPEC_SUFFIX   = '_spec'
   RUNNER_SUFFIX = '_runner'
   PROTO_SUFFIX  = '_proto'
+  LOADER_SUFFIX = '_loader'
 
   SPEC_FORMATS = [:rSpec, :tSpec, :xUnit, :generic]
 
-  attr_reader :designPath,  :designName,  :designClassName,
+  attr_reader :designPath,  :designName,
               :specPath,    :specName,    :specClassName,    :specFormat,
               :runnerPath,  :runnerName,
-              :protoPath,   :protoName
+              :protoPath,   :protoName,
+              :loaderPath,  :loaderName
 
   def initialize aModuleName, aSpecFormat
     raise ArgumentError unless SPEC_FORMATS.include? aSpecFormat
-    @specFormat       = aSpecFormat
+    @specFormat    = aSpecFormat
 
-    @designName       = aModuleName + DESIGN_SUFFIX
-    @designPath       = @designName + RUBY_EXT
+    @designName    = aModuleName + DESIGN_SUFFIX
+    @designPath    = @designName + RUBY_EXT
 
-    @protoName        = aModuleName + PROTO_SUFFIX
-    @protoPath        = @protoName  + RUBY_EXT
+    @protoName     = aModuleName + PROTO_SUFFIX
+    @protoPath     = @protoName  + RUBY_EXT
 
-    @specName         = aModuleName + SPEC_SUFFIX
-    @specPath         = @specName   + RUBY_EXT
+    @specName      = aModuleName + SPEC_SUFFIX
+    @specPath      = @specName   + RUBY_EXT
+    @specClassName = @specName.to_ruby_const_name
 
-    @designClassName  = aModuleName.to_ruby_const_name
-    @specClassName    = @specName.to_ruby_const_name
+    @runnerName    = aModuleName + RUNNER_SUFFIX
+    @runnerPath    = @runnerName + RAKE_EXT
 
-    @runnerName       = aModuleName + RUNNER_SUFFIX
-    @runnerPath       = @runnerName + RUNNER_EXT
+    @loaderName    = aModuleName + LOADER_SUFFIX
+    @loaderPath    = @loaderName + RUBY_EXT
   end
 end
 
@@ -124,6 +127,7 @@ end
   PROTO_TEMPLATE  = Template.new('proto.rb')
   SPEC_TEMPLATE   = Template.new('spec.rb')
   RUNNER_TEMPLATE = Template.new('runner.rake')
+  LOADER_TEMPLATE = Template.new('loader.rb')
 
 
 # parse command-line options
@@ -173,5 +177,6 @@ v.modules.each do |m|
   write_file o.designPath, DESIGN_TEMPLATE.result(binding)
   write_file o.protoPath, PROTO_TEMPLATE.result(binding)
   write_file o.specPath, SPEC_TEMPLATE.result(binding)
+  write_file o.loaderPath, LOADER_TEMPLATE.result(binding)
   write_file 'Rakefile', "require 'ruby-vpi/runner_proxy'"
 end

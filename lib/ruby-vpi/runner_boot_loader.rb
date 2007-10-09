@@ -20,7 +20,6 @@ rescue LoadError
 end
 
 require 'ruby-vpi'
-require 'ruby-vpi/util'
 require 'ruby-vpi/core'
 
 # copy Ruby output into simulator's log file
@@ -37,15 +36,11 @@ require 'ruby-vpi/core'
     end
   end
 
-
-designName = ENV['RUBYVPI_BOOT_TARGET']
-
 # set up code coverage analysis
   if RubyVPI::USE_COVERAGE
     require 'ruby-vpi/rcov'
 
-    outFile = "#{designName}_coverage.txt"
-
+    outFile = "coverage.txt"
     RubyVPI::Coverage.attach do |analysis|
       begin
         File.open(outFile, 'w') do |f|
@@ -89,10 +84,7 @@ designName = ENV['RUBYVPI_BOOT_TARGET']
   if RubyVPI::USE_PROFILER
     require 'ruby-prof'
 
-    RubyProf.start
-
-    outFile = "#{designName}_profile.txt"
-
+    outFile = "profile.txt"
     at_exit do
       result = RubyProf.stop
       printer = RubyProf::GraphPrinter.new(result)
@@ -102,60 +94,12 @@ designName = ENV['RUBYVPI_BOOT_TARGET']
       end
     end
 
+    RubyProf.start
     RubyVPI.say "performance analysis is enabled; results stored in #{outFile}"
   end
 
-# load the design under test
-  class Object
-    include VPI
-  end
-
-  unless designHandle = vpi_handle_by_name(designName, nil)
-    raise "cannot access the design under test: #{designName.inspect}"
-  end
-
-  # create a module to wrap the DUT, so that inner classes and modules
-  # and constants defined in the design.rb and proto.rb files are
-  # accessible in spec.rb through the namespace resolution operator (::)
-  design = Module.new do
-    @@design = designHandle
-
-    # delegate all instance methods to the DUT
-    instance_eval do
-      def method_missing(*a, &b) #:nodoc:
-        @@design.__send__(*a, &b)
-      end
-
-      # pass these methods to method_missing
-      undef to_s
-      undef inspect
-      undef type
-      undef respond_to?
-    end
-
-    # make module parameters available as constants
-    @@design[VpiParameter, VpiLocalParam].each do |var|
-      const_set(var.name.to_ruby_const_name, var.get_value(VpiIntVal))
-    end
-
-    # methods in design.rb & proto.rb must execute on the DUT
-    @@design.extend(self)
-  end
-
-  Kernel.const_set(designName.to_ruby_const_name, design)
-
-# load the user's test bench
-  RubyVPI::Scheduler.start
-
-  # design file
-  f = "#{designName}_design.rb"
-  design.module_eval(File.read(f), f) if File.exist? f
-
-  # prototype file
+# set up the prototyping environment
   if RubyVPI::USE_PROTOTYPE
-    f = "#{designName}_proto.rb"
-    design.module_eval(File.read(f), f) if File.exist? f
-
     VPI.module_eval do
       def vpi_register_cb *args #:nodoc:
         warn "vpi_register_cb: callbacks are ignored when prototype is enabled"
@@ -165,5 +109,11 @@ designName = ENV['RUBYVPI_BOOT_TARGET']
     RubyVPI.say 'prototype is enabled'
   end
 
-  # specification file
-  require "#{designName}_spec.rb"
+# make VPI functions available globally
+  class Object
+    include VPI
+  end
+
+# load the user-defined test loader
+  RubyVPI::Scheduler.start
+  require $0

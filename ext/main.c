@@ -30,15 +30,15 @@ void main_init() {
 
 
   char* bootLoader = getenv("RUBYVPI_BOOT_LOADER");
-  char* bootTarget = getenv("RUBYVPI_BOOT_TARGET");
+  char* testLoader = getenv("RUBYVPI_TEST_LOADER");
 
-  if (bootLoader != NULL && bootTarget != NULL) {
-    ruby_script(bootTarget);
+  if (bootLoader != NULL && testLoader != NULL) {
+    ruby_script(testLoader);
     rb_load_file(bootLoader);
     ruby_run();
   }
   else {
-    common_printf("error: the RUBYVPI_BOOT_LOADER and RUBYVPI_BOOT_TARGET environment variables are not initialized.");
+    common_printf("error: the RUBYVPI_BOOT_LOADER and RUBYVPI_TEST_LOADER environment variables must be defined.");
     exit(EXIT_FAILURE);
   }
 }

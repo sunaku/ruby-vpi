@@ -1,39 +1,39 @@
 require 'spec'
 
 module RegisterInterface
-  NUM_REGS = Register_file.register.size
+  NUM_REGS = DUT.register.size
 
   def set_registers(vals)
     raise ArgumentError if vals.length > NUM_REGS
 
-    Register_file.rw.intVal = 1
+    DUT.rw.intVal = 1
 
     vals.each_with_index do |val, i|
-      Register_file.wtReg.intVal = i
-      Register_file.inBus.intVal = val
-      Register_file.cycle!
+      DUT.wtReg.intVal = i
+      DUT.inBus.intVal = val
+      DUT.cycle!
     end
   end
 
   def expect_registers(vals)
     raise ArgumentError if vals.length > NUM_REGS
 
-    Register_file.rw.intVal = 0
+    DUT.rw.intVal = 0
 
     vals.each_with_index do |val, i|
-      Register_file.rdReg.intVal = i
-      Register_file.cycle!
-      Register_file.outBus.intVal.should == val
+      DUT.rdReg.intVal = i
+      DUT.cycle!
+      DUT.outBus.intVal.should == val
     end
   end
 end
 
-describe "An enabled register file" do
+describe "A #{DUT.name}, when enabled" do
   include RegisterInterface
 
   before do
-    Register_file.reset!
-    Register_file.enable.intVal = 1
+    DUT.reset!
+    DUT.enable.intVal = 1
   end
 
   it "should be able to write and then read registers" do
@@ -44,12 +44,12 @@ describe "An enabled register file" do
   end
 end
 
-describe "A disabled register file" do
+describe "A #{DUT.name}, when disabled" do
   include RegisterInterface
 
   before do
-    Register_file.reset!
-    Register_file.enable.intVal = 0
+    DUT.reset!
+    DUT.enable.intVal = 0
   end
 
   it "should not write new values" do

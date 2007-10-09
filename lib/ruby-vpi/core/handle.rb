@@ -3,6 +3,8 @@
 # Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
+require 'ruby-vpi/util'
+
 module VPI
   Handle = SWIG::TYPE_p_unsigned_int
 

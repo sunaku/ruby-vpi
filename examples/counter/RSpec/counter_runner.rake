@@ -1,3 +1,8 @@
+# Path to a Ruby script that will be invoked before the Verilog
+# simulation begins.  This script shall then load the appropriate
+# tests to exercise the desired designs in the Verilog simulation.
+TEST_LOADER = "counter_loader.rb"
+
 # Array of paths and shell globs (see the Dir.glob method's documentation for
 # details) to source files and directories that contain source files.  These
 # source files will be loaded by the simulator before the simulation begins.
@@ -20,14 +25,14 @@ SIMULATOR_ARGUMENTS = {
   # Icarus Verilog
   :ivl => "",
 
+  # Cadence NC-Sim
+  :ncsim => "",
+
   # Synopsys VCS
   :vcs => "",
 
   # Mentor Modelsim
   :vsim => "",
-
-  # Cadence NC-Sim
-  :ncsim => "",
 
 }
 

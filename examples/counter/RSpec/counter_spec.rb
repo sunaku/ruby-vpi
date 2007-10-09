@@ -1,39 +1,39 @@
 require 'spec'
 
 # lowest upper bound of counter's value
-LIMIT = 2 ** Counter::Size
+LIMIT = 2 ** DUT.Size.intVal
 
 # maximum allowed value for a counter
 MAX = LIMIT - 1
 
-describe "A resetted counter's value" do
+describe "A #{DUT.name} after being reset" do
   setup do
-    Counter.reset!
+    DUT.reset! # reset the counter
   end
 
   it "should be zero" do
-    Counter.count.intVal.should == 0
+    DUT.count.intVal.should == 0
   end
 
-  it "should increment upon each rising clock edge" do
+  it "should increment upon each subsequent posedge" do
     LIMIT.times do |i|
-      Counter.count.intVal.should == i
-      Counter.cycle! # increment the counter
+      DUT.count.intVal.should == i
+      DUT.cycle! # increment the counter
     end
   end
 end
 
-describe "A counter with the maximum value" do
+describe "A #{DUT.name} with the maximum value" do
   setup do
-    Counter.reset!
+    DUT.reset! # reset the counter
 
     # increment the counter to maximum value
-    MAX.times { Counter.cycle! }
-    Counter.count.intVal.should == MAX
+    MAX.times { DUT.cycle! }
+    DUT.count.intVal.should == MAX
   end
 
   it "should overflow upon increment" do
-    Counter.cycle! # increment the counter
-    Counter.count.intVal.should == 0
+    DUT.cycle! # increment the counter
+    DUT.count.intVal.should == 0
   end
 end
