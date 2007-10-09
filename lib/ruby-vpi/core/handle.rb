@@ -149,7 +149,7 @@ module VPI
       if vpi_get(VpiType, self) == VpiNet
         aDelay = VpiForceFlag
 
-        if driver = self[VpiDriver].find {|d| vpi_get(VpiType, d) != VpiForce}
+        if driver = self.to_a(VpiDriver).find {|d| vpi_get(VpiType, d) != VpiForce}
           warn "forcing value #{aValue.inspect} onto wire #{self} that is already driven by #{driver.inspect}"
         end
       end
@@ -195,7 +195,7 @@ module VPI
 
     # Tests if there is currently a value forced onto this handle.
     def force?
-      self[VpiDriver].any? {|d| vpi_get(VpiType, d) == VpiForce}
+      self.to_a(VpiDriver).any? {|d| vpi_get(VpiType, d) == VpiForce}
     end
 
 
@@ -203,12 +203,17 @@ module VPI
     # accessing related handles / traversing the hierarchy
     #---------------------------------------------------------------------------
 
+    # Returns the child handle at the given relative VPI path.
+    def / aRelativePath
+      access_child(aRelativePath)
+    end
+
     # Returns an array of child handles of the
-    # given types (name or integer constant).
-    def [] *aTypes
+    # given types (names or integer constants).
+    def to_a *aChildTypes
       handles = []
 
-      aTypes.each do |arg|
+      aChildTypes.each do |arg|
         t = resolve_prop_type(arg)
 
         if itr = vpi_iterate(t, self)
@@ -222,20 +227,21 @@ module VPI
     end
 
     # inherit Enumerable methods, such as #each, #map, #select, etc.
-    Enumerable.instance_methods.push('each').each do |meth|
-      # using a string because define_method
-      # does not accept a block until Ruby 1.9
-      class_eval %{
-        def #{meth}(*args, &block)
-          if ary = self[*args]
-            ary.#{meth}(&block)
-          end
-        end
-      }, __FILE__, __LINE__
-    end
+      list = Enumerable.instance_methods
+      list.delete 'to_a'
+      list.push 'each'
 
-    # bypass Enumerable's #to_a method, which relies on #each
-    alias to_a []
+      list.each do |meth|
+        # using a string because define_method
+        # does not accept a block until Ruby 1.9
+        class_eval %{
+          def #{meth}(*args, &block)
+            if ary = self.to_a(*args)
+              ary.#{meth}(&block)
+            end
+          end
+        }, __FILE__, __LINE__
+      end
 
     # Sort by absolute VPI path.
     def <=> other
@@ -247,17 +253,23 @@ module VPI
     # accessing VPI properties
     #---------------------------------------------------------------------------
 
-    @@propCache = Hash.new {|h, k| h[k] = Property.new(k)}
+    # Returns the value of the given VPI property
+    # (name or integer constant) of this handle.
+    def [] aProp
+      access_prop(aProp)
+    end
 
-    undef type # used to access VpiType
+    @@propCache = Hash.new {|h,k| h[k] = Property.new(k)}
 
-    # Provides access to this handle's (1) child handles
-    # and (2) VPI properties through method calls.  In the
-    # case that a child handle has the same name as a VPI
-    # property, the child handle will be accessed instead
-    # of the VPI property.  However, you can still access
-    # the VPI property via #get_value and #put_value.
-    def method_missing aMeth, *aArgs, &aBlockArg
+    undef id    # deprecated in Ruby 1.8
+    undef type  # used to access VpiType
+
+    # Provides access to this handle's (1) child handles and (2) VPI
+    # properties through method calls.  In the case that a child handle
+    # has the same name as a VPI property, the child handle will be
+    # accessed instead of the VPI property.  However, you can still
+    # access the VPI property using the square brackets #[] method.
+    def method_missing aMeth, *aArgs, &aBlock
       # cache the result for future accesses, in order
       # to cut down number of calls to method_missing()
       eigen_class = (class << self; self; end)
@@ -275,15 +287,23 @@ module VPI
         #      not support a block argument until Ruby 1.9
         eigen_class.class_eval %{
           def #{aMeth}(*a, &b)
-            @@propCache[#{aMeth.inspect}].execute(self, *a, &b)
+            access_prop(#{aMeth.inspect}, *a, &b)
           end
         }, __FILE__, __LINE__
 
-        __send__(aMeth, *aArgs, &aBlockArg)
+        __send__(aMeth, *aArgs, &aBlock)
       end
     end
 
     private
+
+    def access_child aPath
+      vpi_handle_by_name(aPath.to_s, self)
+    end
+
+    def access_prop aProp, *aArgs, &aBlock
+      @@propCache[aProp.to_sym].execute(self, *aArgs, &aBlock)
+    end
 
     class Property # :nodoc:
       attr_reader :name, :type, :accessor, :operation
@@ -399,7 +419,7 @@ module VPI
             if @isAssign
               raise NotImplementedError
             else
-              aHandle[@type]
+              aHandle.to_a(@type)
             end
 
           else
