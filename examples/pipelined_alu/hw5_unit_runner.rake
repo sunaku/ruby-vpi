@@ -31,7 +31,7 @@ SIMULATOR_ARGUMENTS = {
   :vcs => "",
 
   # Mentor Modelsim
-  :vsim => "",
+  :vsim => "hw5_unit",
 
 }
 

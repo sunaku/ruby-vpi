@@ -75,20 +75,20 @@ task :default => :build
   ccFlags = ENV['CFLAGS']
   ldFlags = ENV['LDFLAGS']
 
-  SIMULATORS.each_pair do |id, sim|
-    taskName = "build_#{id}"
+  SIMULATORS.each do |sim|
+    taskName = "build_#{sim.id}"
 
     desc "Builds object files for #{sim.name}."
     task taskName => ['obj', 'ext'] do
       src = PROJECT_ID + '.' + Config::CONFIG['DLEXT']
-      dst = File.expand_path(File.join('obj', "#{id}.so"))
+      dst = File.expand_path(File.join('obj', "#{sim.id}.so"))
 
       unless File.exist? dst
         cd 'ext' do
           ENV['CFLAGS']  = [ccFlags, sim.compiler_args].compact.join(' ')
           ENV['LDFLAGS'] = [ldFlags, sim.linker_args].compact.join(' ')
 
-          sh "rake SIMULATOR=#{id}"
+          sh "rake SIMULATOR=#{sim.id}"
           mv src, dst
           sh 'rake clean'
         end

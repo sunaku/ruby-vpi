@@ -32,7 +32,7 @@ SIMULATOR_ARGUMENTS = {
   :vcs => "",
 
   # Mentor Modelsim
-  :vsim => "",
+  :vsim => "counter",
 
 }
 

@@ -10,16 +10,21 @@ module RubyVPI
   PROJECT_SUMMARY = "Ruby interface to IEEE 1364-2005 Verilog VPI"
   PROJECT_DETAIL  = "#{PROJECT_NAME} is a #{PROJECT_SUMMARY} and a platform for unit testing, rapid prototyping, and systems integration of Verilog modules through Ruby. It lets you create complex Verilog test benches easily and wholly in Ruby."
 
-  Simulator = Struct.new(:name, :compiler_args, :linker_args)
+  Simulator = Struct.new(:id, :name, :compiler_args, :linker_args)
 
   # List of supported Verilog simulators.
-  SIMULATORS = {
-    :cver   => Simulator.new('GPL Cver',        '-DPRAGMATIC_CVER',   ''),
-    :ivl    => Simulator.new('Icarus Verilog',  '-DICARUS_VERILOG',   ''),
-    :vcs    => Simulator.new('Synopsys VCS',    '-DSYNOPSYS_VCS',     ''),
-    :vsim   => Simulator.new('Mentor Modelsim', '-DMENTOR_MODELSIM',  ''),
-    :ncsim  => Simulator.new('Cadence NC-Sim',  '-DCADENCE_NCSIM',    ''),
-  }
+  SIMULATORS = [
+    Simulator.new(:cver,  'GPL Cver',        '-DPRAGMATIC_CVER',  ''),
+    Simulator.new(:ivl,   'Icarus Verilog',  '-DICARUS_VERILOG',  ''),
+    Simulator.new(:vcs,   'Synopsys VCS',    '-DSYNOPSYS_VCS',    ''),
+    Simulator.new(:vsim,  'Mentor Modelsim', '-DMENTOR_MODELSIM', ''),
+    Simulator.new(:ncsim, 'Cadence NC-Sim',  '-DCADENCE_NCSIM',   ''),
+  ].sort_by {|s| s.id.to_s}
+
+  def SIMULATORS.find_by_id aSimId
+    @id2sim ||= inject({}) {|h,s| h[s.id] = s; h}
+    @id2sim[aSimId]
+  end
 
   # Speaks the given message using printf().
   def RubyVPI.say fmt, *args #:nodoc:

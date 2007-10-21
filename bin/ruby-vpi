@@ -35,8 +35,8 @@ def show_help_info
     require 'ruby-vpi'
     puts "Simulators:"
 
-    RubyVPI::SIMULATORS.each_pair do |id, sim|
-      printf "  %-10s %s\n", id, sim.name
+    RubyVPI::SIMULATORS.each do |sim|
+      printf "  %-10s %s\n", sim.id, sim.name
     end
 end
 

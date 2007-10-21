@@ -18,13 +18,9 @@ SIMULATOR_SOURCES = FileList[
 #   :cver => %w[these are also separate arguments],
 #
 SIMULATOR_ARGUMENTS = {
-<%
-  h = RubyVPI::SIMULATORS
-  h.keys.map {|x| x.to_s}.sort.each do |id|
-    sim = h[id.to_sym]
-%>
+<% RubyVPI::SIMULATORS.each do |sim| %>
   # <%= sim.name %>
-  :<%= id %> => "",
+  :<%= sim.id %> => "<%= aModuleInfo.name if sim.id == :vsim %>",
 
 <% end %>
 }

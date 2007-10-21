@@ -84,7 +84,7 @@ end
 
 # Creates a new task for running the given simulator.
 def sim_task aSimId #:nodoc:
-  desc "Simulate with #{RubyVPI::SIMULATORS[aSimId].name}."
+  desc "Simulate with #{RubyVPI::SIMULATORS.find_by_id(aSimId).name}."
   task aSimId => :setup do
     ENV['RUBYVPI_SIMULATOR'] = aSimId.to_s
     yield aSimId
@@ -145,7 +145,7 @@ sim_task :vsim do |id|
   sh %w[vsim -c],
     '-do', 'run -all; exit',
     '-pli', object_file_path(id),
-    SIMULATOR_ARGUMENTS[id]#, @target
+    SIMULATOR_ARGUMENTS[id]
 end
 
 CLEAN.include 'work', 'vsim.wlf'
