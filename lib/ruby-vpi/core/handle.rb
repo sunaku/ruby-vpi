@@ -132,9 +132,9 @@ module VPI
       @size ||= vpi_get(VpiSize, self)
 
       if fmt == VpiIntVal and @size > INTEGER_BITS
-        fmt = VpiHexStrVal
+        fmt = VpiBinStrVal
         val = get_value_wrapper(fmt)
-        val.read(fmt).to_i(16)
+        val.read(fmt).gsub(/[^01]/, '0').to_i(2)
       else
         val = get_value_wrapper(fmt)
         val.read(fmt)
