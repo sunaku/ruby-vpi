@@ -1,4 +1,4 @@
-# Converts Verilog source code into Ruby.
+# Converts Verilog `defines, constants, ranges, etc. into Ruby syntax.
 # * The standard input stream is read if no input files are specified.
 # * Output is written to the standard output stream.
 

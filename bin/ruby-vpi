@@ -3,9 +3,9 @@
 # This is a front-end for tools provided by Ruby-VPI.
 #
 # Usage:
-#   ruby-vpi                                    Show this help message
-#   ruby-vpi TOOL --help                        Show help message for TOOL
-#   ruby-vpi TOOL arguments...                  Run TOOL with some arguments
+#   ruby-vpi                      Show this help message
+#   ruby-vpi TOOL --help          Show help message for TOOL
+#   ruby-vpi TOOL arguments...    Run TOOL with some arguments
 
 #--
 # Copyright 2006 Suraj N. Kurapati
@@ -48,9 +48,9 @@ unless ARGV.empty?
 
   begin
     load file
-  rescue LoadError
+  rescue
     show_help_info
-    puts '', '#' * 76
+    puts '', '#' * 80
     raise "Invalid tool: #{tool.inspect}"
   end
 else

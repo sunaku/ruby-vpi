@@ -1,4 +1,4 @@
-# Generates Ruby-VPI tests from Verilog 2001 and Verilog 95 module declarations.
+# Generates test skeletons from Verilog 2001/1995 module declarations.
 #
 # * The standard input stream is read if no input files are specified.
 #
