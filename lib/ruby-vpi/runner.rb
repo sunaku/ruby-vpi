@@ -18,6 +18,10 @@
 
 require 'ruby-vpi/util'
 
+# go into same directory as the test runner file
+  dir = File.dirname(caller.reject {|s| s =~ /:in /}.first.rstrip_from(':'))
+  cd dir unless Rake.original_dir == dir
+
 # check for required variables
   vars = %w[TEST_LOADER SIMULATOR_SOURCES SIMULATOR_ARGUMENTS]
 

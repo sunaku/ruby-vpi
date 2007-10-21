@@ -247,8 +247,6 @@ task :default => :build
     sim = ENV['SIMULATOR'] || 'cver'
 
     FileList['examples/**/*.rake'].each do |runner|
-      cd File.dirname(runner) do
-        sh 'rake', '-f', File.basename(runner), sim
-      end
+      sh 'rake', '-f', runner, sim
     end
   end

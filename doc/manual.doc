@@ -436,7 +436,7 @@
     When you invoke a test runner without any arguments, it will show you a list of available tasks:
     <pre>% rake -f your_test_runner.rake
 
-    <%= `cd ../examples/counter/RSpec; rake -f counter_runner.rake` %></pre>
+    <%= `rake -f ../examples/counter/RSpec/counter_runner.rake` %></pre>
 
     <% section "Environment variables", "usage.runner.env-vars" do %>
       Test runners support the following _environment_ variables, which allow you to easily change the behavior of the test runner.
