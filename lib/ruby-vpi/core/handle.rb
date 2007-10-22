@@ -29,72 +29,92 @@ module VPI
   class Handle
     include VPI
 
+    #---------------------------------------------------------------------------
+    # testing & setting common logic values
+    #---------------------------------------------------------------------------
+
+    # Tests if the integer value of this handle is 1.
+    def vpi1?
+      get_value(VpiScalarVal) == Vpi1
+    end
+
+    # Sets the integer value of this handle to 1.
+    def vpi1!
+      put_value(Vpi1, VpiScalarVal)
+    end
+
+    alias t? vpi1?
+    alias t! vpi1!
+
+
+    # Tests if the integer value of this handle is 0.
+    def vpi0?
+      get_value(VpiScalarVal) == Vpi0
+    end
+
+    # Sets the integer value of this handle to 0.
+    def vpi0!
+      put_value(Vpi0, VpiScalarVal)
+    end
+
+    alias f? vpi0?
+    alias f! vpi0!
+
+
     # Tests if the logic value of this handle is unknown (x).
-    def x?
-      get_value(VpiHexStrVal) =~ /x/i
+    def vpiX?
+      get_value(VpiScalarVal) == VpiX
     end
 
     # Sets the logic value of this handle to unknown (x).
-    def x!
-      put_value('x', VpiHexStrVal)
+    def vpiX!
+      put_value(VpiX, VpiScalarVal)
     end
 
-    alias unknown? x?
-    alias unknown! x!
+    alias x? vpiX?
+    alias x! vpiX!
 
-    alias dont_care? x?
-    alias dont_care! x!
 
     # Tests if the logic value of this handle is high impedance (z).
-    def z?
-      get_value(VpiHexStrVal) =~ /z/i
+    def vpiZ?
+      get_value(VpiScalarVal) == VpiZ
     end
 
     # Sets the logic value of this handle to high impedance (z).
-    def z!
-      put_value('z', VpiHexStrVal)
+    def vpiZ!
+      put_value(VpiZ, VpiScalarVal)
     end
 
-    alias hi_z? z?
-    alias hi_z! z!
+    alias z? vpiZ?
+    alias z! vpiZ!
 
-    alias high_z? z?
-    alias high_z! z!
 
-    alias high_impedance? z?
-    alias high_impedance! z!
-
-    alias tri_state? z?
-    alias tri_state! z!
-
-    alias floating? z?
-    alias floating! z!
-
-    # Tests if the logic value of this handle is at "logic high" level.
-    def high?
-      get_value(VpiIntVal) != 0
+    # Tests if the strength value of this handle is high.
+    def vpiH?
+      get_value(VpiScalarVal) == VpiH
     end
 
-    # Sets the logic value of this handle to "logic high" level.
-    def high!
-      put_value(1, VpiIntVal)
+    # Sets the strength value of this handle to high.
+    def vpiH!
+      put_value(VpiH, VpiScalarVal)
     end
 
-    alias one? high?
-    alias one! high!
+    alias h? vpiH?
+    alias h! vpiH!
 
-    # Tests if the logic value of this handle is at "logic low" level.
-    def low?
-      get_value(VpiHexStrVal) =~ /^0+$/
+
+    # Tests if the strength value of this handle is low.
+    def vpiL?
+      get_value(VpiScalarVal) == VpiL
     end
 
-    # Sets the logic value of this handle to "logic low" level.
-    def low!
-      put_value(0, VpiIntVal)
+    # Sets the strength value of this handle to low.
+    def vpiL!
+      put_value(VpiL, VpiScalarVal)
     end
 
-    alias zero? low?
-    alias zero! low!
+    alias l? vpiL?
+    alias l! vpiL!
 
 
     # Inspects the given VPI property names, in

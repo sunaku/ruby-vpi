@@ -6,11 +6,11 @@ if RubyVPI::USE_PROTOTYPE
       DUT.rw.change? or
       DUT.enable.change?
 
-    if DUT.rw.low?
+    if DUT.rw.f?
       target            = DUT.register.memoryWord_a[DUT.rdReg.intVal]
       DUT.outBus.intVal = target.intVal
 
-    elsif DUT.enable.high?
+    elsif DUT.enable.t?
       target            = DUT.register.memoryWord_a[DUT.wtReg.intVal]
       target.intVal     = DUT.inBus.intVal
     end

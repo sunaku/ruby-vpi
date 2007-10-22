@@ -1,17 +1,17 @@
 # Simulates the design under test for one clock cycle.
 def DUT.cycle!
-  clk.high!
+  clk.t!
   advance_time
 
-  clk.low!
+  clk.f!
   advance_time
 end
 
 # Brings the design under test into a blank state.
 def DUT.reset!
-  reset.high!
+  reset.t!
   5.times { cycle! }
-  reset.low!
+  reset.f!
 end
 
 OPERATIONS = (DUT.OP_NOP.intVal .. DUT.OP_MULT.intVal).to_a
