@@ -17,6 +17,7 @@ PROJECT_LIBS = File.join(File.dirname(__FILE__), 'lib')
 $:.unshift PROJECT_LIBS
 require 'ruby-vpi'
 require 'ruby-vpi/rake'
+require 'ruby-vpi/util'
 
 task :default => :build
 
@@ -119,12 +120,68 @@ task :default => :build
   directory 'ref/ruby'
   CLOBBER.include 'ref/ruby'
 
+  desc "Generate API documentation for dynamic code."
+  file '../ruby-vpi-dynamic.rb' => 'ext/vpi_user.h' do |t|
+    File.open t.name, 'w' do |f|
+      f.puts "# This module encapsulates all functionality provided by the C-language Application Programming Interface (API) of the Verilog Procedural Interface (VPI).  See the ext/vpi_user.h file for details."
+      f.puts "module VPI"
+        body = File.read(t.prerequisites[0])
+
+        # constants
+        body.scan %r{^#define\s+(vpi\S+)\s+(\S+)\s+/\*+(.*?)\*+/} do |var, val, info|
+          const = var.to_ruby_const_name
+          f.puts '# ' << info
+          f.puts "#{const}=#{val}"
+
+          f.puts "# Returns the #{const} constant: #{info}"
+          f.puts "def self.#{var}; end"
+        end
+
+        # functions
+        body.scan /^XXTERN\s+(\S+\s+\*?)(\S+)\s+PROTO_PARAMS\(\((.*?)\)\);/m do |type, func, args|
+          meth = func.gsub(/\W/, '')
+          args = args.gsub(/[\r\n]/, ' ')
+
+          [
+            [ /PLI_BYTE8(\s*)\*(\s*data)/ , 'Object\1\2'  ],
+            [ /PLI_BYTE8(\s*)\*?/         , 'String\1'    ],
+            [ /PLI_U?INT32(\s*)\*/        , 'Array\1'     ],
+            [ /PLI_U?INT32/               , 'Integer'     ],
+            [ /\b[ps]_/                   , 'VPI::S_'     ],
+            [ 'vpiHandle'                 , 'VPI::Handle' ],
+            [ /va_list\s+\w+/             , '...'         ],
+            [ /\bvoid(\s*)\*/             , 'Object\1'    ],
+            [ 'void'                      , 'nil'         ],
+          ].each do |(a, b)|
+            args.gsub! a, b
+            type.gsub! a, b
+          end
+
+          f.puts "# #{func}(#{args}) returns #{type}"
+          f.puts "def self.#{meth}; end"
+        end
+
+        # VPI::Handle methods
+        f.puts "class Handle"
+          load 'lib/ruby-vpi/core/edge-methods.rb'
+          DETECTION_METHODS.each do |m|
+            f.puts "# #{m.info}"
+            f.puts "def #{m.name}; end"
+          end
+        f.puts "end"
+      f.puts "end"
+    end
+  end
+  CLOBBER.include '../ruby-vpi-dynamic.rb'
+
   desc 'Generate reference for Ruby.'
   Rake::RDocTask.new 'ref/ruby' do |t|
     t.rdoc_dir = t.name
     t.title    = "#{PROJECT_NAME}: #{PROJECT_SUMMARY}"
     t.options.concat %w(--charset utf-8 --line-numbers)
-    t.rdoc_files.include '{bin,lib/**}/*.rb'
+
+    Rake::Task['../ruby-vpi-dynamic.rb'].invoke
+    t.rdoc_files.include 'bin/{ruby-vpi,*.rb}', 'lib/**/*.rb', '../ruby-vpi-dynamic.rb'
   end
 
 
