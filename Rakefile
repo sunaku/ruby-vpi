@@ -50,8 +50,7 @@ task :default => :build
   # propogate cleaning tasks recursively to lower levels
   %w[clean clobber].each do |t|
     task t do
-      files = FileList['**/Rakefile'].exclude('_darcs')
-      files.shift # avoid infinite loop on _this_ file
+      files = FileList['**/Rakefile'].exclude('_darcs') - %w[Rakefile]
 
       # allows propogation to lower levels when gem not installed
       ENV['RUBYLIB'] = PROJECT_LIBS
