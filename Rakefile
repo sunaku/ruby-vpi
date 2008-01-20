@@ -22,16 +22,6 @@ require 'ruby-vpi/util'
 task :default => :build
 
 
-# load project information
-  include RubyVPI
-  PROJECT_SSH_URL  = "snk@rubyforge.org:/var/www/gforge-projects/#{PROJECT_ID}"
-
-  load 'doc/history.rb'
-  head = @history.first
-  PROJECT_VERSION  = head['Version']
-  PROJECT_BIRTHDAY = head['Date']
-
-
 # utility
 
   # Returns a temporary, unique path ready for
@@ -75,12 +65,12 @@ task :default => :build
   ccFlags = ENV['CFLAGS']
   ldFlags = ENV['LDFLAGS']
 
-  SIMULATORS.each do |sim|
+  RubyVPI::SIMULATORS.each do |sim|
     taskName = "build_#{sim.id}"
 
     desc "Builds object files for #{sim.name}."
     task taskName => ['obj', 'ext'] do
-      src = PROJECT_ID + '.' + Config::CONFIG['DLEXT']
+      src = RubyVPI::Project[:name] + '.' + Config::CONFIG['DLEXT']
       dst = File.expand_path(File.join('obj', "#{sim.id}.so"))
 
       unless File.exist? dst
@@ -176,7 +166,6 @@ task :default => :build
   desc 'Generate reference for Ruby.'
   Rake::RDocTask.new 'ref/ruby' do |t|
     t.rdoc_dir = t.name
-    t.title    = "#{PROJECT_NAME}: #{PROJECT_SUMMARY}"
     t.options.concat %w(--charset utf-8 --line-numbers)
 
     Rake::Task['../ruby-vpi-dynamic.rb'].invoke
@@ -205,6 +194,8 @@ task :default => :build
 
   desc 'Publish documentation to website.'
   task :web => ['ref/web', 'doc/web']
+
+  PROJECT_SSH_URL = "snk@rubyforge.org:/var/www/gforge-projects/ruby-vpi"
 
   desc "Publish reference documentation."
   task 'ref/web' => 'ref' do |t|
@@ -251,12 +242,12 @@ task :default => :build
   end
 
   spec = Gem::Specification.new do |s|
-    s.name              = PROJECT_ID
-    s.rubyforge_project = PROJECT_ID
-    s.summary           = PROJECT_SUMMARY
-    s.description       = PROJECT_DETAIL
-    s.homepage          = PROJECT_URL
-    s.version           = PROJECT_VERSION
+    s.name              = RubyVPI::Project[:name]
+    s.rubyforge_project = s.name
+    s.summary           = "Ruby interface to IEEE 1364-2005 Verilog VPI"
+    s.description       = "Ruby-VPI is a #{s.summary} and a platform for unit testing, rapid prototyping, and systems integration of Verilog modules through Ruby. It lets you create complex Verilog test benches easily and wholly in Ruby."
+    s.homepage          = RubyVPI::Project[:website]
+    s.version           = RubyVPI::Project[:version]
 
     s.add_dependency 'rake',       '>= 0.7.0'
     s.add_dependency 'rspec',      '>= 1.0.0'
@@ -269,9 +260,9 @@ task :default => :build
     s.requirements << "C language compiler"
 
     s.files       = FileList['**/*'].exclude('_darcs')
-    s.autorequire = PROJECT_ID
+    s.autorequire = s.name
     s.extensions << 'gem_extconf.rb'
-    s.executables = PROJECT_ID
+    s.executables = s.name
   end
 
   Rake::GemPackageTask.new(spec) do |pkg|

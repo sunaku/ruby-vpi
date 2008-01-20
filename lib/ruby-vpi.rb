@@ -4,11 +4,13 @@
 # See the file named LICENSE for details.
 
 module RubyVPI
-  PROJECT_ID      = 'ruby-vpi'
-  PROJECT_NAME    = 'Ruby-VPI'
-  PROJECT_URL     = "http://#{PROJECT_ID}.rubyforge.org"
-  PROJECT_SUMMARY = "Ruby interface to IEEE 1364-2005 Verilog VPI"
-  PROJECT_DETAIL  = "#{PROJECT_NAME} is a #{PROJECT_SUMMARY} and a platform for unit testing, rapid prototyping, and systems integration of Verilog modules through Ruby. It lets you create complex Verilog test benches easily and wholly in Ruby."
+  Project = {
+    :name    => 'ruby-vpi',
+    :version => '20.0.0',
+    :release => '2008-01-20',
+    :website => "http://ruby-vpi.rubyforge.org",
+    :home    => File.expand_path(File.join(File.dirname(__FILE__), '..'))
+  }
 
   Simulator = Struct.new(:id, :name, :compiler_args, :linker_args)
 
@@ -29,7 +31,7 @@ module RubyVPI
 
   # Speaks the given message using printf().
   def RubyVPI.say fmt, *args #:nodoc:
-    VPI.vpi_printf("#{PROJECT_NAME}: #{fmt}\n", *args)
+    VPI.vpi_printf("#{Project[:name]}: #{fmt}\n", *args)
   end
 
   # Loads a test to exercise a design (the given VPI handle).
