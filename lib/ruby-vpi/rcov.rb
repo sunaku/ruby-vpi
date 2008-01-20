@@ -13,21 +13,16 @@ require 'rcov'
       include Markup
 
       def xmlish_ *a, &b
-        xx_which(XMLish){ xx_with_doc_in_effect(*a, &b)}
+        xx_which(XMLish) { xx_with_doc_in_effect(*a, &b) }
       end
     end
   end
 
-  require 'cgi'
-
 require 'rcov/report'
 
 
-module RubyVPI::Coverage #:nodoc:
-end
-
 module RubyVPI
-  module Coverage
+  module Coverage #:nodoc:
     @@analyzer = Rcov::CodeCoverageAnalyzer.new
 
     def Coverage.start
