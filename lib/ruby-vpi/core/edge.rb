@@ -3,10 +3,11 @@
 # Copyright 2007 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
-require 'singleton'
+require File.join(File.dirname(__FILE__), 'edge-methods.rb')
 
 module RubyVPI
   class EdgeClass #:nodoc:
+    require 'singleton'
     include Singleton
 
     def initialize
@@ -43,8 +44,6 @@ module RubyVPI
         @__edge__prev_val = get_value(VpiScalarVal)
       end
     end
-
-    load File.join(File.dirname(__FILE__), 'edge-methods.rb')
   end
 
   Edge = EdgeClass.instance

@@ -152,8 +152,8 @@ task :default => :build
 
         # VPI::Handle methods
         f.puts "class Handle"
-          load 'lib/ruby-vpi/core/edge-methods.rb'
-          DETECTION_METHODS.each do |m|
+          require 'lib/ruby-vpi/core/edge-methods.rb'
+          RubyVPI::EdgeClass::DETECTION_METHODS.each do |m|
             f.puts "# #{m.info}"
             f.puts "def #{m.name}; end"
           end
