@@ -34,5 +34,5 @@ task :setup do
 end
 
 # This command loads the Ruby-VPI runner template,
-# which runs the simulator using the above parameters.
+# which starts the simulator with the above parameters.
 require 'ruby-vpi/runner'

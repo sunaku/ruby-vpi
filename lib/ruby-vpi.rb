@@ -16,11 +16,12 @@ module RubyVPI
   SIMULATORS = [
     Simulator.new(:cver,  'GPL Cver',        '-DPRAGMATIC_CVER',  ''),
     Simulator.new(:ivl,   'Icarus Verilog',  '-DICARUS_VERILOG',  ''),
+    Simulator.new(:ncsim, 'Cadence NC-Sim',  '-DCADENCE_NCSIM',   ''),
     Simulator.new(:vcs,   'Synopsys VCS',    '-DSYNOPSYS_VCS',    ''),
     Simulator.new(:vsim,  'Mentor Modelsim', '-DMENTOR_MODELSIM', ''),
-    Simulator.new(:ncsim, 'Cadence NC-Sim',  '-DCADENCE_NCSIM',   ''),
-  ].sort_by {|s| s.id.to_s}
+  ]
 
+  # Returns the Simulator object corresponding to the given ID.
   def SIMULATORS.find_by_id aSimId
     @id2sim ||= inject({}) {|h,s| h[s.id] = s; h}
     @id2sim[aSimId]
@@ -31,7 +32,7 @@ module RubyVPI
     VPI.vpi_printf("#{PROJECT_NAME}: #{fmt}\n", *args)
   end
 
-  # Loads a test that exercises a design (the given VPI handle).
+  # Loads a test to exercise a design (the given VPI handle).
   #
   # 1. Creates a sandbox (an anonymous module).
   #
@@ -54,7 +55,6 @@ module RubyVPI
       end
 
     raise ArgumentError, "cannot access the design under test: #{aDesignHandleOrPath.inspect}" unless design
-
 
     sandbox = Module.new
     sandbox.const_set :DUT, design

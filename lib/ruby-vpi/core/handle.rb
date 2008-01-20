@@ -9,22 +9,16 @@ module VPI
   Handle = SWIG::TYPE_p_unsigned_int
 
   # A handle is an object inside a Verilog simulation (see
-  # *vpiHandle* in IEEE Std.  1364-2005).  VPI types and
-  # properties listed in ext/vpi_user.h can be specified by
+  # *vpiHandle* in IEEE Std.  1364-2005 for details).
+  #
+  # Nearly all methods of this class, such as put_value()
+  # and get_value(), you allow you to specify VPI types
+  # and properties (which are listed in ext/vpi_user.h) by
   # their names (strings or symbols) or integer constants.
   #
-  # = Example names
-  # * "intVal"
-  # * :intVal
-  # * "vpiIntVal"
-  # * :vpiIntVal
-  # * "VpiIntVal"
-  # * :VpiIntVal
-  #
-  # = Example constants
-  # * VpiIntVal
-  # * VpiModule
-  # * VpiReg
+  # For example, the vpiIntVal property can be specified as a string
+  # (<code>"vpiIntVal"</code>), a symbol (<code>:vpiIntVal</code>), or as
+  # an integer (<code>VpiIntVal</code> or <code>VPI::vpiIntVal</code>).
   #
   class Handle
     include VPI
@@ -164,8 +158,8 @@ module VPI
     # Writes the given value using the given format (name or integer
     # constant), time, and delay, and then returns the written value.
     #
-    # * If a format is not given, then the Verilog simulator
-    #   will attempt to determine the correct format.
+    # * If you do not specify the format, then the Verilog
+    #   simulator will attempt to determine the correct format.
     #
     def put_value aValue, aFormat = nil, aTime = nil, aDelay = VpiNoDelay
       if vpi_get(VpiType, self) == VpiNet
@@ -209,7 +203,7 @@ module VPI
       put_value(*args)
     end
 
-    # Releases a previously forced value on this handle.
+    # Releases all forced values on this handle (if any).
     def release_value
       # this doesn't really change the value, it only removes the force flag
       put_value(0, VpiIntVal, nil, VpiReleaseFlag)
@@ -230,8 +224,8 @@ module VPI
       access_child(aRelativePath)
     end
 
-    # Returns an array of child handles of the
-    # given types (names or integer constants).
+    # Returns an array of child handles which have
+    # the given types (names or integer constants).
     def to_a *aChildTypes
       handles = []
 

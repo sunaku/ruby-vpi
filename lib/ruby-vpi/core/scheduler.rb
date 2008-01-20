@@ -33,25 +33,24 @@ module RubyVPI
 
     def initialize
       @thread2task = { Thread.main => Task.new(Thread.main, :run) }
-      @thread2task_sw = @thread2task.dup  # software threads
-      @thread2task_hw = {}                # hardware threads (Ruby prototype of DUT)
+      @thread2task_soft = @thread2task.dup  # software threads
+      @thread2task_hard = {} # hardware threads (Ruby prototype of DUT)
       @thread2task_lock = Mutex.new
 
-
       # base case: hardware runs first before any software does at startup
-      @time = 0
+        @time = 0
 
-      unless RubyVPI::USE_PROTOTYPE
-        Callback.relay_verilog(VPI::CbReadOnlySynch, 0)
-      end
+        unless RubyVPI::USE_PROTOTYPE
+          Callback.relay_verilog(VPI::CbReadOnlySynch, 0)
+        end
 
       @scheduler = Thread.new do
-        # pause because boot loader is not fully init yet
+        # pause because boot loader is not fully initialized yet
         Thread.stop
 
         loop do
           # run software in current time step
-            run_tasks @thread2task_sw, true
+            run_tasks @thread2task_soft, true
             Edge.refresh_cache
 
             # go to time slot where writing is permitted before flushing writes
@@ -65,7 +64,7 @@ module RubyVPI
             @time += 1
 
             if RubyVPI::USE_PROTOTYPE
-              run_tasks @thread2task_hw, false
+              run_tasks @thread2task_hard, false
               flush_writes
             else
               Callback.relay_verilog(VPI::CbReadOnlySynch, 0)
@@ -92,9 +91,9 @@ module RubyVPI
 
       hash =
         if caller.grep(/_proto\.rb/).empty?
-          @thread2task_sw
+          @thread2task_soft
         else
-          @thread2task_hw
+          @thread2task_hard
         end
 
       @thread2task_lock.synchronize do
@@ -110,8 +109,8 @@ module RubyVPI
 
       @thread2task_lock.synchronize do
         @thread2task.delete key
-        @thread2task_hw.delete key
-        @thread2task_sw.delete key
+        @thread2task_hard.delete key
+        @thread2task_soft.delete key
       end
     end
 
@@ -168,7 +167,7 @@ module RubyVPI
         tasks = aHash.values
         tasks.each {|t| t.run}
 
-        if aExitWhenEmpty and tasks.empty?
+        if aExitWhenEmpty && tasks.empty?
           Thread.exit
         end
       end

@@ -340,7 +340,7 @@
 
     Note that these constraints are automatically enforced "under the hood", so to speak, by Ruby-VPI. As a user, you need not do anything extra to implement or support these constraints; they are already taken care of.
 
-    <% paragraph "Creating a concurrent process" do %>
+    <% section "Creating a concurrent process" do %>
       You can create a concurrent proceess by passing a block of code to the @process@ method.
 
       You can also create concurrent processes that loop forever using the @always@ and @forever@ methods, which mimic the "always" and "forever" blocks, respectively, of the Verilog language. However, due to the constraints of the concurrency model (see above), there is one limitation: all assignments are treated like Verilog's non-blocking assignments.
@@ -404,7 +404,7 @@
 
     For example, compare the Verilog design shown in <%= xref "fig:counter.v_impl" %> with its Ruby prototype shown in figure <%= xref "fig:counter_proto.rb" %>. The prototype uses only VPI to (1) detect changes in its inputs and (2) manipulate its outputs accordingly. In addition, notice how well the prototype's syntax reflects the intended behavior of the Verilog design. This similarity facilitates rapid translation of a prototype from Ruby into Verilog later in the design process.
 
-    <% paragraph "Creating a prototype" do %>
+    <% section "Creating a prototype" do %>
       # Start with a <%= xref "usage.tutorial.declare-design", "Verilog module declaration" %> for your design.
       # <%= xref "usage.tutorial.generate-test", "Generate a test" %> using that module declaration.
       # <%= xref "usage.tutorial.implement-proto", "Implement the prototype" %> in the generated <tt>proto.rb</tt> file.
@@ -450,7 +450,7 @@
 
       To deactivate these variables, simply assign a different value to them or *unset* them in your shell. For example, both @DEBUGGER=0@ and @DEBUGGER=@ dectivate the @DEBUGGER@ variable.
 
-      <% paragraph "Variables as command-line arguments" do %>
+      <% section "Variables as command-line arguments" do %>
         You can specify variable assignments as arguments to the *rake* command. For example, <pre>rake DEBUGGER=1</pre> is equivalent to
         <pre>
         DEBUGGER=1
