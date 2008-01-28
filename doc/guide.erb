@@ -328,6 +328,71 @@
 <% end %>
 
 <% chapter "Usage", "usage" do %>
+  <% section "Theory of operation", 'usage.theory' do %>
+    When you run a Ruby-VPI test, the following chain reaction occurs.
+
+    <% paragraph "Rake (via the <tt>Rakefile</tt>)" do %>
+      # Specifies a user-defined Ruby script that will be loaded
+        by Ruby-VPI once the simulator has been launched.
+      # Determines where all necessary Verilog modules & Verilog libraries
+        are and launches the Verilog simulator with this knowledge.
+    <% end %>
+
+    <% paragraph "Verilog simulator" do %>
+      # Launches the Ruby interpreter and loads Ruby-VPI into it.
+    <% end %>
+
+    <% paragraph "Ruby-VPI" do %>
+      # Establishes the <%= xref 'vpi', "basic verification environment" %> (the nice library for <%= xref 'vpi.handles', "working with VPI handles" %>, and so on).
+      # Loads the user-defined Ruby script that was specified by Rake.
+    <% end %>
+
+    <% paragraph "User-defined Ruby script" do %>
+      # Determines what Verilog modules are going to be tested.
+      # Determines what Ruby files are going to do the testing.
+      # Associates them together and starts the simulation.
+
+      For example, consider this user-defined Ruby script:
+      <code>
+      designHandle = vpi_handle_by_name("whatever", nil)
+      testFiles = Dir['path/to/files/*.whatever']
+
+      RubyVPI.load_test( designHandle, testFiles )
+      </code>
+
+      Here, the @RubyVPI.load_test@ method will:
+      # Create a temporary module (a sandbox).
+      # Define a constant named @DUT@ inside the sandbox.
+      # Load all the test files into the sandbox.
+
+      In this manner, we can (1) load as many tests into the simulation as we wish and (2) use any files we want (and organize them however we like) to perform the testing.
+    <% end %>
+
+    <% section "Test files" do %>
+      Ruby-VPI tests (when produced by the <%= xref "usage.tools.generate", "automated test generator" %>) are typically composed of the following files.
+
+      * <tt>runner.rake</tt>
+      ** Launches the Verilog simulator, loads Ruby-VPI into it, and executes the user-defined Ruby script.
+
+      * <tt>design.rb</tt>
+      ** Defines convenience methods on the @DUT@ object.
+      ** May define other data structures to aid the testing.
+
+      * <tt>proto.rb</tt>
+      ** Uses the <%= xref 'usage.concurrency', "concurrency model" %> to emulate the design under test's Verilog implementation.
+
+      * <tt>spec.rb</tt>
+      ** Does some tests on the @DUT@ object.
+      ** If you want to test multiple Verilog objects, then simply
+         use the @vpi_handle_by_name()@ function to get access to
+         the Verilog objects you want and proceed as usual.
+
+      * <tt>loader.rb</tt>
+      ** The user-defined Ruby script which loads the test.
+
+      Note that because the user-defined Ruby script (<tt>loader.rb</tt> among the files above) decides what files to load, you are free to organize your tests however you like. As a result, the files presented above are a mere _convention_ that you can _choose_ to follow rather than being forced to follow.
+    <% end %>
+  <% end %>
   <% section "Interacting with the Verilog simulator", "overview.relay" do %>
     In a typical VPI application written in C, the _Verilog simulator_ is in charge. Verilog code temporarily transfers control to C by invoking C functions, which return control to Verilog when they finish.
 
@@ -680,6 +745,7 @@
       * <tt>spec.rb</tt> is the executable specification for the design under test.
       * <tt>design.rb</tt> is an optional file that provides convenience methods for controlling the design under test.
       * <tt>proto.rb</tt> is an optional file that defines a Ruby prototype of the design under test.
+      * <tt>loader.rb</tt> is a user-defined Ruby script which loads the test (see <%= xref 'usage.theory' %>).
       * <tt>Rakefile</tt> is an optional file that recursively executes all <tt>runner.rake</tt> files found immediately within or beneath the current directory. It lets you simply run <pre>rake ...</pre> instead of having to write <pre>rake -f runner.rake ...</pre> every time.
 
       As <%= xref "fig:generate-test.RSpec" %> shows, the name of each generated file is prefixed with the name of the Verilog module for which the test was generated. This convention helps organize tests within the file system, so that they are readily distinguishable from one another.
