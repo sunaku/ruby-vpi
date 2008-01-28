@@ -7,7 +7,7 @@ module RubyVPI
   Project = {
     :name    => 'ruby-vpi',
     :version => '20.0.0',
-    :release => '2008-01-20',
+    :release => '2008-01-27',
     :website => "http://ruby-vpi.rubyforge.org",
     :home    => File.expand_path(File.join(File.dirname(__FILE__), '..'))
   }
