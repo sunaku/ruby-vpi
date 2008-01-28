@@ -1,126 +1,316 @@
-<doc_proxy_include common.inc>
+<%
+  ENV['RUBYLIB'] = File.join(Dir.pwd, 'lib') # needed to run the example tests
+  require 'lib/ruby-vpi'
 
-<% front_cover "Ruby-VPI user manual" do %>
-  h2(author). Suraj N. Kurapati
+  # local variables for this document
+  mailing_list_url  = 'http://rubyforge.org/mailman/listinfo/ruby-vpi-discuss'
+  mailing_list_link = link(mailing_list_url, "project mailing list")
+  download_url      = 'http://rubyforge.org/frs/?group_id=1339'
+  source_repo_url   = File.join(RubyVPI::Project[:website], 'src')
+  feed_url          = File.join(RubyVPI::Project[:website], 'news.xml')
 
-  h3(date). <%= Time.now.strftime("%d %B %Y") %>
+  # parameters for the HTML format
+  $title   = "Ruby-VPI #{RubyVPI::Project[:version]} user guide"
+  $authors = { 'Suraj N. Kurapati' => 'http://snk.tuxfamily.org' }
+  $feeds   = { feed_url => :rss }
 
-  p=. "Version <%= version %>":history.html#<%= version.to_html_anchor %>
+  # parameters for Gerbil
+  $unindent = '  '
 
+  class String
+    def indent aDepthOrNode
+      amt =
+        if aDepthOrNode.is_a? Node
+          aDepthOrNode.depth + 1
+        else
+          aDepthOrNode
+        end
 
-  <% paragraph "About this manual" do %>
-    This manual is meant to be read in conjunction with the "reference documentation for Ruby-VPI":../ref/ruby/index.html. In addition, if you are new to "the Ruby language":http://www.ruby-lang.org, you are encouraged to "explore its documentation":http://www.ruby-lang.org/en/documentation/ as necessary.
+      gsub(/^/, $unindent * amt).strip
+    end
+  end
+%>
 
-    In this manual, you will notice that the numbers of chapters, sections, figures, admonitions, etc. are hyperlinks that take you back to the corresponding place in the table of contents. These links make it easy to navigate this manual, especially for users of text-only web browsers.
+<% header_inside_below do %>
+  <div style="text-align: left; margin-top: 2em">
 
-    In addition, this manual is distributed as one big HTML file so that you can easily search for a particular topic using nothing more than your web browser's built-in text search mechanism. This facilitates offline reading, where an Internet search engine is not available.
+  * "News feed":<%= feed_url %>
+    - project news and release announcements.
+  * "Download area":<%= download_url %>
+    - place to obtain release packages.
+  * "Mailing list":<%= mailing_list_url %>
+    - ask questions, get help, and discuss.
+  * "Reference":api/
+    - API documentation for source code.
+  * "Talks":http://ruby-vpi.rubyforge.org/talks/
+    - archive of presentations and seminars.
+  * "Papers":http://ruby-vpi.rubyforge.org/papers/
+    - archive of research and publications.
 
-    Finally, this manual comes equipped with a stylesheet that makes it suitable for printing. In particular, users of the "Mozilla":http://mozilla.org family of web browsers will be pleasantly surprised to notice that all hyperlinks have been expanded to include their target URL next to the link text. So try using the "print preview" function of a graphical web browser to see how this manual will appear when printed.
-
-    You can give feedback about this manual and, in general, any aspect of the Ruby-VPI project on the "project forums":<%= forumURL %>. Furthermore, you can <%= xref "hacking.manual", "edit this manual" %> yourself and contribute your improvements to the "project patches":<%= trackerURL %> tracker. Finally, you can find the newest version of this manual at the "Ruby-VPI project website":<%= projectURL %>.
-  <% end %>
-
-  <% paragraph "Legal notice" do %>
-    This manual is distributed under <%= xref "intro.license", "the same license as Ruby-VPI" %>.
-
-    The admonition graphics used in this manual are Copyright 2005, 2006 "Tango Desktop Project":http://tango.freedesktop.org/Tango_Desktop_Project and are distributed under "these terms":./images/tango/LICENSE.
-  <% end %>
+  </div>
 <% end %>
 
-<% chapter "Welcome", 'intro' do %>
-  <doc_proxy_include intro.inc>
+<% chapter "Introduction" do %>
+  Ruby-VPI is a library that provides the entire "IEEE 1364-2005 Verilog VPI":http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945 interface to "Ruby":http://www.ruby-lang.org scripts. It also serves as *platform for unit testing*, rapid *prototyping*, and systems *integration* of Verilog modules through Ruby:
+  * Create complex Verilog test benches easily and wholly in Ruby.
+  * Apply agile software development practices to develop hardware.
+  * Perform "specification-driven functional verification":http://ruby-vpi.rubyforge.org/papers/masters_thesis.html ("PDF version":http://ruby-vpi.rubyforge.org/papers/masters_thesis.pdf).
+
+  Ruby-VPI is *open source software* (see <%= xref "License" %>) so feel free to contribute your improvements and discuss your ideas in the <%= mailing_list_link %>. See <%= xref "Hacking" %> for details.
+
+  <% section "Features" do %>
+    <% paragraph "Portable" do %>
+      * Works on Windows, Mac OSX, GNU/Linux, and UNIX.
+      * Supports all <%= xref "setup.reqs.sim", "major Verilog simulators" %> available today.
+    <% end %>
+
+    <% paragraph "Agile" do %>
+      * Enables "agile practices":http://agilemanifesto.org such as
+      ** "test-driven":http://www.testdriven.com development
+      ** "behavior-driven":http://behaviour-driven.org development
+      ** <%= xref 'usage.tutorial.implement-proto', "rapid prototyping" %> for design exploration
+
+      * Eliminates unneccesary work:
+      ** <%= xref 'usage.tutorial.specification', "Specifications" %> are executable, portable, and human-readable.
+      ** <%= xref 'usage.tools.generate', "Automated test generator" %> helps you accomodate design changes with minimal effort.
+      ** There is *absolutely no compiling*!
+    <% end %>
+
+    <% paragraph "Powerful" do %>
+      !>images/ruby/logo-reflection.png(the Ruby logo)!
+
+      * Employs the "power and elegance":http://www.ruby-lang.org/en/about/ of Ruby:
+      ** *Unlimited length integers*
+      ** Automatic memory management (garbage collection)
+      ** Regular expressions
+      ** Closures for functional programming
+      ** Pure OOP with dynamic typing
+      ** Portable multi-threading (green threads)
+      ** Native system calls and I/O
+      ** Highly readable and maintainable code
+
+      * Uses "ruby-debug":http://rubyforge.org/projects/ruby-debug/ for <%= xref 'usage.debugger', "interactive debugging" %>.
+      * Uses "rcov":http://eigenclass.org/hiki.rb?rcov for test <%= xref 'usage.runner.env-vars', "coverage analysis and report generation" %>.
+    <% end %>
+  <% end %>
+
+  <% section "License" do %>
+    <%= h(File.read('LICENSE')).gsub(/^Copyright.*$/, '\&<br/>') %>
+  <% end %>
+
+  <% section "Appetizers" do %>
+    Here is a tiny sampling of code to whet your appetite. See <%= xref 'usage.tutorial', "the tutorial" %> for more samples.
+
+    * Assign the value 2^2048^ to a register:
+    <code>
+    # NOTE: these are all equivalent
+
+    your_register.intVal = 2 ** 2048
+    your_register.put_value 2 ** 2048
+    </code>
+
+    * Check if all nets in a module are at high impedance:
+    <code>
+    your_module.all_net? { |your_net| your_net.z? }
+
+    # or, alternatively:
+
+    your_nets = your_module.net_a
+    your_nets.all? { |net| net.z? }
+    </code>
+
+    * See a register's path, width, and location (file & line number):
+    <code>
+    # NOTE: these are all equivalent
+
+    puts your_register
+    p :path  => your_register.fullName
+    p :width => your_register.size
+    p :file  => your_register.fileName
+    p :line  => your_register.lineNo
+    </code>
+
+    * Access the first five elements in a memory:
+    <code>
+    # NOTE: these are all equivalent
+
+    your_memory.memoryWord_a.first(5)
+    your_memory.memoryWord_a[0..4]
+    your_memory.memoryWord_a[0...5]
+    your_memory.memoryWord_a[0, 5]
+    </code>
+
+    * Clear a memory by filling it with zeroes:
+    <code>
+    # NOTE: these are all equivalent
+
+    your_memory.each_memoryWord { |w| w.f! }
+    your_memory.each_memoryWord { |w| w.vpi0! }
+    your_memory.each_memoryWord { |w| w.intVal = 0 }
+    your_memory.each_memoryWord { |w| w.put_value 0 }
+    </code>
+  <% end %>
+
+  <% section "Applications" do %>
+    Examples of tasks that can be performed with Ruby-VPI are:
+
+    * From the second edition of "_The Verilog PLI Handbook_":http://www.sutherland-hdl.com/publications.html:
+    ** C language bus-functional models
+    ** Reading test vector files
+    ** Delay calculation
+    ** Custom output displays
+    ** Co-simulation
+    ** Design debug utilities
+    ** Simulation analysis
+
+    * Adapted from "Pin Hong's":http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/ observations:
+    ** Writing hardware models in Ruby
+    ** Dumping or processing netlist data from Verilog database
+    ** Dumping or processing simulation data
+    ** Feeding dynamic simulation stimuli
+    ** Back-annotating delay information
+    ** Interactive logic simulation
+    ** Building a distributed simulation
+  <% end %>
+
+  <% section "Related works" do %>
+    * "ANVIL":http://anvil.sourceforge.net is a C++ interface to VPI.
+    * "Teal":http://teal.sourceforge.net is a C++ interface to VPI.
+    * "JOVE":http://jove.sourceforge.net is a Java interface to VPI.
+    * "ScriptEDA":http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/ is a Perl, Python, and Tcl interface to VPI.
+    * "RHDL":http://rhdl.rubyforge.org is a hardware description and verification language based on Ruby.
+    * "MyHDL":http://myhdl.jandecaluwe.com is a hardware description and verification language based on Python, which features conversion to Verilog and co-simulation.
+
+    <% paragraph "Ye olde PLI" do %>
+      The following projects utilize the archaic *tf* and *acc* PLI interfaces, which have been officially deprecated in IEEE Std 1364-2005.
+
+      * "ScriptSim":http://www.nelsim.com is a Perl, Python, and Tcl/Tk interface to PLI.
+      * "Verilog::Pli":http://www.veripool.com/verilog-pli.html is a Perl interface to PLI.
+    <% end %>
+  <% end %>
 <% end %>
 
 <% chapter "Setup", "setup" do %>
-  <% section "Manifest", "setup.manifest" do %>
-    When you extract a release package, the following is what you would expect to find.
-
-    * <tt>doc</tt> contains user documentation in various formats.
-    * <tt>ref</tt> contains reference API documentation in HTML format.
-    * <tt>ext</tt> contains source code, written in the C language, for the <%= xref "organization", "core of Ruby-VPI" %>
-    * <tt>lib</tt> contains Ruby libraries provided by Ruby-VPI.
-    * <tt>bin</tt> contains various tools. See <%= xref "usage.tools" %> for more information.
-    * <tt>examples</tt> contains example tests. See <%= xref "usage.examples" %> for more information.
-  <% end %>
-
   <% section "Requirements", "setup.reqs" do %>
-    See <%= xref "intro.reqs" %> above.
+    Your system needs the following software to run Ruby-VPI.
 
-    <% tip "Add support for your Verilog simulator" do %>
-      Write a "support request":http://rubyforge.org/tracker/?group_id=1339 for your simulator, while providing a sample transcript of the commands you use to run a test with your simulator, and I will add support for your simulator in the next release!
+    <% paragraph "Verilog simulator", 'setup.reqs.sim' do %>
+      Ruby-VPI is known to work with the following simulators. However, you should be able to use it with any Verilog simulator that supports VPI.
+
+      |_. Simulator |_. Notes |
+      | "Synopsys VCS":http://www.synopsys.com/products/simulation/simulation.html | Any version that supports the <tt>-load</tt> option is acceptable. |
+      | "Mentor Modelsim":http://www.model.com | Any version that supports the <tt>-pli</tt> option is acceptable. |
+      | "Cadence NC-Sim":http://www.cadence.com/products/functional_ver/nc-verilog/ | Any version that supports the <tt>+loadvpi</tt> option is acceptable. |
+      | "GPL Cver":http://www.pragmatic-c.com/gpl-cver/ | Version 2.11a or newer is acceptable. |
+      | "Icarus Verilog":http://www.geda.seul.org/tools/icarus/index.html | Version 0.8 is _mostly_ acceptable because you *will not* be able to <%= xref "vpi.handles.relatives", "access child handles through method calls" %>. The reason for this limitation is explained in <%= xref 'problems.ivl.vpi_handle_by_name.absolute-paths' %>. |
+    <% end %>
+
+    <% paragraph "Compilers" do %>
+      |_. Software |_. Notes |
+      | "make":http://en.wikipedia.org/wiki/Make | Any flavor or distribution should be acceptable. |
+      | C compiler | the "GNU Compiler Collection (GCC)":http://www.gnu.org/software/gcc/ is preferred, but any C compiler should be acceptable. |
+      | "SWIG":http://www.swig.org/download.html | Version 1.3.29 or newer is required. |
+      | "Ruby":http://www.ruby-lang.org/en/downloads/ | Version 1.8 or newer, including header and linkable object files for building extensions, is required. You can install Ruby by following "these instructions":http://www.ruby-lang.org/en/downloads/. |
+    <% end %>
+
+    <% paragraph "Libraries" do %>
+      |_. Library |_. Notes |
+      | "POSIX threads (pthreads)":http://en.wikipedia.org/wiki/Pthreads | Header and linkable object files, and operating system support for this library are necessary. |
+      | "RubyGems":http://rubyforge.org/frs/?group_id=126 | Any recent version should be acceptable. You can install RubyGems by following "these instructions":http://www.rubygems.org/read/chapter/3. |
     <% end %>
   <% end %>
 
   <% section "Recommendations", "setup.recom" do %>
-    The following software may make your interactions with Ruby-VPI more pleasant.
+    The following software might make your interactions with Ruby-VPI more pleasant.
 
-    <% section "Text merging tool", "setup.recom.merger" do %>
+    <% paragraph "Text merging tool", "setup.recom.merger" do %>
       An _interactive_ text merging tool can greatly simplify the process of transferring wanted changes from one file to another. In particular, such tools are especially beneficial when using the <%= xref "usage.tools.generate", "automated test generator" %>. A handful of the currently available open-source text merging tools are listed below.
 
-      * "*kdiff3*":http://kdiff3.sourceforge.net/ is a graphical, three-way merging tool for KDE.
-
-      * "*meld*":http://meld.sourceforge.net/ is a graphical, three-way merging tool for GNOME.
-
-      * "*tkdiff*":http://tkdiff.sourceforge.net/ is a graphical, two-way merging tool that uses the cross-platform Tk windowing toolkit.
-
-      * "*xxdiff*":http://furius.ca/xxdiff/ is a graphical, three-way merging tool.
-
-      * "*imediff2*":http://elonen.iki.fi/code/imediff/ is a textual, fullscreen two-way merging tool. It is very useful when you are working remotely via SSH.
+      |_. Software |_. Description |
+      | "kdiff3":http://kdiff3.sourceforge.net/ | A graphical, three-way merging tool for KDE. |
+      | "meld":http://meld.sourceforge.net/ | A graphical, three-way merging tool for GNOME. |
+      | "tkdiff":http://tkdiff.sourceforge.net/ | A graphical, two-way merging tool that uses the cross-platform Tk windowing toolkit. |
+      | "xxdiff":http://furius.ca/xxdiff/ | A graphical, three-way merging tool. |
+      | "imediff2":http://elonen.iki.fi/code/imediff/ | A textual, fullscreen two-way merging tool. It is very useful when you are working remotely via SSH. |
     <% end %>
   <% end %>
 
   <% section "Installation", "setup.inst" do %>
-    Once you have satisfied the <%= xref "setup.reqs", "necessary requirements" %>, you can install Ruby-VPI by running the <pre>gem install -y ruby-vpi</pre> command. RubyGems will install Ruby-VPI into the system gem directory, whose path can be determined by running the <pre>gem env gemdir</pre> command. Within this directory, there is a <tt>gems/</tt> subdirectory which contains the Ruby-VPI installation, as illustrated below.
-
-    <pre>
-    $ gem env gemdir
-    /usr/lib/ruby/gems/1.8
-
-    $ ls -d `gem env gemdir`/gems/ruby-vpi*
-    /usr/lib/ruby/gems/1.8/gems/ruby-vpi-7.0.0/
-    </pre>
-
     <% tip "Tuning for maximum performance" do %>
-      You can tune your installation of Ruby-VPI for maximum performance by adding your C compiler's optimization flag to the @CFLAGS@ environment variable _before_ you run the <pre>gem install -y ruby-vpi</pre> command. For example, if your C compiler is GCC, then you can set @CFLAGS@ to <tt>-O9</tt> for maximum optimization.
+      You can tune your installation of Ruby-VPI for maximum performance by adding your C compiler's optimization flag to the @CFLAGS@ environment variable _before_ you run the installation command (shown below). For example, if your C compiler is GCC, then you can set @CFLAGS@ to <tt>-O9</tt> for maximum optimization.
     <% end %>
 
+    Once your system has the <%= xref "setup.reqs", "necessary requirements" %>, you can install Ruby-VPI by running the following commands:
+
+      gem install ruby-vpi
+      ruby-vpi -v
+
+    Otherwise, follow these instructions:
+    # Download the newest <tt>tar.gz</tt> release package from "the project download area":<%= download_url %>.
+    # Extract the release package anywhere you want on your system.
+    # Go inside the extracted directory and run the following commands:
+
+      rake build
+      ruby bin/ruby-vpi -v
+
+    If the installation was successful, then you will see output like this: <pre><%=h `ruby bin/ruby-vpi -v` %></pre>
+
+    Otherwise, you can ask for help in the <%= mailing_list_link %>.
+
     <% section "Installing on Windows", "setup.inst.windows" do %>
-        After Ruby-VPI is compiled, it is linked to symbols whose names begin with <tt>_vpi</tt>. In GNU/Linux and similar operating systems, these symbols are allowed to be undefined. However, one "cannot compile a shared object file with references to undefined symbols in Windows":http://sourceware.org/ml/cygwin/2001-12/msg01293.html.
+      After Ruby-VPI is compiled, it is linked to symbols whose names begin with <tt>_vpi</tt>. In GNU/Linux and similar operating systems, these symbols are allowed to be undefined. However, this is not the case in Windows because we "cannot compile a shared object file with references to undefined symbols in Windows":http://sourceware.org/ml/cygwin/2001-12/msg01293.html.
 
       One solution to this problem is to supply the Verilog simulator's VPI object file, which contains definitions of all VPI symbols, to the linker. The following steps illustrate this process.
 
-      * Install "Cygwin":http://www.cygwin.com, the Linux-like environment for Windows.
-
-      * Search for object files whose names end with <tt>.so</tt>, <tt>.o</tt>, or <tt>.dll</tt> in your Verilog simulator's installation directory.
-
-      * Determine which object files, among those found in the previous step, contain symbols whose names begin with "_vpi" by running the <pre>for x in *.{o,so,dll}; do nm $x | grep -q '[Tt] _vpi' && echo $x; done</pre> command in Cygwin.
+      # Install "Cygwin":http://www.cygwin.com, the Linux-like environment for Windows.
+      # Search for object files whose names end with <tt>.so</tt>, <tt>.o</tt>, or <tt>.dll</tt> in your Verilog simulator's installation directory.
+      # Determine which object files, among those found in the previous step, contain symbols whose names begin with "_vpi" by running the following command in Cygwin: <pre>for x in *.{o,so,dll}; do nm $x | grep -q '[Tt] _vpi' && echo $x; done</pre>
       ** If you are using Mentor Modelsim, the desired object file can be found at a path similar to <tt>C:\Modeltech\win32\libvsim.dll</tt>.
       ** If you are using GPL Cver, the desired object file can be found at a path similar to <tt>C:\gplcver\objs\v_vpi.o</tt>.
-
-      * Assign the path of the object file (determined in the previous step) to the @LDFLAGS@ environment variable. For example, if the object file's path is <tt>/foo/bar/vpi.so</tt>, then you would run the <pre>export LDFLAGS=/foo/bar/vpi.so</pre> command in Cygwin.
-
-      * You may now install Ruby-VPI by running the <pre>gem install ruby-vpi</pre> command in Cygwin.
+      # Assign the path of the object file (determined in the previous step) to the @LDFLAGS@ environment variable. For example, if the object file's path is <tt>/foo/bar/vpi.so</tt>, then you would run the following command in Cygwin: <pre>export LDFLAGS=/foo/bar/vpi.so</pre>
+      # You may now install Ruby-VPI by running the following command in Cygwin: <pre>gem install ruby-vpi</pre>
     <% end %>
   <% end %>
 
   <% section "Maintenance", "setup.maintenance" do %>
-    * You can upgrade to the latest release of Ruby-VPI by running the <pre>gem update ruby-vpi</pre> command.
-    * You can uninstall Ruby-VPI by running the <pre>gem uninstall ruby-vpi</pre> command.
+    You can upgrade to the latest release of Ruby-VPI by running the following command:
 
-    Learn more about using and manipulating RubyGems in "the RubyGems user manual":http://www.rubygems.org.
+      gem update ruby-vpi
+
+    You can uninstall Ruby-VPI by running the following command:
+
+      gem uninstall ruby-vpi
+
+    Learn more about using RubyGems in "the RubyGems user guide":http://www.rubygems.org.
+  <% end %>
+
+  <% section "Manifest", "setup.manifest" do %>
+    Now that Ruby-VPI is installed on your system, let us examine its installation directory.
+    * If you installed Ruby-VPI manually, then you already know the location of its installation directory.
+    * If you installed Ruby-VPI using RubyGems, then run <pre>ruby-vpi -v</pre> and select the right-most item in the output--that is the path of Ruby-VPI's installation directory.
+
+    Inside Ruby-VPI's installation directory, you will see (among other things) the following items:
+    * <tt>bin/</tt> - contains executable programs (see <%= xref "usage.tools" %>).
+    * <tt>doc/</tt> - contains user documentation in various formats.
+    * <tt>ref/</tt> - contains reference API documentation in HTML format.
+    * <tt>examples/</tt> - contains example Ruby-VPI tests (see <%= xref "usage.examples" %>).
+    * <tt>ext/</tt> - contains source code, written in the C language, for the <%= xref "organization", "core of Ruby-VPI" %>.
+    * <tt>lib/</tt> - contains Ruby libraries provided by Ruby-VPI.
   <% end %>
 <% end %>
 
-<% chapter "Organization", "organization" do %>
-  Ruby-VPI is a bridge between IEEE 1364-2005 Verilog VPI and the Ruby language. It enables Ruby programs to use VPI either (1) in the same, verbose way that C programs do, or (2) in a simpler, higher level way. In addition, it serves as a vehicle for the application of agile software development practices, such as <%= xref "glossary.TDD", "TDD" %> and <%= xref "glossary.BDD", "BDD" %> to the realm of hardware development with Verilog.
-
-  Ruby-VPI can be used with any Verilog simulator that supports VPI. In particular, it is known to operate with (1) Synopsys VCS and Mentor Modelsim, the two "most prominent Verilog simulators":http://www.eetimes.com/news/design/showArticle.jhtml?articleID=47204415 in the Electronic Design Automation (EDA) industry; as well as (2) GPL Cver and Icarus Verilog, the two most prevalent open source Verilog simulators today.
+<% chapter "Background", "organization" do %>
+  Ruby-VPI is a bridge between IEEE 1364-2005 Verilog VPI and the Ruby language. It enables Ruby programs to use VPI either (1) in the same, verbose way that C programs do, or (2) in a simpler, higher level way.
 
   <% figure "Where does Ruby-VPI fit in?", "fig:organization.detail" do %>
     !figures/organization_detailed.png!
   <% end %>
 
   As <%= xref "fig:organization.detail" %> shows, Ruby-VPI is composed of two complementary parts: one interacts with VPI through the C language, while the other interacts with an executable specification written in the Ruby language. The former is complied during installation to produce dynamically loadable C libraries---each tailored to accommodate the quirks of its respective Verilog simulator. The latter is not compiled because Ruby programs are interpreted dynamically.
+
+  <% section "Motivation" do %>
+    If you would like to know why Ruby-VPI developed, please read this "motivation section":http://ruby-vpi.rubyforge.org/papers/masters_thesis.html#tth_sEc5.2 of my masters thesis.
+  <% end %>
 
   <% section "Tests", "organization.tests" do %>
     In Ruby-VPI, the process of functional verification is neatly packaged into self-contained, executable tests. As <%= xref "fig:organization" %> illustrates, a test is composed of a *bench*, a *design*, and a *specification*.
@@ -143,7 +333,7 @@
 
     In contrast, Ruby-VPI puts the _specification_ in charge. The specification temporarily transfers control to the Verilog simulator by invoking the @advance_time@ method, which returns control to the specification after a given number of time steps. This process is illustrated in <%= xref "fig:ruby_relay" %>.  You can also use the @wait@ method, which is just an alias to the @advance_time@ method, if you prefer.
 
-    Ruby-VPI's approach is the same as any software testing framework, where the _specification_ drives the design under test. Whereas, the typical VPI & C approach is literally _backwards_ because the design under test drives the specification.
+    Ruby-VPI's approach is the same as any software testing framework, where the _specification_ drives the design under test. In contrast, the VPI & C approach is literally _backwards_ because the design under test drives the specification.
 
     <% figure "Interaction between Ruby and Verilog", "fig:ruby_relay" do %>
       !figures/ruby_relay.png!
@@ -164,25 +354,23 @@
     Ruby-VPI provides the _entire_ IEEE Std 1364-2005 VPI interface to Ruby. This section will show you how to make use of it.
 
     <% note "Constants are capitalized in Ruby" do %>
-      In the remainder of this manual, you may be surprised to see that VPI constants such as @vpiIntVal@ are written with a captialized name, as @VpiIntVal@. The reason for this discrepancy is that in Ruby, the names of constants are capitalized.
+      In the remainder of this guide, you may be surprised to see that VPI constants such as @vpiIntVal@ are written with a captialized name, as @VpiIntVal@. The reason for this discrepancy is that in Ruby, the names of constants are capitalized.
 
       However, keep in mind that Ruby-VPI provides all VPI constants in both (1) their original, uncapitalized form and (2) their capitalized Ruby form. You may use either version according to your preference; they are functionally equivalent.
     <% end %>
 
     <% section "Handles", "vpi.handles" do %>
-      A *handle* is a reference to an object (such as a module, register, wire, and so on) inside the Verilog simulation. Handles allows you to inspect and manipulate the design under test and its internal components. They are instances of the @VPI::Handle@ class (see "reference documentation":../ref/ruby/classes/VPI/Handle.html for details) in Ruby-VPI.
+      A *handle* is a reference to an object (such as a module, register, wire, and so on) inside the Verilog simulation. Handles allows you to inspect and manipulate the design under test and its internal components. They are instances of the @VPI::Handle@ class (see "reference documentation":api/ruby/classes/VPI/Handle.html for details) in Ruby-VPI.
 
       Handles have various *properties*, listed in the second column of <%= xref "tbl:accessors" %>, which provide different kinds of information about the underlying Verilog objects they represent. These properties are accessed through the VPI functions listed in the last column of <%= xref "tbl:accessors" %>.
 
       Handles are typically obtained through the @vpi_handle_by_name@ and @vpi_handle@ functions. These functions are hierarchical in nature, as they allow you to obtain new handles that are related to existing ones. For example, to obtain a handle to a register contained within a module, one would typically write: @your_reg = vpi_handle( VpiReg, your_handle )@
 
-
       <% paragraph "Shortcuts for productivity" do %>
         Given a handle, Ruby-VPI allows you to access (1) its relatives and (2) its properties simply by invoking methods on the handle. If a handle's relative happens to have the same name as one its properties, then the relative is given priority because a handle's properties can always be accessed explicitly through the @handle.get_value@ and @handle.put_value@ methods.
       <% end %>
 
-
-      <% section "Accessing a handle's relatives" do %>
+      <% section "Accessing a handle's relatives", "vpi.handles.relatives" do %>
         Imagine that the design under test, say _foo_, instantiated a Verilog module named _bar_, which in turn contained a register named _baz_. To access baz from Ruby, one could employ VPI idioms by writing:
 
         <code>
@@ -199,7 +387,6 @@
 
         <code>foo.bar.baz</code>
       <% end %>
-
 
       <% section "Accessing a handle's properties" do %>
         Imagine that the design under test, say _foo_, contained a register named _bar_. To access the integer value of _bar_ in Ruby-VPI, one could employ VPI idioms by writing:
@@ -292,7 +479,7 @@
     <% end %>
 
     <% section "Callbacks", "vpi.callbacks" do %>
-      A _callback_ is a mechanism that makes the Verilog simuluator execute a block of code, which is known as a "callback handler", when some prescribed event occurs in the simulation.
+      A _callback_ is a mechanism that makes the Verilog simuluator execute a block of code (known as a "callback handler") when some prescribed event occurs in the simulation.
 
       Callbacks are added using the @vpi_register_cb@ function and removed using the @vpi_remove_cb@ function. However, instead of storing the address of a C function in the @cb_rtn@ field of the @s_cb_data@ structure (as you would do in C) you pass a block of code to the @vpi_register_cb@ method in Ruby. This block will be executed whenever the callback occurs.
 
@@ -330,20 +517,24 @@
   <% end %>
 
   <% section "Concurrency", "usage.concurrency" do %>
-    Ruby-VPI provides a concurrency model that allows you to run blocks of code in parallel.  These blocks of code are known as _concurrent processes_ and they represent the same idea as "initial", "always", and "forever" blocks do in Verilog.
+    Ruby-VPI provides a concurrency model that allows you to run blocks of code in parallel.  These blocks of code are known as _concurrent processes_ and they are equivalent to the "initial", "always" and "forever" blocks in Verilog.
 
     Ruby-VPI's concurrency model imposes two important constraints, which are inspired by "GPGPU and fragment/vertex shader programming":http://en.wikipedia.org/wiki/GPGPU, in order to avoid race conditions and to make parallel programming simpler.
 
-    First, *all processes execute in the same time step*. That is, we only advance the _entire_ simulation to the next time step when _all_ processes are finished with the current time step. In this manner, we avoid race conditions where a process advances the entire simulation to a future time step but the other processes still think they are executing in the original time step (because they were not notified of the advancement).
+    First, *all processes execute in the _same_ time step*. That is, we only advance the _entire_ simulation to the next time step when _all_ processes are finished with the current time step. In this manner, we avoid race conditions where a process advances the entire simulation to a future time step but the other processes still think they are executing in the original time step (because they were not notified of the advancement).
 
-    Second, *all processes see the same input* (the state of the simulation database at the start of the current time step) while executing in a time step. That is, when a process modifies the simulation database, say, by changing the logic value of a register, the modification only takes effect at the _end_ of the current time step. In this manner, we avoid race conditions where one process modifies the simulation midflight but some/all of other processes are unaware of that modification (because they were not notified of its occurence).
+    Second, *all processes see the _same_ input* (the state of the simulation database at the start of the current time step) while executing in a time step. That is, when a process modifies the simulation database, say, by changing the logic value of a register, the modification only takes effect at the _end_ of the current time step. In this manner, we avoid race conditions where one process modifies the simulation midflight but some/all of other processes are unaware of that modification (because they were not notified of its occurence).
 
     Note that these constraints are automatically enforced "under the hood", so to speak, by Ruby-VPI. As a user, you need not do anything extra to implement or support these constraints; they are already taken care of.
 
-    <% section "Creating a concurrent process" do %>
-      You can create a concurrent proceess by passing a block of code to the @process@ method.
+    <% caution "Assignments inside processes are non-blocking" do %>
+      As a result of the constraints described above, all assignments inside processes are treated like Verilog's non-blocking assignments.  Think about it: blocking assignments allow a process to make changes to simulation values (possibly) before other processes read those values.  Since the second constraint makes all processes see the same input while they are executing, it is impossible to support blocking assignments inside processes.
+    <% end %>
 
-      You can also create concurrent processes that loop forever using the @always@ and @forever@ methods, which mimic the "always" and "forever" blocks, respectively, of the Verilog language. However, due to the constraints of the concurrency model (see above), there is one limitation: all assignments are treated like Verilog's non-blocking assignments.
+    <% section "Creating a concurrent process" do %>
+      You can create a concurrent proceess by passing a block of code to the @process@ method.  Once the process finishes executing this block of code, it will disappear automatically.  This behavior mimics the "initial" blocks of the Verilog language.
+
+      You can create concurrent processes that _loop forever_ by passing a block of code to the @always@ and @forever@ methods, which mimic the "always" and "forever" blocks, respectively, of the Verilog language.
 
       <% example 'An edge-triggered "always" block' do %>
         Suppose you have the following Verilog code:
@@ -436,7 +627,7 @@
     When you invoke a test runner without any arguments, it will show you a list of available tasks:
     <pre>% rake -f your_test_runner.rake
 
-    <%= `rake -f ../examples/counter/RSpec/counter_runner.rake` %></pre>
+    <%= `rake -f examples/counter/RSpec/counter_runner.rake` %></pre>
 
     <% section "Environment variables", "usage.runner.env-vars" do %>
       Test runners support the following _environment_ variables, which allow you to easily change the behavior of the test runner.
@@ -479,7 +670,7 @@
   <% section "Tools", "usage.tools" do %>
     The *ruby-vpi* command serves as a front-end to the tools provided by Ruby-VPI. You can see its help information (reproduced below) by simply running the command without any arguments.
 
-    <pre><%= `ruby ../bin/ruby-vpi` %></pre>
+    <pre><%= `ruby bin/ruby-vpi` %></pre>
 
     <% section "Automated test generation", "usage.tools.generate" do %>
       The *generate* tool generates scaffolding for Ruby-VPI tests from Verilog module declarations (written in either Verilog 2001 or Verilog 95 style).
@@ -522,10 +713,6 @@
     <% end %>
   <% end %>
 
-  <% section "Example tests", "usage.examples" do %>
-    The <tt>examples</tt> directory ("browse it online":<%= codeURL %>/examples/) contains several example tests which illustrate how Ruby-VPI can be used. Each example has an associated <tt>Rakefile</tt> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the <pre>rake</pre> command to get started.
-  <% end %>
-
   <% section "Tutorial", "usage.tutorial" do %>
     # <%= xref "usage.tutorial.declare-design", "Declare a design" %> using Verilog 2001 syntax.
     # <%= xref "usage.tutorial.generate-test", "Generate a test" %> for the design using the <%= xref "usage.tools.generate", "automated test generator" %> tool.
@@ -534,7 +721,6 @@
     # (Optional) <%= xref "usage.tutorial.test-proto", "Verify the prototype" %> against the specification.
     # <%= xref "usage.tutorial.implement-design", "Implement the design" %> in Verilog once the prototype has been verified.
     # <%= xref "usage.tutorial.test-design", "Verify the design" %> against the specification.
-
 
     <% section "Start with a Verilog design", "usage.tutorial.declare-design" do %>
       First, we need a Verilog design to test. In this tutorial, <%= xref "fig:counter.v_decl" %> will serve as our design under test. Its interface is composed of the following parts:
@@ -557,7 +743,6 @@
 
       Before we continue, save the source code shown in <%= xref "fig:counter.v_decl" %> into a file named <tt>counter.v</tt>.
     <% end %>
-
 
     <% section "Generate a test", "usage.tutorial.generate-test" do %>
       Now that we have a Verilog design to test, we shall use the <%= xref "usage.tools.generate", "generate" %> tool to generate some scaffolding for our test. This tool allows us to implement our specification using RSpec, xUnit, or any other format.
@@ -603,7 +788,6 @@
       <% end %>
     <% end %>
 
-
     <% section "Specify your expectations", "usage.tutorial.specification" do %>
       So far, the test generation tool has created a basic foundation for our test Now we must build upon this foundation by identifying our <%= xref "glossary.expectation", "expectation" %> of the design under test. That is, how do we expect the design to _behave_ under certain conditions?
 
@@ -614,12 +798,12 @@
 
       Now that we have identified a set of expectations for our design, we are ready to implement them in our specification. This process is illustrated by <%= xref "fig:RSpec/counter_spec.rb" %> and <%= xref "fig:xUnit/counter_spec.rb" %>.
 
-      <% example "Specification implemented in RSpec format", "fig:RSpec/counter_spec.rb" do %>
-        <code><%= File.read '../examples/counter/RSpec/counter_spec.rb' %></code>
+      <% example "Specification implemented in RSpec format", "fig:RSpec/counter_spec.rb" do |n| %>
+        <code><%= File.read('examples/counter/RSpec/counter_spec.rb').indent(n) %></code>
       <% end %>
 
-      <% example "Specification implemented in xUnit format", "fig:xUnit/counter_spec.rb" do %>
-        <code><%= File.read '../examples/counter/xUnit/counter_spec.rb' %></code>
+      <% example "Specification implemented in xUnit format", "fig:xUnit/counter_spec.rb" do |n| %>
+        <code><%= File.read('examples/counter/xUnit/counter_spec.rb').indent(n) %></code>
       <% end %>
 
       Before we continue,
@@ -627,17 +811,15 @@
       # Replace the contents of the file named <tt>xUnit/counter_spec.rb</tt> with the source code shown in <%= xref "fig:xUnit/counter_spec.rb" %>.
     <% end %>
 
-
     <% section "Implement the prototype", "usage.tutorial.implement-proto" do %>
       Now that we have a specification against which to verify our design let us build a prototype of our design. By doing so, we exercise our specification, experience potential problems that may arise when we later implement our design in Verilog, and gain confidence in our work. The result of this proceess is illustrated by <%= xref "fig:counter_proto.rb" %>.
 
-      <% example "Ruby prototype of our Verilog design", "fig:counter_proto.rb" do %>
-        <code><%= File.read '../examples/counter/RSpec/counter_proto.rb' %></code>
+      <% example "Ruby prototype of our Verilog design", "fig:counter_proto.rb" do |n| %>
+        <code><%= File.read('examples/counter/RSpec/counter_proto.rb').indent(n) %></code>
       <% end %>
 
       Before we continue, replace the contents of the files named <tt>RSpec/counter_proto.rb</tt> and <tt>xUnit/counter_proto.rb</tt> with the source code shown in <%= xref "fig:counter_proto.rb" %>.
     <% end %>
-
 
     <% section "Verify the prototype", "usage.tutorial.test-proto" do %>
       Now that we have implemented our prototype, we are ready to verify it against our specification by running the test This process is illustrated by <%= xref "fig:test-proto.RSpec" %> and <%= xref "fig:test-proto.unit-test" %>.
@@ -679,17 +861,15 @@
       <% end %>
     <% end %>
 
-
     <% section "Implement the design", "usage.tutorial.implement-design" do %>
       Now that we have implemented and verified our prototype, we are ready to implement our design This is often quite simple because we translate _existing_ code from Ruby (our prototype) into Verilog (our design). The result of this process is illustrated by <%= xref "fig:counter.v_impl" %>.
 
-      <% example "Implementation of a simple up-counter with synchronous reset", "fig:counter.v_impl" do %>
-        <code lang="verilog"><%= File.read '../examples/counter/counter.v' %></code>
+      <% example "Implementation of a simple up-counter with synchronous reset", "fig:counter.v_impl" do |n| %>
+        <code lang="verilog"><%= File.read('examples/counter/counter.v').indent(n) %></code>
       <% end %>
 
       Before we continue, replace the contents of the files named <tt>RSpec/counter.v</tt> and <tt>xUnit/counter.v</tt> with the source code shown in <%= xref "fig:counter.v_impl" %>
     <% end %>
-
 
     <% section "Verify the design", "usage.tutorial.test-design" do %>
       Now that we have implemented our design we are ready to verify it against our specification by running the test <%= xref "fig:test-design.RSpec" %> and <%= xref "fig:test-design.unit-test" %> illustrate this process.
@@ -723,23 +903,34 @@
         </pre>
       <% end %>
     <% end %>
+
+    <% section "More examples", "usage.examples" do %>
+      The <tt>examples</tt> directory ("browse it online":<%= source_repo_url %>/examples/) contains several example tests which illustrate how Ruby-VPI can be used. Each example has an associated <tt>Rakefile</tt> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the <pre>rake</pre> command to get started.
+    <% end %>
   <% end %>
 <% end %>
 
 <% chapter "Hacking", "hacking" do %>
-  <% section "Getting the latest source code", "hacking.scm" do %>
-    Check out the source code using "Darcs":http://darcs.net from the project repository:
+  <% section "Building from source code", "hacking.build" do %>
+    Obtain the source code from the project "Darcs":http://darcs.net repository:
 
-      darcs get http://ruby-vpi.rubyforge.org/src/ruby-vpi
+      darcs get http://ruby-vpi.rubyforge.org/src ruby-vpi
+
+    Go inside the obtained directory and run the following commands:
+
+      rake build
+      ruby bin/ruby-vpi -v
+
+    If the commands were successful, then you will see output like this: <pre><%=h `ruby bin/ruby-vpi -v` %></pre>
+
+    Otherwise, you can ask for help in the <%= mailing_list_link %>.
   <% end %>
-
 
   <% section "Installing without really installing" do %>
-    After you've obtained the latest source code (see <%= xref "hacking.scm" %>), you can use it immediately without having to build or install a Ruby-VPI gem. To do this, set the @RUBYLIB@ environment variable to the path where you checked out the source code _plus_ the <tt>lib/</tt> directory.
+    After successfully building from source (see <%= xref "hacking.build" %>), set the @RUBYLIB@ environment variable to the path where you checked out the source code _plus_ the <tt>lib/</tt> directory.
 
-    For example, if you checked out the source code into <tt>/home/foo/ruby-vpi/</tt> then you would set the value of the @RUBYLIB@ environment variable to <tt>/home/foo/ruby-vpi/lib/</tt>. Henceforth, any Ruby-VPI tests you run will use the checked-out source code directly.
+    For example, if you checked out the source code into <tt>/home/foo/ruby-vpi/</tt> then you would set the value of the @RUBYLIB@ environment variable to <tt>/home/foo/ruby-vpi/lib/</tt>. Afterwards, any Ruby-VPI tests you run will use the checked-out source code directly.
   <% end %>
-
 
   <% section "Building release packages", "hacking.release-packages" do %>
     In addition to the <%= xref "setup.reqs", "normal requirements" %> you need the following software to build release packages:
@@ -747,14 +938,15 @@
     * "RedCloth":http://rubyforge.org/projects/redcloth/
     * "CodeRay":http://rubyforge.org/projects/coderay/
 
-    Once you have satisfied these requirements, you can run <pre>rake release</pre> to build the release packages. Also, see the output of <pre>rake -T</pre> for more build options.
+    Once you have satisfied these requirements, you can run the following command to build the release packages: <pre>rake release</pre>
+
+    For more build options, see below:
+    <pre>$ rake -T
+    <%=h `rake -T` %></pre>
   <% end %>
 
-
-  <% section "Editing this manual", "hacking.manual" do %>
-    The "doc" files inside the <tt>doc/</tt> directory are really _plain text_ files that contain the source code of this manual. You can edit these files and run the <pre>rake</pre> command to automatically generate the HTML documentation you are currently viewing.
-
-    In addition, the <tt>doc/README</tt> file says: <blockquote><%= File.read 'README' %></blockquote>
+  <% section "Editing this guide", "hacking.guide" do %>
+    The <tt>doc/guide.erb</tt> file contains the source code of this guide. You must install "Gerbil":http://gerbil.rubyforge.org before you can run the <pre>rake doc</pre> command to automatically generate the HTML documentation you are currently viewing.
   <% end %>
 <% end %>
 

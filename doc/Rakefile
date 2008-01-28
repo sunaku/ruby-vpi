@@ -5,88 +5,17 @@
 
 require 'rake/clean'
 
-
-$: << File.join(File.dirname(__FILE__), '..', 'lib')
+$:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 require 'ruby-vpi'
 include RubyVPI
 
-HISTORY_URL = PROJECT_URL + "/doc/history.html"
-RSS_URL     = PROJECT_URL + '/doc/rss.xml'
-RSS_INFO    = "RSS feed for this project."
 
-require 'ruby-vpi/erb'
-include ERB::Util
+task :default => 'guide.html'
 
-
-$: << File.join(File.dirname(__FILE__), 'lib')
-require 'doc_proxy'
-
-
-def resolve_includes aFilePath
-  input = File.read(aFilePath)
-
-  input.gsub! %r{<doc_proxy_include *(.*?)>} do
-    resolve_includes($1)
-  end
-
-  input
+desc 'Generate the user guide.'
+file 'guide.html' => 'guide.erb' do |t|
+  ENV['RUBYLIB'] = File.join(RubyVPI::Project[:home], 'lib')
+  sh "gerbil html #{t.prerequisites[0].inspect} > #{t.name.inspect}"
 end
+CLOBBER.include 'guide.html'
 
-
-FileList['*.doc'].each do |src|
-  prefix = File.basename(src, File.extname(src))
-  helper = prefix + '.rb'
-  dst = prefix + '.html'
-  deps = FileList[prefix + '*'].exclude(src, dst)
-
-  desc "Process file #{src.inspect}."
-  file dst => [src, 'common.tpl', *deps] do |t|
-    puts src
-
-    content = DocProxy.new.instance_eval do
-      # default output configuration
-      insert_toc = true
-      page_title = nil
-
-      # load the documentation's helper
-        if File.exist? helper
-          instance_eval File.read(helper)
-        end
-
-      # evaluate the documentation file
-        input = resolve_includes(src)
-        File.open('input', 'w') {|f| f << input} if $DEBUG
-
-        template = ERB.new(input)
-        content = template.result(binding)
-        toc, content = post_process(content)
-
-
-      # fit result into common HTML format
-        template = ERB.new(File.read(t.prerequisites[1]))
-        template.result(binding)
-    end
-
-    File.open(dst, 'w') do |f|
-      f << content
-    end
-  end
-
-  task :default => dst
-  CLOBBER.include dst
-end
-
-
-desc "Generate RSS feed."
-file 'rss.xml' => FileList['rss.erb', 'history*'] do |t|
-  template = ERB.new(File.read(t.prerequisites[0]))
-  content = template.result
-
-  File.open(t.name, 'w') do |f|
-    f << content
-    puts f.path
-  end
-end
-
-task :default => 'rss.xml'
-CLOBBER.include 'rss.xml'

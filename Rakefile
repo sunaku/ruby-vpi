@@ -13,6 +13,7 @@ require 'tempfile'
 require 'rbconfig'
 
 PROJECT_LIBS = File.join(File.dirname(__FILE__), 'lib')
+DYNAMIC_DOCS = 'ruby-vpi-dynamic.rb'
 
 $:.unshift PROJECT_LIBS
 require 'ruby-vpi'
@@ -20,7 +21,6 @@ require 'ruby-vpi/rake'
 require 'ruby-vpi/util'
 
 task :default => :build
-
 
 # utility
 
@@ -30,11 +30,6 @@ task :default => :build
     path = Tempfile.new($$).path
     rm_f path
     path
-  end
-
-  # uploads the given sources to the given destination URL
-  def upload aDestUrl, *aSources
-    sh 'rsync', '-avz', '--delete', aSources, aDestUrl
   end
 
   # propogate cleaning tasks recursively to lower levels
@@ -53,9 +48,7 @@ task :default => :build
     end
   end
 
-
 # extension
-
   desc "Builds object files for all simulators."
   task :build
 
@@ -88,29 +81,25 @@ task :default => :build
     task :build => taskName
   end
 
-
 # documentation
+  desc "Build the documentation."
+  task :doc
 
-  desc 'Generate user documentation.'
-  task :doc do |t|
-    cd t.name do
-      sh 'rake'
-    end
+  # the user guide
+  file 'doc/guide.html' => 'doc/guide.erb' do |t|
+    sh "gerbil html #{t.prerequisites} > #{t.name}"
   end
+  task :doc => 'doc/guide.html'
+  CLOBBER.include 'doc/guide.html'
 
+# API reference
+  directory 'doc/api'
+  CLOBBER.include 'doc/api'
 
-  directory 'ref'
-  CLOBBER.include 'ref'
+  desc "Build API reference."
+  task :ref => ['doc/api/ruby', 'doc/api/c']
 
-  desc 'Generate reference documentation.'
-  file 'ref' => ['ref/c', 'ref/ruby']
-
-
-  directory 'ref/ruby'
-  CLOBBER.include 'ref/ruby'
-
-  desc "Generate API documentation for dynamic code."
-  file '../ruby-vpi-dynamic.rb' => 'ext/vpi_user.h' do |t|
+  file DYNAMIC_DOCS => 'ext/vpi_user.h' do |t|
     File.open t.name, 'w' do |f|
       f.puts "# This module encapsulates all functionality provided by the C-language Application Programming Interface (API) of the Verilog Procedural Interface (VPI).  See the ext/vpi_user.h file for details."
       f.puts "module VPI"
@@ -161,23 +150,19 @@ task :default => :build
       f.puts "end"
     end
   end
-  CLOBBER.include '../ruby-vpi-dynamic.rb'
+  CLOBBER.include DYNAMIC_DOCS
 
-  desc 'Generate reference for Ruby.'
-  Rake::RDocTask.new 'ref/ruby' do |t|
+  Rake::RDocTask.new 'doc/api/ruby' do |t|
+    Rake::Task['doc/api'].invoke
     t.rdoc_dir = t.name
-    t.options.concat %w(--charset utf-8 --line-numbers)
 
-    Rake::Task['../ruby-vpi-dynamic.rb'].invoke
-    t.rdoc_files.include 'bin/{ruby-vpi,*.rb}', 'lib/**/*.rb', '../ruby-vpi-dynamic.rb'
+    Rake::Task[DYNAMIC_DOCS].invoke
+    t.rdoc_files.include 'bin/{ruby-vpi,*.rb}', 'lib/**/*.rb', DYNAMIC_DOCS
   end
 
 
-  directory 'ref/c'
-  CLOBBER.include 'ref/c'
-
-  desc 'Generate reference for C.'
-  file 'ref/c' do |t|
+  desc 'Build API reference for C.'
+  file 'doc/api/c' => 'doc/api' do |t|
     # doxygen outputs to this temporary destination
     tempDest = 'ext/html'
 
@@ -185,69 +170,25 @@ task :default => :build
       sh "doxygen"
     end
 
-    mv FileList[tempDest + '/*'].to_a, t.name
-    rmdir tempDest
+    mv tempDest, t.name
   end
-
-
-# distribution
-
-  desc 'Publish documentation to website.'
-  task :web => ['ref/web', 'doc/web']
-
-  PROJECT_SSH_URL = "snk@rubyforge.org:/var/www/gforge-projects/ruby-vpi"
-
-  desc "Publish reference documentation."
-  task 'ref/web' => 'ref' do |t|
-    upload PROJECT_SSH_URL, *t.prerequisites
-  end
-
-  desc "Publish user documentation."
-  task 'doc/web' => 'doc' do |t|
-    upload PROJECT_SSH_URL, *t.prerequisites
-  end
-
-  desc 'Connect to website FTP.'
-  task :ftp do
-    sh 'lftp', "sftp://#{PROJECT_SSH_URL}"
-  end
-
-  desc 'Generate release announcement.'
-  task :ann => 'doc/history.rb' do |t|
-    require t.prerequisites[0]
-
-    $: << File.join(File.dirname(__FILE__), 'doc', 'lib')
-    require 'doc_proxy'
-
-    text = [
-      PROJECT_DETAIL,
-      "* See #{PROJECT_URL} for details.",
-      "---",
-      @history.first
-    ].join "\n\n"
-
-    IO.popen('w3m -T text/html -dump -cols 60', 'w+') do |pipe|
-      pipe.write text.to_html
-      pipe.close_write
-      puts pipe.read
-    end
-  end
-
 
 # packaging
-
-  desc "Generate release packages."
-  task :release => [:ref, :doc] do
-    sh 'rake package'
-  end
-
   spec = Gem::Specification.new do |s|
-    s.name              = RubyVPI::Project[:name]
-    s.rubyforge_project = s.name
+    s.name              = RubyVPI::Project[:name].downcase
+    s.version           = RubyVPI::Project[:version]
     s.summary           = "Ruby interface to IEEE 1364-2005 Verilog VPI"
     s.description       = "Ruby-VPI is a #{s.summary} and a platform for unit testing, rapid prototyping, and systems integration of Verilog modules through Ruby. It lets you create complex Verilog test benches easily and wholly in Ruby."
     s.homepage          = RubyVPI::Project[:website]
-    s.version           = RubyVPI::Project[:version]
+    s.rubyforge_project = s.name
+
+    s.files       = FileList['**/*'].exclude('_darcs', DYNAMIC_DOCS)
+    s.autorequire = s.name
+    s.extensions << 'gem_extconf.rb'
+    s.executables = s.name
+
+    s.requirements << "POSIX threads library"
+    s.requirements << "C language compiler"
 
     s.add_dependency 'rake',       '>= 0.7.0'
     s.add_dependency 'rspec',      '>= 1.0.0'
@@ -255,23 +196,13 @@ task :default => :build
     s.add_dependency 'xx'           # needed by rcov
     s.add_dependency 'ruby-debug', '>= 0.5.2'
     s.add_dependency 'ruby-prof'
-
-    s.requirements << "POSIX threads library"
-    s.requirements << "C language compiler"
-
-    s.files       = FileList['**/*'].exclude('_darcs')
-    s.autorequire = s.name
-    s.extensions << 'gem_extconf.rb'
-    s.executables = s.name
   end
 
   Rake::GemPackageTask.new(spec) do |pkg|
     pkg.need_tar = true
   end
 
-
 # installation
-
   desc "Configures the gem during installation."
   task :gem_config_inst do |t|
     # make documentation available to gem_server
@@ -283,8 +214,18 @@ task :default => :build
     ln_s gemDir, File.join(docDir, 'rdoc')
   end
 
+# releasing
+  desc 'Build release packages.'
+  task :dist => [:clobber, :doc, :ref] do
+    system 'rake package'
+  end
 
-# testing
+# utility
+  desc 'Upload to project website.'
+  task :upload => [:doc, :ref] do
+    sh "rsync -av doc/ ~/www/lib/#{spec.name}"
+    sh "rsync -av doc/api/ ~/www/lib/#{spec.name}/api/ --delete"
+  end
 
   desc "Ensure that examples work with $SIMULATOR"
   task :test => :build do
