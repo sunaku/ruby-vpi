@@ -7,7 +7,7 @@ TEST_LOADER = <%= aOutputInfo.loaderPath.inspect %>
 # details) to source files and directories that contain source files.  These
 # source files will be loaded by the simulator before the simulation begins.
 SIMULATOR_SOURCES = FileList[
-  '<%= aModuleInfo.name %>.v',
+  '<%= aModuleInfo.name %>.v'
 ]
 
 # Command-line arguments for the simulator.  These arguments can be

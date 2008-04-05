@@ -19,8 +19,16 @@
 require 'ruby-vpi/util'
 
 # go into same directory as the test runner file
-  dir = File.dirname(caller.reject {|s| s =~ /:in /}.first.rstrip_from(':'))
-  cd dir unless Rake.original_dir == dir
+  if RUBY_VERSION =~ /^1\.9\./
+    path = caller.grep(/:in `require'/).first
+  else
+    path = caller.reject {|s| s =~ /:in /}.first
+  end
+
+  if path
+    dir = File.dirname path[/^[^:]*/]
+    cd dir unless Rake.original_dir == dir
+  end
 
 # check for required variables
   vars = %w[TEST_LOADER SIMULATOR_SOURCES SIMULATOR_ARGUMENTS]

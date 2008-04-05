@@ -244,8 +244,14 @@ module VPI
 
     # inherit Enumerable methods, such as #each, #map, #select, etc.
       list = Enumerable.instance_methods
-      list.delete 'to_a'
-      list.push 'each'
+
+      if RubyVPI::HAVE_RUBY_19X
+        list.delete :to_a
+        list.push :each
+      else
+        list.delete 'to_a'
+        list.push 'each'
+      end
 
       list.each do |meth|
         # using a string because define_method
@@ -256,6 +262,10 @@ module VPI
               ary.#{meth}(&block)
             end
           end
+
+          # these methods should NOT interfere with
+          # method_missing access to child handles
+          private :#{meth}
         }, __FILE__, __LINE__
       end
 
@@ -277,8 +287,8 @@ module VPI
 
     @@propCache = Hash.new {|h,k| h[k] = Property.new(k)}
 
-    undef id    # deprecated in Ruby 1.8
-    undef type  # used to access VpiType
+    undef id if respond_to? :id # deprecated in Ruby 1.8; removed in Ruby 1.9
+    undef type if respond_to? :type # used to access VpiType; also same as above
 
     # Provides access to this handle's (1) child handles and (2) VPI
     # properties through method calls.  In the case that a child handle

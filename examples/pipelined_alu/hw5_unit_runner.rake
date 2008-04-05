@@ -7,7 +7,7 @@ TEST_LOADER = "hw5_unit_loader.rb"
 # details) to source files and directories that contain source files.  These
 # source files will be loaded by the simulator before the simulation begins.
 SIMULATOR_SOURCES = FileList[
-  'hw5_unit.v',
+  'hw5_unit.v'
 ]
 
 # Command-line arguments for the simulator.  These arguments can be

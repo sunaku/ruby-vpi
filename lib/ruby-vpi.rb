@@ -60,9 +60,14 @@ module RubyVPI
 
     sandbox = Module.new
     sandbox.const_set :DUT, design
+    sandboxBinding = sandbox.module_eval('binding')
 
     aTestFilePaths.flatten.compact.uniq.each do |path|
-      sandbox.module_eval(File.read(path), path)
+      if HAVE_RUBY_19X
+        eval File.read(path), sandboxBinding, path
+      else
+        sandbox.module_eval File.read(path), path
+      end
     end
 
     sandbox

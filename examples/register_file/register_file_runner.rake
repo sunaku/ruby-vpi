@@ -7,7 +7,7 @@ TEST_LOADER = "register_file_loader.rb"
 # details) to source files and directories that contain source files.  These
 # source files will be loaded by the simulator before the simulation begins.
 SIMULATOR_SOURCES = FileList[
-  'register_file.v',
+  'register_file.v'
 ]
 
 # Command-line arguments for the simulator.  These arguments can be
