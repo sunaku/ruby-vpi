@@ -5,15 +5,15 @@
 # See the file named LICENSE for details.
 
 # supress errors about nonexistent tasks
-  task :default
+task :default
 
-  ARGV.each do |t|
-    task t
-  end
+ARGV.each do |t|
+  task t
+end
 
 # invoke each test runner with the command-line args
-  at_exit do
-    FileList['**/*.rake'].each do |runner|
-      sh 'rake', '-f', runner, *ARGV
-    end
+at_exit do
+  FileList['**/*.rake'].each do |runner|
+    sh 'rake', '-f', runner, *ARGV
   end
+end

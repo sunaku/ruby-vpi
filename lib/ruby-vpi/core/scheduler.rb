@@ -154,7 +154,7 @@ module RubyVPI
           end
 
           writes.each do |w|
-            VPI::__scheduler__vpi_put_value(handle, *w.args)
+            VPI.__scheduler__vpi_put_value(handle, *w.args)
           end
 
           writes.clear
@@ -172,16 +172,8 @@ module RubyVPI
         end
       end
 
-      loop do
-        ready = @thread2task_lock.synchronize do
-          aHash.values.all? {|t| t.stop?}
-        end
-
-        if ready
-          break
-        else
-          Thread.pass
-        end
+      until @thread2task_lock.synchronize { aHash.values.all? {|t| t.stop? } }
+        Thread.pass
       end
     end
   end
@@ -216,7 +208,7 @@ module VPI
   # given block with the given arguments, and returns it.
   def process *aBlockArgs
     RubyVPI::Scheduler.ensure_caller_is_registered
-    raise ArgumentError, "block must be given" unless block_given?
+    raise ArgumentError, 'block must be given' unless block_given?
 
     Thread.new do
       RubyVPI::Scheduler.attach

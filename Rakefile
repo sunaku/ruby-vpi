@@ -116,7 +116,7 @@ task :default => :build
         end
 
         # functions
-        body.scan /^XXTERN\s+(\S+\s+\*?)(\S+)\s+PROTO_PARAMS\(\((.*?)\)\);/m do |type, func, args|
+        body.scan %r{^XXTERN\s+(\S+\s+\*?)(\S+)\s+PROTO_PARAMS\(\((.*?)\)\);}m do |type, func, args|
           meth = func.gsub(/\W/, '')
           args = args.gsub(/[\r\n]/, ' ')
 

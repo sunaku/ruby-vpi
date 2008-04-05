@@ -49,6 +49,7 @@ module RubyVPI
   #                       object in the Verilog simulation
   #
   def RubyVPI.load_test aDesignHandleOrPath, *aTestFilePaths
+    # access the design under test
     design =
       if aDesignHandleOrPath.is_a? VPI::Handle
         aDesignHandleOrPath
@@ -58,10 +59,12 @@ module RubyVPI
 
     raise ArgumentError, "cannot access the design under test: #{aDesignHandleOrPath.inspect}" unless design
 
+    # create a sandbox
     sandbox = Module.new
     sandbox.const_set :DUT, design
     sandboxBinding = sandbox.module_eval('binding')
 
+    # load files into sandbox
     aTestFilePaths.flatten.compact.uniq.each do |path|
       if HAVE_RUBY_19X
         eval File.read(path), sandboxBinding, path

@@ -25,7 +25,7 @@ module VPI
   class S_vpi_value
     # Attempts to detect the format of the given value.
     # Returns +nil+ if detection is not possible.
-    def S_vpi_value.detect_format aValue
+    def self.detect_format aValue
       if aValue.respond_to? :to_int
         VpiIntVal
 

@@ -22,7 +22,7 @@ module RubyVPI
       # register the callback with Verilog
       aData.user_data = id
       aData.cb_rtn    = VPI::Vlog_relay_ruby
-      receipt         = VPI::__callback__vpi_register_cb(aData)
+      receipt         = VPI.__callback__vpi_register_cb(aData)
 
       @lock.synchronize do
         @id2handler[id] = aHandler
@@ -37,7 +37,7 @@ module RubyVPI
       receipt = @lock.synchronize{ @id2receipt[id] }
 
       if receipt
-        VPI::__callback__vpi_remove_cb(receipt)
+        VPI.__callback__vpi_remove_cb(receipt)
 
         @lock.synchronize do
           @id2handler.delete id
@@ -50,12 +50,12 @@ module RubyVPI
     # during the given time slot after the given number of time steps.
     def relay_verilog aTimeSlot, aNumSteps
       # schedule wake-up callback from verilog
-      time            = VPI::S_vpi_time.new
-      time.integer    = aNumSteps
-      time.type       = VPI::VpiSimTime
+        time            = VPI::S_vpi_time.new
+        time.integer    = aNumSteps
+        time.type       = VPI::VpiSimTime
 
-      value           = VPI::S_vpi_value.new
-      value.format    = VPI::VpiSuppressVal
+        value           = VPI::S_vpi_value.new
+        value.format    = VPI::VpiSuppressVal
 
         alarm           = VPI::S_cb_data.new
         alarm.reason    = aTimeSlot
@@ -66,7 +66,7 @@ module RubyVPI
         alarm.index     = 0
         alarm.user_data = nil
 
-      VPI.vpi_free_object(VPI::__callback__vpi_register_cb(alarm))
+        VPI.vpi_free_object(VPI.__callback__vpi_register_cb(alarm))
 
       # transfer control to verilog
         # while ring = RubyVPI.pause
