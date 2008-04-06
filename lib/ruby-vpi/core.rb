@@ -25,14 +25,6 @@ module VPI
   INTEGER_MASK  = INTEGER_LIMIT - 1
 end
 
-module RubyVPI
-  USE_SIMULATOR = ENV['RUBYVPI_SIMULATOR'].to_sym
-  USE_DEBUGGER  = ENV['DEBUGGER'].to_i  == 1
-  USE_COVERAGE  = ENV['COVERAGE'].to_i  == 1
-  USE_PROTOTYPE = ENV['PROTOTYPE'].to_i == 1
-  USE_PROFILER  = ENV['PROFILER'].to_i   == 1
-end
-
 require 'thread'
 require 'ruby-vpi/core/struct'
 require 'ruby-vpi/core/handle'

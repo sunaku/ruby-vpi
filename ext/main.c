@@ -1,53 +1,102 @@
 /*
-  Copyright 1999 Kazuhiro HIWADA
   Copyright 2006 Suraj N. Kurapati
   See the file named LICENSE for details.
 */
 
 #include "main.h"
-#include "relay.h"
-#include <stdlib.h>
+#include "util.h"
+#include "roobee.h"
 #include <stdio.h>
+#include <stdbool.h>
 
+// XXX: the CVER simulator has trouble with executing the
+//      RubyVPI_relay_from_c_to_ruby callback handler
+//      unless we lump all C code into one monolithic file
+#include "roobee.cin"
+#include "binding.cin"
+#include "relay.cin"
+#include "verilog.cin"
 
-// load the SWIG-generated Ruby interface to VPI
-#include "swig_wrap.cin"
+///
+/// Returns true if the given file exists and is readable.
+///
+static bool RubyVPI_main_file_exists(char* aFilePath)
+{
+    FILE* f = fopen(aFilePath, "r");
 
+    if (f)
+    {
+        fclose(f);
+        return true;
+    }
 
-void main_init() {
-  ruby_init();
-  ruby_init_loadpath();
-
-  // load the VPI interface for Ruby
-    Init_VPI();
-    rb_define_module_function(mVPI, "__extension__relay_verilog", main_relay_verilog, 0);
-    rb_define_module_function(mVPI, "__extension__relay_ruby_reason", main_relay_ruby_reason, 0);
-
-    // some compilers have trouble with pointers to the va_list
-    // type.  See ext/Rakefile and the user manual for details
-    rb_define_alias(mVPI, "vpi_vprintf", "vpi_printf");
-    rb_define_alias(mVPI, "vpi_mcd_vprintf", "vpi_mcd_printf");
-
-
-  char* bootLoader = getenv("RUBYVPI_BOOT_LOADER");
-  char* testLoader = getenv("RUBYVPI_TEST_LOADER");
-
-  if (bootLoader != NULL && testLoader != NULL) {
-    ruby_script(testLoader);
-    rb_load_file(bootLoader);
-    ruby_run();
-  }
-  else {
-    common_printf("error: the RUBYVPI_BOOT_LOADER and RUBYVPI_TEST_LOADER environment variables must be defined.");
-    exit(EXIT_FAILURE);
-  }
+    return false;
 }
 
-VALUE main_relay_verilog(VALUE arSelf) {
-  relay_verilog();
-  return arSelf;
+static PLI_INT32 RubyVPI_main_init(p_cb_data aCallback)
+{
+    // parameters for bootstrapping the Ruby side of Ruby-VPI
+    char* bootLoader = getenv("RUBYVPI_BOOT_LOADER");
+    char* testLoader = getenv("RUBYVPI_TEST_LOADER");
+
+    RubyVPI_util_debug("testLoader: '%s'", testLoader);
+    RubyVPI_util_debug("bootLoader: '%s'", bootLoader);
+
+    if (!bootLoader)
+    {
+        RubyVPI_util_error("environment variable RUBYVPI_BOOT_LOADER not defined");
+        return;
+    }
+
+    if (!RubyVPI_main_file_exists(bootLoader))
+    {
+        RubyVPI_util_error("environment variable RUBYVPI_BOOT_LOADER gave nonexistent path: %s", bootLoader);
+        return;
+    }
+
+    if (!testLoader)
+    {
+        RubyVPI_util_error("environment variable RUBYVPI_TEST_LOADER not defined");
+        return;
+    }
+
+    if (!RubyVPI_main_file_exists(testLoader))
+    {
+        RubyVPI_util_error("environment variable RUBYVPI_TEST_LOADER gave nonexistent path: %s", testLoader);
+        return;
+    }
+
+    // initialize all subsystems
+    RubyVPI_util_debug("C: init Ruby interpreter");
+    RubyVPI_roobee_init(testLoader);
+
+    RubyVPI_util_debug("C: register SWIG bindings");
+    RubyVPI_binding_init();
+
+    #if defined(HAVE_RUBY_1_8) && defined(PRAGMATIC_CVER)
+        // for Ruby 1.8, the relay mechanism is
+        // initialized inside the body of the Ruby
+        // thread (see RubyVPI_roobee_thread_body())
+        // to avoid address corruption issues
+    #else
+        RubyVPI_util_debug("C: init relay mechanism");
+        RubyVPI_relay_init();
+    #endif
+
+    // start the Ruby thread which will house the
+    // execution of the user's executable specification
+    RubyVPI_roobee_run(bootLoader);
+
+    // start ruby since we're already at start of sim.
+    RubyVPI_relay_from_c_to_ruby(0);
 }
 
-VALUE main_relay_ruby_reason(VALUE arSelf) {
-  return SWIG_NewPointerObj(vlog_relay_ruby_reason(), SWIGTYPE_p_t_cb_data, 0);
+static PLI_INT32 RubyVPI_main_fini(p_cb_data aCallback)
+{
+    RubyVPI_util_debug("C: at end of simulation");
+
+    RubyVPI_roobee_fini();
+
+    RubyVPI_util_debug("C: exit");
 }
+

@@ -21,16 +21,25 @@ task :default => 'Makefile' do |t|
 end
 
 file 'Makefile' => [:swig, 'extconf.rb'] do |t|
-  ruby t.prerequisites[1], "--with-cflags=#{ENV['CFLAGS']}", "--with-ldflags=#{ENV['LDFLAGS']}"
+  cflags = "#{ENV['CFLAGS']} -Werror"
+
+  # detect ruby version on behalf of C extension
+  v = RUBY_VERSION.split('.')
+  until v.empty?
+    cflags << " -DHAVE_RUBY_#{v.join '_'}"
+    v.pop
+  end
+
+  ruby t.prerequisites[1], "--with-cflags=#{cflags}", "--with-ldflags=#{ENV['LDFLAGS']}"
 end
 
 CLEAN.include 'Makefile', 'mkmf.log', '*.o', "*.#{Config::CONFIG['DLEXT']}"
 
 
 desc 'Generate Ruby wrapper for VPI.'
-task :swig => 'swig_wrap.cin'
+task :swig => 'swig.cin'
 
-file 'swig_wrap.cin' => 'swig_vpi.i' do |t|
+file 'swig.cin' => 'swig_vpi.i' do |t|
   sh %w[swig -Werror -w801 -ruby -o], t.name, t.prerequisites[0]
 end
 
@@ -61,4 +70,4 @@ file 'swig_vpi.h' => 'vpi_user.h' do |t|
   end
 end
 
-CLEAN.include 'swig_wrap.cin', 'swig_vpi.h'
+CLEAN.include 'swig.cin', 'swig_vpi.h'

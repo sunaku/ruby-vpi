@@ -1,30 +1,23 @@
 /*
-  Copyright 2006 Suraj N. Kurapati
+  Copyright 2008 Suraj N. Kurapati
   See the file named LICENSE for details.
 */
-/**\file
-  The C extension for Ruby-VPI.
-*/
+///\file The main C extension.
 
 #ifndef MAIN_H
 #define MAIN_H
 
-  #include "common.h"
-  #include <ruby.h>
+    #include "verilog.h"
 
-  /**
-    Runs the test bench.
-  */
-  void main_init();
+    ///
+    /// The main C function that is invoked to bootstrap this C extension.
+    ///
+    static PLI_INT32 RubyVPI_main_init(p_cb_data aCallback);
 
-  /**
-    Transfers control from Ruby to Verilog.
-  */
-  VALUE main_relay_verilog(VALUE arSelf);
-
-  /**
-    Gets the reason (Vpi::S_cb_data) why Verilog relayed to Ruby.
-  */
-  VALUE main_relay_ruby_reason(VALUE arSelf);
+    ///
+    /// The main C function that is invoked at the end
+    /// of simulation to tear down this C extension.
+    ///
+    static PLI_INT32 RubyVPI_main_fini(p_cb_data aCallback);
 
 #endif

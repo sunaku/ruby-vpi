@@ -1,0 +1,139 @@
+/*
+  Copyright 2008 Suraj N. Kurapati
+  See the file named LICENSE for details.
+*/
+
+#ifndef ROOBEE_CIN
+#define ROOBEE_CIN
+
+    #include "roobee.h"
+    #include "util.h"
+    #include "relay.h"
+
+    #ifdef RUBY_GLOBAL_SETUP
+        RUBY_GLOBAL_SETUP
+    #endif
+
+    static VALUE RubyVPI_roobee_gProgName = Qnil;
+
+    static void RubyVPI_roobee_init(char* aProgName)
+    {
+        RubyVPI_util_debug("C: ruby_show_version()");
+        ruby_show_version();
+
+        #ifdef RUBY_INIT_STACK
+            RubyVPI_util_debug("C: RUBY_INIT_STACK");
+            RUBY_INIT_STACK;
+        #endif
+
+        RubyVPI_util_debug("C: ruby_init()");
+        ruby_init();
+
+
+        // override Ruby's hooked handlers for $0 so that $0 can be
+        // treated as pure Ruby value (and modified without restriction)
+        RubyVPI_util_debug("C: redefine $0 hooked variable");
+        RubyVPI_roobee_gProgName = rb_str_new2(aProgName);
+        rb_define_variable("$0", &RubyVPI_roobee_gProgName);
+        rb_define_variable("$PROGRAM_NAME", &RubyVPI_roobee_gProgName);
+
+
+        RubyVPI_util_debug("C: ruby_init_loadpath()");
+        ruby_init_loadpath();
+
+        #ifdef HAVE_RUBY_1_9
+            RubyVPI_util_debug("C: ruby_init_gems(Qtrue)");
+            rb_const_set(rb_define_module("Gem"), rb_intern("Enable"), Qtrue);
+
+            RubyVPI_util_debug("C: Init_prelude()");
+            Init_prelude();
+        #endif
+
+        #ifdef HAVE_RUBY_1_8
+            // XXX: we need this here because doing
+            //      require('rubygems') inside the boot
+            //      loader Ruby script is crashing the
+            //      Verilog simulator.  Luckily, doing the
+            //      same require() in this C extension works.
+            RubyVPI_util_debug("C: require('rubygems')");
+            rb_require("rubygems");
+        #endif
+    }
+
+    static void RubyVPI_roobee_fini()
+    {
+        ruby_finalize();
+    }
+
+
+    static VALUE RubyVPI_roobee_require_impl(VALUE aPath)
+    {
+        return rb_require((char*)aPath);
+    }
+
+    static VALUE RubyVPI_roobee_require(char* aPath)
+    {
+        int error = 0;
+        VALUE result = rb_protect(RubyVPI_roobee_require_impl, (VALUE)aPath, &error);
+
+        if (error)
+        {
+            RubyVPI_util_puts("rb_require('%s') failed with status %d", aPath, error);
+        }
+
+        return result;
+    }
+
+    ///
+    /// Body of the Ruby thread in which the executable specification will run.
+    ///
+    static VALUE RubyVPI_roobee_thread_body(char* aFileToRun)
+    {
+        #if defined(HAVE_RUBY_1_8) && defined(PRAGMATIC_CVER)
+            // XXX: the synchronization mailboxes must be initialized from
+            //      inside the stack of this Ruby thread for Ruby 1.8.
+            //      Otherwise, Ruby gets into some weird address corruption
+            //      issues in RubyVPI_relay_wake_up_c()...  meaning that
+            //      variables like RubyVPI_relay_goC point to Ruby strings
+            //      instead of the Ruby queues they were initialized to!
+            //
+            RubyVPI_util_debug("R: init relay mechanism");
+            RubyVPI_relay_init();
+        #endif
+
+        //
+        // because rb_thread_create() starts running
+        // this thread immediately, this thread might
+        // be out of synch with C.  so wait until C is
+        // ready for this thread to begin executing
+        //
+
+        RubyVPI_util_debug("R: BEGIN (ad-hoc start from rb_thread_create())");
+        RubyVPI_relay_wait_for_c();
+
+
+        //
+        // now we are synchronized with C, so start Ruby execution
+        //
+
+        RubyVPI_util_debug("R: BEGIN (synchronized with C)");
+        RubyVPI_roobee_require(aFileToRun);
+
+
+        //
+        // Ruby execution has finished, so don't wait
+        // for C to relay control to Ruby anymore
+        //
+
+        RubyVPI_relay_wake_up_c();
+
+        RubyVPI_util_debug("R: END");
+        return Qnil;
+    }
+
+    static void RubyVPI_roobee_run(char* aFileToRun)
+    {
+        rb_thread_create(RubyVPI_roobee_thread_body, aFileToRun);
+    }
+
+#endif

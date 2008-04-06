@@ -57,35 +57,28 @@ module RubyVPI
       value           = VPI::S_vpi_value.new
       value.format    = VPI::VpiSuppressVal
 
-      alarm           = VPI::S_cb_data.new
-      alarm.reason    = aTimeSlot
-      alarm.cb_rtn    = VPI::Vlog_relay_ruby
-      alarm.obj       = nil
-      alarm.time      = time
-      alarm.value     = value
-      alarm.index     = 0
-      alarm.user_data = nil
+        alarm           = VPI::S_cb_data.new
+        alarm.reason    = aTimeSlot
+        alarm.cb_rtn    = VPI::RubyVPI_relay_from_c_to_ruby
+        alarm.obj       = nil
+        alarm.time      = time
+        alarm.value     = value
+        alarm.index     = 0
+        alarm.user_data = nil
 
       VPI.vpi_free_object(VPI::__callback__vpi_register_cb(alarm))
 
       # transfer control to verilog
-      loop do
-        VPI::__extension__relay_verilog
-
-        if reason = VPI::__extension__relay_ruby_reason # might be nil
-          id = reason.user_data.to_s
-
-          handler = @lock.synchronize do
-            @id2handler[id]
-          end
+        while ring = RubyVPI.__extension__relay_to_verilog
+          id = ring.user_data.to_s
+          handler = @lock.synchronize { @id2handler[id] }
 
           if handler
-            handler.call reason
+            handler.call ring
           else
             break
           end
         end
-      end
     end
   end
 

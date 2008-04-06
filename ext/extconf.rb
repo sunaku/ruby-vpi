@@ -5,20 +5,33 @@
 
 require 'mkmf'
 
-# check for POSIX threads library
-  hasPthread = have_library('pthread', 'pthread_create')
-
 # check for ruby library
   require 'rbconfig'
 
-  rubyLibArgs = Config::CONFIG.values.grep(/^-lruby/)
+  # possible names under which Ruby library is installed
+  rubyLibNames = Config::CONFIG.values.join(' ').
+                 scan(/-l(ruby\S*)/).flatten.uniq
 
-  rubyLibNames = rubyLibArgs.map {|a| a.sub /^-l/, ''}
-  rubyLibNames.unshift 'ruby' # try most common name first
-  rubyLibNames.uniq!
+  # possible places where Ruby library is installed
+  rubyLibPaths = Config::CONFIG.values.join(' ').
+                 scan(/-L(\S+)/).flatten.
+                 select {|f| File.exist? f }
 
-  hasRuby = rubyLibNames.inject(false) do |verdict, name|
-    verdict ||= have_library(name, 'ruby_init')
+  p :rubyLibNames => rubyLibNames
+  p :rubyLibPaths => rubyLibPaths
+
+
+  RUBY_FUNC = 'ruby_init'
+
+  hasRuby = rubyLibNames.any? do |libName|
+    have_library(libName, RUBY_FUNC) or
+
+    rubyLibPaths.any? do |libPath|
+      have_library(libName, RUBY_FUNC, libPath)
+    end
   end
 
-hasPthread && hasRuby && create_makefile('ruby-vpi')
+  p :hasRuby => hasRuby
+
+# create the makefile
+hasRuby && create_makefile('ruby-vpi')

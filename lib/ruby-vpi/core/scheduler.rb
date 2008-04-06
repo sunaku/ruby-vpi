@@ -32,7 +32,7 @@ module RubyVPI
 
 
     def initialize
-      @thread2task = { Thread.main => Task.new(Thread.main, :run) }
+      @thread2task = { Thread.current => Task.new(Thread.current, :run) }
       @thread2task_soft = @thread2task.dup  # software threads
       @thread2task_hard = {} # hardware threads (Ruby prototype of DUT)
       @thread2task_lock = Mutex.new
