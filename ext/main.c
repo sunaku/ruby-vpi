@@ -3,100 +3,58 @@
   See the file named LICENSE for details.
 */
 
-#include "main.h"
 #include "util.h"
-#include "roobee.h"
-#include <stdio.h>
-#include <stdbool.h>
-
-// XXX: the CVER simulator has trouble with executing the
-//      RubyVPI_relay_from_c_to_ruby callback handler
-//      unless we lump all C code into one monolithic file
-#include "roobee.cin"
-#include "binding.cin"
-#include "relay.cin"
-#include "verilog.cin"
+#include "verilog.h"
+#include "host.h"
+#include "user.h"
 
 ///
-/// Returns true if the given file exists and is readable.
+/// Registers a very basic VPI callback with reason and handler.
 ///
-static bool RubyVPI_main_file_exists(char* aFilePath)
+static void RubyVPI_main_register_callback(PLI_INT32 aReason, PLI_INT32 (*aHandler)(p_cb_data))
 {
-    FILE* f = fopen(aFilePath, "r");
+    s_cb_data call;
 
-    if (f)
-    {
-        fclose(f);
-        return true;
-    }
+    call.reason    = aReason;
+    call.cb_rtn    = aHandler;
+    call.obj       = 0;
+    call.time      = 0;
+    call.value     = 0;
+    call.user_data = 0;
 
-    return false;
+    vpi_free_object(vpi_register_cb(&call));
 }
 
-static PLI_INT32 RubyVPI_main_init(p_cb_data aCallback)
+static void RubyVPI_main_init()
 {
-    // parameters for bootstrapping the Ruby side of Ruby-VPI
-    char* bootLoader = getenv("RUBYVPI_BOOT_LOADER");
-    char* testLoader = getenv("RUBYVPI_TEST_LOADER");
+    RubyVPI_util_debug("Main: at vlog startup");
 
-    RubyVPI_util_debug("testLoader: '%s'", testLoader);
-    RubyVPI_util_debug("bootLoader: '%s'", bootLoader);
+    // commence Ruby execution at the start of the simulation
+    RubyVPI_util_debug("Main: registering BEGIN simulation callback");
+    RubyVPI_main_register_callback(cbStartOfSimulation, RubyVPI_host_init);
 
-    if (!bootLoader)
-    {
-        RubyVPI_util_error("environment variable RUBYVPI_BOOT_LOADER not defined");
-        return;
-    }
-
-    if (!RubyVPI_main_file_exists(bootLoader))
-    {
-        RubyVPI_util_error("environment variable RUBYVPI_BOOT_LOADER gave nonexistent path: %s", bootLoader);
-        return;
-    }
-
-    if (!testLoader)
-    {
-        RubyVPI_util_error("environment variable RUBYVPI_TEST_LOADER not defined");
-        return;
-    }
-
-    if (!RubyVPI_main_file_exists(testLoader))
-    {
-        RubyVPI_util_error("environment variable RUBYVPI_TEST_LOADER gave nonexistent path: %s", testLoader);
-        return;
-    }
-
-    // initialize all subsystems
-    RubyVPI_util_debug("C: init Ruby interpreter");
-    RubyVPI_roobee_init(testLoader);
-
-    RubyVPI_util_debug("C: register SWIG bindings");
-    RubyVPI_binding_init();
-
-    #if defined(HAVE_RUBY_1_8) && defined(PRAGMATIC_CVER)
-        // for Ruby 1.8, the relay mechanism is
-        // initialized inside the body of the Ruby
-        // thread (see RubyVPI_roobee_thread_body())
-        // to avoid address corruption issues
-    #else
-        RubyVPI_util_debug("C: init relay mechanism");
-        RubyVPI_relay_init();
-    #endif
-
-    // start the Ruby thread which will house the
-    // execution of the user's executable specification
-    RubyVPI_roobee_run(bootLoader);
-
-    // start ruby since we're already at start of sim.
-    RubyVPI_relay_from_c_to_ruby(0);
+    // clean up this C extension at the end of the simulation
+    RubyVPI_util_debug("Main: registering END simulation callback");
+    RubyVPI_main_register_callback(cbEndOfSimulation, RubyVPI_host_fini);
 }
 
-static PLI_INT32 RubyVPI_main_fini(p_cb_data aCallback)
+///
+/// Verilog simulator's bootstrap vector.  The simulator
+/// will invoke the functions in this array when it loads
+/// the shared-object file compiled from this C extension.
+///
+void (*vlog_startup_routines[])() = { RubyVPI_main_init, 0 };
+
+#if defined(PRAGMATIC_CVER) || defined(SYNOPSYS_VCS) || defined(CADENCE_NCSIM)
+///
+/// Invokes each routine specified in the vlog_startup_routines array.
+///
+void vlog_startup_routines_bootstrap()
 {
-    RubyVPI_util_debug("C: at end of simulation");
-
-    RubyVPI_roobee_fini();
-
-    RubyVPI_util_debug("C: exit");
+    unsigned int i;
+    for (i = 0; vlog_startup_routines[i]; i++)
+    {
+        vlog_startup_routines[i]();
+    }
 }
-
+#endif

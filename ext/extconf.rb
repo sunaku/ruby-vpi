@@ -5,6 +5,9 @@
 
 require 'mkmf'
 
+# check for POSIX threads library
+  hasPthread = have_library('pthread', 'pthread_create')
+
 # check for ruby library
   require 'rbconfig'
 
@@ -33,5 +36,7 @@ require 'mkmf'
 
   p :hasRuby => hasRuby
 
-# create the makefile
-hasRuby && create_makefile('ruby-vpi')
+# generate the makefile
+  if hasPthread && hasRuby
+    create_makefile('ruby-vpi')
+  end

@@ -59,7 +59,7 @@ module RubyVPI
 
         alarm           = VPI::S_cb_data.new
         alarm.reason    = aTimeSlot
-        alarm.cb_rtn    = VPI::RubyVPI_relay_from_c_to_ruby
+        alarm.cb_rtn    = VPI::RubyVPI_host_resume
         alarm.obj       = nil
         alarm.time      = time
         alarm.value     = value
@@ -69,16 +69,18 @@ module RubyVPI
       VPI.vpi_free_object(VPI::__callback__vpi_register_cb(alarm))
 
       # transfer control to verilog
-        while ring = RubyVPI.__extension__relay_to_verilog
-          id = ring.user_data.to_s
-          handler = @lock.synchronize { @id2handler[id] }
+        # while ring = RubyVPI.pause
+        #   # id = ring.user_data.to_s
+        #   # handler = @lock.synchronize { @id2handler[id] }
 
-          if handler
-            handler.call ring
-          else
-            break
-          end
-        end
+        #   # if handler
+        #   #   handler.call ring
+        #   # else
+        #     break
+        #   # end
+        # end
+
+        RubyVPI.pause
     end
   end
 

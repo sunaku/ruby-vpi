@@ -7,8 +7,8 @@
 #ifndef BINDING_H
 #define BINDING_H
 
-    #include "roobee.h"
     #include "verilog.h"
+    #include <ruby.h>
 
     ///
     /// Initializes the Ruby bindings.
@@ -19,11 +19,11 @@
     /// Also, this function must be called ONLY
     /// after RubyVPI_roobee_init() has been called.
     ///
-    static void RubyVPI_binding_init();
+    void RubyVPI_binding_init();
 
     ///
     /// Converts the given VPI callback structure into a Ruby value.
     ///
-    static VALUE RubyVPI_binding_rubyize_callback(p_cb_data aCallback);
+    VALUE RubyVPI_binding_rubyize_callback(p_cb_data aCallback);
 
 #endif

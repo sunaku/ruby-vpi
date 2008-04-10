@@ -12,9 +12,4 @@
     // http://www.boydtechinc.com/ptf/archive/ptf_2005/0737.html
     #include "vpi_user.h"
 
-    ///
-    /// Registers a very basic VPI callback with reason and handler.
-    ///
-    static void RubyVPI_verilog_register_callback(PLI_INT32 aReason, PLI_INT32    (*aHandler)(p_cb_data));
-
 #endif
