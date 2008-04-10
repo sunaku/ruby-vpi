@@ -108,29 +108,3 @@ PLI_INT32 RubyVPI_host_fini(p_cb_data aCallback)
     free(RubyVPI_host_gStack);
 */
 }
-
-PLI_INT32 RubyVPI_host_resume(p_cb_data aCallback)
-{
-    RubyVPI_util_debug("Main: callback = %p", aCallback);
-
-    if (aCallback)
-    {
-        RubyVPI_util_debug("Main: callback.user_data = %p", aCallback->user_data);
-    }
-    else
-    {
-        RubyVPI_util_debug("Main: callback is NULL");
-    }
-
-    RubyVPI_util_debug("Host: ruby callback for %p =>", aCallback);
-    VALUE call = RubyVPI_binding_rubyize_callback(aCallback);
-    rb_p(call);
-
-    VALUE target = rb_const_get(rb_cObject, rb_intern("RubyVPI"));
-    ID method = rb_intern("resume");
-
-    RubyVPI_util_debug("Host: calling RubyVPI.resume");
-    rb_funcall(target, method, 1, call); // pass callback to user code
-
-    return 0;
-}

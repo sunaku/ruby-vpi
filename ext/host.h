@@ -14,10 +14,4 @@
     // should be called at end of simulation
     PLI_INT32 RubyVPI_host_fini(p_cb_data aCallback);
 
-    ///
-    /// VPI callback handler that resumes the user
-    /// code and waits until it becomes paused again.
-    ///
-    PLI_INT32 RubyVPI_host_resume(p_cb_data aCallback);
-
 #endif
