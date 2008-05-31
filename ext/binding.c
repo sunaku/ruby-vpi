@@ -16,7 +16,7 @@ void RubyVPI_binding_init()
     rb_define_alias(mVPI, "vpi_mcd_vprintf", "vpi_mcd_printf");
 }
 
-VALUE RubyVPI_binding_rubyize_callback(p_cb_data aCallback)
+VALUE RubyVPI_binding_rubify_callback(p_cb_data aCallback)
 {
     return SWIG_NewPointerObj(aCallback, SWIGTYPE_p_t_cb_data, 0);
 }

@@ -8,10 +8,10 @@
 
     #include "verilog.h"
 
-    // should be called in vlog_startup_routines
+    /// should be called in vlog_startup_routines
     void RubyVPI_user_init();
 
-    // should be called at end of simulation
+    /// should be called at end of simulation
     void RubyVPI_user_fini();
 
     ///

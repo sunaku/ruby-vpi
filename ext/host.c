@@ -18,36 +18,6 @@ RUBY_GLOBAL_SETUP
 
 PLI_INT32 RubyVPI_host_init(p_cb_data aCallback)
 {
-/*
-    // ruby thinks it's running inside an entire process, so it uses
-    // getrlimit() to determine maximum stack size.  we fix this by
-    // setting ruby's maximum stack size to that of this pthread
-    RubyVPI_util_debug("Host: alloc stack");
-
-    RubyVPI_host_gStack = 0;
-    RubyVPI_host_gStackSize = 0;
-
-    unsigned char power;
-    for (power = 22; power > 0; power--) // start at 2**22 (41 MiB)
-    {
-        RubyVPI_host_gStackSize = 1 << power;
-        RubyVPI_host_gStack = malloc(RubyVPI_host_gStackSize);
-
-        if (RubyVPI_host_gStack)
-            break;
-    }
-
-    if (!RubyVPI_host_gStack)
-    {
-        RubyVPI_util_error("unable to allocate memory for Ruby's stack");
-    }
-
-    RubyVPI_util_debug("Host: stack is %p (%d bytes)", RubyVPI_host_gStack, RubyVPI_host_gStackSize);
-    // ruby_init_stack(RubyVPI_host_gStack);
-    // ruby_set_stack_size(RubyVPI_host_gStackSize);
-*/
-
-
     //
     // ruby init
     //
@@ -102,9 +72,4 @@ PLI_INT32 RubyVPI_host_fini(p_cb_data aCallback)
 
     RubyVPI_util_debug("Host: ruby_finalize()");
     ruby_finalize();
-
-/*
-    RubyVPI_util_debug("Host: free stack");
-    free(RubyVPI_host_gStack);
-*/
 }

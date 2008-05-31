@@ -69,18 +69,16 @@ module RubyVPI
         VPI.vpi_free_object(VPI.__callback__vpi_register_cb(alarm))
 
       # transfer control to verilog
-        # while ring = RubyVPI.pause
-        #   # id = ring.user_data.to_s
-        #   # handler = @lock.synchronize { @id2handler[id] }
+        while ring = RubyVPI.pause
+          id = ring.user_data.to_s
+          handler = @lock.synchronize { @id2handler[id] }
 
-        #   # if handler
-        #   #   handler.call ring
-        #   # else
-        #     break
-        #   # end
-        # end
-
-        RubyVPI.pause
+          if handler
+            handler.call ring
+          else
+            break
+          end
+        end
     end
   end
 

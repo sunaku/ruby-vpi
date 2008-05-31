@@ -1,8 +1,12 @@
-begin
-  puts "Hello World from #{__FILE__}"
+# Defines methods for transferring control between Ruby and Verilog.
+#--
+# Copyright 2008 Suraj N. Kurapati
+# See the file named LICENSE for details.
 
+begin
   module RubyVPI
     require 'thread'
+
     @@userRun = Queue.new
     @@hostRun = Queue.new
 
@@ -36,8 +40,6 @@ begin
 
     module_function :attach
   end
-
-  puts "Goodbye World from #{__FILE__}"
 
 rescue Exception => e
   # mimic how Ruby internally prints exceptions

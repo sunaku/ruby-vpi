@@ -1,13 +1,9 @@
+# Boot loader for the Ruby side of the Ruby-VPI cosimulation.
+#--
+# Copyright 2006 Suraj N. Kurapati
+# See the file named LICENSE for details.
+
 begin
-  puts "Hello World from #{__FILE__}"
-
-  p RubyVPI => RubyVPI.methods(false)
-
-  v = require('rubygems')
-  p :gems => v
-
-
-
   # copy Ruby output into simulator's log file
     [STDOUT, STDERR].each do |stream|
       class << stream #:nodoc:
@@ -158,7 +154,6 @@ begin
       undef __RubyVPI__simulate_exit
     end
 
-  puts "detaching simulator"
   RubyVPI.detach
 
 rescue Exception => e

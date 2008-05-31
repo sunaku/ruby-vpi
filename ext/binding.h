@@ -24,6 +24,6 @@
     ///
     /// Converts the given VPI callback structure into a Ruby value.
     ///
-    VALUE RubyVPI_binding_rubyize_callback(p_cb_data aCallback);
+    VALUE RubyVPI_binding_rubify_callback(p_cb_data aCallback);
 
 #endif

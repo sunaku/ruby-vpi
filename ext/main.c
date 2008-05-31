@@ -46,15 +46,15 @@ static void RubyVPI_main_init()
 void (*vlog_startup_routines[])() = { RubyVPI_main_init, 0 };
 
 #if defined(PRAGMATIC_CVER) || defined(SYNOPSYS_VCS) || defined(CADENCE_NCSIM)
-///
-/// Invokes each routine specified in the vlog_startup_routines array.
-///
-void vlog_startup_routines_bootstrap()
-{
-    unsigned int i;
-    for (i = 0; vlog_startup_routines[i]; i++)
+    ///
+    /// Invokes each routine specified in the vlog_startup_routines array.
+    ///
+    void vlog_startup_routines_bootstrap()
     {
-        vlog_startup_routines[i]();
+        unsigned int i;
+        for (i = 0; vlog_startup_routines[i]; i++)
+        {
+            vlog_startup_routines[i]();
+        }
     }
-}
 #endif

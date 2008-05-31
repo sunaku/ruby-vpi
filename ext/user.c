@@ -83,8 +83,7 @@ PLI_INT32 RubyVPI_user_resume(p_cb_data aCallback)
     }
 
     RubyVPI_util_debug("Main: ruby callback for %p =>", aCallback);
-    VALUE call = RubyVPI_binding_rubyize_callback(aCallback);
-    rb_p(call);
+    VALUE call = RubyVPI_binding_rubify_callback(aCallback);
 
     VALUE target = rb_const_get(rb_cObject, rb_intern("RubyVPI"));
     ID method = rb_intern("resume");
