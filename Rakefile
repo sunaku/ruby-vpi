@@ -87,7 +87,7 @@ task :default => :build
 
   # the user guide
   file 'doc/guide.html' => 'doc/guide.erb' do |t|
-    sh "gerbil html #{t.prerequisites} > #{t.name}"
+    sh "gerbil -u html #{t.prerequisites} > #{t.name}"
   end
   task :doc => 'doc/guide.html'
   CLOBBER.include 'doc/guide.html'

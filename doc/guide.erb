@@ -5,49 +5,33 @@
   # local variables for this document
   mailing_list_url  = 'http://rubyforge.org/mailman/listinfo/ruby-vpi-discuss'
   mailing_list_link = link(mailing_list_url, "project mailing list")
-  download_url      = 'http://rubyforge.org/frs/?group_id=1339'
-  source_repo_url   = File.join(RubyVPI::Project[:website], 'src')
-  feed_url          = File.join(RubyVPI::Project[:website], 'news.xml')
+
+  pkg_url = File.join(RubyVPI::Project[:website], 'pkg')
+  src_url = File.join(RubyVPI::Project[:website], 'src')
+  ann_url = File.join(RubyVPI::Project[:website], 'ann')
+  dev_url = File.join(RubyVPI::Project[:website], 'dev')
+  log_url = File.join(RubyVPI::Project[:website], 'log')
 
   # parameters for the HTML format
   $title   = "Ruby-VPI #{RubyVPI::Project[:version]} user guide"
-  $authors = { 'Suraj N. Kurapati' => 'http://snk.tuxfamily.org' }
-  $feeds   = { feed_url => :rss }
-
-  # parameters for Gerbil
-  $unindent = '  '
-
-  class String
-    def indent aDepthOrNode
-      amt =
-        if aDepthOrNode.is_a? Node
-          aDepthOrNode.depth + 1
-        else
-          aDepthOrNode
-        end
-
-      gsub(/^/, $unindent * amt).strip
-    end
-  end
+  $authors = { 'Suraj N. Kurapati' => 'http://snk.rubyforge.org' }
+  $feeds   = { ann_url => :rss }
 %>
 
 <% header_inside_below do %>
-  <div style="text-align: left; margin-top: 2em">
+  "Release notes and project news":<%= log_url %> &mdash; "Subscribe !images/feed-icon-28x28.png!":<%= ann_url %>
 
-  * "News feed":<%= feed_url %>
-    - project news and release announcements.
-  * "Download area":<%= download_url %>
-    - place to obtain release packages.
-  * "Mailing list":<%= mailing_list_url %>
-    - ask questions, get help, and discuss.
-  * "Reference":api/
-    - API documentation for source code.
-  * "Talks":http://ruby-vpi.rubyforge.org/talks/
-    - archive of presentations and seminars.
-  * "Papers":http://ruby-vpi.rubyforge.org/papers/
-    - archive of research and publications.
+  "Downloads":<%= pkg_url %> - obtain the newest release package.
 
-  </div>
+  "Talks":http://ruby-vpi.rubyforge.org/talks/ - archive of presentations and seminars.
+
+  "Papers":http://ruby-vpi.rubyforge.org/papers/ - archive of research and publications.
+
+  "Mailing list":<%= mailing_list_url %> - ask questions, get help, and discuss.
+
+  "Reference":api/index.html - API documentation for source code.
+
+  "Developer feed":<%= dev_url %> - news about repository commits.
 <% end %>
 
 <% chapter "Introduction" do %>
@@ -245,8 +229,8 @@
       gem install ruby-vpi
       ruby-vpi -v
 
-    Otherwise, follow these instructions:
-    # Download the newest <tt>tar.gz</tt> release package from "the project download area":<%= download_url %>.
+    Alternatively, if you do not wish to use RubyGems:
+    # Download the newest <tt>tar.gz</tt> release package from "the project download area":<%= pkg_url %>.
     # Extract the release package anywhere you want on your system.
     # Go inside the extracted directory and run the following commands:
 
@@ -864,12 +848,12 @@
 
       Now that we have identified a set of expectations for our design, we are ready to implement them in our specification. This process is illustrated by <%= xref "fig:RSpec/counter_spec.rb" %> and <%= xref "fig:xUnit/counter_spec.rb" %>.
 
-      <% example "Specification implemented in RSpec format", "fig:RSpec/counter_spec.rb" do |n| %>
-        <code><%= File.read('examples/counter/RSpec/counter_spec.rb').indent(n) %></code>
+      <% example "Specification implemented in RSpec format", "fig:RSpec/counter_spec.rb" do %>
+        <code><%= File.read('examples/counter/RSpec/counter_spec.rb') %></code>
       <% end %>
 
-      <% example "Specification implemented in xUnit format", "fig:xUnit/counter_spec.rb" do |n| %>
-        <code><%= File.read('examples/counter/xUnit/counter_spec.rb').indent(n) %></code>
+      <% example "Specification implemented in xUnit format", "fig:xUnit/counter_spec.rb" do %>
+        <code><%= File.read('examples/counter/xUnit/counter_spec.rb') %></code>
       <% end %>
 
       Before we continue,
@@ -880,8 +864,8 @@
     <% section "Implement the prototype", "usage.tutorial.implement-proto" do %>
       Now that we have a specification against which to verify our design let us build a prototype of our design. By doing so, we exercise our specification, experience potential problems that may arise when we later implement our design in Verilog, and gain confidence in our work. The result of this proceess is illustrated by <%= xref "fig:counter_proto.rb" %>.
 
-      <% example "Ruby prototype of our Verilog design", "fig:counter_proto.rb" do |n| %>
-        <code><%= File.read('examples/counter/RSpec/counter_proto.rb').indent(n) %></code>
+      <% example "Ruby prototype of our Verilog design", "fig:counter_proto.rb" do %>
+        <code><%= File.read('examples/counter/RSpec/counter_proto.rb') %></code>
       <% end %>
 
       Before we continue, replace the contents of the files named <tt>RSpec/counter_proto.rb</tt> and <tt>xUnit/counter_proto.rb</tt> with the source code shown in <%= xref "fig:counter_proto.rb" %>.
@@ -930,8 +914,8 @@
     <% section "Implement the design", "usage.tutorial.implement-design" do %>
       Now that we have implemented and verified our prototype, we are ready to implement our design This is often quite simple because we translate _existing_ code from Ruby (our prototype) into Verilog (our design). The result of this process is illustrated by <%= xref "fig:counter.v_impl" %>.
 
-      <% example "Implementation of a simple up-counter with synchronous reset", "fig:counter.v_impl" do |n| %>
-        <code lang="verilog"><%= File.read('examples/counter/counter.v').indent(n) %></code>
+      <% example "Implementation of a simple up-counter with synchronous reset", "fig:counter.v_impl" do %>
+        <code lang="verilog"><%= File.read('examples/counter/counter.v') %></code>
       <% end %>
 
       Before we continue, replace the contents of the files named <tt>RSpec/counter.v</tt> and <tt>xUnit/counter.v</tt> with the source code shown in <%= xref "fig:counter.v_impl" %>
@@ -971,7 +955,7 @@
     <% end %>
 
     <% section "More examples", "usage.examples" do %>
-      The <tt>examples</tt> directory ("browse it online":<%= source_repo_url %>/examples/) contains several example tests which illustrate how Ruby-VPI can be used. Each example has an associated <tt>Rakefile</tt> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the <pre>rake</pre> command to get started.
+      The <tt>examples</tt> directory ("browse it online":<%= src_url %>/examples/) contains several example tests which illustrate how Ruby-VPI can be used. Each example has an associated <tt>Rakefile</tt> which simplifies the process of running it. Therefore, simply navigate into an example directory and run the <pre>rake</pre> command to get started.
     <% end %>
   <% end %>
 <% end %>
