@@ -184,7 +184,7 @@
       |_. Simulator |_. Notes |
       | "Synopsys VCS":http://www.synopsys.com/products/simulation/simulation.html | Any version that supports the <tt>-load</tt> option is acceptable. |
       | "Mentor Modelsim":http://www.model.com | Any version that supports the <tt>-pli</tt> option is acceptable. |
-      | "Cadence NC-Sim":http://www.cadence.com/products/functional_ver/nc-verilog/ | Any version that supports the <tt>+loadvpi</tt> option is acceptable. |
+      | "Cadence NC-Sim":http://www.cadence.com/products/functional_ver/nc-verilog/ | Any version that supports the <tt>+loadvpi</tt> option is acceptable for Ruby-VPI versions 20.0.0 or older.  Version 21.0.0 of Ruby-VPI <%= xref "problem.ncsim", "does not work with Cadence NC-Sim" %>. |
       | "GPL Cver":http://www.pragmatic-c.com/gpl-cver/ | Version 2.11a or newer is acceptable. |
       | "Icarus Verilog":http://www.geda.seul.org/tools/icarus/index.html | Version 0.8 is _mostly_ acceptable because you *will not* be able to <%= xref "vpi.handles.relatives", "access child handles through method calls" %>. The reason for this limitation is explained in <%= xref 'problems.ivl.vpi_handle_by_name.absolute-paths' %>. |
     <% end %>
@@ -1053,6 +1053,10 @@
     <% section "VPI::reset", "problems.ivl.vpi_reset" do %>
       In version 0.8 of Icarus Verilog, the @vpi_control(vpiReset)@ VPI function causes an assertion to fail inside the simulator. As a result, the simulation terminates and a core dump is produced.
     <% end %>
+  <% end %>
+
+  <% section "Cadence NC-Sim", "problem.ncsim" do %>
+    *ncsim* crashes with Ruby-VPI 21.0.0.  The problem is most likely an interaction issue with Ruby's threads implementation because *ncsim* worked fine with a "POSIX threads (pthreads)":http://en.wikipedia.org/wiki/Pthreads based implementation of Ruby-VPI (version 20.0.0).
   <% end %>
 <% end %>
 
