@@ -1,12 +1,9 @@
-# Generates a makefile for buiding the extension.
+# Generates a makefile for buiding the C extension.
 #--
 # Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
 
 require 'mkmf'
-
-# check for POSIX threads library
-  hasPthread = have_library('pthread', 'pthread_create')
 
 # check for ruby library
   require 'rbconfig'
@@ -20,10 +17,6 @@ require 'mkmf'
                  scan(/-L(\S+)/).flatten.
                  select {|f| File.exist? f }
 
-  p :rubyLibNames => rubyLibNames
-  p :rubyLibPaths => rubyLibPaths
-
-
   RUBY_FUNC = 'ruby_init'
 
   hasRuby = rubyLibNames.any? do |libName|
@@ -34,9 +27,5 @@ require 'mkmf'
     end
   end
 
-  p :hasRuby => hasRuby
-
 # generate the makefile
-  if hasPthread && hasRuby
-    create_makefile('ruby-vpi')
-  end
+create_makefile 'ruby-vpi' if hasRuby

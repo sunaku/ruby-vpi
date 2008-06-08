@@ -21,7 +21,7 @@ task :default => 'Makefile' do |t|
 end
 
 file 'Makefile' => [:swig, 'extconf.rb'] do |t|
-  cflags = "#{ENV['CFLAGS']} -DDEBUG -g -Werror"
+  cflags = "#{ENV['CFLAGS']} -g -Werror"
 
   # detect ruby version on behalf of C extension
   v = RUBY_VERSION.split('.')

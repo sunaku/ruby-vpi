@@ -187,7 +187,6 @@ task :default => :build
     s.extensions << 'gem_extconf.rb'
     s.executables = s.name
 
-    s.requirements << "POSIX threads library"
     s.requirements << "C language compiler"
 
     s.add_dependency 'rake',       '>= 0.7.0'
