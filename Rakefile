@@ -83,13 +83,14 @@ task :default => :build
 
 # documentation
   desc "Build the documentation."
-  task :doc
+  task :doc => 'doc/guide'
 
-  # the user guide
+  desc 'Generate the HTML user guide.'
+  task 'doc/guide' => 'doc/guide.html'
+
   file 'doc/guide.html' => 'doc/guide.erb' do |t|
     sh "gerbil -u html #{t.prerequisites} > #{t.name}"
   end
-  task :doc => 'doc/guide.html'
   CLOBBER.include 'doc/guide.html'
 
 # API reference
