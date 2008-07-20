@@ -188,10 +188,10 @@
       Ruby-VPI is known to work with the following simulators. However, you should be able to use it with any Verilog simulator that supports VPI.
 
       |_. Simulator |_. Notes |
+      | "GPL Cver":http://www.pragmatic-c.com/gpl-cver/ (recommended) | Version 2.11a or newer is acceptable. |
       | "Synopsys VCS":http://www.synopsys.com/products/simulation/simulation.html | Any version that supports the <tt>-load</tt> option is acceptable. |
-      | "Mentor Modelsim":http://www.model.com | Any version that supports the <tt>-pli</tt> option is acceptable. |
-      | "Cadence NC-Sim":http://www.cadence.com/products/functional_ver/nc-verilog/ | Any version that supports the <tt>+loadvpi</tt> option is acceptable for Ruby-VPI versions 20.0.0 or older.  Version 21.0.0 of Ruby-VPI <%= xref "problem.ncsim", "does not work with Cadence NC-Sim" %>. |
-      | "GPL Cver":http://www.pragmatic-c.com/gpl-cver/ | Version 2.11a or newer is acceptable. |
+      | "Mentor Modelsim":http://www.model.com | Any version that supports the <tt>-pli</tt> option is acceptable.  See <%= xref "problem.vsim" %> if you are using Modelsim version 6.2g. |
+      | "Cadence NC-Sim":http://www.cadence.com/products/functional_ver/nc-verilog/ | Any version that supports the <tt>+loadvpi</tt> option is acceptable for Ruby-VPI versions 20.0.0 or older.  See <%= xref "problem.ncsim" %> for details. |
       | "Icarus Verilog":http://www.geda.seul.org/tools/icarus/index.html | Version 0.8 is _mostly_ acceptable because you *will not* be able to <%= xref "vpi.handles.relatives", "access child handles through method calls" %>. The reason for this limitation is explained in <%= xref 'problems.ivl.vpi_handle_by_name.absolute-paths' %>. |
     <% end %>
 
@@ -1062,7 +1062,41 @@
   <% end %>
 
   <% section "Cadence NC-Sim", "problem.ncsim" do %>
-    *ncsim* crashes with Ruby-VPI 21.0.0.  The problem is most likely an interaction issue with Ruby's threads implementation because *ncsim* worked fine with a "POSIX threads (pthreads)":http://en.wikipedia.org/wiki/Pthreads based implementation of Ruby-VPI (version 20.0.0).
+    <% paragraph "Problem" do %>
+      Using RubyVPI 21.0.0 (or a newer version) to test a real Verilog module (as opposed to a <%= xref "usage.prototyping", "Ruby prototype of a Verilog module" %>) with the 64-bit Cadence NC-Verilog 05.83-s003 causes the simulator to crash.
+    <% end %>
+
+    <% paragraph "Solution" do %>
+      Use RubyVPI 20.0.0 or an older version.
+    <% end %>
+
+    <% paragraph "Discussion" do %>
+      The problem is most likely an interaction issue with Ruby's threads implementation because *ncsim* worked fine with the "POSIX threads (pthreads)":http://en.wikipedia.org/wiki/Pthreads based Ruby-VPI 20.0.0.
+    <% end %>
+  <% end %>
+
+  <% section "Mentor Modelsim", "problem.vsim" do %>
+    <% paragraph "Problem" do %>
+      The <%= xref "fig:RSpec/counter_spec.rb", "example RSpec-based up-counter test" %> sometimes fails randomly when run under the 64-bit Mentor Modelsim 6.2g.
+    <% end %>
+
+    <% paragraph "Solution" do %>
+      By adding a zero-delay null statement at the beginning of the edge-triggered always block in <%= xref "fig:counter.v_impl", "the Verilog source code for the up-counter" %>, the problem goes away and the test always passes:
+
+      <code lang="verilog">
+      always @(posedge clock) begin
+        #0; // zero-delay null statement
+
+        /* rest of the code */
+      end
+      </code>
+    <% end %>
+
+    <% paragraph "Discussion" do %>
+      I think the problem is a faulty implementation of the cbAfterDelay callback in Modelsim 6.2g, where the callback sometimes takes you to the _middle_ of a time-step (after some events in the time-step have already been executed) rather than taking you to the _top_ of a time-step (before any events in that time-step have been executed).
+
+      See http://rubyforge.org/pipermail/ruby-vpi-discuss/2007-October/000083.html
+    <% end %>
   <% end %>
 <% end %>
 
