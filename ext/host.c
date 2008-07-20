@@ -63,6 +63,8 @@ PLI_INT32 RubyVPI_host_init(p_cb_data aCallback)
 
     RubyVPI_util_debug("Host: user_init()");
     RubyVPI_user_init();
+
+    return 0;
 }
 
 PLI_INT32 RubyVPI_host_fini(p_cb_data aCallback)
@@ -72,4 +74,6 @@ PLI_INT32 RubyVPI_host_fini(p_cb_data aCallback)
 
     RubyVPI_util_debug("Host: ruby_finalize()");
     ruby_finalize();
+
+    return 0;
 }

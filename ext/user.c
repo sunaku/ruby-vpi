@@ -36,6 +36,8 @@ static VALUE RubyVPI_user_body(char* aUserScript)
 
     RubyVPI_util_debug("Ruby: END");
     // don't wait for anyone to resume me anymore
+
+    return Qnil;
 }
 
 static VALUE RubyVPI_user__module_RubyVPI = Qnil;
