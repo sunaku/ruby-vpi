@@ -38,6 +38,9 @@ static VALUE RubyVPI_user_body(char* aUserScript)
     // don't wait for anyone to resume me anymore
 }
 
+static VALUE RubyVPI_user__module_RubyVPI = Qnil;
+static ID RubyVPI_user__symbol_resume = 0;
+
 void RubyVPI_user_init()
 {
     // mailbox init
@@ -47,49 +50,36 @@ void RubyVPI_user_init()
 
     // ruby thread init
     RubyVPI_util_debug("User: ruby thread init");
-
     rb_thread_create(RubyVPI_user_body, "ruby-vpi/boot/loader");
 
 
     // wait for thread to pause
     RubyVPI_util_debug("User: calling RubyVPI.attach");
 
-    VALUE target = rb_const_get(rb_cObject, rb_intern("RubyVPI"));
-    ID method = rb_intern("attach");
-    rb_funcall(target, method, 0);
+    RubyVPI_user__module_RubyVPI = rb_const_get(rb_cObject, rb_intern("RubyVPI"));
+    rb_funcall(RubyVPI_user__module_RubyVPI, rb_intern("attach"), 0);
 
     RubyVPI_util_debug("User: calling RubyVPI.attach DONE");
 
 
     RubyVPI_util_debug("User: ruby thread is active & ran once");
+    RubyVPI_user__symbol_resume = rb_intern("resume");
 }
 
 void RubyVPI_user_fini()
 {
-    // nothing to clean up; Ruby will garbage collect everything
+    RubyVPI_user__module_RubyVPI = Qnil;
+    // Ruby will garbage collect everything else
 }
 
 PLI_INT32 RubyVPI_user_resume(p_cb_data aCallback)
 {
     RubyVPI_util_debug("Main: callback = %p", aCallback);
-
-    if (aCallback)
-    {
-        RubyVPI_util_debug("Main: callback.user_data = %p", aCallback->user_data);
-    }
-    else
-    {
-        RubyVPI_util_debug("Main: callback is NULL");
-    }
-
-    RubyVPI_util_debug("Main: ruby callback for %p =>", aCallback);
-    VALUE call = RubyVPI_binding_rubify_callback(aCallback);
-
-    VALUE target = rb_const_get(rb_cObject, rb_intern("RubyVPI"));
-    ID method = rb_intern("resume");
+    RubyVPI_util_debug("Main: callback.user_data = %p", aCallback ? aCallback->user_data : 0);
 
     RubyVPI_util_debug("Main: calling RubyVPI.resume");
-    rb_funcall(target, method, 1, call); // pass callback to user code
+    // pass VPI callback to user code as Ruby object
+    rb_funcall(RubyVPI_user__module_RubyVPI, RubyVPI_user__symbol_resume, 1, RubyVPI_binding_rubify_callback(aCallback));
 
     return 0;
 }
