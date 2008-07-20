@@ -16,26 +16,32 @@
   $title   = "Ruby-VPI #{RubyVPI::Project[:version]} user guide"
   $authors = { 'Suraj N. Kurapati' => 'http://snk.rubyforge.org' }
   $feeds   = { ann_url => :rss }
+
+  intro_paragraph = <<-EOS.strip
+    Ruby-VPI is a library that lets "Ruby":http://www.ruby-lang.org programs access the entire "IEEE 1364-2005 Verilog VPI":http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945 interface supported by "major Verilog simulators":#setup.reqs.sim today. It also serves as *platform for unit testing*, rapid *prototyping*, and systems *integration* of Verilog modules through Ruby
+  EOS
 %>
 
-<% header_inside_below do %>
-  "Release notes and project news":<%= log_url %> &mdash; "Subscribe !images/feed-icon-28x28.png!":<%= ann_url %>
+<% abstract do %>
+  <%= intro_paragraph %>.
 
-  "Downloads":<%= pkg_url %> - obtain the newest release package.
+  p=. <%= xref 'Introduction', 'Continue reading...' %>
 
-  "Talks":http://ruby-vpi.rubyforge.org/talks/ - archive of presentations and seminars.
-
-  "Papers":http://ruby-vpi.rubyforge.org/papers/ - archive of research and publications.
-
-  "Mailing list":<%= mailing_list_url %> - ask questions, get help, and discuss.
-
-  "Reference":api/index.html - API documentation for source code.
-
-  "Developer feed":<%= dev_url %> - news about repository commits.
+  <% paragraph "Resources" do %>
+    * "Releases":<%= log_url %> - release notes and project news.
+      "!feed-icon-28x28.png(RSS feed)!":<%= ann_url %>
+    * "Downloads":<%= pkg_url %> - obtain the newest release package.
+    * "Source code":<%= src_url %> - obtain via "Darcs 2":http://darcs.net or browse online.
+    * "Reference":api/index.html - API documentation for source code.
+      "!feed-icon-28x28.png(RSS feed)!":<%= dev_url %>
+    * "Talks":http://ruby-vpi.rubyforge.org/talks/ - archive of presentations and seminars.
+    * "Papers":http://ruby-vpi.rubyforge.org/papers/ - archive of research and publications.
+    * "Mailing list":<%= mailing_list_url %> - ask questions, get help, and discuss.
+  <% end %>
 <% end %>
 
 <% chapter "Introduction" do %>
-  Ruby-VPI is a library that provides the entire "IEEE 1364-2005 Verilog VPI":http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945 interface to "Ruby":http://www.ruby-lang.org scripts. It also serves as *platform for unit testing*, rapid *prototyping*, and systems *integration* of Verilog modules through Ruby:
+  <%= intro_paragraph %>:
   * Create complex Verilog test benches easily and wholly in Ruby.
   * Apply agile software development practices to develop hardware.
   * Perform "specification-driven functional verification":http://ruby-vpi.rubyforge.org/papers/masters_thesis.html ("PDF version":http://ruby-vpi.rubyforge.org/papers/masters_thesis.pdf).
