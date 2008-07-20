@@ -1,4 +1,4 @@
-# Concurrent processes.
+# Concurrent processes (coroutines).
 #--
 # Copyright 2007 Suraj N. Kurapati
 # See the file named LICENSE for details.
@@ -6,147 +6,155 @@
 Thread.abort_on_exception = true
 
 require 'singleton'
+require 'generator'
 
 module RubyVPI
   class SchedulerClass #:nodoc:
     include Singleton
 
-
-    Task = Struct.new(:thread, :state)
-
-    class Task #:nodoc:
-      def run
-        self.state = :run
-        self.thread.wakeup
-      end
-
-      def stop
-        self.state = :wait
-        Thread.stop
-      end
-
-      def stop?
-        self.thread.stop? and self.state == :wait
-      end
-    end
-
-
     def initialize
-      @thread2task = { Thread.current => Task.new(Thread.current, :run) }
-      @thread2task_soft = @thread2task.dup  # software threads
-      @thread2task_hard = {} # hardware threads (Ruby prototype of DUT)
-      @thread2task_lock = Mutex.new
+      @writes = Hash.new {|h,k| h[k] = []}
+      @writes_lock = Mutex.new
 
-      # base case: hardware runs first before any software does at startup
-        @time = 0
+      # for coroutines in Ruby-based prototypes of Verilog hardware
+      @routines = []
+      @routines_lock = Mutex.new
+      @current_routine = nil
 
+      @current_time = 0
+
+      # allow "initial" blocks in Verilog code of DUT to take effect
+      if @current_time.zero?
         unless RubyVPI::USE_PROTOTYPE
-          Callback.relay_verilog(VPI::CbReadOnlySynch, 0)
-        end
-
-      @scheduler = Thread.new do
-        # pause because boot loader is not fully initialized yet
-        Thread.stop
-
-        loop do
-          # run software in current time step
-            run_tasks @thread2task_soft, true
-            Edge.refresh_cache
-
-            # go to time slot where writing is permitted before flushing writes
-            unless RubyVPI::USE_PROTOTYPE
-              Callback.relay_verilog(VPI::CbAfterDelay, 1)
-            end
-
-            flush_writes
-
-          # run hardware in next time step
-            @time += 1
-
-            if RubyVPI::USE_PROTOTYPE
-              run_tasks @thread2task_hard, false
-              flush_writes
-            else
-              Callback.relay_verilog(VPI::CbReadOnlySynch, 0)
-            end
+          advance_to_read_only_slot
         end
       end
-
-
-      @handle2write = Hash.new {|h,k| h[k] = []}
-      @handle2write_lock = Mutex.new
     end
 
-    def current_time
-      @time
+    # Returns the current simulation time, as tracked by the scheduler.
+    attr_reader :current_time
+
+    # Registers a new routine with the scheduler.  The given block is the body
+    # of the routine and the given arguments are passed directly to the block.
+    def register_routine *aRoutineArgs, &aRoutineBody
+      @routines_lock.synchronize do
+        @routines << Routine.new(*aRoutineArgs, &aRoutineBody)
+      end
     end
 
-    def start
-      @scheduler.wakeup
+    # Makes the current routine wait for the
+    # scheduler to arrive in the next time step.
+    def pause_current_routine
+      @current_routine.pause
     end
 
-    # Registers the calling thread with the scheduler.
-    def attach
-      key = Thread.current
+    # Runs the scheduler until there are no more routines to be scheduled.
+    def run &aRoutineBody
+      main = Routine.new(&aRoutineBody)
 
-      hash =
-        if caller.grep(/_proto\.rb/).empty?
-          @thread2task_soft
+      until main.done?
+        # run software in current time step
+        resume_routine main
+
+        Edge.refresh_cache
+
+        # go to time slot where writing is permitted
+        # before applying captured write operations
+        unless RubyVPI::USE_PROTOTYPE
+          Callback.relay_verilog(VPI::CbAfterDelay, 1)
+        end
+
+        apply_writes
+
+        # run hardware in next time step
+        @current_time += 1
+
+        if RubyVPI::USE_PROTOTYPE
+          @routines_lock.synchronize do
+            @routines.reject! {|r| r.done? }
+
+            @routines.each do |r|
+              resume_routine r
+            end
+          end
+
+          apply_writes
         else
-          @thread2task_hard
+          advance_to_read_only_slot
         end
-
-      @thread2task_lock.synchronize do
-        task = Task.new(key, :run)
-        hash[key] = task
-        @thread2task[key] = task
       end
     end
-
-    # Unregisters the calling thread from the scheduler.
-    def detach
-      key = Thread.current
-
-      @thread2task_lock.synchronize do
-        @thread2task.delete key
-        @thread2task_hard.delete key
-        @thread2task_soft.delete key
-      end
-    end
-
-    # Waits for the scheduler to arrive in the next time step.
-    def await
-      key = Thread.current
-
-      task = @thread2task_lock.synchronize do
-        @thread2task[key]
-      end
-
-      task.stop
-    end
-
-    def ensure_caller_is_registered
-      unless @thread2task_lock.synchronize {@thread2task.key? Thread.current}
-        raise SecurityError, 'This method may only be invoked from within a process (see the VPI::process() method).'
-      end
-    end
-
-    Write = Struct.new :thread, :trace, :args
 
     # Captures the given write operation so it
     # can be flushed later, at the correct time.
     def capture_write aHandle, *aArgs
-      @handle2write_lock.synchronize do
-        @handle2write[aHandle] << Write.new(Thread.current, caller, aArgs)
+      @writes_lock.synchronize do
+        @writes[aHandle] << Write.new(Thread.current, caller, aArgs)
       end
     end
 
     private
 
+    def advance_to_read_only_slot
+      Callback.relay_verilog(VPI::CbReadOnlySynch, 0)
+    end
+
+    # Resumes the given routine while marking it as the current one.
+    def resume_routine aRoutine
+      @current_routine = aRoutine
+      @current_routine.resume
+      @current_routine = nil
+    end
+
+    # Represents Verilog's "process block" construct (a coroutine or concurrent
+    # process), which is used as the body of an "initial" or "forever" block.
+    class Routine
+      def initialize *aLogicArgs, &aLogicBody
+        raise ArgumentError unless block_given?
+
+        @gen = Generator.new do |@ctl|
+          pause # until we are ready to begin
+          aLogicBody.call(*aLogicArgs)
+        end
+      end
+
+      # Pauses the execution of this process block.
+      #
+      # Must be called from *inside* the logic of this process block.
+      def pause
+        @ctl.yield nil
+      end
+
+      # Returns true if this process block is
+      # currently paused and can thus be resumed.
+      #
+      # Must be called from *outside* the logic of this process block.
+      def pause?
+        @gen.next?
+      end
+
+      # Resumes the execution of this process block.
+      #
+      # Must be called from *outside* the logic of this process block.
+      def resume
+        @gen.next
+      end
+
+      # Returns true if this process block is
+      # finished (it cannot be resumed anymore).
+      #
+      # Must be called from *outside* the logic of this process block.
+      def done?
+        not pause?
+      end
+    end
+
+    Write = Struct.new :thread, :trace, :args
+
     # Flushes all captured writes.
-    def flush_writes
-      @handle2write_lock.synchronize do
-        @handle2write.each_pair do |handle, writes|
+    def apply_writes
+      @writes_lock.synchronize do
+        @writes.each_pair do |handle, writes|
           if writes.map {|w| w.thread}.uniq.length > 1
             culprits = writes.map {|w| "\n\n#{w.thread}" << w.trace.map {|x| "\n\t#{x}"}.join}.join
             STDERR.puts "Race condition detected at time step #{current_time}: the logic value of handle #{handle} is being modified by more than one concurrent process: #{culprits}"
@@ -161,27 +169,14 @@ module RubyVPI
         end
       end
     end
-
-    def run_tasks aHash, aExitWhenEmpty
-      @thread2task_lock.synchronize do
-        tasks = aHash.values
-        tasks.each {|t| t.run}
-
-        if aExitWhenEmpty && tasks.empty?
-          Thread.exit
-        end
-      end
-
-      until @thread2task_lock.synchronize { aHash.values.all? {|t| t.stop? } }
-        Thread.pass
-      end
-    end
   end
 
   Scheduler = SchedulerClass.instance
 end
 
 module VPI
+  # intercept all writes to VPI handles so that
+  # they can be applied later by the scheduler
   alias_method :__scheduler__vpi_put_value, :vpi_put_value
   module_function :__scheduler__vpi_put_value
 
@@ -197,8 +192,7 @@ module VPI
 
   # Wait until the simulation advances by the given number of time steps.
   def advance_time aNumTimeSteps = 1
-    RubyVPI::Scheduler.ensure_caller_is_registered
-    aNumTimeSteps.times { RubyVPI::Scheduler.await }
+    aNumTimeSteps.times { RubyVPI::Scheduler.pause_current_routine }
   end
 
   alias wait advance_time
@@ -206,15 +200,8 @@ module VPI
 
   # Creates a new concurrent process, which will execute the
   # given block with the given arguments, and returns it.
-  def process *aBlockArgs
-    RubyVPI::Scheduler.ensure_caller_is_registered
-    raise ArgumentError, 'block must be given' unless block_given?
-
-    Thread.new do
-      RubyVPI::Scheduler.attach
-      yield(*aBlockArgs)
-      RubyVPI::Scheduler.detach
-    end
+  def process *aBlockArgs, &aBlock
+    RubyVPI::Scheduler.register_routine(*aBlockArgs, &aBlock)
   end
 
   # Wraps the given block inside an infinite loop and executes it
@@ -226,7 +213,7 @@ module VPI
         aBlock.call(*aBlockArgs)
         finishTime = VPI.current_time
 
-        VPI.advance_time unless finishTime > startTime
+        advance_time unless finishTime > startTime
       end
     end
   end

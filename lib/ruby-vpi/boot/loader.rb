@@ -141,11 +141,11 @@ begin
       include VPI
     end
 
-  # load the user-defined test loader
-    RubyVPI::Scheduler.start
+  RubyVPI::Scheduler.run do
+    # load the user-defined test loader
     require ENV['RUBYVPI_TEST_LOADER']
 
-  # simulate at_exit handler invocation
+    # simulate at_exit handler invocation
     Kernel.__RubyVPI__simulate_exit
 
     # restore original at_exit handler
@@ -153,6 +153,7 @@ begin
       alias at_exit __RubyVPI__orig_at_exit
       undef __RubyVPI__simulate_exit
     end
+  end
 
   RubyVPI.detach
 
