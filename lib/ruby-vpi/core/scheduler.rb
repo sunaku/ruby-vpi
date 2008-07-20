@@ -61,7 +61,11 @@ module RubyVPI
         # go to time slot where writing is permitted
         # before applying captured write operations
         unless RubyVPI::USE_PROTOTYPE
-          Callback.relay_verilog(VPI::CbAfterDelay, 1)
+          if RubyVPI::USE_SIMULATOR == :vsim
+            Callback.relay_verilog(VPI::CbAfterDelay, 0)
+          else
+            Callback.relay_verilog(VPI::CbAfterDelay, 1)
+          end
         end
 
         apply_writes
