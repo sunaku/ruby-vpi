@@ -62,11 +62,10 @@ require 'ruby-vpi/util'
   end
 
 # prepare hook for rb_load_file() in main.c
-  ENV['RUBYVPI_BOOT_LOADER'] = File.join(File.dirname(__FILE__), 'runner_boot_loader.rb')
-  ENV['RUBYVPI_TEST_LOADER'] = TEST_LOADER
+ENV['RUBYVPI_TEST_LOADER'] = TEST_LOADER
 
 # check if the machine is 64-bit
-  @archIs64 = 0.size == 8
+@archIs64 = 0.size == 8
 
 
 require 'rake/clean'
