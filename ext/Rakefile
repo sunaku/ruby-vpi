@@ -1,9 +1,13 @@
 # Build file for the native C extension.
 #
 # = Environment variables
-# CFLAGS::    Arguments to the compiler.
-# LDFLAGS::   Arguments to the linker.
-# SIMULATOR:: ID of the simulator.
+#
+# CFLAGS        :: Override the default options passed to the compiler.
+# CFLAGS_EXTRA  :: Provide additional options for the compiler.
+# LDFLAGS       :: Override the default options passed to the linker.
+# LDFLAGS_EXTRA :: Provide additional options for the linker.
+# SIMULATOR     :: ID of the simulator.
+#
 #--
 # Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
@@ -21,16 +25,17 @@ task :default => 'Makefile' do |t|
 end
 
 file 'Makefile' => [:swig, 'extconf.rb'] do |t|
-  cflags = "#{ENV['CFLAGS']} -g -Werror"
+  args = []
 
-  # detect ruby version on behalf of C extension
-  v = RUBY_VERSION.split('.')
-  until v.empty?
-    cflags << " -DHAVE_RUBY_#{v.join '_'}"
-    v.pop
+  if flags = ENV['CFLAGS']
+    args << "--with-cflags=#{flags}"
   end
 
-  ruby t.prerequisites[1], "--with-cflags=#{cflags}", "--with-ldflags=#{ENV['LDFLAGS']}"
+  if flags = ENV['LDFLAGS']
+    args << "--with-ldflags=#{flags}"
+  end
+
+  ruby t.prerequisites[1], *args
 end
 
 CLEAN.include 'Makefile', 'mkmf.log', '*.o', "*.#{Config::CONFIG['DLEXT']}"

@@ -1,4 +1,10 @@
 # Generates a makefile for buiding the C extension.
+#
+# = Environment variables
+#
+# CFLAGS_EXTRA  :: Provide additional options for the compiler.
+# LDFLAGS_EXTRA :: Provide additional options for the linker.
+#
 #--
 # Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
@@ -28,4 +34,27 @@ require 'mkmf'
   end
 
 # generate the makefile
-create_makefile 'ruby-vpi' if hasRuby
+if hasRuby
+  # apply additional arguments for compiler and linker
+  if flags = ENV['CFLAGS_EXTRA']
+    $CFLAGS << " #{flags}"
+  end
+
+  if flags = ENV['LDFLAGS_EXTRA']
+    $LDFLAGS << " #{flags}"
+  end
+
+  $CFLAGS << ' -Wall'
+
+  # disable optimization when debugging
+  $CFLAGS << ' -g -O0' if $CFLAGS =~ /-DDEBUG\b/
+
+  # detect ruby version on behalf of C extension
+  v = RUBY_VERSION.split('.')
+  until v.empty?
+    $CFLAGS << " -DHAVE_RUBY_#{v.join '_'}"
+    v.pop
+  end
+
+  create_makefile 'ruby-vpi'
+end

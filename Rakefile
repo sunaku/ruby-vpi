@@ -1,6 +1,10 @@
 # = Environment variables
-# CFLAGS:: Arguments to the compiler.
-# LDFLAGS:: Arguments to the linker.
+#
+# CFLAGS        :: Override the default options passed to the compiler.
+# CFLAGS_EXTRA  :: Provide additional options for the compiler.
+# LDFLAGS       :: Override the default options passed to the linker.
+# LDFLAGS_EXTRA :: Provide additional options for the linker.
+#
 #--
 # Copyright 2006 Suraj N. Kurapati
 # See the file named LICENSE for details.
@@ -55,8 +59,8 @@ task :default => :build
   directory 'obj'
   CLOBBER.include 'obj'
 
-  ccFlags = ENV['CFLAGS']
-  ldFlags = ENV['LDFLAGS']
+  ccFlags = ENV['CFLAGS_EXTRA']
+  ldFlags = ENV['LDFLAGS_EXTRA']
 
   RubyVPI::SIMULATORS.each do |sim|
     taskName = "build_#{sim.id}"
@@ -68,8 +72,8 @@ task :default => :build
 
       unless File.exist? dst
         cd 'ext' do
-          ENV['CFLAGS']  = [ccFlags, sim.compiler_args].compact.join(' ')
-          ENV['LDFLAGS'] = [ldFlags, sim.linker_args].compact.join(' ')
+          ENV['CFLAGS_EXTRA']  = [ccFlags, sim.compiler_args].compact.join(' ')
+          ENV['LDFLAGS_EXTRA'] = [ldFlags, sim.linker_args].compact.join(' ')
 
           sh "rake SIMULATOR=#{sim.id}"
           mv src, dst
