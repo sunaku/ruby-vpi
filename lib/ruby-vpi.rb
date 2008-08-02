@@ -8,7 +8,7 @@ module RubyVPI
     :name    => 'ruby-vpi',
     :version => '21.0.0',
     :release => '2008-06-08',
-    :website => "http://ruby-vpi.rubyforge.org",
+    :website => 'http://ruby-vpi.rubyforge.org',
     :home    => File.expand_path(File.join(File.dirname(__FILE__), '..'))
   }
 

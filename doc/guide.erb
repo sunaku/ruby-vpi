@@ -25,15 +25,13 @@
 <% abstract do %>
   <%= intro_paragraph %>.
 
-  p=. <%= xref 'Introduction', 'Continue reading...' %>
+  p=. <%= xref 'Introduction', '< Continue reading... >' %>
 
   <% paragraph "Resources" do %>
-    * "Releases":<%= log_url %> - release notes and project news.
-      "!feed-icon-28x28.png(RSS feed)!":<%= ann_url %>
+    * "Releases":<%= log_url %> - release notes and project news. "!images/feed-icon-28x28.png(RSS feed)!":<%= ann_url %>
     * "Downloads":<%= pkg_url %> - obtain the newest release package.
     * "Source code":<%= src_url %> - obtain via "Darcs 2":http://darcs.net or browse online.
-    * "Reference":api/index.html - API documentation for source code.
-      "!feed-icon-28x28.png(RSS feed)!":<%= dev_url %>
+    * "Reference":api/index.html - API documentation for source code. "!images/feed-icon-28x28.png(RSS feed)!":<%= dev_url %>
     * "Talks":http://ruby-vpi.rubyforge.org/talks/ - archive of presentations and seminars.
     * "Papers":http://ruby-vpi.rubyforge.org/papers/ - archive of research and publications.
     * "Mailing list":<%= mailing_list_url %> - ask questions, get help, and discuss.
@@ -85,7 +83,7 @@
   <% end %>
 
   <% section "License" do %>
-    <%= h(File.read('LICENSE')).gsub(/^Copyright.*$/, '\&<br/>') %>
+    <%=h File.read('LICENSE').gsub(/^Copyright.*$/, "\\&\n").para_join %>
   <% end %>
 
   <% section "Appetizers" do %>
@@ -93,7 +91,7 @@
 
     * Assign the value 2^2048^ to a register:
     <code>
-    # NOTE: these are all equivalent
+    # these statements are equivalent
 
     your_register.intVal = 2 ** 2048
     your_register.put_value 2 ** 2048
@@ -103,7 +101,7 @@
     <code>
     your_module.all_net? { |your_net| your_net.z? }
 
-    # or, alternatively:
+    # or:
 
     your_nets = your_module.net_a
     your_nets.all? { |net| net.z? }
@@ -111,9 +109,10 @@
 
     * See a register's path, width, and location (file & line number):
     <code>
-    # NOTE: these are all equivalent
-
     puts your_register
+
+    # or:
+
     p :path  => your_register.fullName
     p :width => your_register.size
     p :file  => your_register.fileName
@@ -122,7 +121,7 @@
 
     * Access the first five elements in a memory:
     <code>
-    # NOTE: these are all equivalent
+    # these statements are equivalent
 
     your_memory.memoryWord_a.first(5)
     your_memory.memoryWord_a[0..4]
@@ -132,7 +131,7 @@
 
     * Clear a memory by filling it with zeroes:
     <code>
-    # NOTE: these are all equivalent
+    # these statements are equivalent
 
     your_memory.each_memoryWord { |w| w.f! }
     your_memory.each_memoryWord { |w| w.vpi0! }
@@ -192,13 +191,13 @@
       | "Synopsys VCS":http://www.synopsys.com/products/simulation/simulation.html | Any version that supports the <tt>-load</tt> option is acceptable. |
       | "Mentor Modelsim":http://www.model.com | Any version that supports the <tt>-pli</tt> option is acceptable.  See <%= xref "problem.vsim" %> if you are using Modelsim version 6.2g. |
       | "Cadence NC-Sim":http://www.cadence.com/products/functional_ver/nc-verilog/ | Any version that supports the <tt>+loadvpi</tt> option is acceptable for Ruby-VPI versions 20.0.0 or older.  See <%= xref "problem.ncsim" %> for details. |
-      | "Icarus Verilog":http://www.geda.seul.org/tools/icarus/index.html | Version 0.8 is _mostly_ acceptable because you *will not* be able to <%= xref "vpi.handles.relatives", "access child handles through method calls" %>. The reason for this limitation is explained in <%= xref 'problems.ivl.vpi_handle_by_name.absolute-paths' %>. |
+      | "Icarus Verilog":http://www.geda.seul.org/tools/icarus/index.html | Version 0.8 is _mostly_ acceptable because you *will not* be able to <%= xref "vpi.handles.relatives", "access child handles through method calls" %>. See <%= xref 'problems.ivl.vpi_handle_by_name.absolute-paths' %> for details. |
     <% end %>
 
     <% paragraph "Compilers" do %>
       |_. Software |_. Notes |
       | "make":http://en.wikipedia.org/wiki/Make | Any flavor or distribution should be acceptable. |
-      | C compiler | the "GNU Compiler Collection (GCC)":http://www.gnu.org/software/gcc/ is preferred, but any C compiler should be acceptable. |
+      | C compiler | the "GCC(GNU Compiler Collection)":http://www.gnu.org/software/gcc/ is preferred, but any C compiler should be acceptable. |
       | "SWIG":http://www.swig.org/download.html | Version 1.3.29 or newer is required. |
       | "Ruby":http://www.ruby-lang.org/en/downloads/ | Version 1.8 or newer, including header and linkable object files for building extensions, is required. You can install Ruby by following "these instructions":http://www.ruby-lang.org/en/downloads/. |
     <% end %>
@@ -231,16 +230,20 @@
 
     Once your system has the <%= xref "setup.reqs", "necessary requirements" %>, you can install Ruby-VPI by running the following commands:
 
-      gem install ruby-vpi
-      ruby-vpi -v
+    <pre>
+    gem install ruby-vpi
+    ruby-vpi -v
+    </pre>
 
     Alternatively, if you do not wish to use RubyGems:
     # Download the newest <tt>tar.gz</tt> release package from "the project download area":<%= pkg_url %>.
     # Extract the release package anywhere you want on your system.
     # Go inside the extracted directory and run the following commands:
 
-      rake build
-      ruby bin/ruby-vpi -v
+    <pre>
+    rake build
+    ruby bin/ruby-vpi -v
+    </pre>
 
     If the installation was successful, then you will see output like this: <pre><%=h `ruby bin/ruby-vpi -v` %></pre>
 
@@ -264,11 +267,11 @@
   <% section "Maintenance", "setup.maintenance" do %>
     You can upgrade to the latest release of Ruby-VPI by running the following command:
 
-      gem update ruby-vpi
+    pre. gem update ruby-vpi
 
     You can uninstall Ruby-VPI by running the following command:
 
-      gem uninstall ruby-vpi
+    pre. gem uninstall ruby-vpi
 
     Learn more about using RubyGems in "the RubyGems user guide":http://www.rubygems.org.
   <% end %>
@@ -379,7 +382,7 @@
       * <tt>loader.rb</tt>
       ** The user-defined Ruby script which loads the test.
 
-      Note that because the user-defined Ruby script (<tt>loader.rb</tt> among the files above) decides what files to load, you are free to organize your tests however you like. As a result, the files presented above are a mere _convention_ that you can _choose_ to follow rather than being forced to follow.
+      Note that because the user-defined Ruby script (<tt>loader.rb</tt> among the files above) decides what files to load, you are free to organize your tests however you like. As a result, the files presented above are a mere convention that you can _choose_ to follow.
     <% end %>
   <% end %>
   <% section "Interacting with the Verilog simulator", "overview.relay" do %>
@@ -496,7 +499,7 @@
 
       <% table "Examples of accessing a handle's properties", "ex:properties" do %>
         |_/2. Ruby expression |_\6. Method naming format |_/2. Description |
-        ||_. Operation |_. _ |_. Property |_. _ |_. Accessor |_. Addendum ||
+        |_. Operation |_. _ |_. Property |_. _ |_. Accessor |_. Addendum |
         | @handle.vpiIntVal@ | &nbsp; | &nbsp; | vpiIntVal | &nbsp; |  &nbsp; | &nbsp; |/4. Obtain the _logic value_ of the handle's @VpiIntVal@ property. |
         | @handle.vpiIntVal_l@ | &nbsp; | &nbsp; | vpiIntVal | _ | l | &nbsp; |
         | @handle.intVal@ | &nbsp; | &nbsp; | intVal | &nbsp; | &nbsp; | &nbsp; |
@@ -579,10 +582,10 @@
 
     Second, *all processes see the _same_ input* (the state of the simulation database at the start of the current time step) while executing in a time step. That is, when a process modifies the simulation database, say, by changing the logic value of a register, the modification only takes effect at the _end_ of the current time step. In this manner, we avoid race conditions where one process modifies the simulation midflight but some/all of other processes are unaware of that modification (because they were not notified of its occurence).
 
-    Note that these constraints are automatically enforced "under the hood", so to speak, by Ruby-VPI. As a user, you need not do anything extra to implement or support these constraints; they are already taken care of.
+    Note that these constraints are automatically enforced by Ruby-VPI. As a user, you need not do anything extra to implement or support these constraints.
 
     <% caution "Assignments inside processes are non-blocking" do %>
-      As a result of the constraints described above, all assignments inside processes are treated like Verilog's non-blocking assignments.  Think about it: blocking assignments allow a process to make changes to simulation values (possibly) before other processes read those values.  Since the second constraint makes all processes see the same input while they are executing, it is impossible to support blocking assignments inside processes.
+      As a result of the constraints described above, all assignments inside processes are treated like Verilog's *non-blocking assignments*. Think about it: blocking assignments allow a process to make changes to simulation values (possibly) before other processes read those values.  Since the second constraint forces all processes to see the _same_ input while they are executing, it is impossible to support blocking assignments inside processes.
     <% end %>
 
     <% section "Creating a concurrent process" do %>
@@ -596,7 +599,7 @@
         <code lang="verilog">
         always @(posedge clock1 and negedge clock2) begin
           foo <= foo + 1;
-          bar  = bar + 5;
+          bar  = bar + 5; // treated as NON-blocking in prototype
         end
         </code>
 
@@ -714,9 +717,11 @@
         <pre>rake -f your_test_runner.rake PROTOTYPE=1 COVERAGE=1</pre>
 
         Below, we _disable_ the prototype and enable the code coverage analysis. These invocations are equivalent if the @PROTOTYPE@ environment variable is unset.
-        <pre>rake -f your_test_runner.rake PROTOTYPE=0 COVERAGE=1</pre>
-        <pre>rake -f your_test_runner.rake PROTOTYPE=  COVERAGE=1</pre>
-        <pre>rake -f your_test_runner.rake COVERAGE=1</pre>
+        <pre>
+        rake -f your_test_runner.rake PROTOTYPE=0 COVERAGE=1
+        rake -f your_test_runner.rake PROTOTYPE=  COVERAGE=1
+        rake -f your_test_runner.rake COVERAGE=1
+        </pre>
       <% end %>
     <% end %>
   <% end %>
@@ -987,21 +992,20 @@
     For example, if you checked out the source code into <tt>/home/foo/ruby-vpi/</tt> then you would set the value of the @RUBYLIB@ environment variable to <tt>/home/foo/ruby-vpi/lib/</tt>. Afterwards, any Ruby-VPI tests you run will use the checked-out source code directly.
   <% end %>
 
+  <% section "Editing this guide", "hacking.guide" do %>
+    The <tt>doc/guide.erb</tt> file contains the source code of this guide. You must install "Gerbil":http://gerbil.rubyforge.org before you can run the <pre>rake doc</pre> command to automatically generate the HTML documentation you are currently viewing.
+  <% end %>
+
   <% section "Building release packages", "hacking.release-packages" do %>
     In addition to the <%= xref "setup.reqs", "normal requirements" %> you need the following software to build release packages:
 
-    * "RedCloth":http://rubyforge.org/projects/redcloth/
-    * "CodeRay":http://rubyforge.org/projects/coderay/
+    * "Gerbil":http://gerbil.rubyforge.org - extensible document generator
 
     Once you have satisfied these requirements, you can run the following command to build the release packages: <pre>rake release</pre>
 
     For more build options, see below:
     <pre>$ rake -T
     <%=h `rake -T` %></pre>
-  <% end %>
-
-  <% section "Editing this guide", "hacking.guide" do %>
-    The <tt>doc/guide.erb</tt> file contains the source code of this guide. You must install "Gerbil":http://gerbil.rubyforge.org before you can run the <pre>rake doc</pre> command to automatically generate the HTML documentation you are currently viewing.
   <% end %>
 <% end %>
 

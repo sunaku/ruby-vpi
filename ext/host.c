@@ -13,7 +13,7 @@
 VALUE RubyVPI_host_gProgName;
 
 #ifdef RUBY_GLOBAL_SETUP
-RUBY_GLOBAL_SETUP
+    RUBY_GLOBAL_SETUP
 #endif
 
 PLI_INT32 RubyVPI_host_init(p_cb_data aCallback)
@@ -23,8 +23,8 @@ PLI_INT32 RubyVPI_host_init(p_cb_data aCallback)
     //
 
     #ifdef RUBY_INIT_STACK
-    RubyVPI_util_debug("Host: RUBY_INIT_STACK");
-    RUBY_INIT_STACK;
+        RubyVPI_util_debug("Host: RUBY_INIT_STACK");
+        RUBY_INIT_STACK;
     #endif
 
     RubyVPI_util_debug("Host: ruby_init()");
@@ -41,11 +41,11 @@ PLI_INT32 RubyVPI_host_init(p_cb_data aCallback)
     ruby_init_loadpath();
 
     #ifdef HAVE_RUBY_1_9
-    RubyVPI_util_debug("Host: ruby_init_gems(Qtrue)");
-    rb_const_set(rb_define_module("Gem"), rb_intern("Enable"), Qtrue);
+        RubyVPI_util_debug("Host: ruby_init_gems(Qtrue)");
+        rb_const_set(rb_define_module("Gem"), rb_intern("Enable"), Qtrue);
 
-    RubyVPI_util_debug("Host: Init_prelude()");
-    Init_prelude();
+        RubyVPI_util_debug("Host: Init_prelude()");
+        Init_prelude();
     #endif
 
 
