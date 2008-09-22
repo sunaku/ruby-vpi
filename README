@@ -1,1 +1,11 @@
-Please see ./doc/guide.html in your web browser.
+Ruby-VPI -- Ruby interface to IEEE 1364-2005 Verilog VPI
+========================================================
+
+Ruby VPI is a library that lets Ruby programs access the
+entire IEEE 1364-2005 Verilog VPI interface supported by
+major Verilog simulators today.  It also serves as
+platform for unit testing, rapid prototyping, and
+systems integration of Verilog modules through Ruby.
+
+Please see the ./doc/guide.html file in your web browser 
+or visit http://ruby-vpi.rubyforge.org for more information.
