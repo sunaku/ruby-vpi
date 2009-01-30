@@ -69,7 +69,7 @@ module RubyVPI
         VPI.vpi_free_object(VPI.__callback__vpi_register_cb(alarm))
 
       # transfer control to verilog
-        while ring = RubyVPI.pause
+        while ring = relay_verilog_impl
           id = ring.user_data.to_s
           handler = @lock.synchronize { @id2handler[id] }
 
@@ -79,6 +79,13 @@ module RubyVPI
             break
           end
         end
+    end
+
+    private
+
+    # Pauses execution and returns the callback that resumed execution.
+    def relay_verilog_impl
+      callcc {|c| throw :RubyVPI_relay_verilog, c }
     end
   end
 

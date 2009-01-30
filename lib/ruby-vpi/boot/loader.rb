@@ -155,8 +155,6 @@ begin
     end
   end
 
-  RubyVPI.detach
-
 rescue Exception => e
   # mimic how Ruby internally prints exceptions
   STDERR.puts "#{e.class}: #{e.message}", e.backtrace.map {|s| "\tfrom #{s}" }
