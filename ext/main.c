@@ -5,7 +5,9 @@
 
 #include "util.h"
 #include "verilog.h"
-#include <stdio.h>
+#include <stdlib.h>
+#include <ruby.h>
+
 
 ///
 /// Registers a very basic VPI callback with reason and handler.
@@ -34,12 +36,53 @@ PLI_INT32 test_begin(p_cb_data callback)
     char dynamic_local;
     RubyVPI_util_puts("Main: test_begin: dynamic=%p static=%p", &dynamic_local, &static_local);
 
+    // boot up Ruby
+
+    int argc = 0;
+    char** argv = {""};
+    ruby_sysinit(&argc, &argv);
+
+        // #ifdef CADENCE_NCSIM
+        //     static VALUE variable_in_this_stack_frame;
+        // #else
+        //     VALUE variable_in_this_stack_frame;
+        // #endif
+
+        VALUE variable_in_this_stack_frame;
+        ruby_init_stack(&variable_in_this_stack_frame + 0x1000);
+
+        /*
+        RUBY_INIT_STACK;
+
+        // determine ruby's choice of maximum stack size and
+        // grow our custom allocated stack to be that large
+        rb_thread_t *th = GET_THREAD();
+
+        RubyVPI_util_puts("Main: test_begin: thread=%p", th);
+        RubyVPI_util_puts("Main: test_begin: max=%ul", th->machine_stack_maxsize);
+
+        //----------------------------------
+
+        void* stack_end = malloc(1);
+        if (!stack_end) {
+            fprintf(stderr, "Could not allocate stack for Ruby\n");
+            exit(1);
+        }
+        ruby_init_stack(stack_end);
+
+        realloc(stack_end, th->machine_stack_maxsize);
+        */
+
+        ruby_init();
+        // ruby_options(argc, argv);
+        ruby_init_loadpath();
+        ruby_script("whuzza!");
+
+    RubyVPI_util_debug("Main: test_begin: registering FIRST loop callback");
     s_vpi_time time;
     time.type = vpiSimTime;
     time.high = 0;
     time.low = 1;
-
-    RubyVPI_util_debug("Main: test_begin: registering FIRST loop callback");
     RubyVPI_main_register_callback(cbAfterDelay, &time, test_loop);
 
     return 0;
@@ -56,6 +99,13 @@ PLI_INT32 test_loop(p_cb_data callback)
     time.high = 0;
     time.low = 1;
 
+    RubyVPI_util_puts("Main: test_loop: ruby code ------");
+    rb_require("sum");   // or sum.rb
+    rb_eval_string("$summer = Summer.new");
+    rb_eval_string("$result = $summer.sum(10)");
+    VALUE result = rb_gv_get("result");
+    printf("Result = %d\n", NUM2INT(result));
+
     RubyVPI_util_debug("Main: test_loop: registering LOOP callback");
     RubyVPI_main_register_callback(cbAfterDelay, &time, test_loop);
 
@@ -68,7 +118,7 @@ PLI_INT32 test_end(p_cb_data callback)
     char dynamic_local;
     RubyVPI_util_puts("Main: test_end: dynamic=%p static=%p", &dynamic_local, &static_local);
 
-    return 0;
+    return ruby_cleanup(0);
 }
 
 static void RubyVPI_main_init()
