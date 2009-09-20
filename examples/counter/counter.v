@@ -17,4 +17,8 @@ module counter #(parameter Size = 5) (
     else
       count <= count + 1;
   end
+
+  initial begin
+    #10 $finish();
+  end
 endmodule
