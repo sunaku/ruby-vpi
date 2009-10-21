@@ -36,7 +36,7 @@ require 'mkmf'
   end
 
 # generate the makefile
-if hasRuby and have_library('pcl', 'co_create')
+if hasRuby and have_library('pcl', 'co_create') and have_header('sys/ucontext.h')
   # apply additional arguments for compiler and linker
   if flags = ENV['CFLAGS_EXTRA']
     $CFLAGS << " #{flags}"

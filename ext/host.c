@@ -5,20 +5,43 @@
 
 #include <stddef.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <assert.h>
+#include <sys/ucontext.h>
 #include <ruby.h>
 #include "host.h"
 #include "util.h"
 #include "user.h"
 #include "binding.h"
 
-static coroutine_t ruby_coroutine = NULL;
+static ucontext_t user_context;
+static ucontext_t host_context;
+
+static void host_to_user()
+{
+    RubyVPI_util_debug("Ruby: host_to_user() begin");
+    getcontext(&host_context);
+    setcontext(&user_context);
+    RubyVPI_util_debug("Ruby: host_to_user() end");
+}
+
+static void user_to_host()
+{
+    RubyVPI_util_debug("Ruby: user_to_host() begin");
+    getcontext(&user_context);
+    setcontext(&host_context);
+    RubyVPI_util_debug("Ruby: user_to_host() end");
+}
+
+static bool relay_begun = false;
 
 //
 // Creates a coroutine to house the ruby interpreter.
 //
-static void ruby_coroutine_body(void* arg)
+static void ruby_coroutine_body()
 {
+    relay_begun = true;
+
     //
     // ruby init
     //
@@ -34,11 +57,15 @@ static void ruby_coroutine_body(void* arg)
     RubyVPI_util_debug("Host: ruby_init_stack(%p)", stack_start);
     ruby_init_stack(stack_start);
 
+    // RubyVPI_util_debug("Ruby: co_resume() EARLY");
+    // user_to_host();
+    // RubyVPI_util_debug("Ruby: co_resume() => done");
+
     RubyVPI_util_debug("Host: ruby_init()");
     ruby_init();
 
-    RubyVPI_util_debug("Ruby: co_resume() EARLY");
-    co_resume();
+    RubyVPI_util_debug("Ruby: co_resume() LATE");
+    user_to_host();
     RubyVPI_util_debug("Ruby: co_resume() => done");
 
     RubyVPI_util_debug("Host: ruby_init_loadpath()");
@@ -92,29 +119,33 @@ static void ruby_coroutine_body(void* arg)
     RubyVPI_util_debug("Host: co_exit() => done");
 }
 
+static char user_context_stack[SIGSTKSZ];
+
 PLI_INT32 RubyVPI_host_init(p_cb_data aCallback)
 {
     RubyVPI_util_debug("Host: co_create()");
-    assert(ruby_coroutine == NULL);
 
-    size_t stack_size = 4096;
-    char* stack = malloc(sizeof(char) * stack_size);
-    ruby_coroutine = co_create(ruby_coroutine_body, NULL, stack, stack_size);
+    // size_t stack_size = 4096;
+    // char* stack = malloc(sizeof(char) * stack_size);
+    // ruby_coroutine = co_create(ruby_coroutine_body, NULL, stack, stack_size);
+    // user_context.uc_link = &host_context;
+    // user_context.uc_stack.ss_sp = user_context_stack;
+    getcontext(&host_context);
 
-    RubyVPI_util_debug("Host: co_create() => %p", ruby_coroutine);
-
-    RubyVPI_util_debug("Host: co_call()");
-    co_call(ruby_coroutine);
-    RubyVPI_util_debug("Host: co_call() => done");
-
-    free(stack);
+    if (!relay_begun) {
+        RubyVPI_util_debug("Host: co_call()");
+        ruby_coroutine_body();
+        RubyVPI_util_debug("Host: co_call() => done");
+    }
+    else {
+        RubyVPI_util_debug("Host: relay has begun.. deferring to self-generative callbacks");
+    }
 
     return 0;
 }
 
 PLI_INT32 RubyVPI_host_fini(p_cb_data aCallback)
 {
-    assert(ruby_coroutine != NULL);
     RubyVPI_util_debug("Host: fini");
     return 0;
 }
@@ -164,7 +195,7 @@ VALUE do_the_relay(VALUE self)
     RubyVPI_util_debug("Ruby: co_current() => %p", co_current());
 
     RubyVPI_util_debug("Ruby: co_resume()");
-    co_resume();
+    user_to_host();
     RubyVPI_util_debug("Ruby: co_resume() => done");
 
     // TODO: read the callback response here!
@@ -203,7 +234,7 @@ PLI_INT32 RubyVPI_user_resume(p_cb_data aCallback)
 
     RubyVPI_util_debug("Main: calling RubyVPI.resume");
     the_relay_reason = aCallback;
-    co_call(ruby_coroutine);
+    host_to_user();
 
     return 0;
 }
