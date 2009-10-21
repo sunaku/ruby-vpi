@@ -25,6 +25,8 @@ static void RubyVPI_main_register_callback(PLI_INT32 aReason, PLI_INT32 (*aHandl
     vpi_free_object(vpi_register_cb(&call));
 }
 
+// TODO: make this callable from within a larger VPI
+//       app, from much beyond vlog_startup_routines
 static void RubyVPI_main_init()
 {
     RubyVPI_util_debug("Main: at vlog startup");

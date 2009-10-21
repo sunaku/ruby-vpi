@@ -14,12 +14,14 @@ require 'mkmf'
 # check for ruby library
   require 'rbconfig'
 
+  p RUBY_DESCRIPTION
+
   # possible names under which Ruby library is installed
-  rubyLibNames = Config::CONFIG.values.join(' ').
-                 scan(/-l(ruby\S*)/).flatten.uniq
+  p rubyLibNames = Config::CONFIG.values.join(' ').
+    scan(/-l(ruby\S*)/).flatten.uniq.reverse
 
   # possible places where Ruby library is installed
-  rubyLibPaths = Config::CONFIG.values.join(' ').
+  p rubyLibPaths = Config::CONFIG.values.join(' ').
                  scan(/-L(\S+)/).flatten.
                  select {|f| File.exist? f }
 
@@ -34,7 +36,7 @@ require 'mkmf'
   end
 
 # generate the makefile
-if hasRuby
+if hasRuby and have_library('pcl', 'co_create')
   # apply additional arguments for compiler and linker
   if flags = ENV['CFLAGS_EXTRA']
     $CFLAGS << " #{flags}"

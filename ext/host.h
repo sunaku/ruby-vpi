@@ -6,6 +6,7 @@
 #ifndef HOST_H
 #define HOST_H
 
+    #include <pcl.h>
     #include "verilog.h"
 
     // should be called in vlog_startup_routines
