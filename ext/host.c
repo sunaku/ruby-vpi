@@ -189,6 +189,16 @@ static VALUE RubyVPI_user_require(VALUE aPath)
     if (status)
     {
         RubyVPI_util_error("rb_require('%s') failed with status %d", StringValueCStr(aPath), status);
+
+        VALUE error = rb_gv_get("$!");
+        if (error != Qnil)
+        {
+            VALUE dump = rb_inspect(error);
+            rb_io_puts(1, &dump, rb_stdout);
+
+            VALUE trace = rb_funcall(error, rb_intern("backtrace"), 0);
+            rb_io_puts(1, &trace, rb_stdout);
+        }
     }
 
     return result;
