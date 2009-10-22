@@ -117,6 +117,8 @@ static void ruby_coroutine_body()
     RubyVPI_util_debug("Host: co_exit() => done");
 }
 
+static char user_context_stack[SIGSTKSZ];
+
 PLI_INT32 RubyVPI_host_init(p_cb_data aCallback)
 {
     RubyVPI_util_debug("Host: co_create()");
@@ -126,14 +128,28 @@ PLI_INT32 RubyVPI_host_init(p_cb_data aCallback)
     // ruby_coroutine = co_create(ruby_coroutine_body, NULL, stack, stack_size);
     // user_context.uc_link = &host_context;
     // user_context.uc_stack.ss_sp = user_context_stack;
-    getcontext(&host_context);
 
-    if (!user_started) {
+    /* Initialise the iterator context. uc_link points to main_context1, the
+     * point to return to when the iterator finishes. */
+    user_context.uc_link          = &host_context;
+    user_context.uc_stack.ss_sp   = user_context_stack;
+    user_context.uc_stack.ss_size = sizeof(user_context_stack);
+    getcontext(&user_context);
+
+    /* Fill in loop_context so that it makes swapcontext start loop. The
+     * (void (*)(void)) typecast is to avoid a compiler warning but it is
+     * not relevant to the behaviour of the function. */
+    makecontext(&user_context, (void (*)(void)) ruby_coroutine_body, 0);
+
+    // getcontext(&host_context);
+
+    // if (!user_started) {
         RubyVPI_util_debug("Host: co_call()");
-        ruby_coroutine_body();
+        // ruby_coroutine_body();
+        host_to_user();
         RubyVPI_util_debug("Host: co_call() => done");
-    }
-    else {
+    // }
+    // else {
         RubyVPI_util_debug("Host: relay has begun...");
 
         RubyVPI_util_debug("Host: doing manual relay 1");
@@ -143,7 +159,7 @@ PLI_INT32 RubyVPI_host_init(p_cb_data aCallback)
         host_to_user();
 
         RubyVPI_util_debug("Host: deferring to self-generative callbacks");
-    }
+    // }
 
     return 0;
 }
