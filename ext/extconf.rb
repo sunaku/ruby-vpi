@@ -56,5 +56,11 @@ if hasRuby
     v.pop
   end
 
+  if have_header('sys/ucontext.h')
+    $CFLAGS << ' -DHAVE_SYS_UCONTEXT_H'
+  elsif have_header('ucontext.h')
+    $CFLAGS << ' -DHAVE_UCONTEXT_H'
+  end
+
   create_makefile 'ruby-vpi'
 end

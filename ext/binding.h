@@ -1,11 +1,11 @@
-/*
-  Copyright 2008 Suraj N. Kurapati
-  See the file named LICENSE for details.
-*/
+//
+// Copyright protects this work.
+// See LICENSE file for details.
+//
 ///\file Ruby bindings for the VPI library.
 
-#ifndef BINDING_H
-#define BINDING_H
+#ifndef RUBY_VPI_BINDING_H
+#define RUBY_VPI_BINDING_H
 
     #include "verilog.h"
     #include <ruby.h>

@@ -5,8 +5,7 @@
 
 #include "util.h"
 #include "verilog.h"
-#include "host.h"
-#include "user.h"
+#include "vlog.h"
 
 ///
 /// Registers a very basic VPI callback with reason and handler.
@@ -27,15 +26,15 @@ static void RubyVPI_main_register_callback(PLI_INT32 aReason, PLI_INT32 (*aHandl
 
 static void RubyVPI_main_init()
 {
-    RubyVPI_util_debug("Main: at vlog startup");
+    RubyVPI_util_debug("inside vlog startup routines");
 
     // commence Ruby execution at the start of the simulation
-    RubyVPI_util_debug("Main: registering BEGIN simulation callback");
-    RubyVPI_main_register_callback(cbStartOfSimulation, RubyVPI_host_init);
+    RubyVPI_util_debug("registering BEGIN simulation callback");
+    RubyVPI_main_register_callback(cbStartOfSimulation, RubyVPI_vlog_init);
 
     // clean up this C extension at the end of the simulation
-    RubyVPI_util_debug("Main: registering END simulation callback");
-    RubyVPI_main_register_callback(cbEndOfSimulation, RubyVPI_host_fini);
+    RubyVPI_util_debug("registering END simulation callback");
+    RubyVPI_main_register_callback(cbEndOfSimulation, RubyVPI_vlog_fini);
 }
 
 ///

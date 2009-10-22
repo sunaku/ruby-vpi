@@ -12,6 +12,6 @@
     data.cb_rtn = VPI::RubyVPI_user_resume
 */
 %{
-    #include "user.h"
+    #include "relay.h"
 %}
-%constant PLI_INT32 RubyVPI_user_resume(p_cb_data);
+%constant PLI_INT32 RubyVPI_relay_from_vlog_to_ruby(p_cb_data);
