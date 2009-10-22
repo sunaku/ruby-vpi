@@ -20,16 +20,14 @@ static ucontext_t host_context;
 static void host_to_user()
 {
     RubyVPI_util_debug("Ruby: host_to_user() begin");
-    getcontext(&host_context);
-    setcontext(&user_context);
+    swapcontext(&host_context, &user_context);
     RubyVPI_util_debug("Ruby: host_to_user() end");
 }
 
 static void user_to_host()
 {
     RubyVPI_util_debug("Ruby: user_to_host() begin");
-    getcontext(&user_context);
-    setcontext(&host_context);
+    swapcontext(&user_context, &host_context);
     RubyVPI_util_debug("Ruby: user_to_host() end");
 }
 
