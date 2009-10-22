@@ -1,0 +1,13 @@
+//
+// Copyright protects this work.
+// See LICENSE file for details.
+//
+
+// This file is named "ruby.h0" to avoid conflicting with <ruby.h> in #includes.
+
+#ifndef RUBY_VPI_RUBY_H
+#define RUBY_VPI_RUBY_H
+
+    int RubyVPI_ruby_run();
+
+#endif
