@@ -11,12 +11,7 @@ VPI.do_the_relay
 reason = VPI.get_relay_reason
 puts ">>> back from relay! #{reason.inspect} woo!!"
 
-$my_fiber = Fiber.new do
 begin
-  input = rand()
-  puts "Gonna yield to C program with #{input.inspect}"
-  output = Fiber.yield input
-  puts "C gave me callback value: #{output.inspect}"
 
   # copy Ruby output into simulator's log file
     [STDOUT, STDERR].each do |stream|
@@ -174,5 +169,4 @@ begin
 rescue Exception => e
   # mimic how Ruby internally prints exceptions
   STDERR.puts "#{e.class}: #{e.message}", e.backtrace.map {|s| "\tfrom #{s}" }
-end
 end

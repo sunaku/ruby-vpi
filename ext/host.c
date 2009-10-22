@@ -33,14 +33,14 @@ static void user_to_host()
     RubyVPI_util_debug("Ruby: user_to_host() end");
 }
 
-static bool relay_begun = false;
+static bool user_started = false;
 
 //
 // Creates a coroutine to house the ruby interpreter.
 //
 static void ruby_coroutine_body()
 {
-    relay_begun = true;
+    user_started = true;
 
     //
     // ruby init
@@ -119,8 +119,6 @@ static void ruby_coroutine_body()
     RubyVPI_util_debug("Host: co_exit() => done");
 }
 
-static char user_context_stack[SIGSTKSZ];
-
 PLI_INT32 RubyVPI_host_init(p_cb_data aCallback)
 {
     RubyVPI_util_debug("Host: co_create()");
@@ -132,7 +130,7 @@ PLI_INT32 RubyVPI_host_init(p_cb_data aCallback)
     // user_context.uc_stack.ss_sp = user_context_stack;
     getcontext(&host_context);
 
-    if (!relay_begun) {
+    if (!user_started) {
         RubyVPI_util_debug("Host: co_call()");
         ruby_coroutine_body();
         RubyVPI_util_debug("Host: co_call() => done");
