@@ -11,6 +11,12 @@ VPI.do_the_relay
 reason = VPI.get_relay_reason
 puts ">>> back from relay! #{reason.inspect} woo!!"
 
+
+puts ">>> gonna relay AGAIN"
+VPI.do_the_relay
+reason = VPI.get_relay_reason
+puts ">>> back from relay AGAIN! #{reason.inspect} woo!!"
+
 begin
 
   # copy Ruby output into simulator's log file

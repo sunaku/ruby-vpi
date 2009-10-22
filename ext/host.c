@@ -44,41 +44,10 @@ static void ruby_coroutine_body()
     // ruby init
     //
 
-    int argc = 0;
-    RubyVPI_util_debug("Host: pcl stack begins at (%p)", &argc);
-    char** argv = {""};
-    RubyVPI_util_debug("Host: ruby_sysinit(%d, %p)", argc, argv);
-    ruby_sysinit(&argc, &argv);
-
-    VALUE dummy;
-    VALUE* stack_start = &dummy; // + 0x1000;
-    RubyVPI_util_debug("Host: ruby_init_stack(%p)", stack_start);
-    ruby_init_stack(stack_start);
 
     RubyVPI_util_debug("Ruby: co_resume() EARLY");
     user_to_host();
     RubyVPI_util_debug("Ruby: co_resume() => done");
-
-    RubyVPI_util_debug("Host: ruby_init()");
-    ruby_init();
-
-    RubyVPI_util_debug("Ruby: co_resume() LATE");
-    user_to_host();
-    RubyVPI_util_debug("Ruby: co_resume() => done");
-
-    RubyVPI_util_debug("Host: ruby_init_loadpath()");
-    ruby_init_loadpath();
-
-    RubyVPI_util_debug("Host: ruby_script()");
-    ruby_script("ruby-vpi");
-
-
-    //
-    // VPI bindings init
-    //
-
-    RubyVPI_util_debug("Host: VPI binding init");
-    RubyVPI_binding_init();
 
 
     //
@@ -89,6 +58,11 @@ static void ruby_coroutine_body()
     RubyVPI_user_init();
 
     RubyVPI_util_debug("Host: user_init() DONE");
+
+
+    RubyVPI_util_debug("Ruby: co_resume() LATE");
+    user_to_host();
+    RubyVPI_util_debug("Ruby: co_resume() => done");
 
 
     // clean up
@@ -142,6 +116,34 @@ PLI_INT32 RubyVPI_host_init(p_cb_data aCallback)
     makecontext(&user_context, (void (*)(void)) ruby_coroutine_body, 0);
 
     // getcontext(&host_context);
+
+    RubyVPI_util_debug("Host: setting ruby args");
+    int argc = 0;
+    RubyVPI_util_debug("Host: pcl stack begins at (%p)", &argc);
+    char** argv = {""};
+    RubyVPI_util_debug("Host: ruby_sysinit(%d, %p)", argc, argv);
+    ruby_sysinit(&argc, &argv);
+
+    VALUE dummy;
+    VALUE* stack_start = &dummy; // + 0x1000;
+    RubyVPI_util_debug("Host: ruby_init_stack(%p)", stack_start);
+    ruby_init_stack(stack_start);
+
+    RubyVPI_util_debug("Host: ruby_init()");
+    ruby_init();
+
+    RubyVPI_util_debug("Host: ruby_init_loadpath()");
+    ruby_init_loadpath();
+
+    RubyVPI_util_debug("Host: ruby_script()");
+    ruby_script("ruby-vpi");
+
+    //
+    // VPI bindings init
+    //
+
+    RubyVPI_util_debug("Host: VPI binding init");
+    RubyVPI_binding_init();
 
     // if (!user_started) {
         RubyVPI_util_debug("Host: co_call()");
