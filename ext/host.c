@@ -57,9 +57,9 @@ static void ruby_coroutine_body()
     RubyVPI_util_debug("Host: ruby_init_stack(%p)", stack_start);
     ruby_init_stack(stack_start);
 
-    // RubyVPI_util_debug("Ruby: co_resume() EARLY");
-    // user_to_host();
-    // RubyVPI_util_debug("Ruby: co_resume() => done");
+    RubyVPI_util_debug("Ruby: co_resume() EARLY");
+    user_to_host();
+    RubyVPI_util_debug("Ruby: co_resume() => done");
 
     RubyVPI_util_debug("Host: ruby_init()");
     ruby_init();
@@ -136,7 +136,15 @@ PLI_INT32 RubyVPI_host_init(p_cb_data aCallback)
         RubyVPI_util_debug("Host: co_call() => done");
     }
     else {
-        RubyVPI_util_debug("Host: relay has begun.. deferring to self-generative callbacks");
+        RubyVPI_util_debug("Host: relay has begun...");
+
+        RubyVPI_util_debug("Host: doing manual relay 1");
+        host_to_user();
+
+        RubyVPI_util_debug("Host: doing manual relay 2");
+        host_to_user();
+
+        RubyVPI_util_debug("Host: deferring to self-generative callbacks");
     }
 
     return 0;
