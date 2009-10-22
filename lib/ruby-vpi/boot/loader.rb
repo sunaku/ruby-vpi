@@ -6,16 +6,58 @@
 puts ">>> hello from loader!"
 p :ZERO => $0
 p :FILE => __FILE__
+
 puts ">>> gonna relay"
 VPI.do_the_relay
 reason = VPI.get_relay_reason
 puts ">>> back from relay! #{reason.inspect} woo!!"
 
+# puts ">>> gonna relay AGAIN"
+# VPI.do_the_relay
+# reason = VPI.get_relay_reason
+# puts ">>> back from relay AGAIN! #{reason.inspect} woo!!"
 
-puts ">>> gonna relay AGAIN"
-VPI.do_the_relay
-reason = VPI.get_relay_reason
-puts ">>> back from relay AGAIN! #{reason.inspect} woo!!"
+# Transfers control to the simulator, which will return control
+# during the given time slot after the given number of time steps.
+def relay_verilog aTimeSlot, aNumSteps
+  # schedule wake-up callback from verilog
+    time            = VPI::S_vpi_time.new
+    time.high       = 0
+    time.low        = aNumSteps
+    time.type       = VPI::VpiSimTime
+
+    value           = VPI::S_vpi_value.new
+    value.format    = VPI::VpiSuppressVal
+
+    alarm           = VPI::S_cb_data.new
+    alarm.reason    = aTimeSlot
+    alarm.cb_rtn    = VPI::RubyVPI_user_resume
+    alarm.obj       = nil
+    alarm.time      = time
+    alarm.value     = value
+    alarm.index     = 0
+    alarm.user_data = nil
+
+    VPI.vpi_free_object(VPI.vpi_register_cb(alarm))
+
+  # transfer control to verilog
+  puts ">>> gonna relay CALLBACK"
+  VPI.do_the_relay
+  reason = VPI.get_relay_reason
+  puts ">>> back from relay CALLBACK! #{reason.inspect} woo!!"
+  reason
+end
+
+relay_verilog VPI::CbAfterDelay, 1
+relay_verilog VPI::CbAfterDelay, 5
+relay_verilog VPI::CbAfterDelay, 1
+
+# puts "not letting ruby exit"
+# VPI.do_the_relay
+
+puts "This is the END for Ruby!!"
+
+__END__
 
 begin
 
