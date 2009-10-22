@@ -6,13 +6,12 @@
 puts ">>> hello from loader!"
 p :ZERO => $0
 p :FILE => __FILE__
-puts ">>> gonna relay"
-VPI.do_the_relay
-reason = VPI.get_relay_reason
-puts ">>> back from relay! #{reason.inspect} woo!!"
+# puts ">>> gonna relay"
+# VPI.do_the_relay
+# reason = VPI.get_relay_reason
+# puts ">>> back from relay! #{reason.inspect} woo!!"
 
 begin
-
   # copy Ruby output into simulator's log file
     [STDOUT, STDERR].each do |stream|
       class << stream #:nodoc:
@@ -68,9 +67,12 @@ begin
     HAVE_RUBY_18X = RUBY_VERSION =~ /^1\.8\./
   end
 
-  require 'rubygems'
+  # require 'rubygems'
   require 'ruby-vpi'
-  require 'ruby-vpi/core'
+  require 'ruby-vpi/core/callback'
+
+  p :going_for_1_cycle
+  Callback.relay_verilog(VPI::CbAfterDelay, 1)
 
   # set up code coverage analysis
     if RubyVPI::USE_COVERAGE

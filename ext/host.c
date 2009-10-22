@@ -64,9 +64,9 @@ static void ruby_coroutine_body()
     RubyVPI_util_debug("Host: ruby_init()");
     ruby_init();
 
-    RubyVPI_util_debug("Ruby: co_resume() LATE");
-    user_to_host();
-    RubyVPI_util_debug("Ruby: co_resume() => done");
+    // RubyVPI_util_debug("Ruby: co_resume() LATE");
+    // user_to_host();
+    // RubyVPI_util_debug("Ruby: co_resume() => done");
 
     RubyVPI_util_debug("Host: ruby_init_loadpath()");
     ruby_init_loadpath();
