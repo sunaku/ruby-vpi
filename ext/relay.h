@@ -9,10 +9,10 @@
   #include "verilog.h"
   #include <ruby.h>
 
-  void RubyVPI_relay_init_vlog_context();
+  void relay_init_main_context();
 
-  PLI_INT32 RubyVPI_relay_from_vlog_to_ruby(p_cb_data callback);
+  PLI_INT32 relay_from_main_to_ruby(p_cb_data callback);
 
-  VALUE RubyVPI_relay_from_ruby_to_vlog(VALUE self);
+  VALUE relay_from_ruby_to_main(VALUE self);
 
 #endif

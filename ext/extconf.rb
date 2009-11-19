@@ -26,10 +26,10 @@ require 'mkmf'
   RUBY_FUNC = 'ruby_init'
 
   hasRuby = rubyLibNames.any? do |libName|
-    have_library(libName, RUBY_FUNC) or
+    have_library libName, RUBY_FUNC or
 
     rubyLibPaths.any? do |libPath|
-      have_library(libName, RUBY_FUNC, libPath)
+      have_library libName, RUBY_FUNC, libPath
     end
   end
 
@@ -50,17 +50,18 @@ if hasRuby
   $CFLAGS << ' -g -O0' if $CFLAGS =~ /-DDEBUG\b/
 
   # detect ruby version on behalf of C extension
-  v = RUBY_VERSION.split('.')
+  v = RUBY_VERSION.to_s.split('.')
   until v.empty?
     $CFLAGS << " -DHAVE_RUBY_#{v.join '_'}"
     v.pop
   end
 
-  if have_header('sys/ucontext.h')
-    $CFLAGS << ' -DHAVE_SYS_UCONTEXT_H'
-  elsif have_header('ucontext.h')
-    $CFLAGS << ' -DHAVE_UCONTEXT_H'
-  end
+  have_func 'ruby_sysinit'
+  have_func 'ruby_bind_stack'
+
+  # have_library 'pcl', 'co_create' or
+  have_header 'sys/ucontext.h' or
+  have_header 'ucontext.h'
 
   create_makefile 'ruby-vpi'
 end

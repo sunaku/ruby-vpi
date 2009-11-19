@@ -3,20 +3,20 @@
 // See LICENSE file for details.
 //
 
-#ifdef HAVE_UCONTEXT_H
-    #include <ucontext.h>
-#endif
-
 #ifdef HAVE_SYS_UCONTEXT_H
     #include <sys/ucontext.h>
+#endif
+
+#ifdef HAVE_UCONTEXT_H
+    #include <ucontext.h>
 #endif
 
 #include "util.h"
 #include "relay.h"
 #include "binding.h"
 
-static ucontext_t RubyVPI_relay_ruby_context;
 static ucontext_t RubyVPI_relay_vlog_context;
+static ucontext_t RubyVPI_relay_ruby_context;
 static p_cb_data  RubyVPI_relay_ruby_reason;
 
 void RubyVPI_relay_init_vlog_context()

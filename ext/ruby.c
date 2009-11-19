@@ -4,107 +4,83 @@
 //
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <ruby.h>
-#include "util.h"
 #include "ruby.h0"
 #include "binding.h"
 
-//
-// The code inside the following #ifdef block originated from:
-// http://svn.ruby-lang.org/cgi-bin/viewvc.cgi/tags/v1_8_6/main.c?view=co
-//
-// It is Copyright (C) 1993-2003 Yukihiro Matsumoto
-// and is released under the same license as Ruby.
-//
-#ifdef HAVE_RUBY_1_8
-    #ifdef __human68k__
-    int _stacksize = 262144;
-    #endif
-
-    #if defined __MINGW32__
-    int _CRT_glob = 0;
-    #endif
-
-    #if defined(__MACOS__) && defined(__MWERKS__)
-    #include <console.h>
-    #endif
-
-    /* to link startup code with ObjC support */
-    #if (defined(__APPLE__) || defined(__NeXT__)) && defined(__MACH__)
-    static void objcdummyfunction( void ) { objc_msgSend(); }
-    #endif
-#endif
-
-//
-// The code inside the following #ifdef block originated from:
-// http://svn.ruby-lang.org/cgi-bin/viewvc.cgi/tags/v1_9_1/main.c?view=co
-//
-// It is Copyright (C) 1993-2003 Yukihiro Matsumoto
-// and is released under the same license as Ruby.
-//
-#ifdef HAVE_RUBY_1_9
-    RUBY_GLOBAL_SETUP
-#endif
-
-int RubyVPI_ruby_run()
+static VALUE RubyVPI_ruby_require(const char* file)
 {
-    RubyVPI_util_debug("init");
+    VALUE result;
+    int error;
 
-    int argc = 4;
-    char* argv[] = {"-rubygems", "-rruby-vpi/boot/loader", "-e", "p 1234567"};
-    int exit_status = 0;
+    result = rb_protect((VALUE (*)(VALUE))rb_require, (VALUE)file, &error);
+    if (error)
+    {
+        fprintf(stderr,
+            "rb_require('%s') failed with status=%d\n", file, error);
 
-    //
-    // The code inside the following #ifdef block originated from:
-    // http://svn.ruby-lang.org/cgi-bin/viewvc.cgi/tags/v1_8_6/main.c?view=co
-    //
-    // It is Copyright (C) 1993-2003 Yukihiro Matsumoto
-    // and is released under the same license as Ruby.
-    //
-    #ifdef HAVE_RUBY_1_8
-        #ifdef _WIN32
-            NtInitialize(&argc, &argv);
-        #endif
-        #if defined(__MACOS__) && defined(__MWERKS__)
-            argc = ccommand(&argv);
-        #endif
+        VALUE exception = rb_gv_get("$!");
+        if (RTEST(exception))
         {
-            #ifdef RUBY_INIT_STACK
-                RUBY_INIT_STACK
-            #endif
-            ruby_init();
+            fprintf(stderr, "... because an exception was raised:\n");
+            fflush(stderr);
 
-            // install Ruby bindings for Verilog VPI
-            RubyVPI_util_debug("VPI binding init");
-            RubyVPI_binding_init();
+            VALUE inspect = rb_inspect(exception);
+            rb_io_puts(1, &inspect, rb_stderr);
 
-            RubyVPI_util_debug("ruby run");
-            ruby_options(argc, argv);
-            ruby_run();
+            VALUE backtrace = rb_funcall(
+                exception, rb_intern("backtrace"), 0);
+            rb_io_puts(1, &backtrace, rb_stderr);
         }
+    }
+
+    return result;
+}
+
+void RubyVPI_ruby_body(void* stack_lower_bound, void* stack_upper_bound, const char* file)
+{
+    printf("Context: begin\n");
+
+    int i;
+    for (i = 0; i < 2; i++)
+    {
+        printf("Context: relay %d\n", i);
+        relay_from_ruby_to_main(Qnil);
+    }
+
+    printf("Context: Ruby begin\n");
+
+    #ifdef HAVE_RUBY_SYSINIT
+    int argc = 0;
+    char** argv = {""};
+    ruby_sysinit(&argc, &argv);
     #endif
+    {
+        #ifdef HAVE_RUBY_BIND_STACK
+        ruby_bind_stack(stack_lower_bound, stack_upper_bound);
+        #endif
 
-    //
-    // The code inside the following #ifdef block originated from:
-    // http://svn.ruby-lang.org/cgi-bin/viewvc.cgi/tags/v1_9_1/main.c?view=co
-    //
-    // It is Copyright (C) 1993-2003 Yukihiro Matsumoto
-    // and is released under the same license as Ruby.
-    //
-    #ifdef HAVE_RUBY_1_9
-        ruby_sysinit(&argc, &argv);
-        {
-            RUBY_INIT_STACK;
-            ruby_init();
+        RUBY_INIT_STACK;
+        ruby_init();
+        ruby_init_loadpath();
 
-            // install Ruby bindings for Verilog VPI
-            RubyVPI_util_debug("VPI binding init");
-            RubyVPI_binding_init();
+        /* allow Ruby script to relay */
+        rb_define_module_function(rb_mKernel, "relay_from_ruby_to_main",
+                                  relay_from_ruby_to_main, 0);
 
-            RubyVPI_util_debug("ruby run");
-            exit_status = ruby_run_node(ruby_options(argc, argv));
-        }
-    #endif
+        /* run the "hello world" Ruby script */
+        printf("Ruby: require 'hello' begin\n");
+        RubyVPI_ruby_require(file);
+        printf("Ruby: require 'hello' end\n");
 
-    return exit_status;
+        ruby_cleanup(0);
+    }
+
+    printf("Context: Ruby end\n");
+
+    printf("Context: end\n");
+
+    ruby_context_finished = true;
+    relay_from_ruby_to_main(Qnil);
 }

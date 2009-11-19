@@ -8,6 +8,6 @@
 #ifndef RUBY_VPI_RUBY_H
 #define RUBY_VPI_RUBY_H
 
-    int RubyVPI_ruby_run();
+    void RubyVPI_ruby_body(void* stack_lower_bound, void* stack_upper_bound, const char* file);
 
 #endif

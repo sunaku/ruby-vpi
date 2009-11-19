@@ -1,9 +1,12 @@
-%module VPI
+%feature("autodoc", "2"); /* http://www.swig.org/Doc1.3/Ruby.html#Ruby_nn67 */
 
-/* Parse the header file to generate wrappers */
+%module "Vpi"
+
+/* Parse thhe header file to generate wrappers */
 %{
     #include "swig_vpi.h"
 %}
+
 %include "swig_vpi.h"
 
 /* Allow the VPI callback handler function to be set from Ruby:
