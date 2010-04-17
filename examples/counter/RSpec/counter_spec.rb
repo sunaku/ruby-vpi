@@ -7,7 +7,7 @@ LIMIT = 2 ** DUT.Size.intVal
 MAX = LIMIT - 1
 
 describe "A #{DUT.name} after being reset" do
-  setup do
+  before(:each) do
     DUT.reset! # reset the counter
   end
 
@@ -24,7 +24,7 @@ describe "A #{DUT.name} after being reset" do
 end
 
 describe "A #{DUT.name} with the maximum value" do
-  setup do
+  before(:each) do
     DUT.reset! # reset the counter
 
     # increment the counter to maximum value
