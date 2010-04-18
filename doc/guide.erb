@@ -83,7 +83,7 @@
   <% end %>
 
   <% section "License" do %>
-    <%=h File.read('LICENSE').gsub(/^Copyright.*$/, "\\&\n").para_join %>
+    <%=h File.read('LICENSE').gsub(/^Copyright.*$/, "\\&\n").gsub(/([^\n])[ \t]*\n[ \t]*([^\n])/, '\1 \2') %>
   <% end %>
 
   <% section "Appetizers" do %>
