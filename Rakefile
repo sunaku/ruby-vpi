@@ -220,7 +220,7 @@ task :default => :build
     docDir  = File.join('..', '..', 'doc', gemName)
 
     mkdir_p docDir
-    ln_s gemDir, File.join(docDir, 'rdoc')
+    ln_sf gemDir, File.join(docDir, 'rdoc')
   end
 
 # releasing
