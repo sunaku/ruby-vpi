@@ -10,13 +10,31 @@
 
 static VALUE RubyVPI_user_require_impl(VALUE aPath)
 {
-    return rb_require((char*)aPath);
+    // Execute Kernel#require using extreme Ruby wackiness.
+    //
+    // Note that we want to execute the monkey-patched require function from
+    // rubygems, if that's available.  That means we need to execute
+    // Kernel#require, not Kernel.require or rb_require().  Since Kernel is
+    // mixed into every instance object (including nil), we invoke the
+    // "require" method on Qnil.
+    return rb_funcall(Qnil, rb_intern("require"), 1, rb_str_new2(aPath));
 }
 
 static VALUE RubyVPI_user_require(char* aPath)
 {
     int error = 0;
     VALUE result = rb_protect(RubyVPI_user_require_impl, (VALUE)aPath, &error);
+
+    // If the 'require' fails, load rubygems and try again before giving up.
+    //
+    // It's normally considered bad practice to load rubygems from within a
+    // library, but it's necessary in this case, where the Ruby interpreter is
+    // loaded directly by the Verilog simulator.
+    if (error)
+    {
+        (void) rb_protect(RubyVPI_user_require_impl, (VALUE)"rubygems", &error);
+        result = rb_protect(RubyVPI_user_require_impl, (VALUE)aPath, &error);
+    }
 
     if (error)
     {
