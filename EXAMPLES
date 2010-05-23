@@ -1,0 +1,73 @@
+%#----------------------------------------------------------------------------
+## EXAMPLES
+%#----------------------------------------------------------------------------
+
+%#----------------------------------------------------------------------------
+### Assign the value 2<sup>2048</sup> to a register
+%#----------------------------------------------------------------------------
+
+    your_register.intVal = 2 ** 2048
+
+Or:
+
+    your_register.put_value( 2 ** 2048 )
+
+%#----------------------------------------------------------------------------
+### Check if all nets in a module are at high impedance
+%#----------------------------------------------------------------------------
+
+    your_module.all_net? {|net| net.z? }
+
+Or:
+
+    your_module_nets = your_module.net_a
+    your_module_nets.all? {|net| net.z? }
+
+%#----------------------------------------------------------------------------
+### See a register's path, width, and location (file & line number)
+%#----------------------------------------------------------------------------
+
+    puts your_register
+
+Or:
+
+    p :path  => your_register.fullName
+    p :width => your_register.size
+    p :file  => your_register.fileName
+    p :line  => your_register.lineNo
+
+%#----------------------------------------------------------------------------
+### Access the first five elements in a memory
+%#----------------------------------------------------------------------------
+
+    your_memory.memoryWord_a.first(5)
+
+Or:
+
+    your_memory.memoryWord_a[0..4]
+
+Or:
+
+    your_memory.memoryWord_a[0...5]
+
+Or:
+
+    your_memory.memoryWord_a[0, 5]
+
+%#----------------------------------------------------------------------------
+### Clear a memory by filling it with zeroes
+%#----------------------------------------------------------------------------
+
+    your_memory.each_memoryWord {|word| word.f! }
+
+Or:
+
+    your_memory.each_memoryWord {|word| word.vpi0! }
+
+Or:
+
+    your_memory.each_memoryWord {|word| word.intVal = 0 }
+
+Or:
+
+    your_memory.each_memoryWord {|word| word.put_value 0 }

@@ -1,0 +1,46 @@
+%#----------------------------------------------------------------------------
+## SEE ALSO
+%#----------------------------------------------------------------------------
+
+* [ANVIL] is a C++ interface to Verilog VPI.
+* [Teal] is a C++ interface to Verilog VPI.
+* [JOVE] is a Java interface to Verilog VPI.
+* [ScriptEDA] is a Perl, Python, and Tcl interface to Verilog VPI.
+* [RHDL] is a Ruby-based hardware description and verification language.
+* [MyHDL] is a Python-based hardware description and verification language
+  that features Verilog co-simulation and Python to Verilog design conversion.
+
+%#----------------------------------------------------------------------------
+### Ye olde PLI
+%#----------------------------------------------------------------------------
+
+The following projects use the archaic `tf` and `acc` Verilog PLI
+interfaces that have been officially deprecated in IEEE Std 1364-2005.
+
+* [ScriptSim] is a Perl, Python, and Tcl/Tk interface to Verilog PLI.
+* [Verilog::Pli] is a Perl interface to Verilog PLI.
+
+%#----------------------------------------------------------------------------
+%# Markdown link references
+%#----------------------------------------------------------------------------
+
+[Inochi]: <%= Inochi::WEBSITE %>
+[RubyGems]: http://rubygems.org
+[Ruby]: http://ruby-lang.org
+[IEEE 1364-2005 Verilog VPI]: http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945
+[ruby-debug]: http://rubyforge.org/projects/ruby-debug/
+[rcov]: http://eigenclass.org/hiki.rb?rcov
+[ANVIL]: http://anvil.sourceforge.net
+[Teal]: http://teal.sourceforge.net
+[JOVE]: http://jove.sourceforge.net
+[ScriptEDA]: http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/
+[RHDL]: http://rhdl.rubyforge.org
+[MyHDL]: http://myhdl.jandecaluwe.com
+[ScriptSim]: http://www.nelsim.com
+[Verilog::Pli]: http://www.veripool.com/verilog-pli.html
+[SWIG]: http://www.swig.org
+[GPL Cver]: http://www.pragmatic-c.com/gpl-cver/
+[Synopsys VCS]: http://www.synopsys.com/products/simulation/simulation.html
+[Mentor Modelsim]: http://www.model.com
+[Cadence NC-Sim]: http://www.cadence.com/products/functional_ver/nc-verilog/
+[Icarus Verilog]: http://www.geda.seul.org/tools/icarus/index.html

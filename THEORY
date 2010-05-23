@@ -1,0 +1,43 @@
+%#----------------------------------------------------------------------------
+## THEORY
+%#----------------------------------------------------------------------------
+
+VPI4R allows Ruby programs to use VPI in two ways:
+
+1. In the same verbose way as C programs do.
+
+2. In a simpler, higher level Ruby-like way.
+
+![Where does VPI4R fit in?](doc/figures/organization_detailed.png)
+
+The preceding diagram shows that VPI4R is composed of two parts:
+
+1. A dynamically loadable C library that allows Ruby to use VPI.
+
+2. A Ruby library that wraps the low-level VPI functions.
+
+%#----------------------------------------------------------------------------
+### Tests
+%#----------------------------------------------------------------------------
+
+In VPI4R, the process of functional verification is neatly packaged into
+self-contained, executable **test**s.  The following diagram shows that a test
+is composed of a **bench**, a **design**, and a **specification**.
+
+![Organization of a test in VPI4R](doc/figures/organization.png)
+
+The **bench** is VPI4R. It defines the environment in which functional
+verification takes place. This is analogous to a workbench in an electronics
+laboratory that is furnished with tools of measurement and manipulation such
+as oscilloscopes, voltmeters, soldering irons, and so on which enable
+engineers to verify electronic components and locate the source of defects
+within those components.
+
+The **design** is an instantiated Verilog module. To extend the analogy of the
+electronics laboratory, it corresponds to the electronic component that is
+verified by an engineer.
+
+The **specification** is a Ruby program. In the electronics laboratory analogy,
+it corresponds to the engineer who inspects, manipulates, and verifies the
+electronic component. In terms of specification-driven functional
+verification, it corresponds to the executable specification.

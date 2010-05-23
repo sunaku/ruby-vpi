@@ -1,0 +1,74 @@
+%#----------------------------------------------------------------------------
+## VERSIONS
+%#----------------------------------------------------------------------------
+
+This section contains release notes of current and past releases.
+
+%#----------------------------------------------------------------------------
+### Version 1.0.0 (2006-02-26)
+%#----------------------------------------------------------------------------
+
+This release adds enough Verilog VPI functionality to make Ruby-VPI usable for
+simple test benches:
+
+  * access Verilog objects through VPI handles
+  * read and change VPI handle values
+  * stop, finish, restart the simulation
+
+Thank you:
+
+  * Jose Renau helped me debug how Synopsys VCS works with Verilog VPI.  The
+    problem was that VCS required calltf signatures to be `void (**)(void)`,
+    whereas the Verilog standard defines a calltf signature as `PLI_INT32
+    (**)(PLI_BYTE8**)`.
+
+  * Ross Bamford, Eric Hodel, and Yukihiro Matsumoto [helped me discover](
+    http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/180662 ) why
+    the `SystemStackError` was happening.
+
+New features:
+
+  * Added `VPI::register_task(string, &proc)` for registering Ruby blocks as
+    VPI system task functions.
+
+  * Added ability to pass arbitrary command-line arguments to the Ruby
+    interpreter (using `$ruby_init`).  Now you can invoke any Ruby script you
+    want, instead of `pli_init.rb`.
+
+  * Added ability to dynamically register system tasks from Ruby, using
+    `VPI::register_task("task name")`, and call them from Verilog, using
+    `$ruby_task("task name")`.
+
+  * Added `VPI::Handle` class which encapsulates a `vpiHandle` VPI object.
+
+  * Implemented some Verilog VPI functionality:
+
+    * `VPI::handle_by_name(string, VPI::Handle)` &rarr; `VPI::Handle`
+    * `VPI::handle_by_name(string)` &rarr; `VPI::Handle`
+    * `VPI::Handle.put_value(integer)`
+    * `VPI::Handle.value = integer`
+    * `VPI::Handle.get_value` &rarr; `integer`
+    * `VPI::Handle.value` &rarr; `integer`
+    * `VPI::stop`
+    * `VPI::finish`
+    * `VPI::reset`
+
+Tested and developed using:
+
+  * Ruby 1.8.2 and Icarus Verilog 0.8 on i686 Linux
+  * Ruby 1.8.4, Synopsys VCS X-2005.06, and Mentor Modelsim 6.1b on i686 Linux
+
+%#----------------------------------------------------------------------------
+### Version 0.0.0 (1999-10-31)
+%#----------------------------------------------------------------------------
+
+This is Kazuhiro HIWADA's initial testing release of Ruby-VPI.  See its
+[original announcement](
+http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/18193 ) and
+[source code]( http://rubyforge.org/frs/?group_id=1339&release_id=8852 ).
+
+* Added ability to relay control from Verilog test bench to Ruby (using
+  `$ruby_callback()`) and vice versa (using `PLI::relay_verilog`).
+
+* Tested and developed using Ruby 1.4 and Verilog-XL from Cadence systems, on
+  a SPARC machine running Solaris 2.6.
