@@ -3,10 +3,15 @@
 %#----------------------------------------------------------------------------
 
 * [ANVIL] is a C++ interface to Verilog VPI.
+
 * [Teal] is a C++ interface to Verilog VPI.
+
 * [JOVE] is a Java interface to Verilog VPI.
+
 * [ScriptEDA] is a Perl, Python, and Tcl interface to Verilog VPI.
+
 * [RHDL] is a Ruby-based hardware description and verification language.
+
 * [MyHDL] is a Python-based hardware description and verification language
   that features Verilog co-simulation and Python to Verilog design conversion.
 
@@ -18,6 +23,7 @@ The following projects use the archaic `tf` and `acc` Verilog PLI
 interfaces that have been officially deprecated in IEEE Std 1364-2005.
 
 * [ScriptSim] is a Perl, Python, and Tcl/Tk interface to Verilog PLI.
+
 * [Verilog::Pli] is a Perl interface to Verilog PLI.
 
 %#----------------------------------------------------------------------------
@@ -27,7 +33,7 @@ interfaces that have been officially deprecated in IEEE Std 1364-2005.
 [Inochi]: <%= Inochi::WEBSITE %>
 [RubyGems]: http://rubygems.org
 [Ruby]: http://ruby-lang.org
-[IEEE 1364-2005 Verilog VPI]: http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945
+[IEEE 1364-2005]: http://dx.doi.org/10.1109/IEEESTD.2006.99495
 [ruby-debug]: http://rubyforge.org/projects/ruby-debug/
 [rcov]: http://eigenclass.org/hiki.rb?rcov
 [ANVIL]: http://anvil.sourceforge.net

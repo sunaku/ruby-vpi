@@ -1,4 +1,4 @@
-VPI4R is a [Ruby] interface to [IEEE 1364-2005 Verilog VPI].  It serves as a
+VPI4R is a [Ruby] interface to [IEEE 1364-2005] Verilog VPI.  It serves as a
 platform for unit testing, rapid prototyping, and systems integration of
 Verilog modules through Ruby.  It was developed as part of [my masters
 thesis]( http://snk.tuxfamily.org/txt/masters_thesis.html ) ([PDF version](
