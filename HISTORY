@@ -5,6 +5,229 @@
 This section contains release notes of current and past releases.
 
 %#----------------------------------------------------------------------------
+### Version 6.3.0 (2006-08-27)
+%#----------------------------------------------------------------------------
+
+This release adds support for the [GPL Cver] simulator, provides both binary
+and source packages, and explicitly defines the version numbering system.
+
+New features:
+
+  * The GPL Cver simulator is now supported.
+
+  * Ruby-VPI now only needs to be built once.  You can run tests with
+    different Verilog simulators without having to re-compile Ruby-VPI.
+
+  * Release packages are now available in both source and binary form.
+
+Bug fixes:
+
+  * The RSpec based specifications for the counter example now use the
+    `should_equal` instead of the `should_be` assertion, because the latter
+    ensures strict equivalence.  For instance, it will fail when a Fixnum is
+    compared to a Bignum.
+
+Housekeeping:
+
+  * We now follow the RubyGems project's [rational versioning policy](
+    http://www.rubygems.org/read/chapter/7 ).  The version numbers of previous
+    releases have been revised accordingly:
+
+        Release Date | Old Version | New Version
+        ------------ | ----------- | -----------
+         2006-08-26  |    0.9.2    |    6.2.0
+         2006-08-09  |    0.9.1    |    6.1.0
+         2006-08-07  |     0.9     |    6.0.0
+         2006-08-04  |    0.8.1    |    5.1.1
+         2006-07-29  |     0.8     |    5.1.0
+         2006-07-22  |     0.7     |    5.0.0
+         2006-05-25  |     0.6     |    4.0.0
+         2006-05-13  |     0.5     |    3.2.0
+         2006-04-28  |     0.4     |    3.1.0
+         2006-04-23  |     0.3     |    3.0.0
+         2006-04-17  |     0.2     |    2.0.0
+         2006-02-26  |     0.1     |    1.0.0
+         1999-10-31  |     0.0     |    0.0.0
+
+%#----------------------------------------------------------------------------
+### Version 6.2.0 (2006-08-26)
+%#----------------------------------------------------------------------------
+
+This release beautifies generated tests, adds checks to find signal width
+bugs, and includes a new tool.
+
+Incompatible changes:
+
+  * `put_value()` now returns the value it puts.  Therefore, it is easier to
+    chain together a series of assignments:
+
+        foo.intVal = bar.intVal = baz.intVal = 10
+
+  * The test generator now decouples Ruby-VPI paths from Verilog benches via
+    the RUBYLIB environment variable.
+
+New features:
+
+  * `put_value()` now verifies that the value it puts was written correctly.
+    This helps to find bugs regarding invalid assumptions about the number of
+    bits supported by a signal.
+
+  * A tool which converts Verilog headers into Ruby has been added.
+
+Housekeeping:
+
+  * The test generator now uses ERB templates which ensures nice indentation
+    of generated output.
+
+  * The source code is now indented with two spaces instead of one tab
+    character.
+
+%#----------------------------------------------------------------------------
+### Version 6.1.0 (2006-08-09)
+%#----------------------------------------------------------------------------
+
+This release simplifies generated tests and fixes a bug.
+
+New features:
+
+  * The test generator now produces simpler Ruby benches and specifications.
+
+Bug fixes:
+
+  * Boolean VPI property values are now correctly converted into Ruby truth values.
+
+Housekeeping:
+
+  * A template used by generated specifications has been added, and the
+    counter example and tutorial have also been simplified accordingly.
+
+%#----------------------------------------------------------------------------
+### Version 6.0.0 (2006-08-07)
+%#----------------------------------------------------------------------------
+
+This release adds support and documentation for rapid prototyping of Verilog
+designs in Ruby.
+
+Incompatible changes:
+
+  * The directory structure has been reorganized as follows:
+
+    * `ext/` &rarr; `src/`
+    * `tools/` &rarr; `bin/`
+    * `examples/` &rarr; `samp/`
+
+  * All template files have been moved into the `tpl/` directory.
+
+New features:
+
+  * Support for prototyping designs in Ruby, before they are implemented in
+    Verilog, has been added.  The _same_ specification can now be used to
+    verify both prototype _and_ design!  :-)
+
+  * The tutorial in the user manual has been updated to discuss prototyping,
+    and prototypes have been added to the counter example.
+
+Housekeeping:
+
+  * The user manual has been revised for consistency.
+
+%#----------------------------------------------------------------------------
+### Version 5.1.1 (2006-08-04)
+%#----------------------------------------------------------------------------
+
+This release fixes unreadable syntax coloring in the user manual.
+
+Thank you:
+
+  * Todd Nagengast and Matt Fischler notified me about unreadable text in the
+    user manual.
+
+Housekeeping:
+
+  * Source code comments in the user manual are now readable.
+
+  * The README and HISTORY files have been converted to [textile](
+    http://www.textism.com/tools/textile/ ) format.
+
+%#----------------------------------------------------------------------------
+### Version 5.1.0 (2006-07-29)
+%#----------------------------------------------------------------------------
+
+This release adds a tutorial to the user manual, and improves the tools and
+examples.
+
+Thank you:
+
+  * Phil Tomson corrected the URL of the RHDL website in the user manual.
+
+New features:
+
+  * `--name` and `-n` options, which lets you specify an identifier for a
+    generated test, have been added to the `generate_test.rb` tool.
+
+  * A tutorial, based on the counter example, has been added to the user
+    manual.
+
+  * A specification, expressed in unit test format, has been added to the
+    counter example.
+
+Bug fixes:
+
+  * The value of a handle's boolean VPI property is treated as `false` if it
+    is zero, because zero is `false` in the C language.
+
+  * Running `rake clobber` in an example directory no longer destroys
+    documentation in the Ruby-VPI directory.
+
+  * The examples' Rakefiles now invoke all tests present in the directory via
+    the `launcher_template.rake` template.
+
+Housekeeping:
+
+  * The user manual's appearance has been dramatically improved with syntax
+    coloring for source code, and [graphics for admonitions and navigation](
+    http://tango.freedesktop.org ).
+
+  * The Rake template for test runners (generated by `tools/generate_test.rb`)
+    has moved from `examples/template.rake` to
+    `examples/runner_template.rake`.
+
+%#----------------------------------------------------------------------------
+### Version 5.0.0 (2006-07-22)
+%#----------------------------------------------------------------------------
+
+This release enhances the VPI utility layer and adds new content to the user
+manual.
+
+Thank you:
+
+  * Jan Decaluwe corrected the description of MyHDL in the user manual.
+
+Incompatible changes:
+
+  * The `handle.value` and `handle.value=` methods have been removed.
+
+New features:
+
+  * The VPI utility layer provides access to VPI properties of handles in a
+    [simpler, more powerful way]( manual.html#background.org.vpi ).
+
+  * All VPI properties, except delay values, are now accessible from a handle.
+
+Housekeeping:
+
+  * The user manual has been revised and new content in the organization and
+    usage sections has been added.
+
+  * SWIG is no longer required for users because its output is included in the
+    release package.
+
+Tested and developed using:
+
+  * Ruby 1.8.4 and Icarus Verilog 0.8 on i686 GNU/Linux
+  * Ruby 1.8.4 and Mentor Modelsim 6.1d on x86_64 GNU/Linux
+
+%#----------------------------------------------------------------------------
 ### Version 4.0.0 (2006-05-25)
 %#----------------------------------------------------------------------------
 
@@ -149,7 +372,7 @@ Tested and developed using:
 ### Version 2.0.0 (2006-04-17)
 %#----------------------------------------------------------------------------
 
-This release fixes major bugs, adds support for Mentor Modelsim, and removes
+This release fixes major bugs, adds support for [Mentor Modelsim], and removes
 the `$ruby_task` callback.
 
 Thank you:
