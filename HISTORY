@@ -204,14 +204,10 @@ Bug fixes:
 This release fixes another problem with compilation of the C extension and
 improves the user documentation's appearance.
 
-Thank you:
-
-  * Derek Graham reported the problem with compilation of the C extension.
-
 Bug fixes:
 
   * Restored the monkey patch, which was removed in release 14.0.0, for the
-    SWIG `va_list` problem.
+    SWIG `va_list` problem.  Thanks to Derek Graham for reporting this.
 
 Housekeeping:
 
@@ -757,8 +753,7 @@ This release simplifies configuration of generated tests.
 
 Thank you:
 
-  * [CMPE-126 students]( http://www.soe.ucsc.edu/classes/cmpe126/Fall06/ ) for
-    their comments and criticisms.
+  * [CMPE-126] students for their comments and criticisms.
 
 New features:
 
@@ -1388,7 +1383,7 @@ Thank you:
     whereas the Verilog standard defines a calltf signature as `PLI_INT32
     (**)(PLI_BYTE8**)`.
 
-  * Ross Bamford, Eric Hodel, and Yukihiro Matsumoto [helped me discover](
+  * Ross Bamford [helped me discover](
     http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/180662 ) why
     the `SystemStackError` was happening.
 

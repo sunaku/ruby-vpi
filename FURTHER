@@ -51,3 +51,4 @@ interfaces that have been officially deprecated in IEEE Std 1364-2005.
 [Cadence NC-Sim]: http://www.cadence.com/products/functional_ver/nc-verilog/
 [Icarus Verilog]: http://www.geda.seul.org/tools/icarus/index.html
 [test/spec]: http://chneukirchen.org/blog/archive/2006/10/announcing-test-spec-0-2-a-bdd-interface-for-test-unit.html
+[CMPE-126]: http://www.soe.ucsc.edu/classes/cmpe126/Fall06/
