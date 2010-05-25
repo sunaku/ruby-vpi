@@ -5,6 +5,401 @@
 This section contains release notes of current and past releases.
 
 %#----------------------------------------------------------------------------
+### Version 21.1.0 (2008-08-02)
+%#----------------------------------------------------------------------------
+
+This release adds new compilation hooks, improves support for [Mentor
+Modelsim], simplifies the internal task scheduler, and shortens the critical
+path of the C extension.
+
+New features:
+
+  * Added `CFLAGS_EXTRA` and `LDFLAGS_EXTRA` environment variables, which
+    allow you to _append_ to the default `CFLAGS` and `LDFLAGS` with which
+    your Ruby installation was built.
+
+    Note that the `CFLAGS` and `LDFLAGS` environment variables still behave
+    the same way: they completely override the defaults.
+
+Bug fixes:
+
+  * Attempted to fix [spurious failures with Modelsim 6.2g](
+    http://rubyforge.org/pipermail/ruby-vpi-discuss/2007-October/000083.html )
+    by advancing to the _same_ time step before applying cache write
+    operations.
+
+    "How can advancing the simulator by _zero_ time steps solve anything?",
+    you might be wondering.  Well, a time step is really composed of multiple
+    time _slots_, so advancing by zero time steps could, in fact, take us to
+    _any_ future time slot withnin the current time step.
+
+    There are more details that I don't care to explain here, but in general,
+    this technique seems to cure Modelsim 6.2g by advancing it into a time
+    slot where write operations can be applied correctly.
+
+Housekeeping:
+
+  * Replaced thread-based tasks with continuations (callcc) in internal
+    scheduler.
+
+  * Avoid some function calls on the C extension's critical path by
+    storing/reusing return values.
+
+fn1.
+%#----------------------------------------------------------------------------
+### Version 21.0.0 (2008-06-08)
+%#----------------------------------------------------------------------------
+
+This release adds support for Ruby 1.9.0 and, in an awesome twist of fate,
+breaks compatibility with [Cadence NC-Sim] while restoring compatibility with
+[Mentor Modelsim].
+
+Notice for Cadence NC-Sim users:
+
+  This release is not compatible with Cadence NC-Sim, so do not upgrade
+  until compatibility is restored in a future release.  In the mean time,
+  consider using this release with another simulator, such as [GPL Cver].
+
+New features:
+
+  * Added support for Ruby 1.9.0 by replacing the pthreads-based relay
+    implementation with [a simpler one](
+    http://snk.tuxfamily.org/log/ruby-vpi-c-extension-breakthrough.html ) that
+    uses `rb_create_thread()` for stack decoupling and Ruby's thread-safe
+    `Queue` class for synchronization.
+
+    One side benefit of this change is that it restored support for Mentor
+    Modelsim.  On the other hand, it also broke support for Cadence NC-Sim, as
+    mentioned above.
+
+  * The POSIX threads library (pthreads) is no longer required by Ruby-VPI.
+
+Housekeeping:
+
+  The pipelined ALU example (one of my homework assignments which motivated
+  the creation of Ruby-VPI) has been removed because it was buggy.  Farewell,
+  old friend!
+
+%#----------------------------------------------------------------------------
+### Version 20.0.0 (2008-01-27)
+%#----------------------------------------------------------------------------
+
+This release shifts focus from single-module unit testing to a system-level
+testing approach by adding support for testing multiple designs in a single
+session, improves the Ruby interface to VPI, fixes several bugs, and updates
+the documentation.
+
+Incompatible changes:
+
+  * The way tests are loaded has been changed to shift focus from
+    single-module unit testing to system level testing.  See [this discussion
+    thread](
+    http://rubyforge.org/pipermail/ruby-vpi-discuss/2007-September/000077.html
+    ) and its significance explained in the user guide.
+
+  * The excessive & verbose aliases for testing & setting logic values
+    introduced in the previous 19.0.0 release have been removed in favor or
+    short and relevant method names following this pattern:
+    `/vpi[01XZHL][?!]/`.  Furthermore, single-character aliases `/[tfxzhl]/`
+    (t & f for 1 & 0) have been added for simplicity.
+
+  * The test runner will now chdir (change the working directory) into same
+    directory as the runner file before running a test.
+
+  * The `RubyVPI::SIMULATORS` hash has been changed into an array.
+
+  * The `VPI::Handle#[]` method now gives access to VPI properties (instead of
+    child handles) by name or integer constant.  To fill the void, the
+    `VPI::Handle#/` method has been added to give access to child handles by
+    relative path, and the `VPI::Handle.to_a` method has been added to give
+    access to child handles by VPI type (name or integer constant).
+
+New features:
+
+  * The `ruby-vpi` executable now accepts a `-v` option to show the project
+    version information.
+
+  * `t` and `f` are now synonyms of `1` and `0` in method names for setting
+    and testing the logic values of handles.
+
+  * Ruby's standard output and error streams are now copied into the
+    simulator's log file.  This will help keep a record of failures (stack
+    trace) in the log file for debugging.
+
+  * API documentation for dynamically generated methods is now present.
+
+  * In `./lib/ruby-vpi/rake.rb`, the `sh()` method now prints args in array
+    form before execution to help users readily see the ARGV being passed to
+    the target program.
+
+Bug fixes:
+
+  * Fixed several Ruby warnings in the edge detection logic.
+
+  * There was an infinite loop during recursive rake clean/clobber.
+
+  * String to integer conversion was incorrect when `x` or `z` present in a
+    handle's logic value.
+
+Housekeeping:
+
+  * Upgraded and revised the website and user manual to make use of [the
+    Gerbil project]( http://gerbil.rubyforge.org ) and the new project
+    organization.
+
+%#----------------------------------------------------------------------------
+### Version 19.0.0 (2007-08-27)
+%#----------------------------------------------------------------------------
+
+This release restores support for [Cadence NC-Sim], breaks support for [Mentor
+Modelsim], adds support for concurrent processes which simplify implementing
+Ruby prototypess, and offers numerous other improvements.
+
+Notice for Mentor Modelsim users:
+
+  This release does not work very well with Mentor Modelsim, so do not upgrade
+  until compatibility is restored in a future release.  In the mean time,
+  consider using this release with another simulator, such as [GPL Cver].
+
+Thank you:
+
+  * Calvin Wong [requested the concurrent processes feature](
+    http://rubyforge.org/pipermail/ruby-vpi-discuss/2007-August/000046.html ),
+    helped test it, and provided useful feedback.
+
+Incompatible changes:
+
+  * Prototypes no longer have a `feign!` method.  Instead, they emulate the
+    behavior of the real Verilog DUT using the new concurrency model.
+
+  * All `initial` blocks in Verilog code are now evaluated _before_ the
+    specification begins executing.  This allows you to set the initial value
+    of registers in Verilog before the specification interacts with them.
+
+  * The `Vpi` module has been renamed to `VPI` for consistency with the
+    project name.
+
+  * The `VPI::simulation_time` method has been renamed to `VPI::current_time`.
+
+  * The `VPI::Handle.value_forced?` method has been renamed to
+    `VPI::Handle.force?`
+
+  * The `samp/` directory has been renamed to `examples/`.
+
+  * Code coverage analysis results are now produced only in plain-text format.
+
+New features:
+
+  * Added support for concurrent processes, which make Ruby prototypes appear
+    more like Verilog code and also give the ability to write parallel tests.
+
+  * Added support for performance profiling using the [ruby-prof] project.
+    The profiler can be enabled by setting the `PROFILER` environment variable
+    to "1" before running a Ruby-VPI test.
+
+  * Added new method aliases to `VPI::Handle` for value detection:
+
+    * `x?`, `unknown?`, `dont_care?`:
+      Tests if the logic value of this handle is unknown (x).
+
+    * `x!`, `unknown!`, `dont_care!`:
+      Sets the logic value of this handle to unknown (x).
+
+    * `z?`, `hi_z?`, `high_z?`, `high_impedance?`, `tri_state?`, `floating?`:
+      Tests if the logic value of this handle is high impedance (z).
+
+    * `z!`, `hi_z!`, `high_z!`, `high_impedance!`, `tri_state!`, `floating!`:
+      Sets the logic value of this handle to high impedance (z).
+
+    * `high?`, `one?`:
+      Tests if the logic value of this handle is at "logic high" level.
+
+    * `high!`, `one!`:
+      Sets the logic value of this handle to "logic high" level.
+
+    * `low?`, `zero?`:
+      Tests if the logic value of this handle is at "logic low" level.
+
+    * `low!`, `zero!`:
+      Sets the logic value of this handle to "logic low" level.
+
+  * Added new methods to `VPI::Handle` for value change / edge detection:
+
+    * `edge?`:
+      detects positive and negative edges
+
+    * `change?`:
+      detects any kind of value change
+
+    * `change_00?`:
+      detects a value change from 0 to 0
+
+    * `change_01?`:
+      detects a value change from 0 to 1
+
+    * `change_0x?`:
+      detects a value change from 0 to unknown
+
+    * `change_0z?`:
+      detects a value change from 0 to high-Z
+
+    * `change_10?`:
+      detects a value change from 1 to 0
+
+    * `change_11?`:
+      detects a value change from 1 to 1
+
+    * `change_1x?`:
+      detects a value change from 1 to unknown
+
+    * `change_1z?`:
+      detects a value change from 1 to high-Z
+
+    * `change_x0?`:
+      detects a value change from unknown to 0
+
+    * `change_x1?`:
+      detects a value change from unknown to 1
+
+    * `change_xx?`:
+      detects a value change from unknown to unknown
+
+    * `change_xz?`:
+      detects a value change from unknown to high-Z
+
+    * `change_z0?`:
+      detects a value change from high-Z to 0
+
+    * `change_z1?`:
+      detects a value change from high-Z to 1
+
+    * `change_zx?`:
+      detects a value change from high-Z to unknown
+
+    * `change_zz?`:
+      detects a value change from high-Z to high-Z
+
+Bug fixes:
+
+  * You can now access VPI constants using their original uncapitalized names.
+    For example, you can now write `vpiIntVal` instead of having to write
+    `VpiIntVal`.  However, note that the capitalized names are still
+    supported, so you are not required to change your code.
+
+  * Value change / edge detection for VPI handles was previously incorrect: if
+    you called the `VPI::Handle.posedge?` function twice in the same time
+    step, it would give you two different answers.
+
+  * The problem of not being able to write values to nets in Cadence NC-Sim
+    has been fixed.
+
+%#----------------------------------------------------------------------------
+### Version 18.0.2 (2007-08-03)
+%#----------------------------------------------------------------------------
+
+This release fixes a bug in error reporting.
+
+Bug fixes:
+
+  * Unhandled Ruby exceptions and errors were not being printed to the screen
+    because Ruby-VPI unconditionally gave control back to the Verilog
+    simulator before it exited.
+
+%#----------------------------------------------------------------------------
+### Version 18.0.1 (2007-08-02)
+%#----------------------------------------------------------------------------
+
+This release fixes some bugs regarding simulation time and control.
+
+Thank you:
+
+  * Calvin Wong reported the bugs listed below.
+
+Bug fixes:
+
+  * VCS does not acknowledge passage of time when cbReadWriteSynch callback is
+    used, so I reverted back to using the cbAfterDelay callback (as was done
+    in version 17.0.0).
+
+  * Ruby-VPI did not give control back to the Verilog simulator before it
+    exited.  As a result, the Verilog simulator did not have a chance to do
+    any clean up or finish any pending tasks that remained in the simulation.
+
+%#----------------------------------------------------------------------------
+### Version 18.0.0 (2007-07-31)
+%#----------------------------------------------------------------------------
+
+This release restores support for Synopsys VCS and Cadence NC-Sim, improves
+portability and performance, and enhances the VPI abstraction layer.
+
+Thank you:
+
+  * Calvin Wong discovered [how to bypass the following error](
+    http://rubyforge.org/forum/message.php?msg_id=25691 ) emitted by Synopsys
+    VCS when loading the Ruby-VPI shared object file.
+
+      Could not open library specified in -load option obj/vcs: undefined symbol: vpi_put_data
+
+Incompatible changes:
+
+  * `Vpi::Handle.put_value` no longer checks whether the value written matches
+    the value read back after writing because that only works when there is no
+    VPI delay associated with the write.
+
+  * When `Vpi::Handle.put_value` is used to write a value to a wire (VpiNet),
+    it now _forces_ the value.  This is done to ensure portability:
+
+    Synopsys VCS and Cadence NC-Sim forget the value written to a wire during
+    the next simulation time step, whereas Mentor Modelsim and GPL Cver
+    remember the value (thereby treating wires as registers).
+
+    Note that you have to release a forced value (using
+    `Vpi::Handle.release_value`) on a wire after writing to the wire if you
+    want the design under test have the ability to update the value of the
+    wire later on:
+
+        your_wire.intVal = 15
+        your_wire.release_value
+        advance_time # let the Verilog DUT modify your_wire
+
+    In addition, you can check if a wire has a forced value using the
+    `Vpi::Handle.value_forced?` method.
+
+  * If the format is not specified, `Vpi::Handle.get_value` now assumes that
+    you want to read the value in VpiIntVal format (because this is the most
+    common case).
+
+  * [SWIG] is now required in order to compile and install Ruby-VPI.
+
+  * The definition of "Derivatives" has been reworded for clarity in the
+    project license.
+
+New features:
+
+  * Added `force_value`, `release_value`, and `value_forced?` methods to the
+    `Vpi::Handle` class.
+
+  * `Vpi::Handle.put_value` now tries to automatically detect the format of
+    the value to be written.  As a result, you can now write:
+
+        your_handle.put_value 35
+
+    instead of:
+
+        your_handle.intVal = 35
+
+  * `Vpi::Handle.inspect` now shows the hexStrVal of the handle (because it is
+    a common case to want to see a handle's logic value along with its other
+    information).
+
+  * Added method caching (memoizing) for VPI property accesses on handles.
+
+Bug fixes:
+
+  * Synopsys VCS and Cadence NC-Sim simulators now correctly load Ruby-VPI.
+    Also, the 64-bit versions of these simulators are now supported.
+
+%#----------------------------------------------------------------------------
 ### Version 17.0.0 (2007-07-22)
 %#----------------------------------------------------------------------------
 
@@ -1293,8 +1688,7 @@ Tested and developed using:
 ### Version 3.0.0 (2006-04-23)
 %#----------------------------------------------------------------------------
 
-This release adds support for the _entire_ [IEEE Std. 1364-2005](
-http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945 ) VPI
+This release adds support for the _entire_ [IEEE 1364-2005] Verilog VPI
 interface, and updates the examples into unit tests.
 
 Thank you:
