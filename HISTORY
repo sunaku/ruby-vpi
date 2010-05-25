@@ -5,6 +5,24 @@
 This section contains release notes of current and past releases.
 
 %#----------------------------------------------------------------------------
+### Version 22.0.0 (work in progress)
+%#----------------------------------------------------------------------------
+
+This release renames the "Ruby-VPI" project to "VPI4R", uses ucontext or
+libpcl instead of pthreads or Ruby green threads for cosimulation, removes
+needless cruft from the Ruby-side of VPI, and completely revises the manual.
+
+Incompatible changes:
+
+New features:
+
+Bug fixes:
+
+Housekeeping:
+
+  * Renamed the project to "VPI4R".  It's a single, hyphen-less word.
+
+%#----------------------------------------------------------------------------
 ### Version 21.1.0 (2008-08-02)
 %#----------------------------------------------------------------------------
 
@@ -29,9 +47,9 @@ Bug fixes:
     operations.
 
     "How can advancing the simulator by _zero_ time steps solve anything?",
-    you might be wondering.  Well, a time step is really composed of multiple
-    time _slots_, so advancing by zero time steps could, in fact, take us to
-    _any_ future time slot withnin the current time step.
+    you might ask.  Well, a time step is really composed of multiple time
+    _slots_, so advancing by zero time steps could, in fact, take us to _any_
+    future time slot withnin the current time step.
 
     There are more details that I don't care to explain here, but in general,
     this technique seems to cure Modelsim 6.2g by advancing it into a time
@@ -45,7 +63,6 @@ Housekeeping:
   * Avoid some function calls on the C extension's critical path by
     storing/reusing return values.
 
-fn1.
 %#----------------------------------------------------------------------------
 ### Version 21.0.0 (2008-06-08)
 %#----------------------------------------------------------------------------
