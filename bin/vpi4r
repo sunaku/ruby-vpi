@@ -3,16 +3,8 @@
 require 'vpi4r'
 
 if ARGV.delete('-h') or ARGV.delete('--help')
-  # try to display UNIX version of help manual
-  man_path = File.join(VPI4R::INSTDIR, 'man')
-  unless system 'man', '-M', man_path, '-a', 'vpi4r'
-    # try to display HTML version of help manual
-    man_html = man_path + '.html'
-    unless %w[$BROWSER open start].any? {|b| system "#{b} #{man_html}" }
-      # no luck; direct user to project website
-      puts "See #{VPI4R::WEBSITE}"
-    end
-  end
+  system 'man', '-M', File.join(VPI4R::INSTDIR, 'man'), 'vpi4r' or
+  warn "Could not display the help manual.\nSee #{VPI4R::WEBSITE} instead."
   exit
 elsif ARGV.delete('-v') or ARGV.delete('--version')
   puts VPI4R::VERSION

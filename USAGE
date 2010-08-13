@@ -1,23 +1,11 @@
-%#----------------------------------------------------------------------------
-## SYNOPSIS
-%#----------------------------------------------------------------------------
+== USAGE
 
-`vpi4r` [<OPTIONS>] <PARAM1> <PARAM2> <PARAM3> ...
+Begin by loading the VPI4R library into your program:
 
-%#----------------------------------------------------------------------------
-## DESCRIPTION
-%#----------------------------------------------------------------------------
+[source,ruby]
+------------------------------------------------------------------------------
+require 'rubygems' # might not be necessary; see HACKING
+require 'vpi4r'
+------------------------------------------------------------------------------
 
-> TODO: explain the usage and behavior of the above command here
-
-%#----------------------------------------------------------------------------
-## OPTIONS
-%#----------------------------------------------------------------------------
-
-> TODO: list command-line options and explain them here
-
-* `-h`, `--help`:
-  Display this manual and exit.
-
-* `-v`, `--version`:
-  Print version number and exit.
+// TODO: explain what things you can do with the library

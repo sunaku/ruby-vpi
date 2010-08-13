@@ -1,0 +1,26 @@
+== SYNOPSIS
+
+*vpi4r* ['OPTIONS'] 'COMMAND' ['ARGUMENT'] ...
+
+=== Command
+
+[horizontal]
+translate:: Converts Verilog `defines, constants, ranges, etc. into Ruby.
+generate:: Creates test skeletons from Verilog 2001/1995 module declarations.
+simulate:: Executes the given tests using the given Verilog simulator.
+
+=== Options
+
+*-h*, *--help*::
+  Display this manual and exit.
+
+*-v*, *--version*::
+  Print version number and exit.
+
+=== Examples
+
+  vpi4r translate
+
+  vpi4r generate
+
+  vpi4r simulate files=FILE_GLOB using=SIMULATOR

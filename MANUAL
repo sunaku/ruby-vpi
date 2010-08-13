@@ -1,29 +1,8 @@
-<%
-  ##
-  # Wraps the given content within <pre>
-  # tags in a way that is Markdown-safe.
-  #
-  def preformatted content
-    if content =~ /\S/
-      content.gsub(/^/, ' ' * 4)
-    else
-      "<pre>#{content}</pre>"
-    end
-  end
-%>
-
-%+ "README"
-
-%+ "USAGE"
-
-%+ "THEORY"
-
-%+ "EXAMPLES"
-
-%+ "HACKING"
-
-%+ "HISTORY"
-
-%+ "CREDITS"
-
-%+ "FURTHER"
+%+ 'SYNOPSIS'
+%+ 'README'
+%+ 'INSTALL'
+%+ 'USAGE'
+%+ 'HACKING'
+%+ 'HISTORY'
+%+ 'CREDITS'
+%+ 'BEYOND'

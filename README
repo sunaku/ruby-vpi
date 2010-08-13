@@ -1,52 +1,61 @@
-VPI4R is a [Ruby] interface to [IEEE 1364-2005] Verilog VPI.  It serves as a
-platform for unit testing, rapid prototyping, and systems integration of
-Verilog modules through Ruby.  It was developed as part of [my masters
-thesis]( http://snk.tuxfamily.org/txt/masters_thesis.html ) ([PDF version](
-http://snk.tuxfamily.org/txt/masters_thesis.pdf )) back in 2006.
+== DESCRIPTION
 
-%#----------------------------------------------------------------------------
-### Goals
-%#----------------------------------------------------------------------------
+VPI4R is a <<Ruby>> interface to <<VPI, IEEE 1364-2005 Verilog VPI>>.  It
+serves as a platform for unit testing, rapid prototyping, and systems
+integration of Verilog modules through Ruby.  It was developed as part of
+http://snk.tuxfamily.org/txt/masters_thesis.pdf[my masters thesis] in 2006.
+
+=== Goals
 
 * Create complex Verilog test benches easily and wholly in Ruby.
+
 * Use agile software development practices to develop hardware.
 
-%#----------------------------------------------------------------------------
-### Features
-%#----------------------------------------------------------------------------
+=== Features
 
-Portable:
+.Portable
 
-  * Works on Windows, Mac OSX, GNU/Linux, and UNIX.
-  * Supports all major Verilog simulators available today.
+* Works on Windows, Mac OSX, GNU/Linux, and UNIX.
 
-Agile:
+* Supports all major Verilog simulators available today.
 
-  * Allows [test-driven]( http://www.testdriven.com ) and [behavior-driven](
-    http://behaviour-driven.org ) development.
-  * Allows rapid prototyping for design exploration.
-  * Test bench generator accomodates design changes.
-  * There is *absolutely no compiling* whatsoever!
+.Agile
 
-Powered by [Ruby]:
+* Allows http://www.testdriven.com[test-driven] and
+  http://behaviour-driven.org[behavior-driven] development.
 
-  * Unlimited-length integers!
-  * Automatic memory management (garbage collection).
-  * Regular expressions and text processing like Perl.
-  * Lambdas and closures for functional programming.
-  * Pure OOP with strong, dynamic typing.
-  * Portable multi-threading (green threads).
-  * Native system calls and I/O.
-  * Highly readable and maintainable code.
-  * [ruby-debug] for interactive debugging.
-  * [rcov] for test coverage analysis.
+* Allows rapid prototyping for design exploration.
 
-%#----------------------------------------------------------------------------
-### Applications
-%#----------------------------------------------------------------------------
+* Test bench generator accomodates design changes.
 
-Adapted from [The Verilog PLI Handbook](
-http://www.sutherland-hdl.com/publications.html ), second edition:
+* There is _absolutely no compiling_ whatsoever!
+
+.Powered by <<Ruby>>
+
+* Unlimited-length integers!
+
+* Automatic memory management (garbage collection).
+
+* Regular expressions and text processing like Perl.
+
+* Lambdas and closures for functional programming.
+
+* Pure OOP with strong, dynamic typing.
+
+* Portable multi-threading (green threads).
+
+* Native system calls and I/O.
+
+* Highly readable and maintainable code.
+
+* <<ruby-debug>> for interactive debugging.
+
+* <<rcov>> for test coverage analysis.
+
+=== Applications
+
+Adapted from http://www.sutherland-hdl.com/publications.html[The Verilog PLI
+Handbook], second edition:
 
   * Bus-functional models in Ruby
   * Reading test vector files
@@ -56,8 +65,8 @@ http://www.sutherland-hdl.com/publications.html ), second edition:
   * Design debug utilities
   * Simulation analysis
 
-Adapted from [Pin Hong's](
-http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/ ) observations:
+Adapted from http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/[Pin
+Hong's] observations:
 
   * Writing hardware models in Ruby
   * Dumping or processing netlist data from Verilog database
@@ -67,63 +76,22 @@ http://embedded.eecs.berkeley.edu/Alumni/pinhong/scriptEDA/ ) observations:
   * Interactive logic simulation
   * Building a distributed simulation
 
-%#----------------------------------------------------------------------------
-### Resources
-%#----------------------------------------------------------------------------
+=== Resources
 
-* Issue tracker (report bugs, request features, get help):
-  <http://github.com/sunaku/vpi4r/issues>
+Project website::
+<%= @proj_home_url = VPI4R::WEBSITE %>
 
-* Mailing list (ask questions, discuss ideas):
-  <http://rubyforge.org/mailman/listinfo/ruby-vpi-discuss>
+Announcements feed::
+<%= @ann_feed_url = File.join(@proj_home_url, 'ann.xml') %>
 
-* Source code (browse online or obtain with [Git](http://git-scm.com)):
-  <http://github.com/sunaku/vpi4r>
+API documentation::
+<%= @api_docs_url = File.join(@proj_home_url, 'api/') %>
 
-* API documentation:
-  <<%= File.join(VPI4R::WEBSITE, 'api/') %>>
+Source code (browse online, download, or checkout)::
+<%= @code_repo_url = 'http://github.com/sunaku/vpi4r' %>
 
-* Announcements feed:
-  <<%= File.join(VPI4R::WEBSITE, 'ann.xml') %>>
+Issue tracker (report bugs, request features, get help)::
+<%= @bug_track_url = File.join(@code_repo_url, 'issues') %>
 
-* Official website:
-  <<%= VPI4R::WEBSITE %>>
-
-%#----------------------------------------------------------------------------
-### Setup
-%#----------------------------------------------------------------------------
-
-Prerequisites:
-
-  * [Ruby] 1.8.6 or newer, including header and linkable object files neeeded
-    to build Ruby language extensions in the C language.
-
-  * [RubyGems] 1.3.6 or newer.
-
-  * [SWIG] version 1.3.29 or newer.
-
-  * C language compiler and `make`.
-
-  * Verilog simulator with VPI support:
-
-    * [GPL Cver] version 2.11a or newer.
-
-    * [Icarus Verilog] version 0.8 or newer.
-
-    * [Synopsys VCS] any version with `-load` option.
-
-    * [Mentor Modelsim] any version with `-pli` option.
-
-    * [Cadence NC-Sim] any version with `+loadvpi` option.
-
-Installing:
-
-    gem install vpi4r
-
-Upgrading:
-
-    gem update vpi4r
-
-Removing:
-
-    gem uninstall vpi4r
+Mailing list (ask questions, discuss ideas)::
+http://rubyforge.org/mailman/listinfo/ruby-vpi-discuss

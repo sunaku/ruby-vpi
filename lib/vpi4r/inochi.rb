@@ -44,14 +44,14 @@ module VPI4R
   #
   #   RUNTIME = {
   #     # this project needs exactly version 1.2.3 of the "an_example" gem
-  #     "an_example" => [ "1.2.3" ],
+  #     'an_example' => [ '1.2.3' ],
   #
   #     # this project needs at least version 1.2 (but not
   #     # version 1.2.4 or newer) of the "another_example" gem
-  #     "another_example" => [ ">= 1.2" , "< 1.2.4" ],
+  #     'another_example' => [ '>= 1.2' , '< 1.2.4' ],
   #
   #     # this project needs any version of the "yet_another_example" gem
-  #     "yet_another_example" => [],
+  #     'yet_another_example' => [],
   #   }
   #
   RUNTIME = {}
@@ -63,22 +63,22 @@ module VPI4R
   #
   #   DEVTIME = {
   #     # this project needs exactly version 1.2.3 of the "an_example" gem
-  #     "an_example" => [ "1.2.3" ],
+  #     'an_example' => [ '1.2.3' ],
   #
   #     # this project needs at least version 1.2 (but not
   #     # version 1.2.4 or newer) of the "another_example" gem
-  #     "another_example" => [ ">= 1.2" , "< 1.2.4" ],
+  #     'another_example' => [ '>= 1.2' , '< 1.2.4' ],
   #
   #     # this project needs any version of the "yet_another_example" gem
   #     "yet_another_example" => [],
   #   }
   #
   DEVTIME = {
-    'inochi' => [ '>= 3.0.0', '< 4' ],
+    'inochi' => [ '>= 5.0.2', '< 6' ],
   }
 
   # establish gem version dependencies
-  if respond_to? :gem
+  if respond_to? :gem, true
     [RUNTIME, DEVTIME].each do |deps|
       deps.each do |gem_name, gem_version|
         begin

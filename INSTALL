@@ -1,0 +1,42 @@
+== INSTALL
+
+=== Prerequisites
+
+* <<Ruby>> 1.8.6 or newer, including header and linkable object files neeeded
+  to build Ruby language extensions in the C language.
+
+* <<RubyGems>> 1.3.6 or newer.
+
+* <<SWIG>> version 1.3.29 or newer.
+
+* C compiler and *make*.
+
+* Verilog simulator with VPI support, such as:
+
+** <<cver,GPL Cver>> version 2.11a or newer.
+
+** <<iverilog,Icarus Verilog>> version 0.8 or newer.
+
+** <<vcs,Synopsys VCS>> any version with *-load* option.
+
+** <<vsim,Mentor Modelsim>> any version with *-pli* option.
+
+** <<ncsim,Cadence NC-Sim>> any version with *+loadvpi* option.
+
+=== Installing
+
+------------------------------------------------------------------------------
+gem install vpi4r
+------------------------------------------------------------------------------
+
+=== Upgrading
+
+------------------------------------------------------------------------------
+gem update vpi4r
+------------------------------------------------------------------------------
+
+=== Removing
+
+------------------------------------------------------------------------------
+gem uninstall vpi4r
+------------------------------------------------------------------------------
