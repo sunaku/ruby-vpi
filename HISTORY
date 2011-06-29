@@ -58,13 +58,14 @@ storing/reusing return values.
 === Version 21.0.0 (2008-06-08)
 
 This release adds support for Ruby 1.9.0 and, in an awesome twist of fate,
-breaks compatibility with <<Cadence NC-Sim>> while restoring compatibility with
-<<Mentor Modelsim>>.
+breaks compatibility with <<ncsim,Cadence NC-Sim>> while restoring
+compatibility with <<vsim,Mentor Modelsim>>.
 
 .Notice for Cadence NC-Sim users
+
 NOTE: This release is not compatible with Cadence NC-Sim, so do not upgrade
 until compatibility is restored in a future release.  In the mean time,
-consider using this release with another simulator, such as <<GPL Cver>>.
+consider using this release with another simulator, such as <<cver,GPL Cver>>.
 
 .New features
 
@@ -152,15 +153,15 @@ organization.
 
 === Version 19.0.0 (2007-08-27)
 
-This release restores support for <<ncsim>>, breaks support for <<Mentor
-Modelsim>>, adds support for concurrent processes which simplify implementing
-Ruby prototypess, and offers numerous other improvements.
+This release restores support for <<ncsim,Cadence NC-Sim>>, breaks support for
+<<vsim,Mentor Modelsim>>, adds support for concurrent processes which simplify
+implementing Ruby prototypess, and offers numerous other improvements.
 
 Notice for Mentor Modelsim users:
 
 This release does not work very well with Mentor Modelsim, so do not upgrade
 until compatibility is restored in a future release.  In the mean time,
-consider using this release with another simulator, such as <<GPL Cver>>.
+consider using this release with another simulator, such as <<cver,GPL Cver>>.
 
 .Thank you
 
@@ -512,9 +513,9 @@ and solving] this problem.
 
 === Version 16.0.0 (2007-05-02)
 
-This release adds support for the <<Cadence NC-Sim>> simulator, improves the
-project website and documentation, simplifies interaction with VPI, and comes
-with a more permissive license.
+This release adds support for the <<ncsim,Cadence NC-Sim>> simulator, improves
+the project website and documentation, simplifies interaction with VPI, and
+comes with a more permissive license.
 
 .Incompatible changes
 

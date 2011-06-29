@@ -7,7 +7,16 @@ some_command(1), another_command(5), yet_another_command(7)
 
 [horizontal]
 [[[Bundler]]]:: http://gembundler.com
+[[[cver]]]:: http://www.pragmatic-c.com/gpl-cver/
 [[[Inochi]]]:: <%= Inochi::WEBSITE %>
+[[[iverilog]]]:: http://www.geda.seul.org/tools/icarus/index.html
+[[[ncsim]]]:: http://www.cadence.com/products/functional_ver/nc-verilog/
+[[[rcov]]]:: http://eigenclass.org/hiki.rb?rcov
+[[[ruby-debug]]]:: http://rubyforge.org/projects/ruby-debug/
 [[[RubyGems]]]:: http://rubygems.org
 [[[Ruby]]]:: http://ruby-lang.org
-[[[ncsim]]]:: http://www.cadence.com/products/functional_ver/nc-verilog/
+[[[ruby-prof]]]:: http://ruby-prof.rubyforge.org
+[[[SWIG]]]:: http://www.swig.org
+[[[vcs]]]:: http://www.synopsys.com/products/simulation/simulation.html
+[[[VPI]]]:: http://ieeexplore.ieee.org/xpl/standardstoc.jsp?isnumber=33945
+[[[vsim]]]:: http://www.model.com
