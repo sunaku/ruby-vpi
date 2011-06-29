@@ -6,6 +6,7 @@ some_command(1), another_command(5), yet_another_command(7)
 === References
 
 [horizontal]
+[[[Bundler]]]:: http://gembundler.com
 [[[Inochi]]]:: <%= Inochi::WEBSITE %>
 [[[RubyGems]]]:: http://rubygems.org
 [[[Ruby]]]:: http://ruby-lang.org
